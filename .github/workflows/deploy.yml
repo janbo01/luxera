@@ -1,0 +1,63 @@
+name: Deploy Luxera
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t core-era/luxera:latest .
+
+      - name: Transfer image to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
+          docker save core-era/luxera:latest | gzip | ssh ${VPS_USER}@${VPS_HOST} "docker load"
+
+      - name: Deploy on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          ssh ${VPS_USER}@${VPS_HOST} bash << 'ENDSSH'
+            docker stop luxera 2>/dev/null || true
+            docker rm luxera 2>/dev/null || true
+            docker run -d \
+              --name luxera \
+              --restart unless-stopped \
+              -p 80:80 \
+              core-era/luxera:latest
+          ENDSSH
+
+      - name: Smoke test
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          for i in $(seq 1 15); do
+            ssh ${VPS_USER}@${VPS_HOST} "curl -sf http://localhost/" && echo "Service is up" && exit 0
+            echo "Waiting... ($i/15)"
+            sleep 4
+          done
+          ssh ${VPS_USER}@${VPS_HOST} "docker logs luxera --tail=50"
+          exit 1
+
+      - name: Prune old images
+        if: always()
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          docker image prune -f
+          ssh ${VPS_USER}@${VPS_HOST} "docker image prune -f"
