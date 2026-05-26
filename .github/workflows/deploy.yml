@@ -36,7 +36,7 @@ jobs:
             docker run -d \
               --name luxera \
               --restart unless-stopped \
-              -p 80:80 \
+              -p 8090:80 \
               core-era/luxera:latest
           ENDSSH
 
@@ -46,7 +46,7 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           for i in $(seq 1 15); do
-            ssh ${VPS_USER}@${VPS_HOST} "curl -sf http://localhost/" && echo "Service is up" && exit 0
+            ssh ${VPS_USER}@${VPS_HOST} "curl -sf http://localhost:8090/" && echo "Service is up" && exit 0
             echo "Waiting... ($i/15)"
             sleep 4
           done
