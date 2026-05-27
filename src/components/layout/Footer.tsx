@@ -104,7 +104,7 @@ const Footer: FC = () => {
           <img referrerPolicy="origin"
             src="https://trustseal.enamad.ir/logo.aspx?id=6141265&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
             alt="نماد اعتماد الکترونیکی" style={{ cursor: 'pointer', height: '40px', width: 'auto' }}
-            code="qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" />
+            {...{ code: "qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" }} />
         </a>
         <span>طراحی و توسعه — استودیو لوکسرا</span>
       </div>
