@@ -68,7 +68,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
         <span className="ic">
           <CircleCheck size={18} strokeWidth={1.7} />
         </span>
-        <div><strong>اصالتِ کالا</strong>گواهیِ طلا و نقره همراهِ سفارش</div>
+        <div><strong>اصالتِ کالا</strong>گارانتی کیفیت همراهِ سفارش</div>
       </div>
       <div className="co-trust-item">
         <span className="ic"><Icon name="refresh" size={18} strokeWidth={1.8} /></span>

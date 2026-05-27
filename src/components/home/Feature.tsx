@@ -3,7 +3,7 @@ import whyLuxera from '../../assets/images/why-luxera.png'
 import Icon from '../icons/Icon'
 
 const PILLARS = [
-  { icon: 'shield',  title: 'گواهیِ اصالت',    desc: 'برای هر قطعه از طلا و نقره' },
+  { icon: 'shield',  title: 'گواهیِ اصالت',    desc: 'برای هر قطعه‌ی جواهر فانتزی' },
   { icon: 'check',   title: '۱۴ روز بازگشت',   desc: 'بدون پرسش، بدون هزینه' },
   { icon: 'bag',     title: 'دست‌ساز',          desc: 'در کارگاه طراحی لوکسرا' },
   { icon: 'clock',   title: 'ارسال یک‌روزه',   desc: 'در تهران، رایگان' },

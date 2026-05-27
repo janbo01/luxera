@@ -1438,15 +1438,6 @@ img, svg { display: block; max-width: 100%; }
   font-family: var(--mono);
   letter-spacing: 0.04em;
 }
-.footer__pay { display: flex; gap: 8px; }
-.footer__pay span {
-  padding: 5px 10px;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
 
 /* ============================================================
    CART DRAWER
@@ -2595,7 +2586,6 @@ img, svg { display: block; max-width: 100%; }
   .hero__stat-v { font-size: 18px; }
   .footer__top { grid-template-columns: 1fr; gap: 20px; }
   .footer__bottom { flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-  .footer__pay { flex-wrap: wrap; justify-content: center; }
   .cats { gap: 12px; }
   .products { gap: 16px 10px; }
   .story__col { padding: 32px var(--pad); }

@@ -67,7 +67,7 @@ const Header: FC = () => {
       {/* Announcement bar — scrolls away, not sticky */}
       <div className="announce">
         <div className="announce__wrap">
-          <div className="announce__side">تماس: ۰۲۱-۲۲۸۷۶۵۴۳</div>
+          <div className="announce__side">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
           <div className="announce__mid">
             <span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
@@ -76,7 +76,7 @@ const Header: FC = () => {
             <i className="announce__dot" />
             <span>۱۴ روز ضمانت بازگشت</span>
             <i className="announce__dot" />
-            <span>گارانتی اصالت طلا و نقره</span>
+            <span>گارانتی کیفیت محصول</span>
           </div>
           <div className="announce__side">فارسی · تومان</div>
         </div>

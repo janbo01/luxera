@@ -35,7 +35,7 @@ const ContactPage: FC = () => {
           <em> لوکسرا</em>
         </h1>
         <p className="sp-hero__lede">
-          سوال دارید؟ می‌توانید از طریق فرم زیر، واتس‌اپ، یا حضوری با ما در ارتباط باشید.
+          سوال دارید؟ می‌توانید از طریق فرم زیر یا واتس‌اپ با ما در ارتباط باشید.
         </p>
       </div>
 
@@ -43,16 +43,8 @@ const ContactPage: FC = () => {
         {/* Info column */}
         <aside className="contact-info">
           <div className="contact-info__block">
-            <h3>آدرس فروشگاه</h3>
-            <p>تهران، خیابان ولیعصر،<br />بالاتر از پارک ساعی،<br />پلاک ۲۴۸۰، طبقه‌ی همکف</p>
-          </div>
-          <div className="contact-info__block">
-            <h3>ساعت کاری</h3>
-            <p>شنبه تا چهارشنبه: ۱۰ تا ۲۱<br />پنج‌شنبه: ۱۰ تا ۲۲<br />جمعه: ۱۲ تا ۲۰</p>
-          </div>
-          <div className="contact-info__block">
             <h3>تلفن و پیام</h3>
-            <p dir="ltr" style={{ textAlign: 'right', fontFamily: 'var(--mono)', fontSize: 13, letterSpacing: '0.06em' }}>+۹۸ ۲۱ ۸۸ ۰۰ ۰۰ ۰۰</p>
+            <p dir="ltr" style={{ textAlign: 'right', fontFamily: 'var(--mono)', fontSize: 13, letterSpacing: '0.06em' }}>+98 912 849 4308</p>
             <p style={{ marginTop: 8 }}>پشتیبانی واتس‌اپ: ۱۰ تا ۲۲ روزانه</p>
           </div>
           <div className="contact-info__block">
@@ -64,16 +56,6 @@ const ContactPage: FC = () => {
             </div>
           </div>
 
-          {/* Map */}
-          <div className="contact-map">
-            <iframe
-              title="موقعیت فروشگاه لوکسرا روی نقشه"
-              src="https://www.openstreetmap.org/export/embed.html?bbox=51.39%2C35.74%2C51.42%2C35.77&layer=mapnik&marker=35.755%2C51.407"
-              style={{ border: 0, width: '100%', height: '100%' }}
-              loading="lazy"
-              aria-label="نقشه‌ی فروشگاه لوکسرا"
-            />
-          </div>
         </aside>
 
         {/* Form column */}

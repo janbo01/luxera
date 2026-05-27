@@ -53,8 +53,7 @@ const Footer: FC = () => {
         <div className="footer__brand-col">
           <span className="footer__brand">Luxera</span>
           <p className="footer__addr">
-            کارگاهِ طراحی و ساختِ جواهراتِ دست‌ساز.<br />
-            تهران، خیابانِ ولیعصر، پلاکِ ۱۲۰۸.
+            جواهرات فانتزی، طراحی اختصاصی.
           </p>
           <div className="footer__socials">
             <a href="#" aria-label="اینستاگرام"><IconInstagram size={18} /></a>
@@ -100,11 +99,13 @@ const Footer: FC = () => {
 
       <div className="footer__bottom">
         <span>© ۱۴۰۴ Luxera Jewelry · Tehran</span>
-        <div className="footer__pay">
-          <span>درگاه پارسیان</span>
-          <span>زرین‌پال</span>
-          <span>پرداخت در محل</span>
-        </div>
+        <a referrerPolicy="origin" target="_blank"
+          href="https://trustseal.enamad.ir/?id=6141265&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg">
+          <img referrerPolicy="origin"
+            src="https://trustseal.enamad.ir/logo.aspx?id=6141265&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
+            alt="نماد اعتماد الکترونیکی" style={{ cursor: 'pointer', height: '40px', width: 'auto' }}
+            code="qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" />
+        </a>
         <span>طراحی و توسعه — استودیو لوکسرا</span>
       </div>
     </footer>

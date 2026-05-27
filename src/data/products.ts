@@ -13,7 +13,7 @@ export const PRODUCTS: Product[] = [
     badgeKind: 'new',
     illus: 'NecklaceB',
     illusAlt: 'NecklaceC',
-    meta: ['روکش طلایی', 'طول ۴۵ سانت'],
+    meta: ['رنگ طلایی', 'طول ۴۵ سانت'],
   },
   {
     id: 'p2',
@@ -40,7 +40,7 @@ export const PRODUCTS: Product[] = [
     badge: null,
     illus: 'BraceletB',
     illusAlt: 'BraceletA',
-    meta: ['روکش نقره‌ای', 'قابل تنظیم'],
+    meta: ['رنگ نقره‌ای', 'قابل تنظیم'],
   },
   {
     id: 'p4',
@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
     badgeKind: 'new',
     illus: 'EarringB',
     illusAlt: 'EarringC',
-    meta: ['روکش طلایی + مینا', 'دست‌ساز'],
+    meta: ['رنگ طلایی + مینا', 'دست‌ساز'],
   },
   {
     id: 'p5',
@@ -67,7 +67,7 @@ export const PRODUCTS: Product[] = [
     badge: null,
     illus: 'NecklaceD',
     illusAlt: 'NecklaceA',
-    meta: ['روکش طلایی', 'نگین آبی‌رنگ'],
+    meta: ['رنگ طلایی', 'نگین آبی‌رنگ'],
   },
   {
     id: 'p6',
@@ -80,7 +80,7 @@ export const PRODUCTS: Product[] = [
     badge: null,
     illus: 'RingC',
     illusAlt: 'RingB',
-    meta: ['روکش طلایی سفید', '۳ × کریستال'],
+    meta: ['رنگ طلایی سفید', '۳ × کریستال'],
   },
   {
     id: 'p7',
@@ -94,7 +94,7 @@ export const PRODUCTS: Product[] = [
     badgeKind: 'sale',
     illus: 'BraceletC',
     illusAlt: 'BraceletA',
-    meta: ['روکش نقره‌ای', '۲۰ × کریستال'],
+    meta: ['رنگ نقره‌ای', '۲۰ × کریستال'],
   },
   {
     id: 'p8',
@@ -204,7 +204,7 @@ export const PRODUCTS: Product[] = [
     badgeKind: 'sale',
     illus: 'NecklaceD',
     illusAlt: 'NecklaceA',
-    meta: ['روکش نقره‌ای', 'طول ۵۰ سانت'],
+    meta: ['رنگ نقره‌ای', 'طول ۵۰ سانت'],
   },
   {
     id: 'p16',
