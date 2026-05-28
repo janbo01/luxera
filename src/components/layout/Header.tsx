@@ -84,7 +84,7 @@ const Header: FC = () => {
   }, [])
 
   useBodyLock(menuOpen)
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
 
   // `inert` makes the closed drawer invisible to keyboard and assistive tech,
   // fixing the aria-hidden + focusable-descendants accessibility violation.

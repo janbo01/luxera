@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC, type CSSProperties } from 'react'
+import { useState, useEffect, useCallback, type FC, type CSSProperties } from 'react'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
@@ -73,7 +73,7 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, slides])
 
-  const go = (n: number) => setIdx((n + total) % total)
+  const go = useCallback((n: number) => setIdx((n + total) % total), [total])
 
   return (
     <div className="hero-slider">

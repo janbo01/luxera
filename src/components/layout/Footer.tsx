@@ -2,6 +2,7 @@ import { useState, useEffect, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icons/BrandIcons'
 import { listCategories, listCollections } from '../../api/product'
+import EnamadLogo from '../shared/EnamadLogo'
 
 const STATIC_COLS = [
   {
@@ -112,14 +113,7 @@ const Footer: FC = () => {
 
       <div className="pt-6 flex justify-between items-center flex-wrap gap-4 text-xs text-muted font-mono tracking-[0.04em] max-w-[1480px] mx-auto">
         <span>© ۱۴۰۴ Luxera Jewelry · Tehran</span>
-        <a referrerPolicy="origin" target="_blank"
-          href="https://trustseal.enamad.ir/?id=6141265&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg">
-          <img referrerPolicy="origin"
-            src="https://trustseal.enamad.ir/logo.aspx?id=6141265&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
-            alt="نماد اعتماد الکترونیکی"
-            style={{ cursor: 'pointer', height: '40px', width: 'auto' }}
-            {...{ code: "qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" }} />
-        </a>
+        <EnamadLogo />
         <span>طراحی و توسعه — استودیو لوکسرا</span>
       </div>
     </footer>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nav Design Comparison — Luxera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --plum: #2d1b35;
+    --plum-deep: #1a0f20;
+    --plum-mid: #3d2550;
+    --gold: #c9a84c;
+    --gold-light: #e4c97a;
+    --gold-pale: #f5e8c0;
+    --cream: #faf6ee;
+    --silk: #f0e8d8;
+    --dust: #e8dcc8;
+    --text-dark: #1a0f20;
+    --text-mid: #5a4060;
+    --text-light: #9a8aaa;
+  }
+
+  body {
+    background: var(--plum-deep);
+    font-family: 'Noto Sans Arabic', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px 72px;
+    gap: 48px;
+    overflow-x: hidden;
+  }
+
+  /* ─── PAGE TITLE ─── */
+  .page-title {
+    text-align: center;
+    color: var(--gold-pale);
+  }
+  .page-title h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+  .page-title p {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-light);
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  /* ─── COMPARISON GRID ─── */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  @media (max-width: 560px) {
+    .comparison { grid-template-columns: 1fr; gap: 48px; }
+  }
+
+  /* ─── PHONE FRAME ─── */
+  .scenario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .scenario-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+  .scenario-label.bad {
+    color: #d4776a;
+    border-color: #d4776a40;
+    background: #d4776a12;
+  }
+  .scenario-label.good {
+    color: var(--gold);
+    border-color: var(--gold-light)40;
+    background: var(--gold)12;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 300px;
+    background: var(--cream);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(201,168,76,0.25),
+      0 0 0 8px rgba(45,27,53,0.6),
+      0 0 0 9px rgba(201,168,76,0.12),
+      0 40px 80px rgba(0,0,0,0.6);
+    position: relative;
+    min-height: 560px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* notch */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 28px;
+    background: var(--plum-deep);
+    border-radius: 0 0 20px 20px;
+    z-index: 10;
+  }
+
+  /* ─── HEADER ─── */
+  .app-header {
+    padding: 38px 16px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--dust);
+    background: var(--cream);
+    position: relative;
+    z-index: 5;
+  }
+
+  .header-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--plum-deep);
+    flex-shrink: 0;
+  }
+  .header-logo span {
+    color: var(--gold);
+  }
+
+  .header-icons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .h-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--text-mid);
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .h-icon.cart-icon {
+    color: var(--plum);
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: 12px;
+    height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    font-size: 6px;
+    color: var(--plum-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-family: sans-serif;
+  }
+
+  /* cluttered header extras */
+  .h-icon.redundant {
+    color: var(--text-light);
+    opacity: 0.55;
+  }
+
+  .redundant-marker {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: #d4776a;
+    border-radius: 50%;
+  }
+
+  /* ─── SCROLL CONTENT ─── */
+  .app-content {
+    flex: 1;
+    padding: 16px;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .search-bar-inline {
+    background: var(--silk);
+    border: 1px solid var(--dust);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .search-bar-inline svg { color: var(--text-light); flex-shrink: 0; }
+  .search-text { font-size: 11px; color: var(--text-light); }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-mid);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--dust);
+  }
+
+  .product-img {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, var(--silk) 0%, var(--dust) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-img::after {
+    content: '';
+    position: absolute;
+    inset: 20% 25%;
+    border: 1.5px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+  }
+
+  .product-img-b::after {
+    inset: 25% 20%;
+    border-radius: 8px;
+    transform: rotate(12deg);
+  }
+
+  .product-img-c::after {
+    inset: 30% 30%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.15);
+  }
+
+  .product-img-d::after {
+    inset: 20% 20%;
+    border-radius: 4px;
+    transform: rotate(-8deg);
+  }
+
+  .product-info { padding: 8px 10px 10px; }
+  .product-name {
+    font-size: 10px;
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .product-price {
+    font-size: 10px;
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    background: white;
+    border-top: 1px solid var(--dust);
+    padding: 10px 0 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    min-width: 52px;
+  }
+
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--text-light);
+  }
+
+  .nav-item.active .nav-icon { color: var(--plum); }
+  .nav-item.active .nav-label { color: var(--plum); font-weight: 500; }
+
+  .nav-label {
+    font-size: 9px;
+    color: var(--text-light);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  .nav-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ─── ANNOTATION CALLOUTS ─── */
+  .annotations {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 300px;
+    width: 100%;
+  }
+
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-light);
+  }
+
+  .annotation .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .annotation.bad-note .dot { background: #d4776a; }
+  .annotation.good-note .dot { background: var(--gold); }
+
+  /* ─── VERDICT ─── */
+  .verdict {
+    max-width: 640px;
+    width: 100%;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 20px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+
+  .verdict h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+    letter-spacing: 0.06em;
+  }
+
+  .verdict-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    .verdict-grid { grid-template-columns: 1fr; }
+    .verdict { padding: 24px 20px; }
+  }
+
+  .verdict-col h3 {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  .verdict-col.keep h3 { color: var(--gold); }
+  .verdict-col.remove h3 { color: #d4776a; }
+
+  .verdict-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    text-align: right;
+  }
+  .verdict-item:last-child { border-bottom: none; }
+
+  .verdict-col.keep .verdict-item { color: var(--gold-pale); }
+  .verdict-col.remove .verdict-item { color: #d4776a99; text-decoration: line-through; text-decoration-color: #d4776a50; }
+
+  .vi-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .verdict-note {
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.7;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 16px;
+    font-style: italic;
+  }
+  .verdict-note em { color: var(--gold-pale); font-style: normal; }
+
+  /* ─── OVERLAP CLUTTER INDICATOR ─── */
+  .clutter-badge {
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #d4776a;
+    color: white;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-family: sans-serif;
+    z-index: 20;
+    font-weight: 600;
+  }
+
+  .clean-badge {
+    position: absolute;
+    top: 42px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--plum-deep);
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    font-family: sans-serif;
+    z-index: 20;
+    font-weight: 700;
+  }
+
+  /* separator */
+  .vs-divider {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
+    align-self: stretch;
+    display: none;
+  }
+  @media (min-width: 561px) {
+    .comparison { position: relative; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Header Navigation — Design Decision</h1>
+  <p>اگر منوی پایین داریم، آیا باید علاقه‌مندی‌ها، جستجو و حساب کاربری را در هدر هم بگذاریم؟</p>
+</div>
+
+<div class="comparison">
+
+  <!-- ─── SCENARIO A: CLUTTERED ─── -->
+  <div class="scenario">
+    <div class="scenario-label bad">❌ شلوغ</div>
+    <div class="phone">
+      <div class="clutter-badge">تکرار غیرضروری</div>
+
+      <!-- Header: logo + redundant icons + cart -->
+      <div class="app-header">
+        <div class="header-icons">
+          <!-- cart -->
+          <svg class="h-icon cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+            <div class="cart-badge">2</div>
+          </svg>
+          <!-- account — redundant -->
+          <div style="position:relative">
+            <svg class="h-icon redundant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <div class="redundant-marker"></div>
+          </div>
+          <!-- search — redundant -->
+          <div style="position:relative">
+            <svg class="h-icon redundant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <div class="redundant-marker"></div>
+          </div>
+          <!-- wishlist — redundant -->
+          <div style="position:relative">
+            <svg class="h-icon redundant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            <div class="redundant-marker"></div>
+          </div>
+        </div>
+        <div class="header-logo">LUX<span>ERA</span></div>
+      </div>
+
+      <!-- Content -->
+      <div class="app-content">
+        <div class="search-bar-inline">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="search-text">جستجوی جواهرات...</span>
+        </div>
+        <div class="section-label">جدیدترین‌ها</div>
+        <div class="product-grid">
+          <div class="product-card">
+            <div class="product-img"></div>
+            <div class="product-info"><div class="product-name">گردنبند طلای ۱۸ عیار</div><div class="product-price">۴٬۵۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-b"></div>
+            <div class="product-info"><div class="product-name">دستبند کلاسیک</div><div class="product-price">۲٬۸۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-c"></div>
+            <div class="product-info"><div class="product-name">انگشتر الماس</div><div class="product-price">۹٬۲۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-d"></div>
+            <div class="product-info"><div class="product-name">گوشواره پریل</div><div class="product-price">۳٬۱۰۰٬۰۰۰ تومان</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom nav: same items again -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span class="nav-label">خانه</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="nav-label">جستجو</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="nav-label">علاقه‌مندی</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="nav-label">حساب</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <div class="annotation bad-note"><div class="dot"></div><span>۴ آیکون در هدر — لوگو گم می‌شود</span></div>
+      <div class="annotation bad-note"><div class="dot"></div><span>جستجو، علاقه‌مندی و حساب در هر دو جا — سردرگمی</span></div>
+      <div class="annotation bad-note"><div class="dot"></div><span>فضای انگشت در هدر خیلی کوچک است (بالای صفحه = سخت‌ترین منطقه)</span></div>
+    </div>
+  </div>
+
+  <!-- ─── SCENARIO B: CLEAN ─── -->
+  <div class="scenario">
+    <div class="scenario-label good">✓ تمیز</div>
+    <div class="phone">
+      <div class="clean-badge">توصیه شده</div>
+
+      <!-- Header: logo only + cart -->
+      <div class="app-header">
+        <div class="header-icons">
+          <!-- cart with badge -->
+          <div style="position:relative">
+            <svg class="h-icon cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 0 1-8 0"/>
+            </svg>
+            <div class="cart-badge">2</div>
+          </div>
+        </div>
+        <div class="header-logo">LUX<span>ERA</span></div>
+      </div>
+
+      <!-- Content -->
+      <div class="app-content">
+        <div class="search-bar-inline">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <span class="search-text">جستجوی جواهرات...</span>
+        </div>
+        <div class="section-label">جدیدترین‌ها</div>
+        <div class="product-grid">
+          <div class="product-card">
+            <div class="product-img"></div>
+            <div class="product-info"><div class="product-name">گردنبند طلای ۱۸ عیار</div><div class="product-price">۴٬۵۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-b"></div>
+            <div class="product-info"><div class="product-name">دستبند کلاسیک</div><div class="product-price">۲٬۸۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-c"></div>
+            <div class="product-info"><div class="product-name">انگشتر الماس</div><div class="product-price">۹٬۲۰۰٬۰۰۰ تومان</div></div>
+          </div>
+          <div class="product-card">
+            <div class="product-img product-img-d"></div>
+            <div class="product-info"><div class="product-name">گوشواره پریل</div><div class="product-price">۳٬۱۰۰٬۰۰۰ تومان</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom nav: all navigation here -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span class="nav-label">خانه</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="nav-label">جستجو</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="nav-label">علاقه‌مندی</span>
+        </div>
+        <div class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="nav-label">حساب</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="annotations">
+      <div class="annotation good-note"><div class="dot"></div><span>لوگو نفس می‌کشد — برند اول است</span></div>
+      <div class="annotation good-note"><div class="dot"></div><span>سبد خرید در هدر می‌ماند — CTA تبدیل همیشه مرئی</span></div>
+      <div class="annotation good-note"><div class="dot"></div><span>ناوبری یک‌جا، در منطقه راحت انگشت شست</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── VERDICT ─── -->
+<div class="verdict">
+  <h2>قانون طلایی ناوبری موبایل</h2>
+  <div class="verdict-grid">
+    <div class="verdict-col keep">
+      <h3>در هدر نگه‌دار</h3>
+      <div class="verdict-item"><span class="vi-icon">🏷️</span> لوگو / نام برند</div>
+      <div class="verdict-item"><span class="vi-icon">🛒</span> سبد خرید + تعداد آیتم</div>
+      <div class="verdict-item"><span class="vi-icon">←</span> دکمه بازگشت (در صفحات داخلی)</div>
+      <div class="verdict-item"><span class="vi-icon">⚙️</span> فیلتر / مرتب‌سازی (فقط در صفحه محصولات)</div>
+    </div>
+    <div class="verdict-col remove">
+      <h3>از هدر حذف کن</h3>
+      <div class="verdict-item"><span class="vi-icon">🔍</span> جستجو — در منوی پایین است</div>
+      <div class="verdict-item"><span class="vi-icon">♡</span> علاقه‌مندی — در منوی پایین است</div>
+      <div class="verdict-item"><span class="vi-icon">👤</span> حساب کاربری — در منوی پایین است</div>
+    </div>
+  </div>
+  <p class="verdict-note">
+    استثنا: <em>جستجو</em> اگر اولین اکشن اپ باشد (مثل Airbnb) می‌تواند در هدر بماند — ولی برای Luxera که محصولات browse می‌شوند، منوی پایین کافی است.
+  </p>
+</div>
+
+</body>
+</html>

@@ -1,5 +1,7 @@
-import type { FC } from 'react'
+import { memo, type FC, type CSSProperties } from 'react'
 import { Star } from 'lucide-react'
+
+const WRAP_STYLE: CSSProperties = { display: 'inline-flex', gap: 1 }
 
 interface StarsProps {
   value?: number
@@ -11,7 +13,7 @@ const Stars: FC<StarsProps> = ({ value = 5, size = 14 }) => {
   const half = value - full >= 0.4 && value - full < 0.85
 
   return (
-    <span className="stars" role="img" aria-label={`${value} از ۵`} style={{ display: 'inline-flex', gap: 1 }}>
+    <span className="stars" role="img" aria-label={`${value} از ۵`} style={WRAP_STYLE}>
       {Array.from({ length: 5 }).map((_, i) => {
         const isFull = i < full
         const isHalf = !isFull && i === full && half
@@ -42,4 +44,4 @@ const Stars: FC<StarsProps> = ({ value = 5, size = 14 }) => {
   )
 }
 
-export default Stars
+export default memo(Stars)

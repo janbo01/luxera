@@ -171,7 +171,6 @@ const CategoryPage: FC = () => {
   useEffect(() => {
     if (resolvedCatId === null) return
     if (skipFetchRef.current) { skipFetchRef.current = false; return }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchProducts(resolvedCatId, apiSort, selectedColorIds.length ? selectedColorIds : undefined)
   // colorKey is a stable primitive derived from selectedColorIds
   // eslint-disable-next-line react-hooks/exhaustive-deps

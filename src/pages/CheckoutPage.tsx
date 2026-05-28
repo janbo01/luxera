@@ -43,14 +43,13 @@ const CheckoutPage: FC = () => {
   const [paymentOptions, setPaymentOptions]   = useState<PaymentOption[]>([])
 
   useEffect(() => {
-    getDeliverySlots().then(setDeliveryOptions).catch(() => {})
-  }, [])
-
-  useEffect(() => {
-    getPaymentProviders().then((providers) => {
-      const ids = new Set(providers.map((p) => p.id))
-      setPaymentOptions(ALL_PAYMENT_OPTS.filter((o) => ids.has(o.id)))
-    }).catch(() => {})
+    Promise.all([getDeliverySlots(), getPaymentProviders()])
+      .then(([slots, providers]) => {
+        setDeliveryOptions(slots)
+        const ids = new Set(providers.map((p) => p.id))
+        setPaymentOptions(ALL_PAYMENT_OPTS.filter((o) => ids.has(o.id)))
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {

@@ -124,7 +124,10 @@ interface PaneProps { setTab: (t: Tab) => void }
 const OverviewPane: FC<PaneProps> = ({ setTab }) => {
   const orders   = useAuthStore((s) => s.orders)
   const wishCount = useWishlistStore((s) => s.items.length)
-  const inTransit = orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length
+  const inTransit = useMemo(
+    () => orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length,
+    [orders],
+  )
 
   const thisMonthOrders = useMemo(() => {
     const now = new Date()
@@ -949,7 +952,10 @@ const AccountPage: FC = () => {
   }, [isLoggedIn, fetchOrders, fetchAddresses])
   const wishCount = useWishlistStore((s) => s.items.length)
 
-  const counts: Record<string, number> = { orders: orders.length, addresses: addresses.length, wishlist: wishCount }
+  const counts = useMemo<Record<string, number>>(
+    () => ({ orders: orders.length, addresses: addresses.length, wishlist: wishCount }),
+    [orders.length, addresses.length, wishCount],
+  )
 
   return (
     <div className="min-h-[60vh] animate-rise">
