@@ -36,7 +36,7 @@ jobs:
             docker run -d \
               --name luxera \
               --restart unless-stopped \
-              -p 8090:80 \
+              -p 8090:3000 \
               core-era/luxera:latest
           ENDSSH
 

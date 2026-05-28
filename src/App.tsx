@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useUIStore } from './store/uiStore'
 import { useAuthStore } from './store/authStore'
 
@@ -64,7 +64,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <>
         <ScrollToTop />
         <div>
           <Header />
@@ -96,7 +96,7 @@ export default function App() {
           {isLoginOpen && !isLoggedIn && <LoginModal onClose={closeLogin} message={loginMessage ?? undefined} />}
           <BottomNav />
         </div>
-      </BrowserRouter>
+      </>
     </ErrorBoundary>
   )
 }
