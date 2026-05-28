@@ -6,6 +6,7 @@ COPY . .
 RUN npm run build
 
 FROM node:22-alpine AS runner
+ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package*.json ./
