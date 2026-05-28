@@ -18,25 +18,22 @@ const ProductsSection: FC = () => {
   }, [])
 
   return (
-    <section className="section" id="new">
+    <section className="page-section" id="new">
       <SectionHeader
         kicker="NEW ARRIVALS · تازه‌ترین‌ها"
         title={<>جدیدترین <em>محصولات</em></>}
-        aside={<a href="#all" className="btn--link">مشاهده‌ی همه ←</a>}
+        aside={<a href="#all" className="inline-flex items-center gap-2.5 pb-1 border-b border-ink text-ink text-[13px] tracking-[0.04em] bg-transparent rounded-none transition-all duration-200 hover:text-plum hover:border-plum">مشاهده‌ی همه ←</a>}
       />
-      {loading ? (
-        <div className="products">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="product" style={{ background: 'var(--surface)', borderRadius: 8, minHeight: 300, opacity: 0.5 }} />
-          ))}
-        </div>
-      ) : (
-        <div className="products">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} onAdd={addItem} />
-          ))}
-        </div>
-      )}
+      <div className="products-grid cols-4">
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-surface rounded-lg min-h-[300px] opacity-50" />
+            ))
+          : products.map((product, i) => (
+              <ProductCard key={product.id} product={product} onAdd={addItem} priority={i < 4} />
+            ))
+        }
+      </div>
     </section>
   )
 }

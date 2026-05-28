@@ -1,5 +1,14 @@
 import { apiFetch } from './client'
+import { cachedFetch, invalidateCacheByPrefix } from './cache'
 import type { Product } from '../types'
+
+const TTL = {
+  categories: 15 * 60 * 1000,
+  colors: 15 * 60 * 1000,
+  collections: 10 * 60 * 1000,
+  product: 5 * 60 * 1000,
+  products: 3 * 60 * 1000,
+}
 
 const BASE = import.meta.env.VITE_PRODUCT_API as string
 
@@ -186,9 +195,7 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
   }
 }
 
-export async function listProducts(
-  params: ListProductsParams = {},
-): Promise<{ items: ApiProduct[]; nextCursor: string }> {
+function buildProductsQS(params: ListProductsParams): string {
   const qs = new URLSearchParams()
   if (params.q) qs.set('q', params.q)
   if (params.categoryId) qs.set('category_id', params.categoryId)
@@ -198,14 +205,30 @@ export async function listProducts(
   if (params.sort) qs.set('sort', params.sort)
   if (params.limit) qs.set('limit', String(params.limit))
   if (params.afterId) qs.set('after_id', params.afterId)
+  return qs.toString()
+}
 
-  const url = `${BASE}/products${qs.toString() ? '?' + qs.toString() : ''}`
-  const res = await apiFetch<ApiProductsResponse>(url)
-  return { items: res.items ?? [], nextCursor: res.next_cursor ?? '' }
+export async function listProducts(
+  params: ListProductsParams = {},
+): Promise<{ items: ApiProduct[]; nextCursor: string }> {
+  const qs = buildProductsQS(params)
+  const url = `${BASE}/products${qs ? '?' + qs : ''}`
+  return cachedFetch(
+    `products:${qs}`,
+    async () => {
+      const res = await apiFetch<ApiProductsResponse>(url)
+      return { items: res.items ?? [], nextCursor: res.next_cursor ?? '' }
+    },
+    TTL.products,
+  )
 }
 
 export async function getProduct(id: string): Promise<ApiProductDetail> {
-  return apiFetch<ApiProductDetail>(`${BASE}/products/${id}`)
+  return cachedFetch(
+    `product:${id}`,
+    () => apiFetch<ApiProductDetail>(`${BASE}/products/${id}`),
+    TTL.product,
+  )
 }
 
 export async function batchProducts(ids: string[]): Promise<ApiBatchItem[]> {
@@ -216,25 +239,49 @@ export async function batchProducts(ids: string[]): Promise<ApiBatchItem[]> {
 }
 
 export async function listColors(): Promise<ApiColor[]> {
-  const res = await apiFetch<ApiColor[]>(`${BASE}/colors`)
-  return Array.isArray(res) ? res : []
+  return cachedFetch(
+    'colors',
+    async () => {
+      const res = await apiFetch<ApiColor[]>(`${BASE}/colors`)
+      return Array.isArray(res) ? res : []
+    },
+    TTL.colors,
+  )
 }
 
 export async function listCategories(): Promise<ApiCategory[]> {
-  const res = await apiFetch<ApiCategory[]>(`${BASE}/categories`)
-  return Array.isArray(res) ? res : []
+  return cachedFetch(
+    'categories',
+    async () => {
+      const res = await apiFetch<ApiCategory[]>(`${BASE}/categories`)
+      return Array.isArray(res) ? res : []
+    },
+    TTL.categories,
+  )
 }
 
 export async function listCollections(): Promise<ApiCollection[]> {
-  const res = await apiFetch<ApiCollectionsResponse>(`${BASE}/collections`)
-  return res.items ?? []
+  return cachedFetch(
+    'collections',
+    async () => {
+      const res = await apiFetch<ApiCollectionsResponse>(`${BASE}/collections`)
+      return res.items ?? []
+    },
+    TTL.collections,
+  )
 }
 
 export async function getCollectionBySlug(
   slug: string,
 ): Promise<ApiCollectionDetail> {
-  return apiFetch<ApiCollectionDetail>(`${BASE}/collections/${slug}`)
+  return cachedFetch(
+    `collection:${slug}`,
+    () => apiFetch<ApiCollectionDetail>(`${BASE}/collections/${slug}`),
+    TTL.product,
+  )
 }
+
+export { invalidateCacheByPrefix }
 
 export async function listComments(
   productId: string,

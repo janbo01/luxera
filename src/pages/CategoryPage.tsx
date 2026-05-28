@@ -1,6 +1,7 @@
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useState, useMemo, useCallback, useEffect, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
 import { CATEGORIES } from '../data/categories'
 import { useCartStore } from '../store/cartStore'
 import { useBodyLock } from '../hooks/useBodyLock'
@@ -35,7 +36,7 @@ const CategoryPage: FC = () => {
   const addItem = useCartStore((s) => s.addItem)
   const { id } = useParams<{ id: string }>()
   const category = CATEGORIES.find((c) => c.id === id)
-  usePageMeta({ title: category?.fa ?? 'دسته‌بندی' })
+  usePageMeta({ title: category?.fa ?? 'دسته‌بندی', canonical: id ? `/category/${id}` : undefined })
 
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -170,9 +171,9 @@ const CategoryPage: FC = () => {
 
   if (!category) {
     return (
-      <div className="cat-not-found">
+      <div>
         <p>دسته‌بندی یافت نشد.</p>
-        <Link to="/">بازگشت به خانه</Link>
+        <Link to="/" className="text-plum underline underline-offset-2 mt-4 inline-block">بازگشت به خانه</Link>
       </div>
     )
   }
@@ -181,7 +182,7 @@ const CategoryPage: FC = () => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <div className="wrap">
+      <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
         <CategoryHero
           category={category}
           catId={id!}
@@ -190,74 +191,80 @@ const CategoryPage: FC = () => {
         />
       </div>
 
-      <main className="wrap">
-        <div className="mfilter">
-          <button onClick={() => setFilterOpen(true)}>
+      <main className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
+        <div className="hidden max-[1100px]:flex items-center gap-2.5 mb-4">
+          <button
+            onClick={() => setFilterOpen(true)}
+            className="px-4 py-2.5 bg-ink text-bg rounded-full text-[13px] border-none cursor-pointer"
+          >
             فیلترها · {toFa(sorted.length)} محصول
           </button>
         </div>
 
-        <div className="toolbar">
-              <div className="tb-count">
-                <span>نمایش</span>
-                <span className="n">{loading ? '…' : toFa(paginated.length)}</span>
-                <span>از</span>
-                <span className="n">{loading ? '…' : toFa(sorted.length)}</span>
-                <span>{category.fa}</span>
-              </div>
+        <div className="mt-7 mb-[18px] px-[22px] py-[18px] bg-surface rounded-[var(--radius)] border border-rule flex items-center gap-[18px] flex-wrap max-[640px]:px-4 max-[640px]:py-3.5 max-[640px]:gap-3">
+          <div className="font-heading text-base font-semibold flex items-center gap-2">
+            <span>نمایش</span>
+            <span className="font-mono text-copper">{loading ? '…' : toFa(paginated.length)}</span>
+            <span>از</span>
+            <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
+            <span>{category.fa}</span>
+          </div>
 
-              {appliedChips.length > 0 && (
-                <div className="tb-applied">
-                  {appliedChips.map((chip, i) => (
-                    <span key={i} className="ap">
-                      {chip.label}
-                      <button onClick={chip.remove} aria-label="حذف فیلتر">
-                        <Icon name="x" size={9} />
-                      </button>
-                    </span>
-                  ))}
-                  <button className="clear" onClick={resetFilters}>پاک کردن</button>
-                </div>
-              )}
+          {appliedChips.length > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {appliedChips.map((chip, i) => (
+                <span key={i} className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2">
+                  {chip.label}
+                  <button onClick={chip.remove} aria-label="حذف فیلتر" className="w-[18px] h-[18px] rounded-full grid place-items-center bg-transparent text-muted shrink-0 cursor-pointer hover:bg-ink hover:text-bg">
+                    <Icon name="x" size={9} />
+                  </button>
+                </span>
+              ))}
+              <button className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer" onClick={resetFilters}>پاک کردن</button>
+            </div>
+          )}
 
-              <div className="tb-spacer" />
+          <div className="flex-1 max-[640px]:hidden" />
 
-              <div className="tb-views">
-                {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
+          <div className="inline-flex gap-0.5 bg-bg border border-rule rounded-lg p-[3px]">
+            {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
+              <button
+                key={mode || 'default'}
+                className={`w-[30px] h-[30px] rounded-md grid place-items-center border-none cursor-pointer transition-[background,color] duration-150 ${viewMode === mode ? 'bg-ink text-bg' : 'bg-transparent text-muted'}`}
+                onClick={() => setViewMode(mode)}
+                title={title}
+              >
+                <ModeIcon size={14} strokeWidth={1.6} />
+              </button>
+            ))}
+          </div>
+
+          <div className="relative">
+            <button
+              className="inline-flex items-center gap-2.5 px-3.5 py-[9px] bg-bg border border-rule rounded-full text-[13px] cursor-pointer font-body transition-[border-color] duration-200 hover:border-ink"
+              onClick={() => setSortOpen((o) => !o)}
+            >
+              <span className="text-muted text-xs">مرتب‌سازی:</span>
+              <span>{SORT_OPTIONS.find((o) => o.key === sort)?.label}</span>
+              <Icon name="chevron-down" size={12} />
+            </button>
+            {sortOpen && (
+              <div className="absolute top-[calc(100%+4px)] left-0 min-w-[180px] bg-surface border border-rule rounded-[4px] shadow-[0_8px_24px_rgba(26,15,29,0.1)] z-20 [direction:rtl] max-[768px]:left-auto max-[768px]:right-0">
+                {SORT_OPTIONS.map((opt) => (
                   <button
-                    key={mode || 'default'}
-                    className={viewMode === mode ? 'on' : ''}
-                    onClick={() => setViewMode(mode)}
-                    title={title}
+                    key={opt.key}
+                    className={`flex items-center gap-2 w-full px-4 py-3 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-plum font-normal' : 'text-ink-2'}`}
+                    onClick={() => handleSort(opt.key)}
                   >
-                    <ModeIcon size={14} strokeWidth={1.6} />
+                    {opt.label}
                   </button>
                 ))}
               </div>
-
-              <div style={{ position: 'relative' }}>
-                <button className="tb-sort" onClick={() => setSortOpen((o) => !o)}>
-                  <span className="lbl">مرتب‌سازی:</span>
-                  <span>{SORT_OPTIONS.find((o) => o.key === sort)?.label}</span>
-                  <Icon name="chevron-down" size={12} />
-                </button>
-                {sortOpen && (
-                  <div className="sort-dropdown__panel">
-                    {SORT_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.key}
-                        className={`sort-dropdown__option${sort === opt.key ? ' is-active' : ''}`}
-                        onClick={() => handleSort(opt.key)}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+            )}
+          </div>
         </div>
 
-        <div className="body-grid">
+        <div className="grid grid-cols-[280px_1fr] gap-8 pb-[88px] max-[1100px]:grid-cols-1">
           <FilterPanel
             isOpen={filterOpen}
             onClose={() => setFilterOpen(false)}
@@ -279,42 +286,54 @@ const CategoryPage: FC = () => {
 
           <section>
             {loading ? (
-              <div className="grid" style={{ opacity: 0.5 }}>
+              <div className="products-grid" style={{ opacity: 0.5 }}>
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div key={i} style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }} />
                 ))}
               </div>
             ) : paginated.length > 0 ? (
-              <div className={`grid${viewMode ? ` ${viewMode}` : ''}`}>
-                {paginated.map((p) => <ProductCard key={p.id} product={p} onAdd={addItem} />)}
+              <div className={`products-grid${viewMode ? ` ${viewMode}` : ''}`}>
+                {paginated.map((p, i) => <ProductCard key={p.id} product={p} onAdd={addItem} priority={i < 4} />)}
               </div>
             ) : (
-              <div className="supplement">
-                <span className="ic">
+              <div className="mt-12 p-8 bg-surface rounded-[var(--radius)] grid grid-cols-[auto_1fr_auto] gap-6 items-center border border-rule max-[640px]:grid-cols-1 max-[640px]:text-center">
+                <span className="w-16 h-16 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 max-[640px]:mx-auto">
                   <Icon name="search" size={30} strokeWidth={1.4} />
                 </span>
                 <div>
-                  <h4>محصولی با این فیلترها یافت نشد</h4>
-                  <p>فیلترها را آزادتر کنید یا همه را پاک کنید.</p>
+                  <h4 className="font-heading text-[18px] font-semibold m-0 mb-1">محصولی با این فیلترها یافت نشد</h4>
+                  <p className="m-0 text-muted text-[13px]">فیلترها را آزادتر کنید یا همه را پاک کنید.</p>
                 </div>
-                <button className="btn" onClick={resetFilters} style={{ padding: '11px 18px' }}>
+                <button className={BTN_CLS} onClick={resetFilters} style={{ padding: '11px 18px' }}>
                   پاک کردن فیلترها
                 </button>
               </div>
             )}
 
             {!loading && totalPages > 1 && (
-              <div className="pager">
-                <button className="nav-btn" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>
+              <div className="mt-9 flex items-center justify-center gap-1.5 py-6 border-t border-rule">
+                <button
+                  className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
                   <Icon name="arrow-left" size={14} />
                   قبلی
                 </button>
                 {pages.map((p) => (
-                  <button key={p} className={p === page ? 'on' : ''} onClick={() => setPage(p)}>
+                  <button
+                    key={p}
+                    className={`min-w-[38px] h-[38px] rounded-lg text-[14px] border px-3 font-mono bg-transparent cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink' : 'text-ink border-transparent hover:bg-bg-2'}`}
+                    onClick={() => setPage(p)}
+                  >
                     {toFa(p)}
                   </button>
                 ))}
-                <button className="nav-btn" disabled={page === totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
+                <button
+                  className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                  disabled={page === totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
                   بعدی
                   <Icon name="arrow-right" size={14} />
                 </button>
@@ -324,7 +343,7 @@ const CategoryPage: FC = () => {
             {!loading && nextCursor && (
               <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <button
-                  className="btn btn--ghost"
+                  className={BTN_GHOST_CLS}
                   onClick={() => fetchProducts(resolvedCatId ?? undefined, apiSort, activeColors, nextCursor)}
                 >
                   بارگذاری بیشتر

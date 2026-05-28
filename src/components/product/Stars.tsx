@@ -11,7 +11,7 @@ const Stars: FC<StarsProps> = ({ value = 5, size = 14 }) => {
   const half = value - full >= 0.4 && value - full < 0.85
 
   return (
-    <span className="stars" aria-label={`${value} از ۵`} style={{ display: 'inline-flex', gap: 1 }}>
+    <span className="stars" role="img" aria-label={`${value} از ۵`} style={{ display: 'inline-flex', gap: 1 }}>
       {Array.from({ length: 5 }).map((_, i) => {
         const isFull = i < full
         const isHalf = !isFull && i === full && half

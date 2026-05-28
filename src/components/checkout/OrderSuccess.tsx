@@ -1,6 +1,7 @@
 import { type FC } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../icons/Icon'
+import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
 import { Illustration } from '../../illustrations'
 import { formatToman, toFa } from '../../utils/format'
 import type { CartItem } from '../../types'
@@ -17,6 +18,9 @@ interface OrderSuccessProps {
   couponDiscount: number
   giftWrapPrice: number
 }
+
+const ROW = 'flex justify-between items-center px-5 py-[13px] border-b border-rule text-[13px] last:border-b-0'
+const ROW_LABEL = 'font-mono text-[10px] tracking-[.12em] uppercase text-muted'
 
 const OrderSuccess: FC<OrderSuccessProps> = ({
   orderNum,
@@ -40,82 +44,88 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
     - couponDiscount
 
   return (
-    <div className="checkout-success" role="main">
+    <div className="flex flex-col items-center text-center py-24 px-[var(--pad)] max-w-[520px] mx-auto" role="main">
       <div aria-live="polite" className="sr-only">
         سفارش با شماره {orderNum} ثبت شد
       </div>
 
-      <div className="checkout-success__icon anim-in">
+      <div className="w-[76px] h-[76px] rounded-full bg-plum flex items-center justify-center text-bg mb-7 animate-rise">
         <Icon name="check" size={28} />
       </div>
 
-      <h2 className="anim-in delay-1" tabIndex={-1}>
+      <h2 className="font-heading font-bold text-[clamp(28px,4vw,40px)] leading-[1.2] m-0 mb-3.5 text-ink animate-rise [animation-delay:80ms]" tabIndex={-1}>
         سفارش شما ثبت شد
       </h2>
-      <p className="anim-in delay-1">
-        <em>Thank you</em> — سپاسگزاریم از خرید شما از لوکسرا.
+      <p className="text-muted text-sm leading-[1.85] max-w-[38ch] mx-auto mb-7 animate-rise [animation-delay:80ms]">
+        <em className="font-heading not-italic text-plum">Thank you</em> — سپاسگزاریم از خرید شما از لوکسرا.
         پس از تأیید پرداخت، جزئیات ارسال از طریق پیامک برایتان ارسال می‌شود.
       </p>
 
-      <div className="checkout-success__details anim-in delay-2">
-        <div className="checkout-success__detail-row">
-          <span>شماره سفارش</span>
-          <strong className="order-num">{orderNum}</strong>
+      <div className="w-full border border-rule bg-surface my-7 animate-rise [animation-delay:160ms]">
+        <div className={ROW}>
+          <span className={ROW_LABEL}>شماره سفارش</span>
+          <strong className="font-mono text-[15px] tracking-[.16em] text-plum font-normal">{orderNum}</strong>
         </div>
-        <div className="checkout-success__detail-row">
-          <span>روش ارسال</span>
+        <div className={ROW}>
+          <span className={ROW_LABEL}>روش ارسال</span>
           <span>{confirmedShipping?.name ?? '—'}</span>
         </div>
-        <div className="checkout-success__detail-row">
-          <span>تخمین تحویل</span>
-          <span className="eta-value">
+        <div className={ROW}>
+          <span className={ROW_LABEL}>تخمین تحویل</span>
+          <span className="inline-flex items-center gap-[5px] font-mono text-[11px] tracking-[.08em] text-copper">
             <Icon name={confirmedShipping?.id === 'snapp_box' ? 'clock' : 'truck'} size={11} />
             {eta}
           </span>
         </div>
-        <div className="checkout-success__detail-row">
-          <span>مبلغ پرداختی</span>
-          <span className="total-value">{formatToman(confirmedTotal)}</span>
+        <div className={ROW}>
+          <span className={ROW_LABEL}>مبلغ پرداختی</span>
+          <span className="text-[15px] font-medium text-ink [font-feature-settings:'tnum']">{formatToman(confirmedTotal)}</span>
         </div>
       </div>
 
-      <div className="checkout-success__items anim-in delay-3">
-        <div className="checkout-success__items-head">محصولات سفارش</div>
+      <div className="w-full border border-rule bg-surface mb-8 text-right animate-rise [animation-delay:260ms]">
+        <div className="px-5 py-[10px] font-mono text-[10px] tracking-[.14em] uppercase text-muted border-b border-rule">
+          محصولات سفارش
+        </div>
         {confirmedItems.map((item) => (
-          <div key={item.id} className="checkout-success__item">
-            <div className="checkout-success__item-media">
+          <div key={item.id} className="grid grid-cols-[44px_1fr_auto] items-center gap-3 px-5 py-3 border-b border-rule last:border-b-0">
+            <div className="bg-plate aspect-square flex items-center justify-center text-ink">
               <Illustration name={item.illus} />
             </div>
-            <div className="checkout-success__item-info">
-              <div className="checkout-success__item-name">{item.fa}</div>
-              <div className="checkout-success__item-qty">{toFa(item.qty)} عدد</div>
+            <div>
+              <div className="text-[12px] font-normal text-ink leading-[1.4]">{item.fa}</div>
+              <div className="font-mono text-[10px] text-muted mt-[3px]">{toFa(item.qty)} عدد</div>
             </div>
-            <div className="checkout-success__item-price">{formatToman(item.price * item.qty)}</div>
+            <div className="text-[11px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+              {formatToman(item.price * item.qty)}
+            </div>
           </div>
         ))}
         {giftWrap && (
-          <div className="checkout-success__item checkout-success__item--gift">
-            <div className="checkout-success__item-media checkout-success__item-media--gift">
+          <div className="grid grid-cols-[44px_1fr_auto] items-center gap-3 px-5 py-3">
+            <div className="bg-plum/[.08] text-plum aspect-square flex items-center justify-center">
               <Icon name="spark" size={18} />
             </div>
-            <div className="checkout-success__item-info">
-              <div className="checkout-success__item-name">بسته‌بندی هدیه</div>
+            <div>
+              <div className="text-[12px] font-normal text-ink leading-[1.4]">بسته‌بندی هدیه</div>
               {giftNote && (
-                <div className="checkout-success__item-qty checkout-success__item-note">
+                <div className="font-mono text-[10px] text-muted mt-[3px] italic text-ink-2">
                   «{giftNote.slice(0, 60)}{giftNote.length > 60 ? '…' : ''}»
                 </div>
               )}
             </div>
-            <div className="checkout-success__item-price">{formatToman(giftWrapPrice)}</div>
+            <div className="text-[11px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+              {formatToman(giftWrapPrice)}
+            </div>
           </div>
         )}
       </div>
 
-      <div className="checkout-success__actions anim-in delay-4">
-        <Link to="/account" className="btn btn--ghost">
+      <div className="flex flex-col max-[860px]:flex-col sm:flex-row gap-3 w-full justify-center animate-rise [animation-delay:380ms]">
+        <Link to="/account" className={`${BTN_GHOST_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
           پیگیری سفارش
         </Link>
-        <Link to="/" className="btn">
+        <Link to="/" className={`${BTN_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
           ادامه خرید
           <span className="arr">←</span>
         </Link>

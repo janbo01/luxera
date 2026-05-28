@@ -30,7 +30,6 @@ const CartDrawer: FC = () => {
   useBodyLock(isOpen)
 
   useEffect(() => {
-    // Reset inline styles when drawer closes externally (after swipe-to-dismiss)
     if (!isOpen && drawerRef.current) {
       drawerRef.current.style.transition = ''
       drawerRef.current.style.transform  = ''
@@ -94,60 +93,79 @@ const CartDrawer: FC = () => {
 
   return (
     <>
-      <div ref={overlayRef} className={`cart-overlay ${isOpen ? 'is-open' : ''}`} onClick={closeCart} />
+      {/* Overlay */}
+      <div
+        ref={overlayRef}
+        className={`fixed inset-0 bg-[rgba(17,17,17,0.4)] backdrop-blur-[2px] z-[90] transition-opacity duration-[350ms] ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={closeCart}
+      />
+
+      {/* Drawer */}
       <aside
         ref={drawerRef}
-        className={`cart ${isOpen ? 'is-open' : ''}`}
+        className={`fixed top-0 bottom-0 left-0 w-[min(440px,100vw)] bg-surface z-[100] flex flex-col shadow-[6px_0_40px_rgba(0,0,0,0.08)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
         role="dialog"
         aria-label="سبد خرید"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <div className="cart__head">
-          <h3>
+        {/* Head */}
+        <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
+          <h3 className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
             سبد خرید
-            <small>{toFa(totalQty)} قطعه</small>
+            <small className="font-mono text-[11px] text-muted font-normal">{toFa(totalQty)} قطعه</small>
           </h3>
-          <button className="cart__close" onClick={closeCart} aria-label="بستن">
+          <button
+            className="w-9 h-9 flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
+            onClick={closeCart}
+            aria-label="بستن"
+          >
             <Icon name="close" size={14} />
           </button>
         </div>
 
-        <div className="cart__body">
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-7 py-2">
           {items.length === 0 ? (
-            <div className="cart__empty">
-              <span className="cart__empty-icon">
+            <div className="text-center py-20 px-5 text-muted">
+              <span className="inline-flex">
                 <Icon name="bag" size={36} />
               </span>
-              <h4>سبد شما خالی است</h4>
-              <p>قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.</p>
-              <button className="btn btn--ghost btn--small" onClick={closeCart}>
+              <h4 className="font-body font-light text-[22px] text-ink mt-4 mb-2">سبد شما خالی است</h4>
+              <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.</p>
+              <button
+                className="inline-flex items-center gap-2.5 px-[18px] py-2.5 text-xs font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg hover:-translate-y-px"
+                onClick={closeCart}
+              >
                 بازگشت به فروشگاه
               </button>
             </div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="cart__item">
-                <div className="cart__item-media">
+              <div key={item.id} className="grid grid-cols-[80px_1fr_auto] gap-4 py-5 border-b border-rule items-start">
+                <div className="bg-plate aspect-square flex items-center justify-center text-ink rounded-[14px] overflow-hidden [&>svg]:w-[70%] [&>svg]:h-auto">
                   {item.imageUrl
-                    ? <img src={item.imageUrl} alt={item.fa} className="img-cover" />
+                    ? <img src={item.imageUrl} alt={item.fa} className="w-full h-full object-cover" />
                     : <Illustration name={item.illus} />}
                 </div>
                 <div>
-                  <div className="cart__item-name">{item.fa}</div>
-                  <span className="cart__item-name-en">{item.en}</span>
-                  <div className="cart__item-meta">{item.meta.join(' · ')}</div>
+                  <div className="text-[13px] font-normal mb-1 leading-[1.4]">{item.fa}</div>
+                  <span className="font-display italic text-[11px] text-muted">{item.en}</span>
+                  <div className="font-mono text-[10px] text-muted tracking-[0.08em] mt-1.5">{item.meta.join(' · ')}</div>
                   <QuantityStepper
                     value={item.qty}
                     onDecrement={() => decrement(item.id)}
                     onIncrement={() => increment(item.id)}
-                    className="cart__qty"
+                    className="inline-flex items-center gap-2 mt-2.5 border border-rule rounded-full px-2.5 py-1 font-mono text-xs [&>button]:w-[18px] [&>button]:h-[18px] [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink"
                   />
                 </div>
-                <div className="cart__item-price">
+                <div className="text-end text-[13px] [font-feature-settings:'tnum'] flex flex-col items-end gap-2">
                   <span>{formatToman(item.price * item.qty)}</span>
-                  <button className="cart__item-remove" onClick={() => remove(item.id)}>
+                  <button
+                    className="text-[11px] text-muted border-b border-transparent transition-colors duration-200 hover:text-sale hover:border-sale"
+                    onClick={() => remove(item.id)}
+                  >
                     حذف
                   </button>
                 </div>
@@ -156,27 +174,27 @@ const CartDrawer: FC = () => {
           )}
         </div>
 
+        {/* Footer */}
         {items.length > 0 && (
-          <div className="cart__foot">
-            <div className="cart__totals">
-              <div className="row"><span>جمع جزء</span><span>{formatToman(subtotal)}</span></div>
-              <div className="row">
-                <span>ارسال</span>
-                <span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span>
-              </div>
-              <div className="row row--main">
-                <span>قابل پرداخت</span>
-                <span>{formatToman(total)}</span>
+          <div className="border-t border-rule px-7 pt-6 pb-7 bg-surface">
+            <div className="flex flex-col gap-2 mb-[18px] text-[13px]">
+              <div className="flex justify-between text-muted"><span>جمع جزء</span><span>{formatToman(subtotal)}</span></div>
+              <div className="flex justify-between text-muted"><span>ارسال</span><span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span></div>
+              <div className="flex justify-between text-ink pt-3 mt-1.5 border-t border-rule text-base font-normal [font-feature-settings:'tnum']">
+                <span>قابل پرداخت</span><span>{formatToman(total)}</span>
               </div>
             </div>
             <Link
               to="/checkout"
-              className="cart__checkout"
+              className="block w-full text-center bg-plum text-bg py-4 text-sm font-body tracking-[0.04em] border border-plum rounded-full transition-all duration-200 hover:bg-transparent hover:text-plum"
               onClick={closeCart}
             >
               تکمیل سفارش — {formatToman(total)}
             </Link>
-            <button className="cart__continue" onClick={closeCart}>
+            <button
+              className="block text-center w-full mt-3 text-xs text-muted underline underline-offset-4"
+              onClick={closeCart}
+            >
               یا، ادامه‌ی خرید
             </button>
           </div>

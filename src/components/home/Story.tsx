@@ -19,12 +19,12 @@ const STORY_COLS = [
 ]
 
 const Story: FC = () => (
-  <section className="story">
-    {STORY_COLS.map(({ num, heading, body }) => (
-      <div key={num} className="story__col">
-        <span className="story__col-num">{num}</span>
-        <h4>{heading}</h4>
-        <p>{body}</p>
+  <section className="grid grid-cols-3 max-md:grid-cols-1 border-t border-b border-rule">
+    {STORY_COLS.map(({ num, heading, body }, i) => (
+      <div key={num} className={`py-14 px-10 max-md:py-8 max-md:px-[var(--pad)] ${i < STORY_COLS.length - 1 ? 'border-s border-rule max-md:border-s-0 max-md:border-b' : ''}`}>
+        <span className="font-mono text-[11px] text-plum tracking-[0.16em] mb-6 block">{num}</span>
+        <h4 className="font-body font-light text-[22px] leading-[1.3] m-0 mb-3.5">{heading}</h4>
+        <p className="text-[13px] text-muted leading-[1.85] m-0">{body}</p>
       </div>
     ))}
   </section>

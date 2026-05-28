@@ -1,18 +1,70 @@
 import { useEffect } from 'react'
 
-const BASE = 'Luxera · لوکسرا'
+const BASE_TITLE = 'Luxera · لوکسرا'
+const SITE_URL = 'https://luxera.ir'
 
-export function usePageMeta({ title, description }: { title: string; description?: string }) {
+interface PageMetaOptions {
+  title: string
+  description?: string
+  canonical?: string
+  ogImage?: string
+  jsonLd?: Record<string, unknown>
+}
+
+function setMetaContent(selector: string, value: string) {
+  const el = document.querySelector<HTMLMetaElement>(selector)
+  if (el) el.content = value
+}
+
+export function usePageMeta({ title, description, canonical, ogImage, jsonLd }: PageMetaOptions) {
+  const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined
+
   useEffect(() => {
-    document.title = title ? `${title} | ${BASE}` : BASE
+    const fullTitle = title ? `${title} | ${BASE_TITLE}` : BASE_TITLE
+    const canonicalUrl = canonical
+      ? `${SITE_URL}${canonical}`
+      : `${SITE_URL}${window.location.pathname}`
 
+    document.title = fullTitle
+
+    // Canonical link
+    const canonicalEl = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (canonicalEl) canonicalEl.href = canonicalUrl
+
+    // Description
     if (description) {
-      const el = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-      if (el) el.content = description
+      setMetaContent('meta[name="description"]', description)
+    }
+
+    // Open Graph
+    setMetaContent('meta[property="og:title"]', fullTitle)
+    setMetaContent('meta[property="og:url"]', canonicalUrl)
+    if (description) setMetaContent('meta[property="og:description"]', description)
+    if (ogImage) setMetaContent('meta[property="og:image"]', ogImage)
+
+    // Twitter Card
+    setMetaContent('meta[name="twitter:title"]', fullTitle)
+    if (description) setMetaContent('meta[name="twitter:description"]', description)
+    if (ogImage) setMetaContent('meta[name="twitter:image"]', ogImage)
+
+    // JSON-LD structured data
+    let ldEl = document.getElementById('jsonld-page') as HTMLScriptElement | null
+    if (jsonLdString) {
+      if (!ldEl) {
+        ldEl = document.createElement('script')
+        ldEl.id = 'jsonld-page'
+        ldEl.type = 'application/ld+json'
+        document.head.appendChild(ldEl)
+      }
+      ldEl.textContent = jsonLdString
+    } else {
+      ldEl?.remove()
     }
 
     return () => {
-      document.title = BASE
+      document.title = BASE_TITLE
+      if (canonicalEl) canonicalEl.href = `${SITE_URL}/`
+      document.getElementById('jsonld-page')?.remove()
     }
-  }, [title, description])
+  }, [title, description, canonical, ogImage, jsonLdString])
 }

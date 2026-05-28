@@ -18,7 +18,7 @@ const CAT_DESC: Record<string, string> = {
 
 const CAT_GLYPHS: Record<string, React.ReactNode> = {
   necklaces: (
-    <svg className="glyph" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round" strokeLinejoin="round">
+    <svg className="w-[78%] h-[78%] text-[rgba(245,237,224,.45)]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M30 60 Q100 170 170 60" />
       <circle cx="100" cy="138" r="8" />
       <path d="M100 144 L92 158 L100 172 L108 158 Z" />
@@ -26,14 +26,14 @@ const CAT_GLYPHS: Record<string, React.ReactNode> = {
     </svg>
   ),
   bracelets: (
-    <svg className="glyph" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
+    <svg className="w-[78%] h-[78%] text-[rgba(245,237,224,.45)]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
       <ellipse cx="100" cy="100" rx="60" ry="42" transform="rotate(-15 100 100)" />
       <circle cx="142" cy="84" r="5" />
       <circle cx="58" cy="116" r="5" />
     </svg>
   ),
   rings: (
-    <svg className="glyph" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
+    <svg className="w-[78%] h-[78%] text-[rgba(245,237,224,.45)]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
       <circle cx="100" cy="110" r="52" />
       <circle cx="100" cy="110" r="36" />
       <ellipse cx="100" cy="60" rx="14" ry="10" />
@@ -41,7 +41,7 @@ const CAT_GLYPHS: Record<string, React.ReactNode> = {
     </svg>
   ),
   earrings: (
-    <svg className="glyph" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
+    <svg className="w-[78%] h-[78%] text-[rgba(245,237,224,.45)]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
       <circle cx="70" cy="50" r="6" />
       <path d="M70 56 L60 105 L70 132 L80 105 Z" />
       <circle cx="70" cy="132" r="8" />
@@ -51,7 +51,7 @@ const CAT_GLYPHS: Record<string, React.ReactNode> = {
     </svg>
   ),
   sets: (
-    <svg className="glyph" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
+    <svg className="w-[78%] h-[78%] text-[rgba(245,237,224,.45)]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth=".8" strokeLinecap="round">
       <path d="M55 65 Q100 145 145 65" />
       <circle cx="100" cy="133" r="7" />
       <circle cx="55" cy="95" r="9" />
@@ -79,61 +79,78 @@ const CategoryHero: FC<CategoryHeroProps> = ({
 
   return (
     <>
-      <nav className="crumb cat-crumb">
-        <Link to="/">خانه</Link>
-        <span style={{ opacity: 0.5, display: 'inline-flex' }}>
-          <Icon name="chevron-left" size={10} />
-        </span>
-        <Link to="/">فروشگاه</Link>
-        <span style={{ opacity: 0.5, display: 'inline-flex' }}>
-          <Icon name="chevron-left" size={10} />
-        </span>
-        <span className="crumb__current">{category.fa}</span>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 font-mono text-[12px] tracking-[0.06em] text-muted pt-[18px]">
+        <Link to="/" className="hover:text-plum transition-colors">خانه</Link>
+        <span className="opacity-50 inline-flex"><Icon name="chevron-left" size={10} /></span>
+        <Link to="/" className="hover:text-plum transition-colors">فروشگاه</Link>
+        <span className="opacity-50 inline-flex"><Icon name="chevron-left" size={10} /></span>
+        <span className="text-ink">{category.fa}</span>
       </nav>
 
-      <section className="cat-hero">
-        <div className="ch-left">
-          <div className="num-row">
-            <span className="num">دسته‌بندی · {category.num} از ۰۵</span>
-            <span className="corner-tag">به‌روزرسانی شده · امروز</span>
+      {/* Hero */}
+      <section className="mt-5 relative rounded-[14px] overflow-hidden text-bg isolate grid [grid-template-columns:1.05fr_.95fr] min-h-[440px] bg-[radial-gradient(80%_100%_at_0%_100%,rgba(196,135,58,.22),transparent_60%),linear-gradient(135deg,var(--color-plum-2)_0%,var(--color-plum)_60%,var(--color-plum-dark)_100%)] after:absolute after:inset-0 after:z-0 after:pointer-events-none after:bg-[radial-gradient(rgba(245,237,224,.06)_1px,transparent_1px)] after:[background-size:22px_22px] after:[mask-image:radial-gradient(60%_60%_at_80%_30%,#000_0%,transparent_70%)]">
+        {/* Left content */}
+        <div className="relative z-[2] px-14 py-12 flex flex-col justify-between gap-8 max-md:px-7 max-md:py-8">
+          <div className="flex items-center justify-between gap-6">
+            <span className="font-mono text-[11px] tracking-[0.24em] text-[rgba(245,237,224,.55)]">
+              دسته‌بندی · {category.num} از ۰۵
+            </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 border border-[rgba(245,237,224,.18)] rounded-full font-mono text-[10px] tracking-[0.18em] text-[#E8D5D1] before:block before:w-[5px] before:h-[5px] before:rounded-full before:bg-copper before:flex-shrink-0">
+              به‌روزرسانی شده · امروز
+            </span>
           </div>
+
           <div>
-            <h1 className="cat-hero__h1">
+            <h1 className="font-heading font-bold text-[clamp(56px,8vw,116px)] leading-[.95] tracking-[-0.02em] m-0 text-bg">
               {category.fa}
-              <span className="en">{category.en}</span>
+              <span className="block font-display italic font-normal text-[clamp(16px,1.6vw,22px)] tracking-[0.04em] text-[#E8C9B6] mt-3.5 leading-none">{category.en}</span>
             </h1>
-            <p className="desc" style={{ marginTop: 24 }}>{CAT_DESC[catId] ?? ''}</p>
+            <p className="max-w-[48ch] text-[15px] leading-[1.85] text-[rgba(245,237,224,.75)] mt-6 m-0 font-body">{CAT_DESC[catId] ?? ''}</p>
           </div>
-          <div className="meta-row">
-            <div className="stat"><div className="v">{toFa(productCount)}</div><div className="l">محصول</div></div>
-            <div className="sep" />
-            <div className="stat"><div className="v">{toFa(Math.min(productCount, 12))}</div><div className="l">طرح جدید</div></div>
-            <div className="sep" />
-            <div className="stat"><div className="v">بی‌آلرژی</div><div className="l">متریال</div></div>
-            <div className="sep" />
-            <div className="stat"><div className="v">دست‌ساز</div><div className="l">تهران</div></div>
+
+          <div className="flex items-center gap-[18px] flex-wrap pt-6 border-t border-[rgba(245,237,224,.14)]">
+            {[
+              { v: toFa(productCount), l: 'محصول' },
+              { v: toFa(Math.min(productCount, 12)), l: 'طرح جدید' },
+              { v: 'بی‌آلرژی', l: 'متریال' },
+              { v: 'دست‌ساز', l: 'تهران' },
+            ].map(({ v, l }, i) => (
+              <div key={i} className="flex flex-col gap-0.5">
+                <div className="font-heading text-[22px] font-bold text-bg leading-none">{v}</div>
+                <div className="text-[11px] text-[rgba(245,237,224,.55)] font-mono tracking-[0.08em] uppercase">{l}</div>
+              </div>
+            )).reduce<React.ReactNode[]>((acc, el, i) => {
+              if (i > 0) acc.push(<div key={`sep-${i}`} className="w-px h-7 bg-[rgba(245,237,224,.18)] flex-shrink-0" />)
+              acc.push(el)
+              return acc
+            }, [])}
           </div>
         </div>
-        <div className="ch-right">
-          <div className="feature">
+
+        {/* Right glyph */}
+        <div className="relative z-[2] grid place-items-center p-10 max-md:min-h-[280px]">
+          <div className="relative w-full max-w-[380px] aspect-square grid place-items-center before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(245,237,224,.22)] before:rounded-full before:animate-[cat-spin_80s_linear_infinite] after:absolute after:inset-[-2%] after:rounded-full after:bg-[radial-gradient(60%_60%_at_50%_60%,rgba(196,135,58,.35),transparent_70%)] after:blur-[20px] after:-z-[1]">
             {glyph}
-            <span className="feat-tag">
-              <span className="dot" />
+            <span className="absolute bottom-[34px] left-1/2 -translate-x-1/2 inline-flex items-center gap-2.5 px-[18px] py-2.5 bg-[rgba(245,237,224,.08)] border border-[rgba(245,237,224,.18)] backdrop-blur-[10px] rounded-full text-[12px] font-mono tracking-[0.06em] text-[#E8D5D1] z-[3] whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-copper flex-shrink-0" />
               {category.fa} · نمونه‌ی ویژه
             </span>
           </div>
         </div>
       </section>
 
-      <div className="catnav">
-        <span className="lbl">سایر دسته‌بندی‌ها</span>
+      {/* Category nav */}
+      <div className="mt-[18px] flex gap-2 flex-wrap items-center pb-2 max-md:pb-4 max-md:border-b max-md:border-rule max-md:mb-2">
+        <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5">سایر دسته‌بندی‌ها</span>
         {MAIN_CATS.map((cat) => (
           <Link
             key={cat.id}
             to={`/category/${cat.id}`}
-            className={cat.id === catId ? 'active' : undefined}
+            className={`inline-flex items-center gap-2 px-4 py-[9px] rounded-full text-[13px] border transition-all duration-200 ${cat.id === catId ? 'bg-ink text-bg border-ink' : 'border-rule hover:border-ink'}`}
           >
-            {cat.fa} <span className="n">{toFa(catProductCounts[cat.id] ?? 0)}</span>
+            {cat.fa}
+            <span className="font-mono text-[11px] opacity-60">{toFa(catProductCounts[cat.id] ?? 0)}</span>
           </Link>
         ))}
       </div>

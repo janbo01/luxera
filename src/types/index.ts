@@ -47,6 +47,7 @@ export interface ColorOption {
   fa: string
   swatch: 'gold' | 'rose' | 'white'
   hex?: string
+  disabled?: boolean
 }
 
 export interface SizeOption {

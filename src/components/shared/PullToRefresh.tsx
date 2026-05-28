@@ -81,7 +81,7 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
     <>
       {visible && (
         <div
-          className="ptr__indicator"
+          className="fixed top-0 left-1/2 z-50 w-11 h-11 rounded-full bg-surface border border-rule shadow-md grid place-items-center"
           aria-hidden="true"
           style={{
             transform: `translate(-50%, ${pullY - INDICATOR}px)`,
@@ -89,11 +89,11 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
           }}
         >
           {refreshing ? (
-            <span className="ptr__spinner" />
+            <span className="w-5 h-5 rounded-full border-2 border-rule border-t-copper animate-spin block" />
           ) : (
             <span
-              className="ptr__arrow"
-              style={{ transform: `rotate(${progress * 180}deg)` }}
+              className="inline-block w-4 h-4 border-l-2 border-b-2 border-copper"
+              style={{ transform: `rotate(${progress * 180 - 45}deg)`, transition: 'transform 100ms' }}
             />
           )}
         </div>

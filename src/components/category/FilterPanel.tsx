@@ -27,13 +27,8 @@ interface FilterPanelProps {
 
 const Chev: FC<{ open: boolean }> = ({ open }) => (
   <span
-    style={{
-      display: 'inline-flex',
-      color: 'var(--muted)',
-      transition: 'transform .2s',
-      transform: open ? '' : 'rotate(-90deg)',
-      flexShrink: 0,
-    }}
+    className="inline-flex text-muted transition-transform duration-200 flex-shrink-0"
+    style={{ transform: open ? '' : 'rotate(-90deg)' }}
   >
     <Icon name="chevron-down" size={18} />
   </span>
@@ -69,38 +64,45 @@ const FilterPanel: FC<FilterPanelProps> = ({
     })
 
   return (
-    <aside className={`aside${isOpen ? ' open' : ''}`}>
+    <aside className={`sticky top-24 self-start max-h-[calc(100vh-110px)] overflow-y-auto px-2 pt-5 pb-2 ${isOpen ? 'relative' : ''}`}>
       {isOpen && (
         <button
           onClick={onClose}
           aria-label="بستن"
-          style={{ position: 'absolute', top: 16, left: 16, width: 36, height: 36, borderRadius: '50%', display: 'grid', placeItems: 'center', background: 'var(--bg-2)', border: 'none', cursor: 'pointer' }}
+          className="absolute top-4 start-4 w-9 h-9 rounded-full grid place-items-center bg-bg-2"
         >
           <Icon name="close" size={16} />
         </button>
       )}
 
       {/* Price range */}
-      <div className="fgroup">
-        <div className="hd" onClick={() => toggleSection('price')}>
-          <h4>محدوده‌ی قیمت <span className="n">تومان</span></h4>
+      <div className="py-[18px] border-b border-rule">
+        <div
+          className="flex items-center justify-between cursor-pointer mb-0 select-none [&:has(+div)]:mb-3.5"
+          onClick={() => toggleSection('price')}
+        >
+          <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
+            محدوده‌ی قیمت <span className="font-mono text-[11px] text-muted font-normal">تومان</span>
+          </h4>
           <Chev open={openSections.has('price')} />
         </div>
         {openSections.has('price') && (
-          <div className="body">
-            <div className="range-inputs">
-              <label>
+          <div className="mt-3.5 flex flex-col gap-2.5">
+            <div className="flex gap-2">
+              <label className="flex-1 flex flex-col gap-1 text-[11px] text-muted font-mono tracking-[0.04em]">
                 از
                 <input
                   type="number" min={0} max={priceMax} value={priceMin}
                   onChange={(e) => onPriceMinChange(Math.min(Number(e.target.value), priceMax))}
+                  className="bg-bg border border-rule rounded-[8px] px-2.5 py-2 text-[13px] text-ink text-end font-body w-full outline-none focus:border-ink transition-colors duration-200"
                 />
               </label>
-              <label>
+              <label className="flex-1 flex flex-col gap-1 text-[11px] text-muted font-mono tracking-[0.04em]">
                 تا
                 <input
                   type="number" min={priceMin} max={MAX_PRICE} value={priceMax}
                   onChange={(e) => onPriceMaxChange(Math.max(Number(e.target.value), priceMin))}
+                  className="bg-bg border border-rule rounded-[8px] px-2.5 py-2 text-[13px] text-ink text-end font-body w-full outline-none focus:border-ink transition-colors duration-200"
                 />
               </label>
             </div>
@@ -110,22 +112,28 @@ const FilterPanel: FC<FilterPanelProps> = ({
 
       {/* Material */}
       {availableMaterials.length > 0 && (
-        <div className="fgroup">
-          <div className="hd" onClick={() => toggleSection('material')}>
-            <h4>جنس <span className="n">{toFa(availableMaterials.length)}</span></h4>
+        <div className="py-[18px] border-b border-rule">
+          <div
+            className="flex items-center justify-between cursor-pointer select-none mb-0 [&:has(+div)]:mb-3.5"
+            onClick={() => toggleSection('material')}
+          >
+            <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
+              جنس <span className="font-mono text-[11px] text-muted font-normal">{toFa(availableMaterials.length)}</span>
+            </h4>
             <Chev open={openSections.has('material')} />
           </div>
           {openSections.has('material') && (
-            <div className="body">
+            <div className="flex flex-col gap-2.5">
               {availableMaterials.map((m) => (
-                <label key={m} className="opt">
+                <label key={m} className="flex items-center gap-2.5 py-1.5 text-[13px] cursor-pointer text-ink-2 hover:text-ink transition-colors duration-200">
                   <input
                     type="checkbox"
                     checked={materials.includes(m)}
                     onChange={() => onToggleMaterial(m)}
+                    className="w-4 h-4 rounded-[4px] border-[1.5px] border-rule bg-transparent cursor-pointer flex-shrink-0 accent-ink"
                   />
-                  <span className="lbl">{m}</span>
-                  <span className="n">{toFa(materialCounts[m] ?? 0)}</span>
+                  <span className="flex-1">{m}</span>
+                  <span className="font-mono text-[11px] text-muted">{toFa(materialCounts[m] ?? 0)}</span>
                 </label>
               ))}
             </div>
@@ -135,59 +143,62 @@ const FilterPanel: FC<FilterPanelProps> = ({
 
       {/* Color */}
       {availableColors.length > 0 && (
-        <div className="fgroup">
-          <div className="hd" onClick={() => toggleSection('color')}>
-            <h4>رنگ <span className="n">{toFa(availableColors.length)}</span></h4>
+        <div className="py-[18px] border-b border-rule">
+          <div
+            className="flex items-center justify-between cursor-pointer select-none mb-0 [&:has(+div)]:mb-3.5"
+            onClick={() => toggleSection('color')}
+          >
+            <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
+              رنگ <span className="font-mono text-[11px] text-muted font-normal">{toFa(availableColors.length)}</span>
+            </h4>
             <Chev open={openSections.has('color')} />
           </div>
           {openSections.has('color') && (
-            <div className="body">
-              <div className="swatch-grid">
-                {availableColors.map(({ id, name, hex_code }) => (
-                  <span
-                    key={id}
-                    className={`sw${selectedColorIds.includes(id) ? ' on' : ''}`}
-                    style={{ background: hexToSwatch(hex_code) }}
-                    title={name}
-                    onClick={() => onToggleColor(id)}
-                    role="button"
-                    aria-label={name}
-                    aria-pressed={selectedColorIds.includes(id)}
-                  />
-                ))}
-              </div>
+            <div className="grid [grid-template-columns:repeat(5,1fr)] gap-2">
+              {availableColors.map(({ id, name, hex_code }) => (
+                <span
+                  key={id}
+                  className={`aspect-square rounded-full cursor-pointer border-2 relative grid place-items-center transition-transform duration-200 hover:scale-[1.08] ${selectedColorIds.includes(id) ? 'border-ink after:absolute after:w-1.5 after:h-1.5 after:rounded-full after:bg-white after:[mix-blend-mode:difference]' : 'border-transparent'}`}
+                  style={{ background: hexToSwatch(hex_code) }}
+                  title={name}
+                  onClick={() => onToggleColor(id)}
+                  role="button"
+                  aria-label={name}
+                  aria-pressed={selectedColorIds.includes(id)}
+                />
+              ))}
             </div>
           )}
         </div>
       )}
 
       {/* In-stock toggle */}
-      <div className="fgroup">
-        <div className="body" style={{ gap: 0 }}>
-          <label className="toggle">
-            <span>فقط موجود در انبار</span>
+      <div className="py-[18px] border-b border-rule">
+        <label className="flex items-center justify-between cursor-pointer text-[13px] py-2">
+          <span>فقط موجود در انبار</span>
+          <div className="relative">
             <input
               type="checkbox"
               checked={inStockOnly}
               onChange={(e) => onInStockChange(e.target.checked)}
+              className="sr-only peer"
             />
-            <span className="sw-tg" />
-          </label>
-        </div>
+            <div className="w-8 h-[18px] rounded-full bg-bg-2 peer-checked:bg-ink transition-colors duration-200 relative after:absolute after:top-[2px] after:right-[2px] after:w-[14px] after:h-[14px] after:rounded-full after:bg-white after:transition-transform after:duration-200 peer-checked:after:translate-x-[-14px]" />
+          </div>
+        </label>
       </div>
 
-      <div className="apply">
+      {/* Apply row */}
+      <div className="pt-[15px] flex gap-2">
         <button
-          className="btn btn--ghost"
+          className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-[11px] text-[13px] font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg"
           onClick={onReset}
-          style={{ flex: 1, justifyContent: 'center', padding: '11px 14px', fontSize: '13px' }}
         >
           پاک کردن همه
         </button>
         <button
-          className="btn"
+          className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-[11px] text-[13px] font-medium tracking-[0.01em] border border-ink bg-ink text-bg rounded-full transition-all duration-200 hover:bg-plum hover:border-plum"
           onClick={onClose}
-          style={{ flex: 1, justifyContent: 'center', padding: '11px 14px', fontSize: '13px' }}
         >
           اعمال فیلترها
         </button>

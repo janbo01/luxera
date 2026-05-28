@@ -59,22 +59,23 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
   return createPortal(
     <>
       <div
-        className="sg-backdrop"
+        className="fixed inset-0 bg-[rgba(26,15,29,0.55)] backdrop-blur-[4px] z-[400] animate-[sg-fade-in_220ms_ease_both]"
         onClick={onClose}
         aria-hidden="true"
       />
       <div
         id="size-guide-modal"
-        className="sg-modal"
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[401] bg-surface w-[min(480px,92vw)] max-h-[90dvh] overflow-y-auto flex flex-col animate-[sg-rise_300ms_cubic-bezier(.2,.7,.2,1)_both]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="sg-title"
       >
-        <div className="sg-modal__header">
-          <h2 className="sg-modal__title" id="sg-title">راهنمای سایز</h2>
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-rule sticky top-0 bg-surface z-[1]">
+          <h2 className="font-body font-light text-[18px] m-0 text-ink" id="sg-title">راهنمای سایز</h2>
           <button
             ref={closeBtnRef}
-            className="sg-modal__close"
+            className="w-9 h-9 flex items-center justify-center text-muted hover:text-ink transition-colors duration-200 flex-shrink-0"
             onClick={onClose}
             aria-label="بستن راهنمای سایز"
             type="button"
@@ -84,50 +85,51 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
         </div>
 
         {/* Illustration */}
-        <div className="sg-modal__illus" aria-hidden="true">
-          <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="sg-illus">
-            {/* Neck / shoulder silhouette */}
+        <div className="px-6 pt-6 bg-[var(--color-bg-2)]" aria-hidden="true">
+          <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[180px]">
             <path
               d="M100 10 Q120 8 140 10 Q160 8 180 10 L185 60 Q170 90 155 100 Q150 105 140 108 Q130 105 125 100 Q110 90 95 60 Z"
-              fill="var(--plate)" stroke="var(--rule)" strokeWidth="1"
+              fill="var(--color-bg-2)" stroke="var(--color-rule)" strokeWidth="1"
             />
-            {/* Necklace lines at different lengths */}
             <ellipse cx="140" cy="100" rx="28" ry="6" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
             <ellipse cx="140" cy="108" rx="34" ry="8" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            {/* 45cm — recommended, drawn solid */}
-            <ellipse cx="140" cy="118" rx="42" ry="11" stroke="var(--plum)" strokeWidth="1.5" fill="none"/>
-            <circle cx="140" cy="129" r="3" fill="var(--plum)"/>
+            <ellipse cx="140" cy="118" rx="42" ry="11" stroke="var(--color-plum)" strokeWidth="1.5" fill="none"/>
+            <circle cx="140" cy="129" r="3" fill="var(--color-plum)"/>
             <ellipse cx="140" cy="130" rx="50" ry="14" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
             <ellipse cx="140" cy="144" rx="60" ry="17" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            {/* Label for recommended */}
-            <text x="196" y="122" fontSize="9" fill="var(--plum)" fontFamily="var(--persian)">۴۵ سانت</text>
+            <text x="196" y="122" fontSize="9" fill="var(--color-plum)" fontFamily="var(--font-body)">۴۵ سانت</text>
           </svg>
         </div>
 
         {/* Size table */}
-        <div className="sg-modal__table-wrap">
-          <table className="sg-table">
+        <div className="px-6 overflow-x-auto">
+          <table className="w-full border-collapse font-body text-[13px] m-0">
             <caption className="sr-only">جدول اندازه‌های گردنبند</caption>
             <thead>
               <tr>
-                <th>طول</th>
-                <th>سبک</th>
-                <th>مناسب برای</th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">طول</th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">سبک</th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">مناسب برای</th>
               </tr>
             </thead>
             <tbody>
               {SIZES.map((s) => (
-                <tr key={s.cm} className={s.recommended ? 'sg-table__row--rec' : ''}>
-                  <td dir="ltr">{s.cm} سانت</td>
-                  <td>{s.label}</td>
-                  <td>{s.fit}</td>
+                <tr key={s.cm} className={s.recommended ? 'bg-[rgba(237,227,213,0.5)]' : ''}>
+                  <td
+                    className={`py-[11px] px-3 border-b border-rule align-middle font-mono whitespace-nowrap ${s.recommended ? 'border-e-2 border-e-plum text-plum font-medium' : 'text-ink'}`}
+                    dir="ltr"
+                  >
+                    {s.cm} سانت
+                  </td>
+                  <td className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}>{s.label}</td>
+                  <td className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}>{s.fit}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <p className="sg-modal__tip">
+        <p className="text-[12px] text-muted px-6 py-6 m-0 border-t border-rule mt-2">
           نکته: اندازه‌گیری با متر نواری از وسط گردن در جلو انجام دهید.
         </p>
       </div>

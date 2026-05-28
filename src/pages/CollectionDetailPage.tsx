@@ -16,7 +16,7 @@ const CollectionDetailPage: FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  usePageMeta({ title: collection?.name_fa ?? 'مجموعه' })
+  usePageMeta({ title: collection?.name_fa ?? 'مجموعه', canonical: slug ? `/collections/${slug}` : undefined })
 
   useEffect(() => {
     if (!slug) return
@@ -36,17 +36,19 @@ const CollectionDetailPage: FC = () => {
 
   if (loading) {
     return (
-      <div className="wrap" style={{ padding: '80px 0', textAlign: 'center' }}>
-        <span className="spinner" />
+      <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] py-20 text-center">
+        <span className="inline-block w-5 h-5 border-2 border-plate border-t-plum rounded-full animate-spin" />
       </div>
     )
   }
 
   if (error || !collection) {
     return (
-      <div className="cat-not-found">
+      <div className="py-[88px] px-[clamp(20px,4vw,56px)] text-center text-muted font-body text-lg">
         <p>{error || 'کالکشن یافت نشد.'}</p>
-        <Link to="/collections">بازگشت به کالکشن‌ها</Link>
+        <Link to="/collections" className="text-plum underline mt-4 inline-block">
+          بازگشت به کالکشن‌ها
+        </Link>
       </div>
     )
   }
@@ -59,50 +61,61 @@ const CollectionDetailPage: FC = () => {
         { label: collection.name_fa },
       ]} />
 
+      {/* Collection banner */}
       <div
-        className={`coll-banner ${toneClass(collection.tone, 'coll-banner')} anim-in`}
+        className={`relative grid grid-cols-[1fr_auto] items-center gap-10 min-h-[320px] px-[clamp(20px,4vw,56px)] py-16 overflow-hidden animate-rise max-[768px]:grid-cols-1 max-[768px]:min-h-[220px] max-[768px]:px-5 max-[768px]:py-10 ${toneClass(collection.tone, 'coll-banner')}`}
         style={toneStyle(collection.tone)}
       >
-        <div className="coll-banner__text">
-          <span className="coll-banner__kicker">کالکشن / COLLECTION</span>
-          <h1 className="coll-banner__title">{collection.name_fa}</h1>
+        {/* Top tag */}
+        <span className="absolute top-6 right-[clamp(20px,4vw,56px)] font-mono text-[10px] tracking-[0.18em] bg-white/12 border border-white/28 px-2.5 py-1.5 backdrop-blur-[4px]">
+          کالکشن / COLLECTION
+        </span>
+
+        <div className="flex flex-col gap-2 z-[2]">
+          <span className="font-mono text-[11px] tracking-[0.2em] opacity-55">کالکشن / COLLECTION</span>
+          <h1 className="font-heading font-bold text-[clamp(44px,6vw,72px)] leading-none tracking-[-0.01em] m-0">
+            {collection.name_fa}
+          </h1>
           {collection.name_en && (
-            <span className="coll-banner__subtitle">{collection.name_en}</span>
+            <span className="font-body text-xl opacity-65">{collection.name_en}</span>
           )}
           {collection.description && (
-            <p className="coll-banner__tagline">{collection.description}</p>
+            <p className="text-[15px] opacity-75 mt-1 max-w-[40ch] max-[768px]:hidden">
+              {collection.description}
+            </p>
           )}
         </div>
-        {collection.cover_image_url ? (
-          <div className="coll-banner__art" aria-hidden>
-            <img src={collection.cover_image_url} alt={collection.name_fa} className="img-cover" style={{ borderRadius: 8 }} />
-          </div>
-        ) : (
-          <div className="coll-banner__art" aria-hidden>
-            <span className="coll-banner__letter">
+
+        <div className="relative w-[clamp(120px,16vw,220px)] flex items-center justify-center shrink-0 z-[2] max-[768px]:hidden" aria-hidden>
+          {collection.cover_image_url ? (
+            <img src={collection.cover_image_url} alt={collection.name_fa} className="w-full h-full object-cover" style={{ borderRadius: 8 }} />
+          ) : (
+            <span className="font-display italic text-[200px] font-normal opacity-[0.12] leading-none select-none">
               {(collection.name_en ?? collection.name_fa).charAt(0)}
             </span>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      <section className="section">
-        <div className="search-results__head">
-          <h2 className="search-results__title">
+      <section className="py-[88px] px-[clamp(20px,4vw,56px)]">
+        <div className="flex items-center justify-between mb-12 gap-6">
+          <h2 className="font-heading font-bold text-[clamp(24px,3vw,36px)] m-0 text-ink">
             {toFa(products.length)} محصول در این کالکشن
           </h2>
         </div>
 
         {products.length > 0 ? (
-          <div className="products">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]">
             {products.map((p) => (
               <ProductCard key={p.id} product={p} onAdd={addItem} />
             ))}
           </div>
         ) : (
-          <div className="cat-empty">
+          <div className="py-[88px] px-[clamp(20px,4vw,56px)] text-center text-muted font-body text-lg">
             <p>این کالکشن موقتاً تمام شده.</p>
-            <Link to="/collections">بازگشت به کالکشن‌ها</Link>
+            <Link to="/collections" className="text-plum underline mt-4 inline-block">
+              بازگشت به کالکشن‌ها
+            </Link>
           </div>
         )}
       </section>

@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import viteCompression from 'vite-plugin-compression'
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
     viteCompression({ algorithm: 'gzip', ext: '.gz' }),
@@ -11,11 +13,11 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-router': ['react-router-dom'],
-          'vendor-state': ['zustand'],
-          'vendor-datepicker': ['react-multi-date-picker', 'react-date-object'],
+        manualChunks(id) {
+          if (id.includes('react-multi-date-picker') || id.includes('react-date-object')) return 'vendor-datepicker'
+          if (id.includes('zustand')) return 'vendor-state'
+          if (id.includes('react-router-dom')) return 'vendor-router'
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) return 'vendor-react'
         },
       },
     },

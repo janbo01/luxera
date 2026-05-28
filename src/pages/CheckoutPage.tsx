@@ -1,6 +1,7 @@
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useState, useEffect, type FC, type ChangeEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { BTN_CLS } from '../components/ui/Button'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
 import { formatToman, toFa } from '../utils/format'
@@ -208,70 +209,86 @@ const CheckoutPage: FC = () => {
 
   if (items.length === 0) {
     return (
-      <div className="checkout-empty">
+      <div className="flex flex-col items-center gap-3.5 text-center py-24 px-[var(--pad)] text-muted">
         <Icon name="bag" size={40} strokeWidth={1.5} />
-        <h3>سبد خرید شما خالی است</h3>
-        <p>محصولی به سبد اضافه کنید تا بتوانید سفارش دهید.</p>
-        <Link to="/" className="btn">بازگشت به فروشگاه</Link>
+        <h3 className="font-heading font-light text-[26px] text-ink m-0">سبد خرید شما خالی است</h3>
+        <p className="text-sm max-w-[30ch] m-0">محصولی به سبد اضافه کنید تا بتوانید سفارش دهید.</p>
+        <Link to="/" className={BTN_CLS}>بازگشت به فروشگاه</Link>
       </div>
     )
   }
 
   return (
-    <div className="co-page">
-      <div className="wrap">
+    <div className="pb-20">
+      <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
 
-        <div className="co-page-head">
+        <div className="flex justify-between items-end gap-8 flex-wrap pt-9 pb-2">
           <div>
-            <span className="co-page-head__kicker">Checkout</span>
-            <h1 className="co-page-head__h1">تکمیلِ <em>سفارش</em></h1>
+            <span className="font-display italic text-[13px] text-copper tracking-[.04em]">Checkout</span>
+            <h1 className="font-heading text-[clamp(28px,3vw,40px)] font-bold m-0 leading-[1.1] tracking-[-0.01em] mt-1.5">
+              تکمیلِ <em className="font-display italic font-normal text-copper">سفارش</em>
+            </h1>
           </div>
-          <div className="co-meta">
+          <div className="flex items-center gap-3.5 font-mono text-[11px] text-muted tracking-[.06em]">
             <span>سفارش</span>
-            <span className="co-meta__val">#LX-۱۴۰۴</span>
-            <span className="co-meta__dot" />
+            <span className="text-ink-2 font-medium">#LX-۱۴۰۴</span>
+            <span className="w-[5px] h-[5px] rounded-full bg-copper inline-block" />
             <span>{toFa(items.length)} کالا</span>
-            <span className="co-meta__dot" />
+            <span className="w-[5px] h-[5px] rounded-full bg-copper inline-block" />
             <span>{formatToman(subtotal)}</span>
           </div>
         </div>
 
-        <div className="co-stepper">
-          <div className="co-steps">
-            {STEP_LABELS.map(({ lbl, name }, i) => (
-              <button
-                key={i}
-                className={`co-step${i === step ? ' active' : ''}${i < step ? ' done' : ''}`}
-                onClick={() => { if (i < step) goStep(i as CheckoutStep) }}
-                style={{ cursor: i < step ? 'pointer' : i === step ? 'default' : 'not-allowed' }}
-              >
-                <span className="co-step__num">
-                  {i < step
-                    ? <Icon name="check" size={16} strokeWidth={2.5} />
-                    : toFa(i + 1)
-                  }
-                </span>
-                <span className="co-step__text">
-                  <span className="co-step__lbl">{lbl}</span>
-                  <span className="co-step__name">{name}</span>
-                </span>
-                {i < step && (
-                  <span className="co-step__check">
-                    <Icon name="check" size={14} strokeWidth={2} />
+        <div className="my-7">
+          <div className="grid grid-cols-3 bg-surface rounded-[var(--radius)] border border-rule p-2 max-[640px]:grid-cols-1 max-[640px]:p-1.5 max-[640px]:gap-1">
+            {STEP_LABELS.map(({ lbl, name }, i) => {
+              const isActive = i === step
+              const isDone = i < step
+              return (
+                <button
+                  key={i}
+                  className={`flex items-center gap-3.5 px-[18px] py-3.5 rounded-[10px] transition-colors relative ${
+                    isActive ? 'bg-ink text-bg' : isDone ? 'hover:bg-bg-2' : 'hover:bg-bg-2'
+                  }`}
+                  onClick={() => { if (isDone) goStep(i as CheckoutStep) }}
+                  style={{ cursor: isDone ? 'pointer' : isActive ? 'default' : 'not-allowed' }}
+                >
+                  <span className={`w-9 h-9 rounded-full border-[1.5px] grid place-items-center font-mono text-sm font-semibold shrink-0 transition-all ${
+                    isActive ? 'bg-copper text-white border-copper' :
+                    isDone   ? 'bg-ok text-white border-ok' :
+                               'border-rule bg-bg'
+                  }`}>
+                    {isDone
+                      ? <Icon name="check" size={16} strokeWidth={2.5} />
+                      : toFa(i + 1)
+                    }
                   </span>
-                )}
-                {i === step && (
-                  <span className="co-step__arrow">
-                    <Icon name="arrow-right" size={14} strokeWidth={1.8} />
+                  <span className="flex flex-col gap-0.5 min-w-0">
+                    <span className={`font-mono text-[10px] tracking-[.16em] uppercase transition-colors ${
+                      isActive ? 'text-bg/60' : isDone ? 'text-ok' : 'text-muted'
+                    }`}>{lbl}</span>
+                    <span className={`font-heading text-[15px] font-semibold leading-[1.2] transition-colors ${
+                      isActive ? 'text-bg' : 'text-ink'
+                    }`}>{name}</span>
                   </span>
-                )}
-              </button>
-            ))}
+                  {isDone && (
+                    <span className="mr-auto text-ok opacity-0 group-[.done]:opacity-100 transition-opacity">
+                      <Icon name="check" size={14} strokeWidth={2} />
+                    </span>
+                  )}
+                  {isActive && (
+                    <span className="mr-auto text-bg opacity-60 transition-opacity max-[640px]:hidden">
+                      <Icon name="arrow-right" size={14} strokeWidth={1.8} />
+                    </span>
+                  )}
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        <div className="co-layout">
-          <div className="co-panes">
+        <div className="grid grid-cols-[1fr_380px] max-[1100px]:grid-cols-1 gap-6 items-start">
+          <div className="min-w-0">
             {step === 0 && (
               <AddressStep
                 addr={addr}

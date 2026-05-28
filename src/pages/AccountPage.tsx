@@ -23,18 +23,10 @@ import { IconWhatsApp } from '../components/icons/BrandIcons'
 type Tab = 'overview' | 'profile' | 'orders' | 'addresses' | 'wishlist' | 'security'
 
 const STATUS_PILL: Record<OrderStatus, string> = {
-  pending: 'proc',
-  processing: 'proc',
-  shipped: 'shipped',
-  delivered: 'deliv',
-  cancelled: 'cancel',
+  pending: 'proc', processing: 'proc', shipped: 'shipped', delivered: 'deliv', cancelled: 'cancel',
 }
 const STATUS_FA: Record<OrderStatus, string> = {
-  pending: 'در انتظار',
-  processing: 'در حالِ آماده‌سازی',
-  shipped: 'در راه',
-  delivered: 'تحویل شد',
-  cancelled: 'لغو شده',
+  pending: 'در انتظار', processing: 'در حالِ آماده‌سازی', shipped: 'در راه', delivered: 'تحویل شد', cancelled: 'لغو شده',
 }
 const TIMELINE_STEPS: Record<OrderStatus, string[]> = {
   pending: ['ثبتِ سفارش'],
@@ -43,6 +35,39 @@ const TIMELINE_STEPS: Record<OrderStatus, string[]> = {
   delivered: ['ثبتِ سفارش', 'آماده‌سازی', 'ارسال شد', 'تحویلِ موفق'],
   cancelled: ['ثبتِ سفارش', 'لغو شده'],
 }
+
+// ── Reusable style constants ───────────────────────────────────────────────────
+const PILL_COLORS: Record<string, string> = {
+  deliv:   'bg-ok/[.12] text-ok',
+  shipped: 'bg-[rgba(54,86,201,.12)] text-[#3656C9]',
+  proc:    'bg-[rgba(185,130,35,.14)] text-[#B98223]',
+  cancel:  'bg-sale/[.10] text-sale',
+}
+const PILL_BASE = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[10px] tracking-[.1em] uppercase font-medium whitespace-nowrap before:content-[""] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current before:shrink-0'
+
+const IC_MD   = 'w-[38px] h-[38px] rounded-[10px] bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[18px] [&_svg]:h-[18px]'
+const IC_CIR  = 'w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-3.5 [&_svg]:h-3.5'
+const IC_SECT = 'w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-4 [&_svg]:h-4'
+
+const AVA_SM = 'w-[38px] h-[38px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-sm shrink-0 overflow-hidden'
+const AVA_MD = 'w-16 h-16 rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-2xl shrink-0 shadow-[0_0_0_4px_var(--color-bg),0_0_0_5px_var(--color-rule)] overflow-hidden'
+const AVA_LG = 'w-[72px] h-[72px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-[28px] shrink-0'
+
+const INPUT_CLS  = 'bg-bg border border-rule rounded-[10px] px-4 py-3 text-sm text-ink outline-none w-full transition-[border-color] focus:border-ink placeholder:text-muted placeholder:font-light disabled:opacity-50 disabled:cursor-not-allowed'
+const SELECT_BG  = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A6555' stroke-width='1.8' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>")`
+const SELECT_CLS = `${INPUT_CLS} appearance-none cursor-pointer bg-no-repeat bg-[position:left_14px_center] bg-[length:14px] pl-[38px]`
+
+const CARD      = 'bg-surface border border-rule rounded-[var(--radius)] overflow-hidden'
+const CARD_H    = 'px-6 py-5 pb-4 border-b border-rule flex justify-between items-center gap-3.5'
+const CARD_H3   = 'font-heading text-[16px] font-semibold m-0 flex items-center gap-2.5'
+const SECTION_H = 'px-7 py-[22px] pb-[18px] border-b border-rule'
+const SECTION_B = 'px-7 py-6 pb-7 max-[640px]:p-4'
+const F_FIELD   = 'flex flex-col gap-[7px] min-w-0'
+const F_LABEL   = 'text-[12px] font-medium text-ink-2 flex items-center gap-1.5'
+
+const BTN_PRIMARY = 'inline-flex items-center gap-2.5 px-[22px] py-[13px] rounded-full bg-ink text-bg font-medium text-sm border-0 cursor-pointer transition-[transform,background] hover:bg-plum hover:-translate-y-px font-body whitespace-nowrap'
+const BTN_MUTE    = 'inline-flex items-center gap-2.5 px-[22px] py-[13px] rounded-full bg-bg-2 text-ink-2 font-medium text-sm border border-rule cursor-pointer transition-all hover:bg-bg hover:text-ink hover:border-ink font-body whitespace-nowrap'
+const BTN_SM      = 'px-3.5 py-2 text-xs'
 
 function firstLetter(name?: string | null) {
   return name?.trim()?.[0] ?? '؟'
@@ -97,7 +122,7 @@ const IcoInfo      = () => <Info        size={18} strokeWidth={SW} />
 interface PaneProps { setTab: (t: Tab) => void }
 
 const OverviewPane: FC<PaneProps> = ({ setTab }) => {
-  const orders = useAuthStore((s) => s.orders)
+  const orders   = useAuthStore((s) => s.orders)
   const wishCount = useWishlistStore((s) => s.items.length)
   const inTransit = orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length
 
@@ -109,78 +134,93 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
     }).length
   }, [orders])
 
+  const kpis = [
+    { icon: <IcoBag />, value: toFa(orders.length), label: 'سفارش‌های کل', extra: thisMonthOrders > 0 ? `+${toFa(thisMonthOrders)} این ماه` : null },
+    { icon: <IcoTruck />, value: toFa(inTransit), label: 'در حالِ ارسال', extra: inTransit > 0 ? 'در راه' : null },
+    { icon: <IcoHeart />, value: toFa(wishCount), unit: 'قطعه', label: 'علاقه‌مندی‌ها', extra: null },
+    { icon: <IcoStar />, value: '—', muted: true, label: 'امتیازِ شما', extra: null },
+  ]
+
   return (
-    <div className="pane active">
-      <div className="kpis">
-        <div className="kpi">
-          <div className="kpi-top"><span className="ic"><IcoBag /></span>{thisMonthOrders > 0 && <span className="delta">+{toFa(thisMonthOrders)} این ماه</span>}</div>
-          <div className="kpi-body"><div className="v">{toFa(orders.length)}</div><div className="lbl">سفارش‌های کل</div></div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-top"><span className="ic"><IcoTruck /></span>{inTransit > 0 && <span className="delta">در راه</span>}</div>
-          <div className="kpi-body"><div className="v">{toFa(inTransit)}</div><div className="lbl">در حالِ ارسال</div></div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-top"><span className="ic"><IcoHeart /></span></div>
-          <div className="kpi-body"><div className="v">{toFa(wishCount)}<small>قطعه</small></div><div className="lbl">علاقه‌مندی‌ها</div></div>
-        </div>
-        <div className="kpi">
-          <div className="kpi-top"><span className="ic"><IcoStar /></span></div>
-          <div className="kpi-body"><div className="v muted">—</div><div className="lbl">امتیازِ شما</div></div>
-        </div>
+    <div className="flex flex-col gap-[18px]">
+      {/* KPIs */}
+      <div className="grid grid-cols-4 gap-3.5 max-[1100px]:grid-cols-2">
+        {kpis.map((k, i) => (
+          <div key={i} className="bg-surface border border-rule rounded-[var(--radius)] px-[22px] py-5 flex flex-col gap-4 relative overflow-hidden after:content-[''] after:absolute after:-left-[10%] after:-bottom-[30%] after:w-[60%] after:h-[60%] after:bg-[radial-gradient(circle,rgba(196,135,58,.06),transparent_60%)] after:pointer-events-none">
+            <div className="flex justify-between items-start gap-2">
+              <span className={IC_MD}>{k.icon}</span>
+              {k.extra && <span className="font-mono text-[10px] text-ok bg-ok/10 px-[7px] py-[3px] rounded-full tracking-[.04em]">{k.extra}</span>}
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className={`font-heading text-[30px] font-bold leading-none flex items-baseline gap-[5px] ${k.muted ? 'text-muted text-[22px]' : 'text-ink'}`}>
+                {k.value}
+                {k.unit && <small className="font-body text-[13px] font-normal text-muted mr-0.5">{k.unit}</small>}
+              </div>
+              <div className="text-[12px] text-muted font-body leading-[1.4]">{k.label}</div>
+            </div>
+          </div>
+        ))}
       </div>
 
-      <div className="split-2">
-        <div className="card">
-          <div className="card-h">
-            <h3><span className="ic"><IcoClock /></span> سفارش‌های اخیر</h3>
-            <button className="all" onClick={() => setTab('orders')}>همه‌ی سفارش‌ها →</button>
+      <div className="grid grid-cols-[1.5fr_1fr] gap-[18px] max-[1100px]:grid-cols-1">
+        {/* Recent orders */}
+        <div className={CARD}>
+          <div className={CARD_H}>
+            <h3 className={CARD_H3}><span className={IC_CIR}><IcoClock /></span> سفارش‌های اخیر</h3>
+            <button className="text-[12px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]" onClick={() => setTab('orders')}>همه‌ی سفارش‌ها →</button>
           </div>
-          <div className="mini-orders">
+          <div className="flex flex-col">
             {orders.slice(0, 3).map((order) => (
-              <div key={order.id} className="mini-order">
-                <div className="thumbs">
+              <div key={order.id} className="grid grid-cols-[auto_1fr_auto_auto] gap-4 items-center px-6 py-3.5 border-b border-rule last:border-b-0">
+                <div className="flex">
                   {order.items.slice(0, 2).map((item, i) => (
-                    <span key={i} className="th">
-                      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">{illusSvg(item.illus)}</svg>
+                    <span key={i} className="w-[42px] h-[42px] rounded-[9px] bg-bg-2 grid place-items-center text-ink-2 border-2 border-surface -mr-3 first:mr-0 [&_svg]:w-[34px] [&_svg]:h-[34px]">
+                      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.4">{illusSvg(item.illus)}</svg>
                     </span>
                   ))}
-                  {order.items.length > 2 && <span className="th more">+{toFa(order.items.length - 2)}</span>}
+                  {order.items.length > 2 && (
+                    <span className="w-[42px] h-[42px] rounded-[9px] bg-ink text-bg font-mono text-[11px] font-semibold grid place-items-center border-2 border-surface -mr-3">
+                      +{toFa(order.items.length - 2)}
+                    </span>
+                  )}
                 </div>
-                <div className="meta">
-                  <span className="id">{order.id} · {order.date}</span>
-                  <span className="name">{order.items[0].name}{order.items.length > 1 ? ` + ${toFa(order.items.length - 1)} قطعه` : ''}</span>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-[11px] text-muted tracking-[.04em]">{order.id} · {order.date}</span>
+                  <span className="font-heading text-sm font-semibold leading-[1.3] whitespace-nowrap overflow-hidden text-ellipsis">
+                    {order.items[0].name}{order.items.length > 1 ? ` + ${toFa(order.items.length - 1)} قطعه` : ''}
+                  </span>
                 </div>
-                <span className={`pill ${STATUS_PILL[order.status]}`}>{STATUS_FA[order.status]}</span>
-                <span className="price">{formatToman(order.total)}<small>ت</small></span>
+                <span className={`${PILL_BASE} ${PILL_COLORS[STATUS_PILL[order.status]]}`}>{STATUS_FA[order.status]}</span>
+                <span className="font-heading text-sm font-bold whitespace-nowrap">
+                  {formatToman(order.total)}<small className="text-[11px] font-normal text-muted mr-[3px]">ت</small>
+                </span>
               </div>
             ))}
             {orders.length === 0 && (
-              <div style={{ padding: '32px 24px', textAlign: 'center', color: 'var(--muted)', fontSize: '14px' }}>
-                هنوز سفارشی ثبت نشده است
-              </div>
+              <div className="py-8 px-6 text-center text-muted text-sm">هنوز سفارشی ثبت نشده است</div>
             )}
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-h">
-            <h3><span className="ic"><IcoLightning /></span> دسترسیِ سریع</h3>
+        {/* Quick actions */}
+        <div className={CARD}>
+          <div className={CARD_H}>
+            <h3 className={CARD_H3}><span className={IC_CIR}><IcoLightning /></span> دسترسیِ سریع</h3>
           </div>
-          <div className="q-list">
+          <div className="p-2.5">
             {[
               { icon: <IcoEmail />, title: 'پیگیریِ سفارش', desc: 'با کدِ رهگیری', tab: 'orders' as Tab },
               { icon: <IcoReorder />, title: 'درخواستِ بازگشت', desc: '۱۴ روز فرصت دارید', tab: 'orders' as Tab },
               { icon: <IcoInfo />, title: 'تماس با پشتیبانی', desc: 'پاسخگویی روزانه ۹–۲۱', tab: null },
               { icon: <IcoInvoice />, title: 'گارانتی و اصالت', desc: 'گواهی‌های دیجیتالِ شما', tab: null },
             ].map((item, i) => (
-              <button key={i} className="q-item" onClick={() => item.tab && setTab(item.tab)}>
-                <span className="ic">{item.icon}</span>
-                <div className="t">
-                  <div className="tt">{item.title}</div>
-                  <div className="td">{item.desc}</div>
+              <button key={i} className="flex items-center gap-3 px-3.5 py-3 rounded-[10px] transition-colors w-full text-right hover:bg-bg-2" onClick={() => item.tab && setTab(item.tab)}>
+                <span className="w-9 h-9 rounded-lg bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-4 [&_svg]:h-4">{item.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="font-heading text-[13px] font-semibold leading-[1.2]">{item.title}</div>
+                  <div className="text-[11px] text-muted mt-0.5 leading-[1.3]">{item.desc}</div>
                 </div>
-                <span className="arr"><IcoArrowLeft /></span>
+                <span className="text-muted [&_svg]:w-3.5 [&_svg]:h-3.5"><IcoArrowLeft /></span>
               </button>
             ))}
           </div>
@@ -200,12 +240,12 @@ const GENDER_OPTIONS = [
 const ProfilePane: FC = () => {
   const { profile, updateProfile, uploadAvatar, deleteAvatar } = useAuthStore()
   const [form, setForm] = useState({
-    name: profile?.name?.split(' ')[0] ?? '',
-    family: profile?.name?.split(' ').slice(1).join(' ') ?? '',
-    email: profile?.email ?? '',
-    phone: profile?.phone ?? '',
-    birthdate: profile?.birthDate ?? '',
-    gender: profile?.gender ?? '',
+    name:       profile?.name?.split(' ')[0] ?? '',
+    family:     profile?.name?.split(' ').slice(1).join(' ') ?? '',
+    email:      profile?.email ?? '',
+    phone:      profile?.phone ?? '',
+    birthdate:  profile?.birthDate ?? '',
+    gender:     profile?.gender ?? '',
     nationalId: profile?.nationalId ?? '',
   })
   const [notifs, setNotifs] = useState({ email: true, sms: true, offers: false, whatsapp: true })
@@ -214,15 +254,7 @@ const ProfilePane: FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSave = () => {
-    updateProfile({
-      ...profile!,
-      name: `${form.name} ${form.family}`.trim(),
-      email: form.email,
-      phone: form.phone,
-      birthDate: form.birthdate,
-      gender: form.gender,
-      nationalId: form.nationalId,
-    })
+    updateProfile({ ...profile!, name: `${form.name} ${form.family}`.trim(), email: form.email, phone: form.phone, birthDate: form.birthdate, gender: form.gender, nationalId: form.nationalId })
       .then(() => { setSaved(true); setTimeout(() => setSaved(false), 2000) })
       .catch(() => {})
   }
@@ -231,135 +263,121 @@ const ProfilePane: FC = () => {
     const file = e.target.files?.[0]
     if (!file) return
     setAvatarLoading(true)
-    uploadAvatar(file).finally(() => { setAvatarLoading(false) })
+    uploadAvatar(file).finally(() => setAvatarLoading(false))
   }
 
   const handleDeleteAvatar = () => {
     setAvatarLoading(true)
-    deleteAvatar().finally(() => { setAvatarLoading(false) })
+    deleteAvatar().finally(() => setAvatarLoading(false))
   }
 
   return (
-    <div className="pane active" style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-      <div className="section">
-        <div className="section-h">
-          <h2><span className="ic"><IcoUser /></span> اطلاعاتِ شخصی</h2>
-          <p>این اطلاعات روی فاکتورها و رسیدِ تحویلِ سفارش استفاده می‌شود.</p>
+    <div className="flex flex-col gap-[18px]">
+      {/* Personal info */}
+      <div className={CARD}>
+        <div className={SECTION_H}>
+          <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3">
+            <span className={IC_SECT}><IcoUser /></span> اطلاعاتِ شخصی
+          </h2>
+          <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">این اطلاعات روی فاکتورها و رسیدِ تحویلِ سفارش استفاده می‌شود.</p>
         </div>
-        <div className="avatar-row">
+        <div className="flex items-center gap-[18px] px-7 py-5 bg-surface-2 border-b border-rule">
           {profile?.avatarUrl
-            ? <img src={profile.avatarUrl} alt="avatar" className="ava-lg" style={{ objectFit: 'cover', borderRadius: '50%' }} />
-            : <span className="ava-lg">{firstLetter(profile?.name)}</span>
+            ? <img src={profile.avatarUrl} alt="avatar" className={`${AVA_LG} object-cover`} />
+            : <span className={AVA_LG}>{firstLetter(profile?.name)}</span>
           }
-          <div className="t">
-            <h4>عکسِ پروفایل</h4>
-            <p>JPG یا PNG · حداکثر ۲ مگابایت · ۴۰۰×۴۰۰ پیکسل</p>
+          <div className="flex-1">
+            <h4 className="font-heading text-sm font-semibold m-0">عکسِ پروفایل</h4>
+            <p className="m-0 mt-0.5 text-[12px] text-muted">JPG یا PNG · حداکثر ۲ مگابایت · ۴۰۰×۴۰۰ پیکسل</p>
           </div>
-          <div className="ax">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/jpeg,image/png"
-              style={{ display: 'none' }}
-              onChange={handleAvatarChange}
-            />
-            <button
-              className="btn btn-mute btn-sm"
-              disabled={avatarLoading}
-              onClick={() => fileInputRef.current?.click()}
-            >
+          <div className="flex gap-2">
+            <input ref={fileInputRef} type="file" accept="image/jpeg,image/png" className="hidden" onChange={handleAvatarChange} />
+            <button className={`${BTN_MUTE} ${BTN_SM}`} disabled={avatarLoading} onClick={() => fileInputRef.current?.click()}>
               {avatarLoading ? '...' : 'بارگذاریِ عکس'}
             </button>
             {profile?.avatarUrl && (
-              <button
-                className="btn btn-sm"
-                style={{ color: 'var(--sale)' }}
-                disabled={avatarLoading}
-                onClick={handleDeleteAvatar}
-              >
-                حذف
-              </button>
+              <button className={`${BTN_MUTE} ${BTN_SM} text-sale`} disabled={avatarLoading} onClick={handleDeleteAvatar}>حذف</button>
             )}
           </div>
         </div>
-        <div className="section-b">
-          <div className="form-grid">
-            <div className="f-field">
-              <label>نام <span className="req">*</span></label>
-              <input className="f-input" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
+        <div className={SECTION_B}>
+          <div className="grid grid-cols-2 gap-[18px]">
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>نام <span className="text-sale">*</span></label>
+              <input className={INPUT_CLS} value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
             </div>
-            <div className="f-field">
-              <label>نامِ خانوادگی <span className="req">*</span></label>
-              <input className="f-input" value={form.family} onChange={(e) => setForm((f) => ({ ...f, family: e.target.value }))} />
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>نامِ خانوادگی <span className="text-sale">*</span></label>
+              <input className={INPUT_CLS} value={form.family} onChange={(e) => setForm((f) => ({ ...f, family: e.target.value }))} />
             </div>
-            <div className="f-field">
-              <label>ایمیل <span className="verified"><IcoCheck />تأیید شده</span></label>
-              <input className="f-input" dir="ltr" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>ایمیل <span className="mr-auto inline-flex items-center gap-1 font-mono text-[10px] text-ok tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px]"><IcoCheck />تأیید شده</span></label>
+              <input className={INPUT_CLS} dir="ltr" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
             </div>
-            <div className="f-field">
-              <label>موبایل <span className="verified"><IcoCheck />تأیید شده</span></label>
-              <input className="f-input" dir="ltr" value={toFa(form.phone)} disabled />
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>موبایل <span className="mr-auto inline-flex items-center gap-1 font-mono text-[10px] text-ok tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px]"><IcoCheck />تأیید شده</span></label>
+              <input className={INPUT_CLS} dir="ltr" value={toFa(form.phone)} disabled />
             </div>
-            <div className="f-field">
-              <label>تاریخِ تولد <span className="opt">(اختیاری)</span></label>
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>تاریخِ تولد <span className="mr-auto font-mono text-[10px] text-muted font-normal tracking-[.04em]">(اختیاری)</span></label>
               <DatePicker
-                calendar={persian}
-                locale={persian_fa}
+                calendar={persian} locale={persian_fa}
                 value={form.birthdate ? (() => { const d = new Date(form.birthdate); return isNaN(d.getTime()) ? '' : d })() : ''}
-                onChange={(date: DateObject | null) => {
-                  setForm((f) => ({ ...f, birthdate: date ? date.toDate().toISOString().split('T')[0] : '' }))
-                }}
-                inputClass="f-input"
-                containerStyle={{ width: '100%' }}
-                maxDate={new Date()}
-                format="YYYY/MM/DD"
-                placeholder="انتخاب تاریخِ تولد"
-                calendarPosition="bottom-right"
-                arrow={false}
+                onChange={(date: DateObject | null) => setForm((f) => ({ ...f, birthdate: date ? date.toDate().toISOString().split('T')[0] : '' }))}
+                inputClass={INPUT_CLS} containerStyle={{ width: '100%' }}
+                maxDate={new Date()} format="YYYY/MM/DD" placeholder="انتخاب تاریخِ تولد"
+                calendarPosition="bottom-right" arrow={false}
               />
             </div>
-            <div className="f-field">
-              <label>جنسیت <span className="opt">(اختیاری)</span></label>
-              <select className="f-select" value={form.gender} onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}>
+            <div className={F_FIELD}>
+              <label className={F_LABEL}>جنسیت <span className="mr-auto font-mono text-[10px] text-muted font-normal tracking-[.04em]">(اختیاری)</span></label>
+              <select className={SELECT_CLS} style={{ backgroundImage: SELECT_BG }} value={form.gender} onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}>
                 <option value="">انتخاب کنید</option>
                 {GENDER_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
-            <div className="f-field full">
-              <label>کدِ ملی <span className="opt">(برای صدورِ فاکتورِ رسمی)</span></label>
-              <input className="f-input" placeholder="۰۰۸۷۶۵۴۳۲۱" value={form.nationalId} onChange={(e) => setForm((f) => ({ ...f, nationalId: e.target.value }))} />
+            <div className={`${F_FIELD} col-span-2`}>
+              <label className={F_LABEL}>کدِ ملی <span className="mr-auto font-mono text-[10px] text-muted font-normal tracking-[.04em]">(برای صدورِ فاکتورِ رسمی)</span></label>
+              <input className={INPUT_CLS} placeholder="۰۰۸۷۶۵۴۳۲۱" value={form.nationalId} onChange={(e) => setForm((f) => ({ ...f, nationalId: e.target.value }))} />
             </div>
           </div>
         </div>
-        <div className="section-actions">
-          <span className="hint">آخرین تغییر: {profile?.updatedAt ? new Date(profile.updatedAt).toLocaleDateString('fa-IR') : '—'}</span>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn btn-mute btn-sm">لغو</button>
-            <button className="btn btn-primary btn-sm" onClick={handleSave}>
+        <div className="px-7 py-[18px] bg-surface-2 border-t border-rule flex justify-between items-center gap-3">
+          <span className="text-[11px] text-muted">آخرین تغییر: {profile?.updatedAt ? new Date(profile.updatedAt).toLocaleDateString('fa-IR') : '—'}</span>
+          <div className="flex gap-2">
+            <button className={`${BTN_MUTE} ${BTN_SM}`}>لغو</button>
+            <button className={`${BTN_PRIMARY} ${BTN_SM}`} onClick={handleSave}>
               {saved ? '✓ ذخیره شد' : 'ذخیره‌ی تغییرات'}
             </button>
           </div>
         </div>
       </div>
 
-      <div className="section">
-        <div className="section-h">
-          <h2><span className="ic"><IcoBell /></span> اعلان‌ها و ارتباطات</h2>
-          <p>کنترل کنید چه پیام‌هایی از ما دریافت کنید.</p>
+      {/* Notifications */}
+      <div className={CARD}>
+        <div className={SECTION_H}>
+          <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3">
+            <span className={IC_SECT}><IcoBell /></span> اعلان‌ها و ارتباطات
+          </h2>
+          <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">کنترل کنید چه پیام‌هایی از ما دریافت کنید.</p>
         </div>
-        <div className="section-b">
+        <div className={SECTION_B}>
           {([
-            { key: 'email', icon: <IcoEmail />, title: 'خبرنامه‌ی ایمیلی', desc: 'هر دو هفته یک ایمیل با جدیدترین قطعات و پیشنهادها' },
-            { key: 'sms', icon: <IcoPhone />, title: 'پیامکِ سفارش', desc: 'وضعیتِ ارسال و تحویل از طریقِ SMS' },
-            { key: 'offers', icon: <IcoStar />, title: 'پیشنهادهای ویژه', desc: 'دسترسیِ زودهنگام و تخفیف‌های اعضای طلایی' },
+            { key: 'email',    icon: <IcoEmail />,    title: 'خبرنامه‌ی ایمیلی',    desc: 'هر دو هفته یک ایمیل با جدیدترین قطعات و پیشنهادها' },
+            { key: 'sms',      icon: <IcoPhone />,    title: 'پیامکِ سفارش',         desc: 'وضعیتِ ارسال و تحویل از طریقِ SMS' },
+            { key: 'offers',   icon: <IcoStar />,     title: 'پیشنهادهای ویژه',      desc: 'دسترسیِ زودهنگام و تخفیف‌های اعضای طلایی' },
             { key: 'whatsapp', icon: <IcoWhatsApp />, title: 'پیام‌رسانِ واتس‌اپ', desc: 'پشتیبانی و اطلاع‌رسانی از طریقِ واتس‌اپ' },
           ] as const).map(({ key, icon, title, desc }) => (
-            <div key={key} className="toggle-row">
-              <span className="ic">{icon}</span>
-              <div className="t"><h4>{title}</h4><p>{desc}</p></div>
-              <label className="sw-toggle">
-                <input type="checkbox" checked={notifs[key]} onChange={(e) => setNotifs((n) => ({ ...n, [key]: e.target.checked }))} />
-                <span className="sl"></span>
+            <div key={key} className="flex items-start gap-3.5 py-3.5 border-t border-rule first:border-t-0 first:pt-0">
+              <span className="w-[34px] h-[34px] rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">{icon}</span>
+              <div className="flex-1">
+                <h4 className="font-heading text-[13px] font-semibold m-0">{title}</h4>
+                <p className="m-0 mt-0.5 text-[11px] text-muted">{desc}</p>
+              </div>
+              {/* Toggle switch using peer */}
+              <label className="relative w-9 h-5 shrink-0 cursor-pointer mt-0.5">
+                <input type="checkbox" className="sr-only peer" checked={notifs[key]} onChange={(e) => setNotifs((n) => ({ ...n, [key]: e.target.checked }))} />
+                <span className="absolute inset-0 bg-bg-2 rounded-full transition-colors peer-checked:bg-ink after:content-[''] after:absolute after:top-0.5 after:right-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:transition-transform peer-checked:after:-translate-x-4" />
               </label>
             </div>
           ))}
@@ -371,77 +389,74 @@ const ProfilePane: FC = () => {
 
 function reorderItems(order: Order, addItem: (p: import('../types').Product) => void) {
   order.items.forEach((item) => {
-    addItem({
-      id: item.productId,
-      fa: item.name,
-      en: item.name,
-      cat: '',
-      catId: '',
-      price: item.price,
-      oldPrice: null,
-      badge: null,
-      illus: item.illus || 'NecklaceB',
-      illusAlt: 'NecklaceC',
-      meta: [],
-    })
+    addItem({ id: item.productId, fa: item.name, en: item.name, cat: '', catId: '', price: item.price, oldPrice: null, badge: null, illus: item.illus || 'NecklaceB', illusAlt: 'NecklaceC', meta: [] })
   })
 }
 
 // ─── Orders Pane ──────────────────────────────────────────────────────────────
 const OrdersPane: FC = () => {
-  const orders = useAuthStore((s) => s.orders)
-  const addItem = useCartStore((s) => s.addItem)
-  const openCart = useCartStore((s) => s.openCart)
+  const orders    = useAuthStore((s) => s.orders)
+  const addItem   = useCartStore((s) => s.addItem)
+  const openCart  = useCartStore((s) => s.openCart)
   const [expanded, setExpanded] = useState<string | null>(orders[0]?.id ?? null)
-  const [filter, setFilter] = useState<string>('all')
-  const [search, setSearch] = useState('')
+  const [filter,    setFilter]    = useState<string>('all')
+  const [search,    setSearch]    = useState('')
   const [dateRange, setDateRange] = useState('all')
 
   const filtered = useMemo(() => {
     let result = orders
-    if (filter === 'transit') result = result.filter((o) => o.status === 'shipped' || o.status === 'processing')
+    if (filter === 'transit')   result = result.filter((o) => o.status === 'shipped' || o.status === 'processing')
     else if (filter === 'delivered') result = result.filter((o) => o.status === 'delivered')
     else if (filter === 'cancelled') result = result.filter((o) => o.status === 'cancelled')
-
     if (search.trim()) {
       const q = search.trim().toLowerCase()
-      result = result.filter((o) =>
-        o.id.toLowerCase().includes(q) ||
-        o.items.some((it) => it.name.toLowerCase().includes(q)) ||
-        (o.trackingCode ?? '').toLowerCase().includes(q)
-      )
+      result = result.filter((o) => o.id.toLowerCase().includes(q) || o.items.some((it) => it.name.toLowerCase().includes(q)) || (o.trackingCode ?? '').toLowerCase().includes(q))
     }
-
     if (dateRange !== 'all') {
-      const now = new Date()
-      const months = dateRange === '6m' ? 6 : 12
+      const now = new Date(); const months = dateRange === '6m' ? 6 : 12
       const cutoff = new Date(now.getFullYear(), now.getMonth() - months, now.getDate())
       result = result.filter((o) => new Date(o.date) >= cutoff)
     }
-
     return result
   }, [orders, filter, search, dateRange])
 
+  const chips = [
+    { key: 'all',       label: 'همه',         count: orders.length },
+    { key: 'transit',   label: 'در راه',       count: orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length },
+    { key: 'delivered', label: 'تحویل شده',   count: orders.filter((o) => o.status === 'delivered').length },
+    { key: 'cancelled', label: 'لغو شده',     count: orders.filter((o) => o.status === 'cancelled').length },
+  ]
+
   return (
-    <div className="pane active" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      <div className="orders-toolbar">
-        <div className="search">
+    <div className="flex flex-col gap-3.5">
+      {/* Toolbar */}
+      <div className="flex items-center gap-2.5 flex-wrap bg-surface border border-rule rounded-[var(--radius)] px-[18px] py-3.5">
+        <div className="flex-1 min-w-[220px] flex items-center gap-2 px-3.5 py-2 bg-bg border border-rule rounded-full text-[13px] text-muted">
           <IcoSearch />
           <input
+            className="flex-1 bg-transparent border-0 outline-none text-ink text-[13px] text-right font-body"
             placeholder="جستجو بر اساسِ کدِ سفارش، محصول…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="chips">
-          <button className={`chip${filter === 'all' ? ' on' : ''}`} onClick={() => setFilter('all')}>همه <span className="n">{toFa(orders.length)}</span></button>
-          <button className={`chip${filter === 'transit' ? ' on' : ''}`} onClick={() => setFilter('transit')}>در راه <span className="n">{toFa(orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length)}</span></button>
-          <button className={`chip${filter === 'delivered' ? ' on' : ''}`} onClick={() => setFilter('delivered')}>تحویل شده <span className="n">{toFa(orders.filter((o) => o.status === 'delivered').length)}</span></button>
-          <button className={`chip${filter === 'cancelled' ? ' on' : ''}`} onClick={() => setFilter('cancelled')}>لغو شده <span className="n">{toFa(orders.filter((o) => o.status === 'cancelled').length)}</span></button>
+        <div className="flex gap-1.5 flex-wrap">
+          {chips.map((c) => (
+            <button
+              key={c.key}
+              className={`px-[13px] py-[7px] rounded-full text-[12px] border transition-all cursor-pointer inline-flex items-center gap-1.5 font-body ${
+                filter === c.key ? 'bg-ink text-bg border-ink' : 'bg-bg text-ink-2 border-rule hover:border-ink'
+              }`}
+              onClick={() => setFilter(c.key)}
+            >
+              {c.label}
+              <span className="font-mono text-[10px] opacity-70">{toFa(c.count)}</span>
+            </button>
+          ))}
         </div>
         <select
-          className="f-select"
-          style={{ width: 'auto', fontSize: '13px', padding: '9px 32px 9px 14px' }}
+          className={`${SELECT_CLS} w-auto text-[13px]`}
+          style={{ backgroundImage: SELECT_BG, padding: '9px 32px 9px 14px' }}
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
         >
@@ -451,87 +466,124 @@ const OrdersPane: FC = () => {
         </select>
       </div>
 
-      <div className="order-list">
+      {/* Order list */}
+      <div className="flex flex-col gap-3">
         {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '56px 0', color: 'var(--muted)', fontSize: '14px' }}>
-            سفارشی یافت نشد
-          </div>
+          <div className="text-center py-14 text-muted text-sm">سفارشی یافت نشد</div>
         )}
         {filtered.map((order) => {
-          const isOpen = expanded === order.id
-          const steps = TIMELINE_STEPS[order.status]
+          const isOpen  = expanded === order.id
+          const steps   = TIMELINE_STEPS[order.status]
           const doneIdx = steps.length - 1
           return (
-            <article key={order.id} className={`order${isOpen ? ' open' : ''}`}>
-              <div className="order-head" onClick={() => setExpanded(isOpen ? null : order.id)}>
-                <div className="id-block">
-                  <span className="id">{order.id}</span>
-                  <span className="date">{order.date} · {toFa(order.items.length)} قلم</span>
-                </div>
-                <div className="thumbs">
+            <article key={order.id} className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden">
+              {/* Head */}
+              <div
+                className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-[18px] items-center px-[22px] py-[18px] cursor-pointer transition-colors hover:bg-surface-2 max-[1100px]:grid-cols-[1fr_auto_auto]"
+                onClick={() => setExpanded(isOpen ? null : order.id)}
+              >
+                <div className="flex max-[1100px]:hidden">
                   {order.items.slice(0, 2).map((item, i) => (
-                    <span key={i} className="th">
-                      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">{illusSvg(item.illus)}</svg>
+                    <span key={i} className="w-[42px] h-[42px] rounded-[9px] bg-bg-2 grid place-items-center text-ink-2 border-2 border-surface -mr-3 first:mr-0">
+                      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-[34px] h-[34px]">{illusSvg(item.illus)}</svg>
                     </span>
                   ))}
-                  {order.items.length > 2 && <span className="th more">{toFa(order.items.length - 2)}+</span>}
+                  {order.items.length > 2 && (
+                    <span className="w-[42px] h-[42px] rounded-[9px] bg-ink text-bg font-mono text-[11px] font-semibold grid place-items-center border-2 border-surface -mr-3">
+                      {toFa(order.items.length - 2)}+
+                    </span>
+                  )}
                 </div>
-                <span className={`pill ${STATUS_PILL[order.status]}`}>{STATUS_FA[order.status]}</span>
-                <span className="total">{formatToman(order.total)}<small>تومان</small></span>
-                <span className="chev"><IcoChevDown /></span>
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-[13px] font-semibold tracking-[.04em]" dir="ltr" style={{ textAlign: 'right' }}>{order.id}</span>
+                  <span className="text-[11px] text-muted font-mono tracking-[.04em]">{order.date} · {toFa(order.items.length)} قلم</span>
+                </div>
+                <span className={`${PILL_BASE} ${PILL_COLORS[STATUS_PILL[order.status]]}`}>{STATUS_FA[order.status]}</span>
+                <span className="font-heading text-[16px] font-bold max-[1100px]:hidden">
+                  {formatToman(order.total)}<small className="text-[11px] font-normal text-muted mr-[3px]">تومان</small>
+                </span>
+                <span className={`w-9 h-9 rounded-full grid place-items-center transition-[transform,background,color] shrink-0 [&_svg]:w-3.5 [&_svg]:h-3.5 ${
+                  isOpen ? 'rotate-180 bg-ink text-bg' : 'bg-bg-2'
+                }`}>
+                  <IcoChevDown />
+                </span>
               </div>
 
+              {/* Body */}
               {isOpen && (
-                <div className="order-body">
-                  <div className="ob-grid">
+                <div className="border-t border-rule p-6 bg-surface-2">
+                  <div className="grid grid-cols-[1fr_280px] gap-7 max-[1100px]:grid-cols-1">
+                    {/* Items */}
                     <div>
-                      <h4 style={{ fontFamily: 'var(--persian-heading)', fontSize: '13px', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <h4 className="font-heading text-[13px] m-0 mb-2.5 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px]">
                         <IcoBag /> اقلامِ سفارش
                       </h4>
-                      <div className="ob-items">
+                      <div className="flex flex-col gap-2.5">
                         {order.items.map((item, i) => (
-                          <div key={i} className="ob-item">
-                            <div className="th">
-                              <span className="q">{toFa(item.qty)}</span>
-                              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">{illusSvg(item.illus)}</svg>
+                          <div key={i} className="grid grid-cols-[54px_1fr_auto] gap-3.5 items-center p-3 px-3.5 bg-surface border border-rule rounded-[10px]">
+                            <div className="w-[54px] h-[54px] rounded-[9px] bg-bg-2 grid place-items-center text-ink-2 relative shrink-0">
+                              <span className="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] rounded-[9px] bg-ink text-bg font-mono text-[10px] grid place-items-center px-[5px] border-2 border-surface">
+                                {toFa(item.qty)}
+                              </span>
+                              <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="1.1" className="w-[38px] h-[38px]">{illusSvg(item.illus)}</svg>
                             </div>
-                            <div className="info">
-                              <span className="nm">{item.name}</span>
-                              <span className="sub">قطعه‌ی جواهری</span>
+                            <div className="flex flex-col gap-0.5 min-w-0">
+                              <span className="font-heading text-[13px] font-semibold leading-[1.3]">{item.name}</span>
+                              <span className="text-[11px] text-muted font-mono tracking-[.04em]">قطعه‌ی جواهری</span>
                             </div>
-                            <span className="price">{formatToman(item.price)}<small>ت</small></span>
+                            <span className="font-heading text-[13px] font-semibold whitespace-nowrap">
+                              {formatToman(item.price)}<small className="text-[10px] font-normal text-muted mr-0.5">ت</small>
+                            </span>
                           </div>
                         ))}
                       </div>
-                      <div className="ob-acts">
-                        <button className="btn btn-primary" onClick={() => { reorderItems(order, addItem); openCart() }}><IcoReorder /> سفارشِ مجدد</button>
-                        <button className="btn btn-mute" disabled title="API موجود نیست"><IcoInvoice /> دانلود فاکتور</button>
-                        <button className="btn btn-mute" disabled title="API موجود نیست"><IcoStar /> ثبتِ نظر</button>
+                      <div className="flex gap-2 mt-3.5 flex-wrap">
+                        <button className={`${BTN_PRIMARY} ${BTN_SM} [&_svg]:w-[13px] [&_svg]:h-[13px]`} onClick={() => { reorderItems(order, addItem); openCart() }}><IcoReorder /> سفارشِ مجدد</button>
+                        <button className={`${BTN_MUTE} ${BTN_SM} [&_svg]:w-[13px] [&_svg]:h-[13px]`} disabled title="API موجود نیست"><IcoInvoice /> دانلود فاکتور</button>
+                        <button className={`${BTN_MUTE} ${BTN_SM} [&_svg]:w-[13px] [&_svg]:h-[13px]`} disabled title="API موجود نیست"><IcoStar /> ثبتِ نظر</button>
                         {order.status === 'delivered' && (
-                          <button className="btn btn-mute" disabled style={{ color: 'var(--sale)' }} title="API موجود نیست">درخواستِ بازگشت</button>
+                          <button className={`${BTN_MUTE} ${BTN_SM} text-sale`} disabled title="API موجود نیست">درخواستِ بازگشت</button>
                         )}
                       </div>
                     </div>
 
+                    {/* Timeline */}
                     <div>
-                      <div className="timeline">
-                        <h4><IcoTruck /> وضعیتِ ارسال</h4>
-                        {steps.map((step, i) => (
-                          <div key={i} className={`tl-step${i < doneIdx ? ' done' : i === doneIdx ? ' done' : ''}`}>
-                            <span className="dot"><IcoCheck /></span>
-                            {i < steps.length - 1 && <span className="ln"></span>}
-                            <div>
-                              <div className="nm">{step}</div>
-                              <div className="ts">{order.date}</div>
+                      <div className="bg-surface border border-rule rounded-[10px] p-[18px_20px]">
+                        <h4 className="font-heading text-[13px] font-semibold m-0 mb-3 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-copper">
+                          <IcoTruck /> وضعیتِ ارسال
+                        </h4>
+                        {steps.map((step, i) => {
+                          const isDone = i <= doneIdx
+                          return (
+                            <div key={i} className="grid grid-cols-[auto_1fr] gap-3.5 pb-3.5 relative last:pb-0">
+                              <span className={`w-[22px] h-[22px] rounded-full border-[1.5px] grid place-items-center shrink-0 z-[1] [&_svg]:w-[11px] [&_svg]:h-[11px] ${
+                                isDone ? 'bg-ok border-ok text-white' : 'border-rule bg-bg text-muted'
+                              }`}>
+                                <IcoCheck />
+                              </span>
+                              {i < steps.length - 1 && (
+                                <span className={`absolute right-[11px] top-6 bottom-0 w-[1.5px] ${isDone ? 'bg-ok' : 'bg-rule'}`} />
+                              )}
+                              <div>
+                                <div className={`font-heading text-[13px] font-semibold leading-[1.2] ${isDone ? '' : 'text-muted'}`}>{step}</div>
+                                <div className="font-mono text-[10px] text-muted tracking-[.04em] mt-0.5" dir="ltr" style={{ textAlign: 'right' }}>{order.date}</div>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
                       {order.trackingCode && (
-                        <div className="tracking">
-                          <span className="l">رهگیری</span>
-                          <span className="v">{order.trackingCode}</span>
-                          <button title="کپی" onClick={() => navigator.clipboard?.writeText(order.trackingCode ?? '')}><IcoCopy /></button>
+                        <div className="mt-2.5 px-3.5 py-[11px] bg-surface border border-rule rounded-[10px] flex items-center gap-2.5">
+                          <span className="text-[10px] text-muted font-mono tracking-[.08em] uppercase">رهگیری</span>
+                          <span className="font-mono text-[13px] font-semibold flex-1 tracking-[.04em]" dir="ltr" style={{ textAlign: 'right' }}>{order.trackingCode}</span>
+                          <button
+                            className="w-7 h-7 rounded-[6px] bg-bg-2 grid place-items-center text-ink-2 transition-colors hover:bg-ink hover:text-bg [&_svg]:w-3 [&_svg]:h-3"
+                            title="کپی"
+                            onClick={() => navigator.clipboard?.writeText(order.trackingCode ?? '')}
+                          >
+                            <IcoCopy />
+                          </button>
                         </div>
                       )}
                     </div>
@@ -555,34 +607,30 @@ interface AddressModalProps {
 const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
   const { addAddress, updateAddress } = useAuthStore()
   const [form, setForm] = useState({
-    label: initial?.label ?? 'خانه',
-    fullName: initial?.fullName ?? '',
-    phone: initial?.phone ?? '',
-    province: initial?.province ?? '',
-    city: initial?.city ?? '',
-    street: initial?.street ?? '',
+    label:      initial?.label ?? 'خانه',
+    fullName:   initial?.fullName ?? '',
+    phone:      initial?.phone ?? '',
+    province:   initial?.province ?? '',
+    city:       initial?.city ?? '',
+    street:     initial?.street ?? '',
     postalCode: initial?.postalCode ?? '',
-    isDefault: initial?.isDefault ?? false,
+    isDefault:  initial?.isDefault ?? false,
   })
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error,   setError]   = useState('')
   const isEdit = !!initial
 
   const handleSubmit = async () => {
     if (!form.fullName.trim()) { setError('نام گیرنده الزامی است'); return }
-    if (!form.phone.trim()) { setError('شماره تماس الزامی است'); return }
-    if (!form.province) { setError('استان را انتخاب کنید'); return }
-    if (!form.city.trim()) { setError('شهر الزامی است'); return }
-    if (!form.street.trim()) { setError('آدرس الزامی است'); return }
-    if (!form.postalCode.trim()) { setError('کد پستی الزامی است'); return }
-    setLoading(true)
-    setError('')
+    if (!form.phone.trim())    { setError('شماره تماس الزامی است'); return }
+    if (!form.province)        { setError('استان را انتخاب کنید'); return }
+    if (!form.city.trim())     { setError('شهر الزامی است'); return }
+    if (!form.street.trim())   { setError('آدرس الزامی است'); return }
+    if (!form.postalCode.trim()){ setError('کد پستی الزامی است'); return }
+    setLoading(true); setError('')
     try {
-      if (isEdit) {
-        await updateAddress(initial!.id, form)
-      } else {
-        await addAddress(form)
-      }
+      if (isEdit) await updateAddress(initial!.id, form)
+      else        await addAddress(form)
       onClose()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'خطا در ذخیره‌ی آدرس')
@@ -593,84 +641,81 @@ const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
 
   return (
     <Modal onClose={onClose} ariaLabel={isEdit ? 'ویرایش آدرس' : 'آدرسِ جدید'}>
-      <div className="addr-modal">
-        <div className="addr-modal__head">
-          <div className="addr-modal__title-wrap">
-            <span className="addr-modal__icon"><IcoPin /></span>
-            <h2 className="addr-modal__title">{isEdit ? 'ویرایشِ آدرس' : 'آدرسِ جدید'}</h2>
+      <div className="flex flex-col">
+        {/* Head */}
+        <div className="flex items-center justify-between px-6 py-5 pb-[18px] border-b border-rule">
+          <div className="flex items-center gap-2.5">
+            <span className="w-8 h-8 rounded-[10px] bg-copper/[.12] grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]"><IcoPin /></span>
+            <h2 className="m-0 text-[15px] font-heading font-bold text-ink">{isEdit ? 'ویرایشِ آدرس' : 'آدرسِ جدید'}</h2>
           </div>
-          <button className="addr-modal__close" onClick={onClose} aria-label="بستن"><span>✕</span></button>
+          <button className="w-[30px] h-[30px] rounded-lg bg-transparent cursor-pointer text-muted text-[13px] grid place-items-center transition-[background,color] hover:bg-bg-2 hover:text-ink" onClick={onClose} aria-label="بستن">✕</button>
         </div>
 
-        <div className="addr-modal__body">
-          <div className="f-field">
-            <label>برچسب <span className="opt">(اختیاری)</span></label>
-            <input
-              className="f-input"
-              value={form.label}
-              placeholder="مثلاً: خانه، محل کار، انبار…"
-              onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
-            />
+        {/* Body */}
+        <div className="px-6 py-5 overflow-y-auto max-h-[calc(90vh-148px)] flex flex-col gap-[22px]">
+          <div className={F_FIELD}>
+            <label className={F_LABEL}>برچسب <span className="mr-auto font-mono text-[10px] text-muted font-normal tracking-[.04em]">(اختیاری)</span></label>
+            <input className={INPUT_CLS} value={form.label} placeholder="مثلاً: خانه، محل کار، انبار…" onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))} />
           </div>
 
-          <div className="addr-modal__section">
-            <p className="addr-modal__section-label">اطلاعاتِ گیرنده</p>
-            <div className="form-grid">
-              <div className="f-field">
-                <label>نام گیرنده <span className="req">*</span></label>
-                <input className="f-input" value={form.fullName} placeholder="مثال: زهرا رضایی" onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))} />
+          <div className="flex flex-col gap-2.5">
+            <p className="m-0 text-[11px] font-mono tracking-[.1em] uppercase text-muted font-medium">اطلاعاتِ گیرنده</p>
+            <div className="grid grid-cols-2 gap-[18px]">
+              <div className={F_FIELD}>
+                <label className={F_LABEL}>نام گیرنده <span className="text-sale">*</span></label>
+                <input className={INPUT_CLS} value={form.fullName} placeholder="مثال: زهرا رضایی" onChange={(e) => setForm((f) => ({ ...f, fullName: e.target.value }))} />
               </div>
-              <div className="f-field">
-                <label>شماره تماس <span className="req">*</span></label>
-                <input className="f-input" dir="ltr" value={form.phone} placeholder="09123456789" onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
+              <div className={F_FIELD}>
+                <label className={F_LABEL}>شماره تماس <span className="text-sale">*</span></label>
+                <input className={INPUT_CLS} dir="ltr" value={form.phone} placeholder="09123456789" onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
               </div>
             </div>
           </div>
 
-          <div className="addr-modal__section">
-            <p className="addr-modal__section-label">آدرس</p>
-            <div className="form-grid">
-              <div className="f-field">
-                <label>استان <span className="req">*</span></label>
-                <select className="f-select" value={form.province} onChange={(e) => setForm((f) => ({ ...f, province: e.target.value, city: '' }))}>
+          <div className="flex flex-col gap-2.5">
+            <p className="m-0 text-[11px] font-mono tracking-[.1em] uppercase text-muted font-medium">آدرس</p>
+            <div className="grid grid-cols-2 gap-[18px]">
+              <div className={F_FIELD}>
+                <label className={F_LABEL}>استان <span className="text-sale">*</span></label>
+                <select className={SELECT_CLS} style={{ backgroundImage: SELECT_BG }} value={form.province} onChange={(e) => setForm((f) => ({ ...f, province: e.target.value, city: '' }))}>
                   <option value="">انتخاب کنید</option>
                   {PROVINCES.map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
-              <div className="f-field">
-                <label>شهر <span className="req">*</span></label>
-                <select className="f-select" value={form.city} onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))} disabled={!form.province}>
+              <div className={F_FIELD}>
+                <label className={F_LABEL}>شهر <span className="text-sale">*</span></label>
+                <select className={SELECT_CLS} style={{ backgroundImage: SELECT_BG }} value={form.city} onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))} disabled={!form.province}>
                   <option value="">{form.province ? 'انتخاب شهر' : 'ابتدا استان را انتخاب کنید'}</option>
                   {(CITIES_BY_PROVINCE[form.province] ?? []).map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
-              <div className="f-field full">
-                <label>آدرس کامل <span className="req">*</span></label>
-                <input className="f-input" value={form.street} placeholder="خیابان، کوچه، پلاک، واحد" onChange={(e) => setForm((f) => ({ ...f, street: e.target.value }))} />
+              <div className={`${F_FIELD} col-span-2`}>
+                <label className={F_LABEL}>آدرس کامل <span className="text-sale">*</span></label>
+                <input className={INPUT_CLS} value={form.street} placeholder="خیابان، کوچه، پلاک، واحد" onChange={(e) => setForm((f) => ({ ...f, street: e.target.value }))} />
               </div>
-              <div className="f-field">
-                <label>کد پستی <span className="req">*</span></label>
-                <input className="f-input" dir="ltr" value={form.postalCode} placeholder="1234567890" maxLength={10} onChange={(e) => setForm((f) => ({ ...f, postalCode: e.target.value }))} />
+              <div className={F_FIELD}>
+                <label className={F_LABEL}>کد پستی <span className="text-sale">*</span></label>
+                <input className={INPUT_CLS} dir="ltr" value={form.postalCode} placeholder="1234567890" maxLength={10} onChange={(e) => setForm((f) => ({ ...f, postalCode: e.target.value }))} />
               </div>
             </div>
           </div>
 
-          <label className="addr-default-toggle">
-            <input
-              type="checkbox"
-              checked={form.isDefault}
-              onChange={(e) => setForm((f) => ({ ...f, isDefault: e.target.checked }))}
-            />
-            <span className="addr-default-toggle__box"></span>
-            <span className="addr-default-toggle__text">تنظیم به‌عنوانِ آدرسِ پیش‌فرض</span>
+          {/* Default toggle */}
+          <label className={`flex items-center gap-2.5 cursor-pointer py-3 px-3.5 rounded-[10px] border-[1.5px] transition-[border-color,background] select-none ${form.isDefault ? 'border-ink bg-surface' : 'border-rule bg-bg'}`}>
+            <input type="checkbox" className="sr-only" checked={form.isDefault} onChange={(e) => setForm((f) => ({ ...f, isDefault: e.target.checked }))} />
+            <span className={`w-[18px] h-[18px] rounded-[5px] border-[1.5px] shrink-0 grid place-items-center transition-all ${form.isDefault ? 'border-ink bg-ink' : 'border-rule bg-bg'}`}>
+              <span className={`w-[9px] h-[9px] rounded-[3px] transition-colors ${form.isDefault ? 'bg-bg' : 'bg-transparent'}`} />
+            </span>
+            <span className="text-[13px] text-ink-2">تنظیم به‌عنوانِ آدرسِ پیش‌فرض</span>
           </label>
 
-          {error && <p className="addr-modal__error">{error}</p>}
+          {error && <p className="m-0 text-sale text-[13px]">{error}</p>}
         </div>
 
-        <div className="addr-modal__foot">
-          <button className="btn btn-mute btn-sm" onClick={onClose} disabled={loading}>لغو</button>
-          <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={loading}>
+        {/* Foot */}
+        <div className="flex gap-2 flex-row-reverse justify-start px-6 py-4 border-t border-rule">
+          <button className={`${BTN_MUTE} ${BTN_SM}`} onClick={onClose} disabled={loading}>لغو</button>
+          <button className={`${BTN_PRIMARY} ${BTN_SM}`} onClick={handleSubmit} disabled={loading}>
             {loading ? '...' : isEdit ? 'ذخیره‌ی تغییرات' : 'افزودنِ آدرس'}
           </button>
         </div>
@@ -690,58 +735,64 @@ const AddressesPane: FC = () => {
   }
 
   return (
-    <div className="pane active">
-      {modal.open && (
-        <AddressModal
-          initial={modal.address}
-          onClose={() => setModal({ open: false })}
-        />
-      )}
-      <div className="section" style={{ paddingBottom: 0 }}>
-        <div className="section-h" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderBottom: 0 }}>
+    <div className="flex flex-col gap-[18px]">
+      {modal.open && <AddressModal initial={modal.address} onClose={() => setModal({ open: false })} />}
+      <div className={CARD}>
+        <div className={`${SECTION_H} flex justify-between items-end border-b-0`}>
           <div>
-            <h2><span className="ic"><IcoPin /></span> آدرس‌های من</h2>
-            <p>برای ارسالِ سریع‌تر، می‌توانید چند آدرس ذخیره کنید.</p>
+            <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3"><span className={IC_SECT}><IcoPin /></span> آدرس‌های من</h2>
+            <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">برای ارسالِ سریع‌تر، می‌توانید چند آدرس ذخیره کنید.</p>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={() => setModal({ open: true })}><IcoPlus /> آدرسِ جدید</button>
+          <button className={`${BTN_PRIMARY} ${BTN_SM} [&_svg]:w-[14px] [&_svg]:h-[14px]`} onClick={() => setModal({ open: true })}><IcoPlus /> آدرسِ جدید</button>
         </div>
-        <div className="section-b" style={{ paddingTop: '8px' }}>
-          <div className="adr-grid">
+        <div className="px-7 py-2 pb-7 max-[640px]:p-4">
+          <div className="grid grid-cols-2 gap-3.5 max-[640px]:grid-cols-1">
             {addresses.map((addr) => (
-              <div key={addr.id} className={`adr${addr.isDefault ? ' def' : ''}`}>
-                <div className="adr-head">
-                  <span className="adr-tag">{addrIcon(addr.label)} {addr.label}</span>
+              <div key={addr.id} className={`relative p-[22px] bg-surface border rounded-[var(--radius)] flex flex-col gap-3.5 transition-[border-color,box-shadow] ${
+                addr.isDefault ? 'border-ink shadow-[inset_0_0_0_1px_var(--color-ink)]' : 'border-rule'
+              }`}>
+                <div className="flex items-center justify-between gap-2.5">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-[5px] rounded-full font-mono text-[10px] tracking-[.12em] uppercase font-medium [&_svg]:w-[11px] [&_svg]:h-[11px] ${
+                    addr.isDefault ? 'bg-ink text-bg' : 'bg-bg-2 text-ink-2'
+                  }`}>
+                    {addrIcon(addr.label)} {addr.label}
+                  </span>
                   {addr.isDefault && (
-                    <span className="def-badge"><IcoStar /> پیش‌فرض</span>
+                    <span className="inline-flex items-center gap-[5px] px-2.5 py-1 bg-copper/[.12] text-copper rounded-full font-mono text-[10px] tracking-[.12em] uppercase [&_svg]:w-2.5 [&_svg]:h-2.5">
+                      <IcoStar /> پیش‌فرض
+                    </span>
                   )}
                 </div>
-                <div className="adr-body">
-                  <div className="adr-name">
-                    <span className="pin"><IcoPin /></span>
+                <div className="flex flex-col gap-1.5">
+                  <div className="font-heading text-[15px] font-semibold flex items-center gap-2">
+                    <span className="text-copper inline-grid place-items-center [&_svg]:w-3.5 [&_svg]:h-3.5"><IcoPin /></span>
                     {addr.fullName}
                   </div>
-                  <div className="adr-line">{addr.province}، {addr.city}، {addr.street}</div>
-                  <div className="adr-meta">
-                    <span><IcoPhone />{toFa(addr.phone)}</span>
-                    <span><IcoCard />{toFa(addr.postalCode)}</span>
+                  <div className="text-[13px] text-ink-2 leading-[1.7]">{addr.province}، {addr.city}، {addr.street}</div>
+                  <div className="flex gap-2.5 flex-wrap text-[12px] text-muted pt-1.5 border-t border-dashed border-rule">
+                    <span className="inline-flex items-center gap-1.5 font-mono tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px]" dir="ltr"><IcoPhone />{toFa(addr.phone)}</span>
+                    <span className="inline-flex items-center gap-1.5 font-mono tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px]" dir="ltr"><IcoCard />{toFa(addr.postalCode)}</span>
                   </div>
                 </div>
-                <div className="adr-foot">
+                <div className="flex justify-between items-center gap-2.5 pt-3 border-t border-rule">
                   {addr.isDefault
-                    ? <button className="set-def" style={{ opacity: 0.45, cursor: 'default' }}>آدرسِ پیش‌فرض</button>
-                    : <button className="set-def" onClick={() => { setDefaultAddress(addr.id) }}>تنظیم به‌عنوانِ پیش‌فرض</button>
+                    ? <button className="text-[12px] text-copper bg-transparent border-0 p-[7px_0] cursor-default opacity-45 font-body">آدرسِ پیش‌فرض</button>
+                    : <button className="text-[12px] text-copper bg-transparent border-0 p-[7px_0] cursor-pointer font-body hover:underline hover:underline-offset-[3px]" onClick={() => setDefaultAddress(addr.id)}>تنظیم به‌عنوانِ پیش‌فرض</button>
                   }
-                  <div className="acts">
-                    <button className="adr-btn" onClick={() => setModal({ open: true, address: addr })}><IcoEdit />ویرایش</button>
-                    <button className="adr-btn danger" onClick={() => { removeAddress(addr.id) }}><IcoTrash /></button>
+                  <div className="flex gap-1.5">
+                    <button className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[12px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-ink hover:text-bg hover:border-ink [&_svg]:w-3 [&_svg]:h-3" onClick={() => setModal({ open: true, address: addr })}><IcoEdit />ویرایش</button>
+                    <button className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[12px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-sale hover:text-white hover:border-sale [&_svg]:w-3 [&_svg]:h-3" onClick={() => removeAddress(addr.id)}><IcoTrash /></button>
                   </div>
                 </div>
               </div>
             ))}
-            <button className="adr-add" onClick={() => setModal({ open: true })}>
-              <span className="ic"><IcoPlus /></span>
-              <span className="ll">افزودنِ آدرسِ جدید</span>
-              <span className="ss">می‌توانید تا ۵ آدرس داشته باشید</span>
+            <button
+              className="flex items-center justify-center gap-2.5 flex-col border-[1.5px] border-dashed border-rule bg-transparent cursor-pointer min-h-[240px] transition-all text-ink-2 rounded-[var(--radius)] font-body hover:border-ink hover:bg-surface"
+              onClick={() => setModal({ open: true })}
+            >
+              <span className="w-12 h-12 rounded-full bg-bg-2 grid place-items-center text-copper [&_svg]:w-5 [&_svg]:h-5"><IcoPlus /></span>
+              <span className="font-heading text-sm font-semibold">افزودنِ آدرسِ جدید</span>
+              <span className="text-[11px] text-muted">می‌توانید تا ۵ آدرس داشته باشید</span>
             </button>
           </div>
         </div>
@@ -754,46 +805,49 @@ const AddressesPane: FC = () => {
 const WishlistPane: FC = () => {
   const { items, remove } = useWishlistStore()
   const addToCart = useCartStore((s) => s.addItem)
-  const openCart = useCartStore((s) => s.openCart)
+  const openCart  = useCartStore((s) => s.openCart)
 
   return (
-    <div className="pane active">
-      <div className="section">
-        <div className="section-h" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+    <div className="flex flex-col gap-[18px]">
+      <div className={CARD}>
+        <div className={`${SECTION_H} flex justify-between items-end`}>
           <div>
-            <h2><span className="ic"><IcoHeart /></span> علاقه‌مندی‌های من</h2>
-            <p>قطعاتی که برای بعد نگه داشته‌اید — {toFa(items.length)} مورد</p>
+            <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3"><span className={IC_SECT}><IcoHeart /></span> علاقه‌مندی‌های من</h2>
+            <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">قطعاتی که برای بعد نگه داشته‌اید — {toFa(items.length)} مورد</p>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            {items.length > 0 && (
-              <button className="btn btn-mute btn-sm" onClick={() => { items.forEach(addToCart); openCart() }}>
-                انتقال همه به سبد
-              </button>
-            )}
-          </div>
+          {items.length > 0 && (
+            <button className={`${BTN_MUTE} ${BTN_SM}`} onClick={() => { items.forEach(addToCart); openCart() }}>انتقال همه به سبد</button>
+          )}
         </div>
-        <div className="section-b">
+        <div className={SECTION_B}>
           {items.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '56px 0', color: 'var(--muted)' }}>
-              <div style={{ fontSize: '14px' }}>هیچ محصولی در علاقه‌مندی‌ها نیست</div>
-            </div>
+            <div className="text-center py-14 text-muted text-sm">هیچ محصولی در علاقه‌مندی‌ها نیست</div>
           ) : (
-            <div className="wish-grid">
+            <div className="grid grid-cols-4 gap-3.5 max-[1100px]:grid-cols-3 max-[640px]:grid-cols-2">
               {items.map((product) => (
-                <article key={product.id} className="wish">
-                  <div className="ph">
-                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">{illusSvg(product.illus)}</svg>
-                    <button className="heart" onClick={() => remove(product.id)}><IcoHeartFill /></button>
-                    <button className="add-cart" onClick={() => addToCart(product)}>
+                <article key={product.id} className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col relative transition-[transform,box-shadow] duration-[250ms] group hover:-translate-y-[3px] hover:shadow-[0_16px_40px_-28px_rgba(27,15,29,.25)]">
+                  <div className="aspect-square bg-gradient-to-bl from-[#EFE5D5] to-[#E6D8C2] grid place-items-center text-ink-2 relative overflow-hidden">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth=".9" className="w-[55%] h-[55%]">{illusSvg(product.illus)}</svg>
+                    <button className="absolute top-2.5 left-2.5 w-8 h-8 rounded-full bg-surface/[.92] grid place-items-center text-sale backdrop-blur-[8px] cursor-pointer [&_svg]:w-3.5 [&_svg]:h-3.5" onClick={() => remove(product.id)}>
+                      <IcoHeartFill />
+                    </button>
+                    <button
+                      className="absolute bottom-2.5 left-2.5 right-2.5 bg-[rgba(27,15,29,.94)] text-bg py-2 rounded-lg text-[12px] font-medium flex justify-center gap-1.5 items-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 cursor-pointer font-body [&_svg]:w-3 [&_svg]:h-3"
+                      onClick={() => addToCart(product)}
+                    >
                       <IcoBag /> افزودن به سبد
                     </button>
                   </div>
-                  <div className="body">
-                    <span className="cat-lbl">{product.cat}</span>
-                    <h4 className="nm">{product.fa}</h4>
-                    <div className="pr">
-                      <span className="now">{formatToman(product.price)}<small>ت</small></span>
-                      <span className={`stock${product.oldPrice ? ' low' : ''}`}>موجود</span>
+                  <div className="p-3.5 px-4">
+                    <span className="font-mono text-[10px] tracking-[.14em] uppercase text-muted">{product.cat}</span>
+                    <h4 className="font-heading text-sm font-semibold leading-[1.3] mt-1">{product.fa}</h4>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="font-heading text-sm font-bold">
+                        {formatToman(product.price)}<small className="text-[10px] text-muted font-normal mr-[3px]">ت</small>
+                      </span>
+                      <span className={`font-mono text-[10px] inline-flex items-center gap-1 ${product.oldPrice ? 'text-[#B98223]' : 'text-ok'} before:content-[''] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current`}>
+                        موجود
+                      </span>
                     </div>
                   </div>
                 </article>
@@ -812,41 +866,46 @@ const SecurityPane: FC = () => {
   const [sec, setSec] = useState({ twofa: true, biometric: false, alerts: true })
 
   return (
-    <div className="pane active">
-      <div className="section">
-        <div className="section-h">
-          <h2><span className="ic"><IcoLock /></span> امنیت و رمز</h2>
-          <p>تنظیمات امنیتی و رمزِ ورودِ حساب خود را مدیریت کنید.</p>
+    <div className="flex flex-col gap-[18px]">
+      <div className={CARD}>
+        <div className={SECTION_H}>
+          <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3"><span className={IC_SECT}><IcoLock /></span> امنیت و رمز</h2>
+          <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">تنظیمات امنیتی و رمزِ ورودِ حساب خود را مدیریت کنید.</p>
         </div>
-        <div className="section-b">
+        <div className={SECTION_B}>
           {([
-            { key: 'twofa', title: 'تأییدِ دو مرحله‌ای', desc: 'ارسالِ کدِ تأیید به موبایل هنگامِ ورود' },
-            { key: 'biometric', title: 'ورود بیومتریک', desc: 'استفاده از اثرِ انگشت یا تشخیصِ چهره' },
-            { key: 'alerts', title: 'اعلانِ ورود جدید', desc: 'اطلاع‌رسانی از هر ورودِ جدید به حساب' },
+            { key: 'twofa',     title: 'تأییدِ دو مرحله‌ای',  desc: 'ارسالِ کدِ تأیید به موبایل هنگامِ ورود' },
+            { key: 'biometric', title: 'ورود بیومتریک',        desc: 'استفاده از اثرِ انگشت یا تشخیصِ چهره' },
+            { key: 'alerts',    title: 'اعلانِ ورود جدید',     desc: 'اطلاع‌رسانی از هر ورودِ جدید به حساب' },
           ] as const).map(({ key, title, desc }) => (
-            <div key={key} className="toggle-row">
-              <span className="ic"><IcoLock /></span>
-              <div className="t"><h4>{title}</h4><p>{desc}</p></div>
-              <label className="sw-toggle">
-                <input type="checkbox" checked={sec[key]} onChange={(e) => setSec((s) => ({ ...s, [key]: e.target.checked }))} />
-                <span className="sl"></span>
+            <div key={key} className="flex items-start gap-3.5 py-3.5 border-t border-rule first:border-t-0 first:pt-0">
+              <span className="w-[34px] h-[34px] rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]"><IcoLock /></span>
+              <div className="flex-1">
+                <h4 className="font-heading text-[13px] font-semibold m-0">{title}</h4>
+                <p className="m-0 mt-0.5 text-[11px] text-muted">{desc}</p>
+              </div>
+              <label className="relative w-9 h-5 shrink-0 cursor-pointer mt-0.5">
+                <input type="checkbox" className="sr-only peer" checked={sec[key]} onChange={(e) => setSec((s) => ({ ...s, [key]: e.target.checked }))} />
+                <span className="absolute inset-0 bg-bg-2 rounded-full transition-colors peer-checked:bg-ink after:content-[''] after:absolute after:top-0.5 after:right-0.5 after:w-4 after:h-4 after:rounded-full after:bg-white after:transition-transform peer-checked:after:-translate-x-4" />
               </label>
             </div>
           ))}
         </div>
-        <div className="section-actions">
-          <span className="hint">آخرین ورود: امروز · ۱۰:۴۵</span>
-          <button className="btn btn-mute btn-sm">تغییرِ رمزِ ورود</button>
+        <div className="px-7 py-[18px] bg-surface-2 border-t border-rule flex justify-between items-center gap-3">
+          <span className="text-[11px] text-muted">آخرین ورود: امروز · ۱۰:۴۵</span>
+          <button className={`${BTN_MUTE} ${BTN_SM}`}>تغییرِ رمزِ ورود</button>
         </div>
       </div>
 
-      <div className="section">
-        <div className="section-h">
-          <h2><span className="ic" style={{ color: 'var(--sale)' }}><IcoLogout /></span> خروج از حساب</h2>
-          <p>از تمامِ دستگاه‌ها خارج شوید.</p>
+      <div className={CARD}>
+        <div className={SECTION_H}>
+          <h2 className="font-heading text-[18px] font-semibold m-0 flex items-center gap-3">
+            <span className={`${IC_SECT} text-sale`}><IcoLogout /></span> خروج از حساب
+          </h2>
+          <p className="m-0 mt-1.5 text-[13px] text-muted mr-11">از تمامِ دستگاه‌ها خارج شوید.</p>
         </div>
-        <div className="section-b">
-          <button className="btn btn-mute btn-sm" style={{ color: 'var(--sale)' }} onClick={() => { logout() }}>
+        <div className={SECTION_B}>
+          <button className={`${BTN_MUTE} ${BTN_SM} text-sale [&_svg]:w-[14px] [&_svg]:h-[14px]`} onClick={() => logout()}>
             <IcoLogout /> خروج از همه‌ی دستگاه‌ها
           </button>
         </div>
@@ -857,12 +916,12 @@ const SecurityPane: FC = () => {
 
 // ─── Main AccountPage ─────────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: 'overview', icon: <IcoGrid />, label: 'پیش‌خوان', countKey: null },
-  { id: 'profile', icon: <IcoUser />, label: 'پروفایل', countKey: null },
-  { id: 'orders', icon: <IcoBag />, label: 'سفارش‌ها', countKey: 'orders' },
-  { id: 'addresses', icon: <IcoPin />, label: 'آدرس‌ها', countKey: 'addresses' },
-  { id: 'wishlist', icon: <IcoHeart />, label: 'علاقه‌مندی‌ها', countKey: 'wishlist' },
-  { id: 'security', icon: <IcoLock />, label: 'امنیت و رمز', countKey: null },
+  { id: 'overview',   icon: <IcoGrid />,  label: 'پیش‌خوان',         countKey: null },
+  { id: 'profile',    icon: <IcoUser />,  label: 'پروفایل',           countKey: null },
+  { id: 'orders',     icon: <IcoBag />,   label: 'سفارش‌ها',          countKey: 'orders' },
+  { id: 'addresses',  icon: <IcoPin />,   label: 'آدرس‌ها',           countKey: 'addresses' },
+  { id: 'wishlist',   icon: <IcoHeart />, label: 'علاقه‌مندی‌ها',     countKey: 'wishlist' },
+  { id: 'security',   icon: <IcoLock />,  label: 'امنیت و رمز',       countKey: null },
 ] as const
 
 const AccountPage: FC = () => {
@@ -870,8 +929,8 @@ const AccountPage: FC = () => {
   const [tab, setTab] = useState<Tab>('overview')
   const { profile, logout, orders, addresses, fetchOrders, fetchAddresses, isLoggedIn } = useAuthStore()
 
-  const createdAt = profile?.createdAt
-  const memberSince = useMemo(() => {
+  const createdAt    = profile?.createdAt
+  const memberSince  = useMemo(() => {
     if (!createdAt) return null
     return new Date(createdAt).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long' })
   }, [createdAt])
@@ -883,91 +942,112 @@ const AccountPage: FC = () => {
   }, [isLoggedIn, fetchOrders, fetchAddresses])
   const wishCount = useWishlistStore((s) => s.items.length)
 
-  const counts: Record<string, number> = {
-    orders: orders.length,
-    addresses: addresses.length,
-    wishlist: wishCount,
-  }
+  const counts: Record<string, number> = { orders: orders.length, addresses: addresses.length, wishlist: wishCount }
 
   return (
-    <div className="acc-page-wrap anim-in">
-      <section className="intro">
-        <div className="wrap">
-          <div className="left">
-            <div className="ava">
-              {profile?.avatarUrl
-                ? <img src={profile.avatarUrl} alt="avatar" className="img-cover" />
-                : firstLetter(profile?.name)
-              }
-            </div>
-            <div className="who">
-              <span className="kicker">حسابِ کاربری</span>
-              <h1 style={{ marginTop: '4px' }}>
-                خوش آمدید، <em>{profile?.name?.split(' ')[0]}</em>
-              </h1>
-              <div className="meta">
-                {memberSince && <><span className="lvl"><IcoStar />عضو</span><span className="sep">·</span></>}
-                {memberSince && <><span>عضو از {memberSince}</span><span className="sep">·</span></>}
-                <span>{toFa(orders.length)} سفارش</span>
+    <div className="min-h-[60vh] animate-rise">
+      {/* Intro band */}
+      <section className="py-9 pb-7">
+        <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
+          <div className="flex justify-between items-end gap-8 flex-wrap max-[640px]:flex-col max-[640px]:items-start">
+            <div className="flex items-center gap-[18px]">
+              <div className={AVA_MD}>
+                {profile?.avatarUrl
+                  ? <img src={profile.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                  : firstLetter(profile?.name)
+                }
+              </div>
+              <div>
+                <span className="font-display italic font-normal text-sm tracking-[.04em] text-copper inline-flex items-center gap-2.5 before:content-[''] before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
+                  حسابِ کاربری
+                </span>
+                <h1 className="mt-1 font-heading text-[clamp(24px,3vw,36px)] font-bold m-0 leading-[1.1] tracking-[-0.01em]">
+                  خوش آمدید، <em className="font-display italic font-normal text-copper">{profile?.name?.split(' ')[0]}</em>
+                </h1>
+                <div className="flex items-center gap-2.5 mt-1.5 text-[13px] text-muted flex-wrap">
+                  {memberSince && (
+                    <>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full font-mono text-[10px] tracking-[.14em] uppercase font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
+                        <IcoStar />عضو
+                      </span>
+                      <span className="text-rule">·</span>
+                      <span>عضو از {memberSince}</span>
+                      <span className="text-rule">·</span>
+                    </>
+                  )}
+                  <span>{toFa(orders.length)} سفارش</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="actions">
-            <button className="btn btn-mute btn-sm" onClick={() => setTab('orders')}>
-              <IcoClock /> تاریخچه‌ی سفارش‌ها
-            </button>
-            <button className="btn btn-primary btn-sm" onClick={() => setTab('overview')}>
-              <IcoSearch /> پیش‌خوان
-            </button>
+            <div className="flex gap-2 flex-wrap items-center">
+              <button className={`${BTN_MUTE} ${BTN_SM} [&_svg]:w-3.5 [&_svg]:h-3.5`} onClick={() => setTab('orders')}><IcoClock /> تاریخچه‌ی سفارش‌ها</button>
+              <button className={`${BTN_PRIMARY} ${BTN_SM} [&_svg]:w-3.5 [&_svg]:h-3.5`} onClick={() => setTab('overview')}><IcoSearch /> پیش‌خوان</button>
+            </div>
           </div>
         </div>
       </section>
 
-      <main className="dash">
-        <div className="wrap">
-          <div className="dash-grid">
-            <aside className="aside">
-              <div className="aside-head">
-                <span className="ava-sm">
+      {/* Dashboard */}
+      <main className="pb-20">
+        <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
+          <div className="grid grid-cols-[260px_1fr] gap-6 items-start max-[1100px]:grid-cols-1">
+            {/* Sidebar */}
+            <aside className="sticky top-24 bg-surface rounded-[var(--radius)] border border-rule overflow-hidden max-[1100px]:static">
+              <div className="py-[18px] px-5 pb-4 border-b border-rule flex items-center gap-3">
+                <span className={AVA_SM}>
                   {profile?.avatarUrl
-                    ? <img src={profile.avatarUrl} alt="avatar" className="img-cover" />
+                    ? <img src={profile.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
                     : firstLetter(profile?.name)
                   }
                 </span>
-                <div className="info">
-                  <span className="name">{profile?.name}</span>
-                  <span className="phn">{toFa(profile?.phone ?? '')}</span>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-heading text-sm font-semibold leading-[1.2] whitespace-nowrap overflow-hidden text-ellipsis">{profile?.name}</span>
+                  <span className="font-mono text-[11px] text-muted tracking-[.04em]" dir="ltr" style={{ textAlign: 'right' }}>{toFa(profile?.phone ?? '')}</span>
                 </div>
               </div>
-              <nav className="aside-nav">
+              <nav className="p-2 max-[1100px]:flex max-[1100px]:flex-wrap">
                 {NAV_ITEMS.map(({ id, icon, label, countKey }) => (
                   <button
                     key={id}
-                    className={`nav-item${tab === id ? ' on' : ''}`}
+                    className={`flex items-center gap-3 px-[13px] py-[11px] rounded-[10px] text-sm transition-[background,color] cursor-pointer w-full text-right font-body max-[1100px]:w-auto max-[1100px]:flex-none ${
+                      tab === id ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-bg-2 hover:text-ink'
+                    }`}
                     onClick={() => setTab(id as Tab)}
                   >
-                    <span className="ic">{icon}</span>
-                    <span className="lbl">{label}</span>
+                    <span className={`w-8 h-8 rounded-lg grid place-items-center shrink-0 transition-[color,background] [&_svg]:w-[15px] [&_svg]:h-[15px] ${
+                      tab === id ? 'bg-white/[.12] text-copper' : 'bg-bg-2 text-ink-2'
+                    }`}>
+                      {icon}
+                    </span>
+                    <span className="flex-1">{label}</span>
                     {countKey && counts[countKey] > 0 && (
-                      <span className="n">{toFa(counts[countKey])}</span>
+                      <span className={`font-mono text-[10px] tracking-[.04em] px-[7px] py-[2px] rounded-full ${
+                        tab === id ? 'bg-white/[.18] text-bg' : 'bg-bg-2 text-ink-2'
+                      }`}>
+                        {toFa(counts[countKey])}
+                      </span>
                     )}
                   </button>
                 ))}
-                <hr />
-                <button className="nav-item logout" onClick={() => { logout() }}>
-                  <span className="ic"><IcoLogout /></span>
-                  <span className="lbl">خروج از حساب</span>
+                <hr className="h-px bg-rule border-0 my-2 max-[1100px]:w-full" />
+                <button
+                  className="flex items-center gap-3 px-[13px] py-[11px] rounded-[10px] text-sm text-sale transition-[background,color] cursor-pointer w-full text-right font-body max-[1100px]:w-auto max-[1100px]:flex-none hover:bg-bg-2"
+                  onClick={() => logout()}
+                >
+                  <span className="w-8 h-8 rounded-lg bg-sale/[.08] grid place-items-center text-sale shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]"><IcoLogout /></span>
+                  <span className="flex-1">خروج از حساب</span>
                 </button>
               </nav>
             </aside>
 
-            <div className="panes-wrap">
-              {tab === 'overview' && <OverviewPane setTab={setTab} />}
-              {tab === 'profile' && <ProfilePane />}
-              {tab === 'orders' && <OrdersPane />}
-              {tab === 'addresses' && <AddressesPane />}
-              {tab === 'wishlist' && <WishlistPane />}
-              {tab === 'security' && <SecurityPane />}
+            {/* Panes */}
+            <div>
+              {tab === 'overview'   && <OverviewPane  setTab={setTab} />}
+              {tab === 'profile'    && <ProfilePane />}
+              {tab === 'orders'     && <OrdersPane />}
+              {tab === 'addresses'  && <AddressesPane />}
+              {tab === 'wishlist'   && <WishlistPane />}
+              {tab === 'security'   && <SecurityPane />}
             </div>
           </div>
         </div>

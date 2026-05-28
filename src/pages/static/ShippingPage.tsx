@@ -1,6 +1,7 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import type { FC } from 'react'
 import { Link } from 'react-router-dom'
+import { BTN_CLS, BTN_GHOST_CLS } from '../../components/ui/Button'
 
 const TIMELINE = [
   { zone: 'تهران', method: 'پیک ویژه‌ی لوکسرا', time: '۲۴ ساعت', note: 'ارسال در همان روز برای سفارش‌های قبل از ۱۴:۰۰' },
@@ -18,68 +19,67 @@ const RETURN_STEPS = [
 const ShippingPage: FC = () => {
   usePageMeta({ title: 'ارسال و تحویل' })
   return (
-  <div className="sp-page">
-    <div className="sp-hero">
-      <span className="section__kicker">SHIPPING & RETURNS</span>
-      <h1 className="sp-hero__title">
+  <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
+    {/* Hero */}
+    <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
+      <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">SHIPPING &amp; RETURNS</span>
+      <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
         ارسال و
-        <em> بازگشت</em>
+        <em className="font-heading not-italic text-plum font-normal"> بازگشت</em>
       </h1>
-      <p className="sp-hero__lede">
+      <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
         ارسال رایگان به سراسر ایران. بازگشت بدون دردسر تا ۱۴ روز.
       </p>
     </div>
 
-    <div className="shipping-body">
+    <div className="mb-16">
       {/* Delivery */}
-      <section className="sp-section">
-        <h2 className="sp-section__title">زمان‌بندی تحویل</h2>
-        <p className="sp-section__lede">تمام سفارش‌ها بیمه دارند و با کد رهگیری ارسال می‌شوند.</p>
-        <div className="ship-table-wrap">
-          <table className="ship-table">
+      <section className="mb-14">
+        <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">زمان‌بندی تحویل</h2>
+        <p className="text-ink-2 text-sm m-0 mb-6">تمام سفارش‌ها بیمه دارند و با کد رهگیری ارسال می‌شوند.</p>
+        <div className="overflow-x-auto my-5">
+          <table className="w-full border-collapse font-body text-sm min-w-[560px]">
             <thead>
               <tr>
-                <th>منطقه</th>
-                <th>روش ارسال</th>
-                <th>زمان تحویل</th>
-                <th>توضیحات</th>
+                {['منطقه', 'روش ارسال', 'زمان تحویل', 'توضیحات'].map((h) => (
+                  <th key={h} className="py-3 px-4 text-right font-normal text-[11px] font-mono tracking-[.1em] text-muted bg-plate border-b border-rule">{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {TIMELINE.map((row) => (
                 <tr key={row.zone}>
-                  <td><strong>{row.zone}</strong></td>
-                  <td>{row.method}</td>
-                  <td className="ship-table__time">{row.time}</td>
-                  <td className="ship-table__note">{row.note}</td>
+                  <td className="py-3.5 px-4 border-b border-rule align-middle text-ink-2"><strong>{row.zone}</strong></td>
+                  <td className="py-3.5 px-4 border-b border-rule align-middle text-ink-2">{row.method}</td>
+                  <td className="py-3.5 px-4 border-b border-rule align-middle font-mono text-[13px] text-plum font-medium whitespace-nowrap">{row.time}</td>
+                  <td className="py-3.5 px-4 border-b border-rule align-middle text-[13px] text-muted">{row.note}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="sp-callout">
-          <strong>هزینه‌ی ارسال:</strong> رایگان برای تمام سفارش‌ها، بدون حداقل مبلغ.
+        <div className="bg-plate px-5 py-4 text-sm text-ink-2 mt-5">
+          <strong className="text-ink">هزینه‌ی ارسال:</strong> رایگان برای تمام سفارش‌ها، بدون حداقل مبلغ.
         </div>
       </section>
 
       {/* Packaging */}
-      <section className="sp-section">
-        <h2 className="sp-section__title">بسته‌بندی</h2>
-        <p>هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای آماده می‌شود. بسته‌بندی هدیه‌ای استاندارد است و نیازی به درخواست اضافی ندارد — چه برای خودتان، چه برای هدیه دادن.</p>
+      <section className="mb-14">
+        <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">بسته‌بندی</h2>
+        <p className="text-ink-2 text-sm leading-[1.8]">هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای آماده می‌شود. بسته‌بندی هدیه‌ای استاندارد است و نیازی به درخواست اضافی ندارد — چه برای خودتان، چه برای هدیه دادن.</p>
       </section>
 
       {/* Returns */}
-      <section className="sp-section">
-        <h2 className="sp-section__title">سیاست بازگشت</h2>
-        <p className="sp-section__lede">تا ۱۴ روز پس از دریافت سفارش، امکان بازگشت وجود دارد.</p>
-
-        <div className="return-steps">
+      <section className="mb-14">
+        <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">سیاست بازگشت</h2>
+        <p className="text-ink-2 text-sm m-0 mb-6">تا ۱۴ روز پس از دریافت سفارش، امکان بازگشت وجود دارد.</p>
+        <div className="flex flex-col mt-6">
           {RETURN_STEPS.map((s) => (
-            <div key={s.n} className="return-step">
-              <span className="return-step__n">{s.n}</span>
+            <div key={s.n} className="grid grid-cols-[48px_1fr] gap-5 py-6 border-b border-rule">
+              <span className="w-9 h-9 bg-plum text-bg font-mono text-[12px] flex items-center justify-center shrink-0">{s.n}</span>
               <div>
-                <h4 className="return-step__title">{s.title}</h4>
-                <p className="return-step__body">{s.body}</p>
+                <h4 className="font-body text-[15px] font-medium mt-1 mb-1.5 text-ink">{s.title}</h4>
+                <p className="text-sm leading-[1.8] text-ink-2 m-0">{s.body}</p>
               </div>
             </div>
           ))}
@@ -87,37 +87,36 @@ const ShippingPage: FC = () => {
       </section>
 
       {/* Conditions */}
-      <section className="sp-section">
-        <h2 className="sp-section__title">شرایط بازگشت</h2>
-        <div className="sp-two-col">
+      <section className="mb-14">
+        <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">شرایط بازگشت</h2>
+        <div className="grid grid-cols-2 gap-10 mt-6 max-[900px]:grid-cols-1 max-[900px]:gap-7">
           <div>
-            <h4 className="sp-col-head">✓ مشمول بازگشت</h4>
-            <ul className="sp-list sp-list--ok">
-              <li>قطعه سالم و بدون آسیب فیزیکی</li>
-              <li>پلاک اصلی دست‌نخورده</li>
-              <li>در بسته‌بندی اصلی</li>
-              <li>تا ۱۴ روز از تاریخ دریافت</li>
+            <h4 className="font-body text-sm font-medium m-0 mb-3 text-ink">✓ مشمول بازگشت</h4>
+            <ul className="list-none p-0 m-0 flex flex-col gap-2.5 text-sm text-ink-2">
+              {['قطعه سالم و بدون آسیب فیزیکی','پلاک اصلی دست‌نخورده','در بسته‌بندی اصلی','تا ۱۴ روز از تاریخ دریافت'].map((t) => (
+                <li key={t} className="before:content-['✓'] before:text-plum before:ml-2">{t}</li>
+              ))}
             </ul>
           </div>
           <div>
-            <h4 className="sp-col-head">✗ شامل بازگشت نمی‌شود</h4>
-            <ul className="sp-list sp-list--no">
-              <li>قطعاتی که استفاده شده‌اند</li>
-              <li>قطعاتی که پلاکشان جدا شده</li>
-              <li>آسیب فیزیکی ناشی از بی‌احتیاطی</li>
-              <li>محصولات سفارشی‌سازی شده</li>
+            <h4 className="font-body text-sm font-medium m-0 mb-3 text-ink">✗ شامل بازگشت نمی‌شود</h4>
+            <ul className="list-none p-0 m-0 flex flex-col gap-2.5 text-sm text-ink-2">
+              {['قطعاتی که استفاده شده‌اند','قطعاتی که پلاکشان جدا شده','آسیب فیزیکی ناشی از بی‌احتیاطی','محصولات سفارشی‌سازی شده'].map((t) => (
+                <li key={t} className="before:content-['✗'] before:text-sale before:ml-2">{t}</li>
+              ))}
             </ul>
           </div>
         </div>
       </section>
     </div>
 
-    <div className="sp-cta-band">
-      <h2>سوال دارید؟</h2>
-      <p>تیم پشتیبانی لوکسرا پاسخگوست.</p>
-      <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Link to="/contact" className="btn">تماس با ما <span className="arr">←</span></Link>
-        <Link to="/faq" className="btn btn--ghost">سوالات متداول</Link>
+    {/* CTA band */}
+    <div className="text-center bg-plate py-14 px-[clamp(20px,4vw,56px)] -mx-[clamp(20px,4vw,56px)] -mb-[100px] mt-16 max-[640px]:py-11">
+      <h2 className="font-heading font-bold text-[clamp(28px,3vw,44px)] m-0 mb-3 text-ink">سوال دارید؟</h2>
+      <p className="text-muted text-sm m-0 mb-7">تیم پشتیبانی لوکسرا پاسخگوست.</p>
+      <div className="flex gap-3 justify-center flex-wrap">
+        <Link to="/contact" className={BTN_CLS}>تماس با ما <span className="arr">←</span></Link>
+        <Link to="/faq" className={BTN_GHOST_CLS}>سوالات متداول</Link>
       </div>
     </div>
   </div>

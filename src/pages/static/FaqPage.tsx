@@ -1,6 +1,7 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import { useState, type FC } from 'react'
 import { Link } from 'react-router-dom'
+import { BTN_CLS } from '../../components/ui/Button'
 
 interface FaqItem {
   q: string
@@ -36,7 +37,7 @@ const SECTIONS: FaqSection[] = [
     items: [
       { q: 'ضمانت کیفیت به چه معناست؟', a: 'اگر رنگ قطعه در سال اول تغییر کرد یا افت کیفیت محسوسی داشت، بدون سوال و بدون هزینه قطعه را تعویض می‌کنیم. فقط کافی است با پشتیبانی تماس بگیرید.' },
       { q: 'آیا محصولات برای پوست حساس مناسبند؟', a: 'بله. تمام محصولات از آلیاژ بدون نیکل ساخته شده‌اند. نیکل شایع‌ترین عامل حساسیت پوستی در جواهرات است و ما به‌طور جدی این معیار را بررسی می‌کنیم.' },
-      { q: 'چطور از جواهرم نگهداری کنم؟', a: 'قطعه را با پارچه‌ی نرم میکروفایبر پس از هر استفاده پاک کنید. از تماس با عطر، کرم و مواد شیمیایی قبل از پوشیدن خودداری کنید. در کیف پارچه‌ای جداگانه نگهداری کنید. برای اطلاعات بیشتر به تب «نگهداری» در صفحه‌ی محصول مراجعه کنید.' },
+      { q: 'چطور از جواهرم نگهداری کنم؟', a: 'قطعه را با پارچه‌ی نرم میکروفایبر پس از هر استفاده پاک کنید. از تماس با عطر، کرم و مواد شیمیایی قبل از پوشیدن خودداری کنید. در کیف پارچه‌ای جداگانه نگهداری کنید.' },
     ],
   },
   {
@@ -52,16 +53,22 @@ const SECTIONS: FaqSection[] = [
 const AccordionItem: FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false)
   return (
-    <div className={`faq-item ${open ? 'is-open' : ''}`}>
+    <div className="border-b border-rule">
       <button
-        className="faq-item__q"
+        className={`w-full flex items-center justify-between gap-4 py-[18px] font-body text-[15px] text-right transition-colors ${open ? 'text-plum' : 'text-ink hover:text-plum'}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
         <span>{q}</span>
-        <span className="faq-item__icon" aria-hidden="true">{open ? '−' : '+'}</span>
+        <span className="shrink-0 font-mono text-[18px] text-muted w-5 text-center" aria-hidden="true">
+          {open ? '−' : '+'}
+        </span>
       </button>
-      {open && <div className="faq-item__a">{a}</div>}
+      {open && (
+        <div className="text-sm leading-[1.9] text-ink-2 pb-5 animate-[luxera-rise_250ms_cubic-bezier(.2,.7,.2,1)_both]">
+          {a}
+        </div>
+      )}
     </div>
   )
 }
@@ -69,23 +76,25 @@ const AccordionItem: FC<{ q: string; a: string }> = ({ q, a }) => {
 const FaqPage: FC = () => {
   usePageMeta({ title: 'پرسش‌های متداول' })
   return (
-  <div className="sp-page">
-    <div className="sp-hero">
-      <span className="section__kicker">FAQ</span>
-      <h1 className="sp-hero__title">
+  <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
+    {/* Hero */}
+    <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
+      <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">FAQ</span>
+      <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
         سوالات
-        <em> متداول</em>
+        <em className="font-heading not-italic text-plum font-normal"> متداول</em>
       </h1>
-      <p className="sp-hero__lede">
+      <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
         پاسخ اکثر سوال‌ها اینجاست. اگر پیدا نکردید با ما تماس بگیرید.
       </p>
     </div>
 
-    <div className="faq-body">
+    {/* FAQ body */}
+    <div className="flex flex-col gap-14 mb-16">
       {SECTIONS.map((sec) => (
-        <section key={sec.title} className="faq-section">
-          <h2 className="faq-section__title">{sec.title}</h2>
-          <div className="faq-list">
+        <section key={sec.title}>
+          <h2 className="font-body font-light text-[22px] m-0 mb-5 text-ink pb-3 border-b border-rule">{sec.title}</h2>
+          <div className="flex flex-col">
             {sec.items.map((item) => (
               <AccordionItem key={item.q} q={item.q} a={item.a} />
             ))}
@@ -94,10 +103,11 @@ const FaqPage: FC = () => {
       ))}
     </div>
 
-    <div className="sp-cta-band">
-      <h2>جواب سوالتان را پیدا نکردید؟</h2>
-      <p>تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.</p>
-      <Link to="/contact" className="btn">
+    {/* CTA band */}
+    <div className="text-center bg-plate py-14 px-[clamp(20px,4vw,56px)] -mx-[clamp(20px,4vw,56px)] -mb-[100px] mt-16 max-[640px]:py-11">
+      <h2 className="font-heading font-bold text-[clamp(28px,3vw,44px)] m-0 mb-3 text-ink">جواب سوالتان را پیدا نکردید؟</h2>
+      <p className="text-muted text-sm m-0 mb-7">تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.</p>
+      <Link to="/contact" className={BTN_CLS}>
         تماس با ما <span className="arr">←</span>
       </Link>
     </div>

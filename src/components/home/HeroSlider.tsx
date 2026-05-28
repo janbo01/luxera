@@ -89,9 +89,10 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
                 ? <img
                     src={slide.imageUrl}
                     alt={slide.caption}
-                    className="img-cover"
+                    className="w-full h-full object-cover"
                     loading={i === 0 ? 'eager' : 'lazy'}
                     fetchPriority={i === 0 ? 'high' : 'low'}
+                    decoding="async"
                   />
                 : <Illustration name={slide.illus ?? 'NecklaceB'} />}
             </div>

@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useState, useEffect, useCallback, type FC } from 'react'
+import { useState, useEffect, useCallback, useMemo, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import Gallery from '../components/product/Gallery'
@@ -37,7 +37,45 @@ const ProductPage: FC = () => {
   const [apiDetail, setApiDetail] = useState<ApiProductDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  usePageMeta({ title: product?.fa ?? 'محصول' })
+
+  const productJsonLd = useMemo(() => {
+    if (!product || !apiDetail || !id) return undefined
+    const productUrl = `https://luxera.ir/product/${id}`
+    const schema: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.fa,
+      description: product.description || undefined,
+      image: apiDetail.images?.map((img) => img.url) ?? [],
+      url: productUrl,
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'IRR',
+        price: String(product.price),
+        availability:
+          apiDetail.variants?.some((v) => v.quantity > 0)
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+        url: productUrl,
+      },
+    }
+    if (product.rating && product.reviewCount) {
+      schema.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: String(product.rating),
+        reviewCount: String(product.reviewCount),
+      }
+    }
+    return schema
+  }, [product, apiDetail, id])
+
+  usePageMeta({
+    title: product?.fa ?? 'محصول',
+    description: product?.description || undefined,
+    canonical: id ? `/product/${id}` : undefined,
+    ogImage: apiDetail?.images?.[0]?.url,
+    jsonLd: productJsonLd,
+  })
 
   useEffect(() => {
     if (!id) return
@@ -48,6 +86,18 @@ const ProductPage: FC = () => {
         const detail = await getProduct(id)
         setApiDetail(detail)
         setProduct(adaptDetail(detail))
+        // Gallery shows images.slice(1) as main when 2+ images exist, images[0] otherwise
+        const heroImageUrl = detail.images && detail.images.length > 1
+          ? detail.images[1].url
+          : detail.images?.[0]?.url
+        if (heroImageUrl) {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'image'
+          link.href = heroImageUrl
+          link.setAttribute('fetchpriority', 'high')
+          document.head.appendChild(link)
+        }
       } catch (e) {
         setError((e as { message?: string })?.message ?? 'خطا در بارگذاری محصول')
       } finally {
@@ -80,8 +130,9 @@ const ProductPage: FC = () => {
         { label: product.cat || 'محصولات', to: product.cat ? `/category/${product.catId}` : '/' },
         { label: product.fa },
       ]} />
-      <section className="pdp">
-        <div className="pdp-grid">
+      <section className="px-[var(--pad)] max-w-[var(--maxw)] mx-auto pt-6 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[56%_1fr] gap-8 lg:gap-10 items-start">
+          <Gallery images={apiDetail?.images} productName={product.fa} />
           <InfoPanel
             product={product}
             apiColors={apiDetail?.colors}
@@ -90,7 +141,6 @@ const ProductPage: FC = () => {
             onAdd={addItem}
             onSizeGuide={handleSizeGuide}
           />
-          <Gallery images={apiDetail?.images} productName={product.fa} />
         </div>
       </section>
       <Tabs product={product} />

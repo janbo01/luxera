@@ -20,8 +20,14 @@ const STATIC_END: NavLink[] = [
   { to: '#about', label: 'درباره ما' },
 ]
 
-function NavLinkItem({ to, label, accent, onClick }: NavLink & { onClick?: () => void }) {
-  const cls = accent ? 'is-accent' : undefined
+function NavLinkItem({ to, label, accent, onClick, mobile }: NavLink & { onClick?: () => void; mobile?: boolean }) {
+  const cls = mobile
+    ? accent
+      ? 'flex items-center px-6 h-14 text-[15px] text-copper-dark font-medium border-b border-rule'
+      : 'flex items-center px-6 h-14 text-[15px] text-ink border-b border-rule transition-colors duration-150 active:bg-bg-2'
+    : accent
+      ? 'text-copper-dark font-medium relative after:absolute after:content-[""] after:-end-3.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-1 after:rounded-full after:bg-copper'
+      : 'relative py-1.5 text-ink transition-colors duration-200 hover:text-copper'
   return to.startsWith('/') ? (
     <Link key={to} to={to} className={cls} onClick={onClick}>{label}</Link>
   ) : (
@@ -59,102 +65,121 @@ const Header: FC = () => {
   }, [])
 
   useBodyLock(menuOpen)
-
   const closeMenu = () => setMenuOpen(false)
+
+  const iconBtn = 'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
 
   return (
     <>
-      {/* Announcement bar — scrolls away, not sticky */}
-      <div className="announce">
-        <div className="announce__wrap">
-          <div className="announce__side">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
-          <div className="announce__mid">
-            <span>
+      {/* Announcement bar */}
+      <div className="bg-plum-2 text-[#E6CFCB] text-xs tracking-[0.02em] max-[720px]:hidden">
+        <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
+          <div className="opacity-70 text-[11px]">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
+          <div className="flex items-center gap-[18px] flex-wrap">
+            <span className="inline-flex items-center gap-2">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
               ارسال رایگان سفارش‌های بالای ۲ میلیون تومان
             </span>
-            <i className="announce__dot" />
+            <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
             <span>۱۴ روز ضمانت بازگشت</span>
-            <i className="announce__dot" />
+            <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
             <span>گارانتی کیفیت محصول</span>
           </div>
-          <div className="announce__side">فارسی · تومان</div>
+          <div className="opacity-70 text-[11px]">فارسی · تومان</div>
         </div>
       </div>
 
-    <header className="header">
-      <div className="header__top">
-        {/* Mobile hamburger — hidden on desktop, col 1 (right) on mobile */}
-        <button className="header__hamburger" onClick={() => setMenuOpen(true)} aria-label="منو">
-          <Icon name="menu" size={20} />
-        </button>
+      <header className="sticky top-0 z-50 bg-[rgba(245,237,224,0.86)] backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-[var(--pad)] h-[78px] gap-6">
 
-        {/* Desktop nav — col 1 on desktop, hidden on mobile */}
-        <nav className="header__nav">
-          {navLinks.map((link) => <NavLinkItem key={link.to} {...link} />)}
-        </nav>
-
-        {/* Center: logo only */}
-        <Link to="/" className="header__brand" onClick={closeMenu}>
-          <span className="header__brand-mark">Luxera</span>
-          <span className="header__brand-tag">Fine Jewelry</span>
-        </Link>
-
-        {/* Actions: search pill + icon tools */}
-        <div className="header__actions">
-          <button className="header__search-pill" onClick={openSearch} aria-label="جستجو">
-            <Icon name="search" size={16} strokeWidth={1.6} />
-            <span>جستجو در فروشگاه…</span>
-            <kbd>⌘K</kbd>
+          {/* Mobile hamburger (visible on mobile via responsive) */}
+          <button
+            className="hidden max-[1100px]:flex items-center justify-center w-10 h-10 text-ink"
+            onClick={() => setMenuOpen(true)}
+            aria-label="منو"
+          >
+            <Icon name="menu" size={20} />
           </button>
 
-          <button className="header__icobtn header__account-btn" onClick={handleAccountClick} aria-label={isLoggedIn ? 'حساب من' : 'ورود'}>
-            <Icon name="user" size={18} strokeWidth={1.6} />
-          </button>
+          {/* Desktop nav */}
+          <nav className="flex max-[1100px]:hidden gap-[26px] items-center text-sm font-normal">
+            {navLinks.map((link) => <NavLinkItem key={link.to} {...link} />)}
+          </nav>
 
-          <Link to="/wishlist" className="header__icobtn header__wish-btn" aria-label="علاقه‌مندی‌ها">
-            <Icon name="heart" size={18} strokeWidth={1.6} />
-            {wishCount > 0 && (
-              <span className="header__cart-count">{toFa(wishCount)}</span>
-            )}
+          {/* Logo */}
+          <Link to="/" className="flex flex-col items-center gap-0.5 text-center" onClick={closeMenu}>
+            <span className="font-display italic font-medium text-[32px] tracking-[0.02em] leading-none text-ink">Luxera</span>
+            <span className="font-mono text-[9px] tracking-[0.32em] text-muted uppercase">Fine Jewelry</span>
           </Link>
 
-          <button className="header__icobtn" onClick={openCart} aria-label="سبد خرید">
-            <Icon name="bag" size={18} strokeWidth={1.6} />
-            {cartCount > 0 && (
-              <span className="header__cart-count">{toFa(cartCount)}</span>
-            )}
-          </button>
-        </div>
-      </div>
+          {/* Actions */}
+          <div className="flex items-center gap-1 justify-end">
+            <button
+              className="flex items-center gap-2 py-2 ps-3.5 pe-2 bg-bg-2 rounded-full cursor-pointer text-sm text-muted min-w-[190px] border-none font-[inherit] transition-colors duration-200 hover:bg-plate max-[720px]:hidden [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0"
+              onClick={openSearch}
+              aria-label="جستجو"
+            >
+              <Icon name="search" size={16} strokeWidth={1.6} />
+              <span>جستجو در فروشگاه…</span>
+              <kbd className="ms-auto font-mono text-[10px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2">⌘K</kbd>
+            </button>
 
-      <div
-        className={`header__overlay${menuOpen ? ' is-open' : ''}`}
-        onClick={closeMenu}
-        aria-hidden="true"
-      />
-      <div
-        className={`header__drawer${menuOpen ? ' is-open' : ''}`}
-        role="dialog"
-        aria-label="منوی ناوبری"
-        aria-hidden={!menuOpen}
-        aria-modal={menuOpen || undefined}
-      >
-        <div className="header__drawer-head">
-          <span className="header__drawer-brand">Luxera</span>
-          <button className="header__drawer-close" onClick={closeMenu} aria-label="بستن منو">
-            <Icon name="close" size={18} />
-          </button>
+            <button className={`${iconBtn} hidden max-[720px]:grid`} onClick={openSearch} aria-label="جستجو">
+              <Icon name="search" size={18} strokeWidth={1.6} />
+            </button>
+
+            <button className={iconBtn} onClick={handleAccountClick} aria-label={isLoggedIn ? 'حساب من' : 'ورود'}>
+              <Icon name="user" size={18} strokeWidth={1.6} />
+            </button>
+
+            <Link to="/wishlist" className={iconBtn} aria-label="علاقه‌مندی‌ها">
+              <Icon name="heart" size={18} strokeWidth={1.6} />
+              {wishCount > 0 && (
+                <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">{toFa(wishCount)}</span>
+              )}
+            </Link>
+
+            <button className={iconBtn} onClick={openCart} aria-label="سبد خرید">
+              <Icon name="bag" size={18} strokeWidth={1.6} />
+              {cartCount > 0 && (
+                <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">{toFa(cartCount)}</span>
+              )}
+            </button>
+          </div>
         </div>
-        <nav className="header__drawer-nav">
-          {navLinks.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} />)}
-        </nav>
-        <div className="header__drawer-foot">
-          <button><Icon name="globe" size={14} /><span>FA</span></button>
-          <button><span>پشتیبانی</span></button>
+
+        {/* Mobile overlay */}
+        <div
+          className={`fixed inset-0 bg-[rgba(30,20,12,0.45)] z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
+
+        {/* Mobile drawer */}
+        <div
+          className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_rgba(30,20,12,0.12)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          role="dialog"
+          aria-label="منوی ناوبری"
+          aria-hidden={!menuOpen}
+          aria-modal={menuOpen || undefined}
+        >
+          <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule">
+            <span className="font-display italic text-2xl tracking-[0.16em] text-ink">Luxera</span>
+            <button className="flex items-center justify-center w-9 h-9 text-ink-2" onClick={closeMenu} aria-label="بستن منو">
+              <Icon name="close" size={18} />
+            </button>
+          </div>
+
+          <nav className="flex-1 flex flex-col overflow-y-auto">
+            {navLinks.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} mobile />)}
+          </nav>
+
+          <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
+            <button className="flex items-center gap-1.5"><Icon name="globe" size={14} /><span>FA</span></button>
+            <button><span>پشتیبانی</span></button>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
     </>
   )
 }

@@ -27,37 +27,30 @@ const BottomNav: FC = () => {
     else openLogin()
   }
 
+  const tab = (active: boolean) =>
+    `flex-1 flex flex-col items-center justify-center gap-[3px] font-body text-[10px] transition-colors duration-150 text-decoration-none cursor-pointer [-webkit-tap-highlight-color:transparent] active:scale-[0.88] ${active ? 'text-plum' : 'text-muted'}`
+
   return (
-    <nav className="bottom-nav" role="navigation" aria-label="ناوبری اصلی">
-      <Link
-        to="/"
-        className={`bottom-nav__tab${homeActive ? ' is-active' : ''}`}
-        aria-current={homeActive ? 'page' : undefined}
-        aria-label="خانه"
-      >
+    <nav
+      className="hidden max-[720px]:flex fixed bottom-0 inset-x-0 h-[calc(56px+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-bg border-t border-plate z-[100] shadow-[0_-2px_12px_rgba(26,15,29,0.06)]"
+      role="navigation"
+      aria-label="ناوبری اصلی"
+    >
+      <Link to="/" className={tab(homeActive)} aria-current={homeActive ? 'page' : undefined} aria-label="خانه">
         <Icon name="home" size={22} />
         <span>خانه</span>
       </Link>
 
-      <button
-        className={`bottom-nav__tab${searchActive ? ' is-active' : ''}`}
-        onClick={openSearch}
-        aria-label="جستجو"
-      >
+      <button className={tab(searchActive)} onClick={openSearch} aria-label="جستجو">
         <Icon name="search" size={22} />
         <span>جستجو</span>
       </button>
 
-      <Link
-        to="/wishlist"
-        className={`bottom-nav__tab${wishActive ? ' is-active' : ''}`}
-        aria-current={wishActive ? 'page' : undefined}
-        aria-label="علاقه‌مندی‌ها"
-      >
-        <span className="bottom-nav__icon-wrap">
+      <Link to="/wishlist" className={tab(wishActive)} aria-current={wishActive ? 'page' : undefined} aria-label="علاقه‌مندی‌ها">
+        <span className="relative flex items-center justify-center">
           <Icon name={wishActive ? 'heart-filled' : 'heart'} size={22} />
           {wishCount > 0 && (
-            <span className="bottom-nav__badge">
+            <span className="absolute -top-[5px] -end-2 bg-plum text-bg text-[9px] font-mono min-w-4 h-4 rounded-lg flex items-center justify-center px-[3px]">
               {wishCount > 9 ? '۹+' : toFa(wishCount)}
             </span>
           )}
@@ -65,11 +58,7 @@ const BottomNav: FC = () => {
         <span>علاقه‌مندی</span>
       </Link>
 
-      <button
-        className={`bottom-nav__tab${accountActive ? ' is-active' : ''}`}
-        onClick={handleAccount}
-        aria-label="حساب کاربری"
-      >
+      <button className={tab(accountActive)} onClick={handleAccount} aria-label="حساب کاربری">
         <Icon name="user" size={22} />
         <span>حساب</span>
       </button>

@@ -11,13 +11,13 @@ interface BreadcrumbProps {
 }
 
 const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => (
-  <nav className="crumb">
+  <nav className="flex gap-2 font-mono text-[11px] tracking-[0.14em] text-muted px-[var(--pad)] pt-7 uppercase">
     {items.map((item, i) => (
       <Fragment key={i}>
-        {i > 0 && <span>/</span>}
+        {i > 0 && <span className="text-rule">/</span>}
         {item.to
-          ? <Link to={item.to}>{item.label}</Link>
-          : <span className="crumb__current">{item.label}</span>
+          ? <Link to={item.to} className="hover:text-plum transition-colors">{item.label}</Link>
+          : <span className="text-ink">{item.label}</span>
         }
       </Fragment>
     ))}

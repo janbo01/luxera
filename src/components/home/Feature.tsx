@@ -1,5 +1,6 @@
 import type { FC } from 'react'
-import whyLuxera from '../../assets/images/why-luxera.png'
+import whyLuxera from '../../assets/images/why-luxera.webp'
+import { BTN_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 
 const PILLARS = [
@@ -10,39 +11,50 @@ const PILLARS = [
 ]
 
 const Feature: FC = () => (
-  <section className="section" style={{ paddingTop: 0 }}>
-    <div className="feature">
-      <div className="feature__body">
-        <span className="kicker">Our Atelier</span>
-        <h3>
+  <section className="px-[var(--pad)] max-w-[1480px] mx-auto">
+    <div className="bg-surface rounded-[14px] overflow-hidden grid grid-cols-[1.05fr_1fr] max-md:grid-cols-1">
+
+      <div className="py-14 px-12 flex flex-col gap-6 max-md:py-9 max-md:px-6">
+        <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
+          Our Atelier
+        </span>
+        <h3 className="font-heading font-bold text-[clamp(30px,2.8vw,40px)] leading-[1.2] m-0 [&_em]:font-body [&_em]:italic [&_em]:font-normal [&_em]:text-copper-dark">
           جواهراتِ فانتزی، <em>قیمتِ واقعی.</em>
         </h3>
-        <p>
+        <p className="text-ink-2 text-[15px] leading-[1.85] m-0 max-w-[48ch]">
           در لوکسرا، بهترین جواهرات فانتزی و اکسسوری مد را برایتان انتخاب
           می‌کنیم. فلزات بی‌آلرژی، روکش‌های با کیفیت، و طرح‌های روز —
           چون معتقدیم سبک خوب نباید گران باشد.
         </p>
-        <div className="feature__pillars">
+        <div className="grid grid-cols-2 gap-2.5">
           {PILLARS.map((p) => (
-            <div key={p.title} className="feature__pillar">
-              <span className="feature__pillar-ic"><Icon name={p.icon} size={22} strokeWidth={1.6} /></span>
+            <div key={p.title} className="border border-rule rounded-[10px] p-3.5 flex items-center gap-3">
+              <span className="w-9 h-9 rounded-lg bg-bg-2 grid place-items-center text-copper shrink-0 [&>svg]:w-[18px] [&>svg]:h-[18px]">
+                <Icon name={p.icon} size={22} strokeWidth={1.6} />
+              </span>
               <div>
-                <h4>{p.title}</h4>
-                <p>{p.desc}</p>
+                <h4 className="font-heading text-sm font-semibold leading-[1.2] m-0 mb-0.5 text-ink">{p.title}</h4>
+                <p className="text-[11px] text-muted m-0 leading-[1.3]">{p.desc}</p>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-          <a href="/about" className="btn">
+        <div className="flex gap-2.5 mt-2">
+          <a href="/about" className={BTN_CLS}>
             داستانِ ما را بخوانید
-            <span className="arr"><Icon name="arrow-left" size={16} /></span>
+            <span className="inline-block w-4 h-4 transition-transform duration-200 group-hover:-translate-x-[3px]"><Icon name="arrow-left" size={16} /></span>
           </a>
         </div>
       </div>
 
-      <div className="feature__visual">
-        <img src={whyLuxera} alt="Fashion jewelry flat lay" className="feature__visual-img" width="1200" height="800" />
+      <div className="relative min-h-[420px] max-md:min-h-[240px] bg-gradient-to-br from-bg-2 to-[#D5BFA6]">
+        <img
+          src={whyLuxera}
+          alt="Fashion jewelry flat lay"
+          className="absolute inset-0 w-full h-full object-cover"
+          width="1200"
+          height="800"
+        />
       </div>
     </div>
   </section>
