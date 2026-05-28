@@ -30,19 +30,19 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
     }
   }, [product.imageUrlAlt])
 
-  const handleAdd = (e: React.MouseEvent) => {
+  const handleAdd = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     const mediaEl = cardRef.current?.querySelector('.product-media')
     if (mediaEl) flyToCart(mediaEl.getBoundingClientRect())
     onAdd(product)
-  }
+  }, [onAdd, product])
 
-  const handleWish = (e: React.MouseEvent) => {
+  const handleWish = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     toggle()
-  }
+  }, [toggle])
 
   const badgeKind = product.badgeKind ?? 'new'
   const badgeLabel = product.badge

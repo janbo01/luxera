@@ -13,6 +13,16 @@ import LoginModal from './components/account/LoginModal'
 import { ErrorBoundary } from './components/shared/ErrorBoundary'
 import PageLoader from './components/shared/PageLoader'
 
+// Isolated so only this subtree re-renders when the login modal opens/closes
+function LoginModalContainer() {
+  const isLoginOpen = useUIStore((s) => s.isLoginOpen)
+  const loginMessage = useUIStore((s) => s.loginMessage)
+  const closeLogin = useUIStore((s) => s.closeLogin)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  if (!isLoginOpen || isLoggedIn) return null
+  return <LoginModal onClose={closeLogin} message={loginMessage ?? undefined} />
+}
+
 import {
   HomePage,
   ProductPage,
@@ -36,12 +46,6 @@ export default function App() {
   const palette = useUIStore((s) => s.palette)
   const density = useUIStore((s) => s.density)
   const heroVariant = useUIStore((s) => s.heroVariant)
-  const isLoginOpen = useUIStore((s) => s.isLoginOpen)
-  const loginMessage = useUIStore((s) => s.loginMessage)
-  const openLogin = useUIStore((s) => s.openLogin)
-  const closeLogin = useUIStore((s) => s.closeLogin)
-  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
-  const clearSession = useAuthStore((s) => s.clearSession)
 
   useEffect(() => {
     const b = document.body
@@ -53,14 +57,16 @@ export default function App() {
     else b.removeAttribute('data-hero')
   }, [palette, density, heroVariant])
 
+  // Access stores via getState() so this effect never re-runs and App never
+  // re-renders when the session/login state changes — LoginModalContainer owns that.
   useEffect(() => {
     const handler = () => {
-      clearSession()
-      openLogin('نشست شما منقضی شده. لطفاً مجدداً وارد شوید.')
+      useAuthStore.getState().clearSession()
+      useUIStore.getState().openLogin('نشست شما منقضی شده. لطفاً مجدداً وارد شوید.')
     }
     window.addEventListener('auth:unauthorized', handler)
     return () => window.removeEventListener('auth:unauthorized', handler)
-  }, [clearSession, openLogin])
+  }, [])
 
   return (
     <ErrorBoundary>
@@ -93,7 +99,7 @@ export default function App() {
           <Footer />
           <CartDrawer />
           <SearchOverlay />
-          {isLoginOpen && !isLoggedIn && <LoginModal onClose={closeLogin} message={loginMessage ?? undefined} />}
+          <LoginModalContainer />
           <BottomNav />
         </div>
       </>

@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useState, useMemo, useCallback, useEffect, useRef, type FC } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef, useDeferredValue, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
 import { CATEGORIES } from '../data/categories'
@@ -67,6 +67,12 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 ]
 
 const MAIN_CATS = CATEGORIES.filter((c) => !['new', 'bridal', 'mens'].includes(c.id))
+
+// Stable references — avoids creating new array/object literals on every render
+const EMPTY_MATERIALS: string[] = []
+const EMPTY_MATERIAL_COUNTS: Record<string, number> = {}
+// All counts start at 0 (populated by API in a future pass); hoisted so it's stable
+const CAT_PRODUCT_COUNTS = Object.fromEntries(MAIN_CATS.map((c) => [c.id, 0]))
 
 const VIEW_MODES = [
   { mode: 'cols-2', title: '۲ ستون', Icon: LayoutGrid },
@@ -171,12 +177,13 @@ const CategoryPage: FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedCatId, apiSort, colorKey, fetchProducts])
 
+  // Deferred price bounds keep the filter inputs snappy while the grid re-renders lazily
+  const deferredPriceMin = useDeferredValue(priceMin)
+  const deferredPriceMax = useDeferredValue(priceMax)
+
   const filtered = useMemo(
-    () => allProducts.filter((p) => {
-      if (p.price < priceMin || p.price > priceMax) return false
-      return true
-    }),
-    [allProducts, priceMin, priceMax],
+    () => allProducts.filter((p) => p.price >= deferredPriceMin && p.price <= deferredPriceMax),
+    [allProducts, deferredPriceMin, deferredPriceMax],
   )
 
   const sorted = filtered
@@ -199,20 +206,18 @@ const CategoryPage: FC = () => {
   const handleInStock = useCallback((v: boolean) => { setInStockOnly(v); setPage(1) }, [])
   const handleSort = useCallback((key: SortKey) => { setSort(key); setSortOpen(false); setPage(1) }, [])
 
-  const appliedChips = useMemo(() => [
-    ...selectedColorIds.map((id) => ({
-      label: availableColors.find((c) => c.id === id)?.name ?? id,
-      remove: () => handleToggleColor(id),
-    })),
-    ...(priceMin > 0 ? [{ label: `از ${formatNumber(priceMin)}`, remove: () => handlePriceMin(0) }] : []),
-    ...(priceMax < MAX_PRICE ? [{ label: `تا ${formatNumber(priceMax)}`, remove: () => handlePriceMax(MAX_PRICE) }] : []),
-    ...(inStockOnly ? [{ label: 'فقط موجود', remove: () => handleInStock(false) }] : []),
-  ], [selectedColorIds, availableColors, priceMin, priceMax, inStockOnly, handleToggleColor, handlePriceMin, handlePriceMax, handleInStock])
-
-  const catProductCounts = useMemo(
-    () => Object.fromEntries(MAIN_CATS.map((c) => [c.id, 0])),
-    [],
-  )
+  const appliedChips = useMemo(() => {
+    const colorMap = new Map(availableColors.map((c) => [c.id, c.name]))
+    return [
+      ...selectedColorIds.map((id) => ({
+        label: colorMap.get(id) ?? id,
+        remove: () => handleToggleColor(id),
+      })),
+      ...(priceMin > 0 ? [{ label: `از ${formatNumber(priceMin)}`, remove: () => handlePriceMin(0) }] : []),
+      ...(priceMax < MAX_PRICE ? [{ label: `تا ${formatNumber(priceMax)}`, remove: () => handlePriceMax(MAX_PRICE) }] : []),
+      ...(inStockOnly ? [{ label: 'فقط موجود', remove: () => handleInStock(false) }] : []),
+    ]
+  }, [selectedColorIds, availableColors, priceMin, priceMax, inStockOnly, handleToggleColor, handlePriceMin, handlePriceMax, handleInStock])
 
   const activeColors = selectedColorIds.length ? selectedColorIds : undefined
   const handleRefresh = useCallback(async () => {
@@ -242,7 +247,7 @@ const CategoryPage: FC = () => {
           category={category}
           catId={id!}
           productCount={allProducts.length}
-          catProductCounts={catProductCounts}
+          catProductCounts={CAT_PRODUCT_COUNTS}
         />
       </div>
 
@@ -327,11 +332,11 @@ const CategoryPage: FC = () => {
             onClose={() => setFilterOpen(false)}
             priceMin={priceMin}
             priceMax={priceMax}
-            materials={[]}
+            materials={EMPTY_MATERIALS}
             selectedColorIds={selectedColorIds}
             inStockOnly={inStockOnly}
-            availableMaterials={[]}
-            materialCounts={{}}
+            availableMaterials={EMPTY_MATERIALS}
+            materialCounts={EMPTY_MATERIAL_COUNTS}
             availableColors={availableColors}
             onPriceMinChange={handlePriceMin}
             onPriceMaxChange={handlePriceMax}
@@ -424,7 +429,7 @@ const CategoryPage: FC = () => {
               </div>
             )}
 
-            {!loading && nextCursor && (
+            {!loading && nextCursor !== '' && (
               <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <button
                   className={BTN_GHOST_CLS}

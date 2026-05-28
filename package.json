@@ -8,7 +8,7 @@
     "build": "npm run build:client && npm run build:ssr && npm run build:server",
     "build:client": "tsc -b && vite build",
     "build:ssr": "vite build --ssr src/entry-server.tsx",
-    "build:server": "esbuild server.ts --platform=node --format=esm --outfile=dist/server.js",
+    "build:server": "esbuild server.ts --platform=node --format=esm --bundle --packages=external --outfile=dist/server.js",
     "preview": "NODE_ENV=production node dist/server.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"

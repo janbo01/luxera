@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect, useRef } from 'react'
+import { type FC, useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Icon from '../icons/Icon'
 import { toFa } from '../../utils/format'
@@ -19,6 +19,25 @@ const STATIC_START: NavLink[] = [
 const STATIC_END: NavLink[] = [
   { to: '#about', label: 'درباره ما' },
 ]
+
+const AnnouncementBar = (
+  <div className="bg-plum-2 text-[#E6CFCB] text-xs tracking-[0.02em] max-[720px]:hidden">
+    <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
+      <div className="opacity-70 text-[11px]">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
+      <div className="flex items-center gap-[18px] flex-wrap">
+        <span className="inline-flex items-center gap-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
+          ارسال رایگان سفارش‌های بالای ۲ میلیون تومان
+        </span>
+        <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
+        <span>۱۴ روز ضمانت بازگشت</span>
+        <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
+        <span>گارانتی کیفیت محصول</span>
+      </div>
+      <div className="opacity-70 text-[11px]">فارسی · تومان</div>
+    </div>
+  </div>
+)
 
 function NavLinkItem({ to, label, accent, onClick, mobile }: NavLink & { onClick?: () => void; mobile?: boolean }) {
   const cls = mobile
@@ -46,10 +65,10 @@ const Header: FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [navLinks, setNavLinks] = useState<NavLink[]>(NAV_LINKS)
 
-  const handleAccountClick = () => {
+  const handleAccountClick = useCallback(() => {
     if (isLoggedIn) navigate('/account')
     else openLogin()
-  }
+  }, [isLoggedIn, navigate, openLogin])
 
   useEffect(() => {
     listCategories().then((apiCats) => {
@@ -78,23 +97,7 @@ const Header: FC = () => {
 
   return (
     <>
-      {/* Announcement bar */}
-      <div className="bg-plum-2 text-[#E6CFCB] text-xs tracking-[0.02em] max-[720px]:hidden">
-        <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
-          <div className="opacity-70 text-[11px]">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
-          <div className="flex items-center gap-[18px] flex-wrap">
-            <span className="inline-flex items-center gap-2">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
-              ارسال رایگان سفارش‌های بالای ۲ میلیون تومان
-            </span>
-            <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
-            <span>۱۴ روز ضمانت بازگشت</span>
-            <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
-            <span>گارانتی کیفیت محصول</span>
-          </div>
-          <div className="opacity-70 text-[11px]">فارسی · تومان</div>
-        </div>
-      </div>
+      {AnnouncementBar}
 
       <header className="sticky top-0 z-50 bg-[rgba(245,237,224,0.86)] backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center px-[var(--pad)] h-[78px] gap-6">
