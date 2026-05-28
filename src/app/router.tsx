@@ -1,8 +1,8 @@
 import { lazy } from 'react'
 
 import HomePage from '../pages/HomePage'
-import ProductPage from '../pages/ProductPage'
 
+export const ProductPage         = lazy(() => import('../pages/ProductPage'))
 export const CategoryPage        = lazy(() => import('../pages/CategoryPage'))
 export const CheckoutPage        = lazy(() => import('../pages/CheckoutPage'))
 export const WishlistPage        = lazy(() => import('../pages/WishlistPage'))
@@ -18,4 +18,4 @@ export const TermsPage           = lazy(() => import('../pages/static/TermsPage'
 export const ContactPage         = lazy(() => import('../pages/static/ContactPage'))
 export const NotFoundPage        = lazy(() => import('../pages/NotFoundPage'))
 
-export { HomePage, ProductPage }
+export { HomePage }

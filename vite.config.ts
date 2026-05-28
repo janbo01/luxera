@@ -14,10 +14,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('react-multi-date-picker') || id.includes('react-date-object')) return 'vendor-datepicker'
           if (id.includes('zustand')) return 'vendor-state'
           if (id.includes('react-router-dom')) return 'vendor-router'
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) return 'vendor-react'
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) return 'vendor-react'
         },
       },
     },

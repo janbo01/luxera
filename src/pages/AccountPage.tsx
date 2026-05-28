@@ -7,7 +7,7 @@ import { formatToman, toFa } from '../utils/format'
 import type { Order, OrderStatus, Address } from '../types'
 import { Modal } from '../components/ui/Modal'
 import { PROVINCES, CITIES_BY_PROVINCE } from '../data/locations'
-import 'react-multi-date-picker/styles/colors/purple.css'
+import purplePickerCSS from 'react-multi-date-picker/styles/colors/purple.css?inline'
 import DatePicker from 'react-multi-date-picker'
 import type { DateObject } from 'react-multi-date-picker'
 import persian from 'react-date-object/calendars/persian'
@@ -934,6 +934,13 @@ const AccountPage: FC = () => {
     if (!createdAt) return null
     return new Date(createdAt).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long' })
   }, [createdAt])
+
+  useEffect(() => {
+    const style = document.createElement('style')
+    style.textContent = purplePickerCSS
+    document.head.appendChild(style)
+    return () => { document.head.removeChild(style) }
+  }, [])
 
   useEffect(() => {
     if (!isLoggedIn) return

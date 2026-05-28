@@ -9,6 +9,7 @@ interface PageMetaOptions {
   canonical?: string
   ogImage?: string
   jsonLd?: Record<string, unknown>
+  noIndex?: boolean
 }
 
 function setMetaContent(selector: string, value: string) {
@@ -16,7 +17,7 @@ function setMetaContent(selector: string, value: string) {
   if (el) el.content = value
 }
 
-export function usePageMeta({ title, description, canonical, ogImage, jsonLd }: PageMetaOptions) {
+export function usePageMeta({ title, description, canonical, ogImage, jsonLd, noIndex }: PageMetaOptions) {
   const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined
 
   useEffect(() => {
@@ -30,6 +31,10 @@ export function usePageMeta({ title, description, canonical, ogImage, jsonLd }: 
     // Canonical link
     const canonicalEl = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (canonicalEl) canonicalEl.href = canonicalUrl
+
+    // Robots
+    const robotsEl = document.querySelector<HTMLMetaElement>('meta[name="robots"]')
+    if (robotsEl) robotsEl.content = noIndex ? 'noindex, nofollow' : 'index, follow'
 
     // Description
     if (description) {
@@ -64,7 +69,8 @@ export function usePageMeta({ title, description, canonical, ogImage, jsonLd }: 
     return () => {
       document.title = BASE_TITLE
       if (canonicalEl) canonicalEl.href = `${SITE_URL}/`
+      if (robotsEl) robotsEl.content = 'index, follow'
       document.getElementById('jsonld-page')?.remove()
     }
-  }, [title, description, canonical, ogImage, jsonLdString])
+  }, [title, description, canonical, ogImage, jsonLdString, noIndex])
 }

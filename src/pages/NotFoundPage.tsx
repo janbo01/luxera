@@ -5,7 +5,7 @@ import Icon from '../components/icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
 
 const NotFoundPage: FC = () => {
-  usePageMeta({ title: 'صفحه یافت نشد' })
+  usePageMeta({ title: 'صفحه یافت نشد', noIndex: true })
   return (
     <div className="flex flex-col items-center justify-center gap-4 px-[clamp(20px,4vw,56px)] py-[100px] text-center min-h-[60vh]">
       <div className="opacity-25 mb-2">
