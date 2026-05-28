@@ -1,14 +1,17 @@
 import { renderToReadableStream } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import App from './App'
+import { InitialDataContext, type ServerInitialData } from './context/initialData'
 
-export async function render(url: string) {
+export async function render(url: string, initialData: ServerInitialData = {}) {
   let didError = false
 
   const stream = await renderToReadableStream(
-    <StaticRouter location={url}>
-      <App />
-    </StaticRouter>,
+    <InitialDataContext.Provider value={initialData}>
+      <StaticRouter location={url}>
+        <App />
+      </StaticRouter>
+    </InitialDataContext.Provider>,
     {
       onError(error) {
         didError = true

@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useState, useMemo, useCallback, useEffect, type FC } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
 import { CATEGORIES } from '../data/categories'
@@ -10,10 +10,53 @@ import PullToRefresh from '../components/shared/PullToRefresh'
 import CategoryHero from '../components/category/CategoryHero'
 import FilterPanel, { MAX_PRICE } from '../components/category/FilterPanel'
 import { toFa, formatNumber } from '../utils/format'
-import { listProducts, listCategories, listColors, adaptProduct, type ApiCategory, type ApiColor } from '../api/product'
+import { listProducts, listCategories, listColors, adaptProduct, type ApiCategory, type ApiColor, type ApiProduct } from '../api/product'
+import { useInitialData } from '../context/initialData'
 import type { Product } from '../types'
 import Icon from '../components/icons/Icon'
 import { LayoutGrid, Grid3x3, List, Columns4 } from 'lucide-react'
+
+declare global {
+  interface Window {
+    __CATEGORY_INITIAL__?: {
+      categoryProducts: { items: ApiProduct[]; next_cursor: string }
+      categoryResolvedId: string | null
+    }
+  }
+}
+
+interface CategoryInitial {
+  products: Product[]
+  nextCursor: string
+  resolvedCatId: string | undefined
+}
+
+function getInitialCategoryData(
+  slug: string | undefined,
+  serverCatProducts: unknown,
+  serverResolvedId: string | null | undefined,
+): CategoryInitial | null {
+  if (!slug) return null
+  let raw: { items?: ApiProduct[]; next_cursor?: string } | null = null
+  let resolvedCatId: string | null | undefined
+
+  // SSR context path
+  if (serverCatProducts && typeof serverCatProducts === 'object') {
+    raw = serverCatProducts as { items?: ApiProduct[]; next_cursor?: string }
+    resolvedCatId = serverResolvedId
+  }
+  // Client window path
+  if (!raw && typeof window !== 'undefined' && window.__CATEGORY_INITIAL__) {
+    raw = window.__CATEGORY_INITIAL__.categoryProducts
+    resolvedCatId = window.__CATEGORY_INITIAL__.categoryResolvedId
+  }
+  if (!raw?.items?.length) return null
+  return {
+    products: raw.items.map((p) => adaptProduct(p)),
+    nextCursor: raw.next_cursor ?? '',
+    resolvedCatId: resolvedCatId ?? undefined,
+  }
+}
 
 type SortKey = 'newest' | 'price-asc' | 'price-desc'
 
@@ -38,9 +81,12 @@ const CategoryPage: FC = () => {
   const category = CATEGORIES.find((c) => c.id === id)
   usePageMeta({ title: category?.fa ?? 'دسته‌بندی', canonical: id ? `/category/${id}` : undefined })
 
-  const [allProducts, setAllProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [nextCursor, setNextCursor] = useState('')
+  const { categoryProducts: serverCatProducts, categoryResolvedId: serverResolvedId } = useInitialData()
+  const initial = getInitialCategoryData(id, serverCatProducts, serverResolvedId)
+
+  const [allProducts, setAllProducts] = useState<Product[]>(() => initial?.products ?? [])
+  const [loading, setLoading] = useState(!initial)
+  const [nextCursor, setNextCursor] = useState(() => initial?.nextCursor ?? '')
 
   const [sort, setSort] = useState<SortKey>('newest')
   const [sortOpen, setSortOpen] = useState(false)
@@ -54,8 +100,14 @@ const CategoryPage: FC = () => {
   const [availableColors, setAvailableColors] = useState<ApiColor[]>([])
   const [inStockOnly, setInStockOnly] = useState(false)
 
-  // null = category not yet resolved; undefined = no specific category (show all)
-  const [resolvedCatId, setResolvedCatId] = useState<string | null | undefined>(null)
+  // null = not yet resolved; undefined = no category filter (show all / "new")
+  const [resolvedCatId, setResolvedCatId] = useState<string | null | undefined>(
+    initial ? initial.resolvedCatId : null,
+  )
+
+  // Skip the initial resolve + fetch when the server already seeded data for this slug.
+  const skipResolveRef = useRef(!!initial)
+  const skipFetchRef   = useRef(!!initial)
 
   useBodyLock(filterOpen)
 
@@ -93,9 +145,10 @@ const CategoryPage: FC = () => {
     void listColors().then(setAvailableColors).catch(() => {})
   }, [])
 
-  // Resolve the API category ID once when the route param changes
+  // Resolve the API category ID once when the route param changes.
   useEffect(() => {
     if (!id) return
+    if (skipResolveRef.current) { skipResolveRef.current = false; return }
     const resolve = async () => {
       if (id === 'new') return undefined
       const cats = await listCategories()
@@ -107,10 +160,11 @@ const CategoryPage: FC = () => {
       .catch(() => { setResolvedCatId(undefined); setPage(1) })
   }, [id])
 
-  // Re-fetch whenever category, sort, or color filter changes
+  // Re-fetch whenever category, sort, or color filter changes.
   const colorKey = selectedColorIds.join(',')
   useEffect(() => {
     if (resolvedCatId === null) return
+    if (skipFetchRef.current) { skipFetchRef.current = false; return }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchProducts(resolvedCatId, apiSort, selectedColorIds.length ? selectedColorIds : undefined)
   // colorKey is a stable primitive derived from selectedColorIds
@@ -179,6 +233,7 @@ const CategoryPage: FC = () => {
   }
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+  const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.label ?? ''
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
@@ -192,79 +247,81 @@ const CategoryPage: FC = () => {
       </div>
 
       <main className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
-        <div className="hidden max-[1100px]:flex items-center gap-2.5 mb-4">
-          <button
-            onClick={() => setFilterOpen(true)}
-            className="px-4 py-2.5 bg-ink text-bg rounded-full text-[13px] border-none cursor-pointer"
-          >
-            فیلترها · {toFa(sorted.length)} محصول
-          </button>
-        </div>
 
-        <div className="mt-7 mb-[18px] px-[22px] py-[18px] bg-surface rounded-[var(--radius)] border border-rule flex items-center gap-[18px] flex-wrap max-[640px]:px-4 max-[640px]:py-3.5 max-[640px]:gap-3">
-          <div className="font-heading text-base font-semibold flex items-center gap-2">
-            <span>نمایش</span>
-            <span className="font-mono text-copper">{loading ? '…' : toFa(paginated.length)}</span>
-            <span>از</span>
-            <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
-            <span>{category.fa}</span>
+        {/* ── Toolbar ─────────────────────────────────────────────── */}
+        <div className="mt-7 mb-[18px] bg-surface rounded-[var(--radius)] border border-rule">
+
+          {/* Main row */}
+          <div className="flex items-center gap-[18px] px-[22px] py-[18px] max-sm:px-4 max-sm:py-3 max-sm:gap-3">
+            {/* Product count */}
+            <div className="font-heading text-base font-semibold flex items-center gap-2">
+              <span>نمایش</span>
+              <span className="font-mono text-copper">{loading ? '…' : toFa(paginated.length)}</span>
+              <span>از</span>
+              <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
+              <span>{category.fa}</span>
+            </div>
+
+            <div className="flex-1" />
+
+            {/* View mode — hidden on small mobile */}
+            <div className="inline-flex gap-0.5 bg-bg border border-rule rounded-lg p-[3px] max-sm:hidden">
+              {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
+                <button
+                  key={mode || 'default'}
+                  className={`w-[30px] h-[30px] rounded-md grid place-items-center border-none cursor-pointer transition-[background,color] duration-150 ${viewMode === mode ? 'bg-ink text-bg' : 'bg-transparent text-muted'}`}
+                  onClick={() => setViewMode(mode)}
+                  title={title}
+                >
+                  <ModeIcon size={14} strokeWidth={1.6} />
+                </button>
+              ))}
+            </div>
+
+            {/* Sort dropdown — hidden on mobile (moved to sticky bottom bar) */}
+            <div className="relative max-[1100px]:hidden">
+              <button
+                className="inline-flex items-center gap-2.5 px-3.5 py-[9px] bg-bg border border-rule rounded-full text-[13px] cursor-pointer font-body transition-[border-color] duration-200 hover:border-ink"
+                onClick={() => setSortOpen((o) => !o)}
+              >
+                <span className="text-muted text-xs">مرتب‌سازی:</span>
+                <span>{currentSortLabel}</span>
+                <Icon name="chevron-down" size={12} />
+              </button>
+              {sortOpen && (
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[180px] bg-surface border border-rule rounded-[4px] shadow-[0_8px_24px_rgba(26,15,29,0.1)] z-20 [direction:rtl]">
+                  {SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.key}
+                      className={`flex items-center gap-2 w-full px-4 py-3 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-plum font-normal' : 'text-ink-2'}`}
+                      onClick={() => handleSort(opt.key)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
+          {/* Applied filter chips — own scrollable row, always below the main row */}
           {appliedChips.length > 0 && (
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap border-t border-rule px-[22px] pb-3 pt-2.5 max-sm:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {appliedChips.map((chip, i) => (
-                <span key={i} className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2">
+                <span key={i} className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2 shrink-0">
                   {chip.label}
                   <button onClick={chip.remove} aria-label="حذف فیلتر" className="w-[18px] h-[18px] rounded-full grid place-items-center bg-transparent text-muted shrink-0 cursor-pointer hover:bg-ink hover:text-bg">
                     <Icon name="x" size={9} />
                   </button>
                 </span>
               ))}
-              <button className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer" onClick={resetFilters}>پاک کردن</button>
+              <button className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer shrink-0" onClick={resetFilters}>پاک کردن</button>
             </div>
           )}
-
-          <div className="flex-1 max-[640px]:hidden" />
-
-          <div className="inline-flex gap-0.5 bg-bg border border-rule rounded-lg p-[3px]">
-            {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
-              <button
-                key={mode || 'default'}
-                className={`w-[30px] h-[30px] rounded-md grid place-items-center border-none cursor-pointer transition-[background,color] duration-150 ${viewMode === mode ? 'bg-ink text-bg' : 'bg-transparent text-muted'}`}
-                onClick={() => setViewMode(mode)}
-                title={title}
-              >
-                <ModeIcon size={14} strokeWidth={1.6} />
-              </button>
-            ))}
-          </div>
-
-          <div className="relative">
-            <button
-              className="inline-flex items-center gap-2.5 px-3.5 py-[9px] bg-bg border border-rule rounded-full text-[13px] cursor-pointer font-body transition-[border-color] duration-200 hover:border-ink"
-              onClick={() => setSortOpen((o) => !o)}
-            >
-              <span className="text-muted text-xs">مرتب‌سازی:</span>
-              <span>{SORT_OPTIONS.find((o) => o.key === sort)?.label}</span>
-              <Icon name="chevron-down" size={12} />
-            </button>
-            {sortOpen && (
-              <div className="absolute top-[calc(100%+4px)] left-0 min-w-[180px] bg-surface border border-rule rounded-[4px] shadow-[0_8px_24px_rgba(26,15,29,0.1)] z-20 [direction:rtl] max-[768px]:left-auto max-[768px]:right-0">
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.key}
-                    className={`flex items-center gap-2 w-full px-4 py-3 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-plum font-normal' : 'text-ink-2'}`}
-                    onClick={() => handleSort(opt.key)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
-        <div className="grid grid-cols-[280px_1fr] gap-8 pb-[88px] max-[1100px]:grid-cols-1">
+        {/* ── Grid: filter sidebar + product section ───────────────── */}
+        <div className="grid grid-cols-[280px_1fr] gap-8 pb-[88px] max-[1100px]:grid-cols-1 max-[1100px]:pb-[120px] max-[720px]:pb-[200px]">
           <FilterPanel
             isOpen={filterOpen}
             onClose={() => setFilterOpen(false)}
@@ -296,8 +353,8 @@ const CategoryPage: FC = () => {
                 {paginated.map((p, i) => <ProductCard key={p.id} product={p} onAdd={addItem} priority={i < 4} />)}
               </div>
             ) : (
-              <div className="mt-12 p-8 bg-surface rounded-[var(--radius)] grid grid-cols-[auto_1fr_auto] gap-6 items-center border border-rule max-[640px]:grid-cols-1 max-[640px]:text-center">
-                <span className="w-16 h-16 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 max-[640px]:mx-auto">
+              <div className="mt-12 p-8 bg-surface rounded-[var(--radius)] grid grid-cols-[auto_1fr_auto] gap-6 items-center border border-rule max-sm:grid-cols-1 max-sm:text-center max-sm:p-6">
+                <span className="w-16 h-16 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 max-sm:mx-auto">
                   <Icon name="search" size={30} strokeWidth={1.4} />
                 </span>
                 <div>
@@ -310,33 +367,60 @@ const CategoryPage: FC = () => {
               </div>
             )}
 
+            {/* Pagination */}
             {!loading && totalPages > 1 && (
-              <div className="mt-9 flex items-center justify-center gap-1.5 py-6 border-t border-rule">
-                <button
-                  className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                >
-                  <Icon name="arrow-left" size={14} />
-                  قبلی
-                </button>
-                {pages.map((p) => (
+              <div className="mt-9 py-6 border-t border-rule">
+                {/* Mobile: simplified prev / X of Y / next */}
+                <div className="flex items-center justify-between px-2 sm:hidden">
                   <button
-                    key={p}
-                    className={`min-w-[38px] h-[38px] rounded-lg text-[14px] border px-3 font-mono bg-transparent cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink' : 'text-ink border-transparent hover:bg-bg-2'}`}
-                    onClick={() => setPage(p)}
+                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
-                    {toFa(p)}
+                    <Icon name="arrow-left" size={14} />
+                    قبلی
                   </button>
-                ))}
-                <button
-                  className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                >
-                  بعدی
-                  <Icon name="arrow-right" size={14} />
-                </button>
+                  <span className="font-mono text-[13px] text-muted">
+                    {toFa(page)} از {toFa(totalPages)}
+                  </span>
+                  <button
+                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    بعدی
+                    <Icon name="arrow-right" size={14} />
+                  </button>
+                </div>
+
+                {/* Desktop: full page number buttons */}
+                <div className="hidden sm:flex items-center justify-center gap-1.5 flex-wrap">
+                  <button
+                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    <Icon name="arrow-left" size={14} />
+                    قبلی
+                  </button>
+                  {pages.map((p) => (
+                    <button
+                      key={p}
+                      className={`min-w-[38px] h-[38px] rounded-lg text-[14px] border px-3 font-mono bg-transparent cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink' : 'text-ink border-transparent hover:bg-bg-2'}`}
+                      onClick={() => setPage(p)}
+                    >
+                      {toFa(p)}
+                    </button>
+                  ))}
+                  <button
+                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  >
+                    بعدی
+                    <Icon name="arrow-right" size={14} />
+                  </button>
+                </div>
               </div>
             )}
 
@@ -353,6 +437,51 @@ const CategoryPage: FC = () => {
           </section>
         </div>
       </main>
+
+      {/* ── Mobile sticky action bar ─────────────────────────────── */}
+      <div className="hidden max-[1100px]:flex fixed bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom,0px))] inset-x-0 z-[110] bg-surface/95 backdrop-blur-sm border-t border-rule px-4 pt-3 pb-3">
+        {/* Filter button */}
+        <button
+          onClick={() => setFilterOpen(true)}
+          className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-ink text-bg rounded-full text-[13px] font-body cursor-pointer transition-opacity duration-150 active:opacity-80"
+        >
+          <Icon name="sliders" size={14} />
+          فیلترها
+          {appliedChips.length > 0 && (
+            <span className="w-[18px] h-[18px] rounded-full bg-copper text-bg text-[10px] font-mono grid place-items-center flex-shrink-0">
+              {toFa(appliedChips.length)}
+            </span>
+          )}
+        </button>
+
+        <div className="w-px mx-3 bg-rule self-stretch" />
+
+        {/* Sort button + dropdown */}
+        <div className="flex-1 relative">
+          <button
+            onClick={() => setSortOpen((o) => !o)}
+            className="w-full inline-flex items-center justify-center gap-2 py-3 border border-rule rounded-full text-[13px] font-body cursor-pointer transition-[border-color] duration-150 hover:border-ink active:border-ink"
+          >
+            <span className="text-muted text-[11px]">ترتیب:</span>
+            <span>{currentSortLabel}</span>
+            <Icon name="chevron-down" size={12} className={`transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {sortOpen && (
+            <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[12px] overflow-hidden shadow-[0_-8px_28px_rgba(26,15,29,0.12)] z-20">
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  className={`flex items-center w-full px-4 py-3.5 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-copper font-medium' : 'text-ink-2'}`}
+                  onClick={() => handleSort(opt.key)}
+                >
+                  {opt.label}
+                  {sort === opt.key && <Icon name="check" size={14} className="me-auto" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </PullToRefresh>
   )
 }

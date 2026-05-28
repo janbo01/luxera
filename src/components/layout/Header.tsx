@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from 'react'
+import { type FC, useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Icon from '../icons/Icon'
 import { toFa } from '../../utils/format'
@@ -66,6 +66,13 @@ const Header: FC = () => {
 
   useBodyLock(menuOpen)
   const closeMenu = () => setMenuOpen(false)
+
+  // `inert` makes the closed drawer invisible to keyboard and assistive tech,
+  // fixing the aria-hidden + focusable-descendants accessibility violation.
+  const drawerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (drawerRef.current) drawerRef.current.inert = !menuOpen
+  }, [menuOpen])
 
   const iconBtn = 'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
 
@@ -157,6 +164,7 @@ const Header: FC = () => {
 
         {/* Mobile drawer */}
         <div
+          ref={drawerRef}
           className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_rgba(30,20,12,0.12)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-label="منوی ناوبری"

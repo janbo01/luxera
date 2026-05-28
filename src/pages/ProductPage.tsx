@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useState, useEffect, useCallback, useMemo, type FC } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import Gallery from '../components/product/Gallery'
@@ -10,7 +10,14 @@ import Related from '../components/product/Related'
 import SizeGuideModal from '../components/product/SizeGuideModal'
 import { useCartStore } from '../store/cartStore'
 import { getProduct, adaptProduct, type ApiProductDetail } from '../api/product'
+import { useInitialData } from '../context/initialData'
 import type { ProductDetail } from '../types'
+
+declare global {
+  interface Window {
+    __PRODUCT_INITIAL__?: ApiProductDetail
+  }
+}
 
 function adaptDetail(api: ApiProductDetail): ProductDetail {
   const base = adaptProduct(api)
@@ -27,16 +34,39 @@ function adaptDetail(api: ApiProductDetail): ProductDetail {
   }
 }
 
+function getInitialApiDetail(id: string | undefined, serverProduct: unknown): ApiProductDetail | null {
+  if (!id) return null
+  // SSR path: data provided via React context
+  if (serverProduct && typeof serverProduct === 'object' && (serverProduct as ApiProductDetail).id === id) {
+    return serverProduct as ApiProductDetail
+  }
+  // Client path: data injected as window variable by server
+  if (typeof window !== 'undefined' && window.__PRODUCT_INITIAL__?.id === id) {
+    return window.__PRODUCT_INITIAL__
+  }
+  return null
+}
+
 const ProductPage: FC = () => {
   const { id } = useParams<{ id: string }>()
   const addItem = useCartStore((s) => s.addItem)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const handleSizeGuide = useCallback(() => setSizeGuideOpen(true), [])
   const handleCloseSizeGuide = useCallback(() => setSizeGuideOpen(false), [])
-  const [product, setProduct] = useState<ProductDetail | null>(null)
-  const [apiDetail, setApiDetail] = useState<ApiProductDetail | null>(null)
-  const [loading, setLoading] = useState(true)
+
+  const { product: serverProduct } = useInitialData()
+  const initialApiDetail = getInitialApiDetail(id, serverProduct)
+
+  // Initialise from server-provided data so SSR and first client render match
+  const [product, setProduct] = useState<ProductDetail | null>(() =>
+    initialApiDetail ? adaptDetail(initialApiDetail) : null,
+  )
+  const [apiDetail, setApiDetail] = useState<ApiProductDetail | null>(() => initialApiDetail)
+  const [loading, setLoading] = useState(!initialApiDetail)
   const [error, setError] = useState('')
+
+  // Track which product id was seeded by the server so we skip the initial fetch
+  const seededIdRef = useRef<string | null>(initialApiDetail?.id ?? null)
 
   const productJsonLd = useMemo(() => {
     if (!product || !apiDetail || !id) return undefined
@@ -79,6 +109,11 @@ const ProductPage: FC = () => {
 
   useEffect(() => {
     if (!id) return
+    // Skip the first fetch when the server already seeded this product's data
+    if (seededIdRef.current === id) {
+      seededIdRef.current = null
+      return
+    }
     void (async () => {
       setLoading(true)
       setError('')
@@ -86,18 +121,6 @@ const ProductPage: FC = () => {
         const detail = await getProduct(id)
         setApiDetail(detail)
         setProduct(adaptDetail(detail))
-        // Gallery shows images.slice(1) as main when 2+ images exist, images[0] otherwise
-        const heroImageUrl = detail.images && detail.images.length > 1
-          ? detail.images[1].url
-          : detail.images?.[0]?.url
-        if (heroImageUrl) {
-          const link = document.createElement('link')
-          link.rel = 'preload'
-          link.as = 'image'
-          link.href = heroImageUrl
-          link.setAttribute('fetchpriority', 'high')
-          document.head.appendChild(link)
-        }
       } catch (e) {
         setError((e as { message?: string })?.message ?? 'خطا در بارگذاری محصول')
       } finally {

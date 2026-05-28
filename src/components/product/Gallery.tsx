@@ -26,14 +26,14 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const hasApiImages = galleryImages && galleryImages.length > 0
 
   return (
-    <div className="sticky top-[96px] rounded-[14px] overflow-hidden bg-[linear-gradient(145deg,#2B1C12_0%,#1C1209_60%,#140C06_100%)] text-bg isolate grid [grid-template-columns:112px_1fr] h-[calc(100vh-128px)] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(61,43,32,.18),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-md:grid-cols-1 max-md:[grid-template-rows:auto_1fr]">
+    <div className="sticky top-[96px] rounded-[14px] overflow-hidden bg-[linear-gradient(145deg,#2B1C12_0%,#1C1209_60%,#140C06_100%)] text-bg isolate grid [grid-template-columns:112px_1fr] h-[calc(100vh-128px)] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(61,43,32,.18),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-md:grid-cols-1 max-md:[grid-template-rows:auto_1fr] max-lg:static max-lg:h-auto max-lg:flex max-lg:flex-col">
       {/* pthumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
-      <div className="flex flex-col gap-1.5 overflow-y-auto p-2.5 scrollbar-none max-md:flex-row max-md:overflow-x-auto max-md:px-[22px] max-md:pb-[22px] max-md:py-0">
+      <div className="flex flex-col gap-1.5 overflow-y-auto p-2.5 scrollbar-none max-md:flex-row max-md:overflow-x-auto max-md:px-[22px] max-md:pb-[22px] max-md:py-0 max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-[rgba(245,237,224,.12)]">
         {hasApiImages
           ? galleryImages.map((img, i) => (
               <button
                 key={img.id}
-                className={`w-full aspect-[1/1.1] flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 max-md:w-[60px] max-md:h-[74px] ${i === activeIdx ? 'border-[var(--color-dust-rose)] bg-[rgba(212,169,142,.12)]' : 'border-transparent hover:border-[rgba(245,237,224,.3)]'}`}
+                className={`w-full aspect-[1/1.1] flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 max-md:w-[60px] max-md:h-[74px] max-lg:w-[60px] max-lg:h-[74px] ${i === activeIdx ? 'border-[var(--color-dust-rose)] bg-[rgba(212,169,142,.12)]' : 'border-transparent hover:border-[rgba(245,237,224,.3)]'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -43,7 +43,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           : PRODUCT_GALLERY.map((item, i) => (
               <button
                 key={item.tone}
-                className={`w-full aspect-[1/1.1] flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-md:w-[60px] max-md:h-[74px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-[var(--color-dust-rose)]' : 'border-transparent hover:border-[rgba(245,237,224,.3)]'}`}
+                className={`w-full aspect-[1/1.1] flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-md:w-[60px] max-md:h-[74px] max-lg:w-[60px] max-lg:h-[74px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-[var(--color-dust-rose)]' : 'border-transparent hover:border-[rgba(245,237,224,.3)]'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -52,7 +52,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
             ))}
       </div>
 
-      <div className="relative z-[1] flex flex-col min-h-0">
+      <div className="relative z-[1] flex flex-col min-h-0 max-sm:h-[340px] max-lg:h-[480px]">
         <div className="flex-1 relative grid place-items-center">
           {hasApiImages
             ? galleryImages.map((img, i) => (

@@ -1,4 +1,4 @@
-import type { FC } from 'react'
+import { Fragment, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { CATEGORIES } from '../../data/categories'
 import { toFa } from '../../utils/format'
@@ -89,9 +89,10 @@ const CategoryHero: FC<CategoryHeroProps> = ({
       </nav>
 
       {/* Hero */}
-      <section className="mt-5 relative rounded-[14px] overflow-hidden text-bg isolate grid [grid-template-columns:1.05fr_.95fr] min-h-[440px] bg-[radial-gradient(80%_100%_at_0%_100%,rgba(196,135,58,.22),transparent_60%),linear-gradient(135deg,var(--color-plum-2)_0%,var(--color-plum)_60%,var(--color-plum-dark)_100%)] after:absolute after:inset-0 after:z-0 after:pointer-events-none after:bg-[radial-gradient(rgba(245,237,224,.06)_1px,transparent_1px)] after:[background-size:22px_22px] after:[mask-image:radial-gradient(60%_60%_at_80%_30%,#000_0%,transparent_70%)]">
-        {/* Left content */}
-        <div className="relative z-[2] px-14 py-12 flex flex-col justify-between gap-8 max-md:px-7 max-md:py-8">
+      <section className="mt-5 relative rounded-[14px] overflow-hidden text-bg isolate grid [grid-template-columns:1.05fr_.95fr] min-h-[440px] max-sm:grid-cols-1 max-sm:min-h-[auto] bg-[radial-gradient(80%_100%_at_0%_100%,rgba(196,135,58,.22),transparent_60%),linear-gradient(135deg,var(--color-plum-2)_0%,var(--color-plum)_60%,var(--color-plum-dark)_100%)] after:absolute after:inset-0 after:z-0 after:pointer-events-none after:bg-[radial-gradient(rgba(245,237,224,.06)_1px,transparent_1px)] after:[background-size:22px_22px] after:[mask-image:radial-gradient(60%_60%_at_80%_30%,#000_0%,transparent_70%)]">
+
+        {/* Main content */}
+        <div className="relative z-[2] px-14 py-12 flex flex-col justify-between gap-8 max-md:px-7 max-md:py-8 max-sm:px-5 max-sm:py-6 max-sm:gap-5">
           <div className="flex items-center justify-between gap-6">
             <span className="font-mono text-[11px] tracking-[0.24em] text-[rgba(245,237,224,.55)]">
               دسته‌بندی · {category.num} از ۰۵
@@ -102,34 +103,34 @@ const CategoryHero: FC<CategoryHeroProps> = ({
           </div>
 
           <div>
-            <h1 className="font-heading font-bold text-[clamp(56px,8vw,116px)] leading-[.95] tracking-[-0.02em] m-0 text-bg">
+            <h1 className="font-heading font-bold text-[clamp(36px,8vw,116px)] leading-[.95] tracking-[-0.02em] m-0 text-bg">
               {category.fa}
-              <span className="block font-display italic font-normal text-[clamp(16px,1.6vw,22px)] tracking-[0.04em] text-[#E8C9B6] mt-3.5 leading-none">{category.en}</span>
+              <span className="block font-display italic font-normal text-[clamp(13px,1.6vw,22px)] tracking-[0.04em] text-[#E8C9B6] mt-3 leading-none">{category.en}</span>
             </h1>
-            <p className="max-w-[48ch] text-[15px] leading-[1.85] text-[rgba(245,237,224,.75)] mt-6 m-0 font-body">{CAT_DESC[catId] ?? ''}</p>
+            <p className="max-w-[48ch] text-[15px] leading-[1.85] text-[rgba(245,237,224,.75)] mt-6 m-0 font-body max-sm:text-[13.5px] max-sm:leading-[1.75] max-sm:mt-4">{CAT_DESC[catId] ?? ''}</p>
           </div>
 
-          <div className="flex items-center gap-[18px] flex-wrap pt-6 border-t border-[rgba(245,237,224,.14)]">
+          {/* Stats */}
+          <div className="flex items-center gap-[18px] flex-wrap pt-6 border-t border-[rgba(245,237,224,.14)] max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pt-4 max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
             {[
               { v: toFa(productCount), l: 'محصول' },
               { v: toFa(Math.min(productCount, 12)), l: 'طرح جدید' },
               { v: 'بی‌آلرژی', l: 'متریال' },
               { v: 'دست‌ساز', l: 'تهران' },
             ].map(({ v, l }, i) => (
-              <div key={i} className="flex flex-col gap-0.5">
-                <div className="font-heading text-[22px] font-bold text-bg leading-none">{v}</div>
-                <div className="text-[11px] text-[rgba(245,237,224,.55)] font-mono tracking-[0.08em] uppercase">{l}</div>
-              </div>
-            )).reduce<React.ReactNode[]>((acc, el, i) => {
-              if (i > 0) acc.push(<div key={`sep-${i}`} className="w-px h-7 bg-[rgba(245,237,224,.18)] flex-shrink-0" />)
-              acc.push(el)
-              return acc
-            }, [])}
+              <Fragment key={i}>
+                {i > 0 && <div className="w-px h-7 bg-[rgba(245,237,224,.18)] flex-shrink-0 max-sm:hidden" aria-hidden="true" />}
+                <div className="flex flex-col gap-0.5 shrink-0">
+                  <div className="font-heading text-[22px] font-bold text-bg leading-none">{v}</div>
+                  <div className="text-[11px] text-[rgba(245,237,224,.55)] font-mono tracking-[0.08em] uppercase">{l}</div>
+                </div>
+              </Fragment>
+            ))}
           </div>
         </div>
 
-        {/* Right glyph */}
-        <div className="relative z-[2] grid place-items-center p-10 max-md:min-h-[280px]">
+        {/* Glyph — hidden on small mobile to save space */}
+        <div className="relative z-[2] grid place-items-center p-10 max-md:min-h-[280px] max-sm:hidden">
           <div className="relative w-full max-w-[380px] aspect-square grid place-items-center before:absolute before:inset-[8%] before:border before:border-dashed before:border-[rgba(245,237,224,.22)] before:rounded-full before:animate-[cat-spin_80s_linear_infinite] after:absolute after:inset-[-2%] after:rounded-full after:bg-[radial-gradient(60%_60%_at_50%_60%,rgba(196,135,58,.35),transparent_70%)] after:blur-[20px] after:-z-[1]">
             {glyph}
             <span className="absolute bottom-[34px] left-1/2 -translate-x-1/2 inline-flex items-center gap-2.5 px-[18px] py-2.5 bg-[rgba(245,237,224,.08)] border border-[rgba(245,237,224,.18)] backdrop-blur-[10px] rounded-full text-[12px] font-mono tracking-[0.06em] text-[#E8D5D1] z-[3] whitespace-nowrap">
@@ -140,14 +141,14 @@ const CategoryHero: FC<CategoryHeroProps> = ({
         </div>
       </section>
 
-      {/* Category nav */}
-      <div className="mt-[18px] flex gap-2 flex-wrap items-center pb-2 max-md:pb-4 max-md:border-b max-md:border-rule max-md:mb-2">
-        <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5">سایر دسته‌بندی‌ها</span>
+      {/* Category nav — horizontally scrollable on mobile */}
+      <div className="mt-[18px] flex gap-2 items-center pb-2 max-md:pb-4 max-md:border-b max-md:border-rule max-md:mb-2 max-sm:overflow-x-auto max-sm:flex-nowrap max-sm:[margin-inline:calc(-1*var(--pad))] max-sm:[padding-inline:var(--pad)] max-sm:[scrollbar-width:none] max-sm:[&::-webkit-scrollbar]:hidden">
+        <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5 shrink-0">سایر دسته‌بندی‌ها</span>
         {MAIN_CATS.map((cat) => (
           <Link
             key={cat.id}
             to={`/category/${cat.id}`}
-            className={`inline-flex items-center gap-2 px-4 py-[9px] rounded-full text-[13px] border transition-all duration-200 ${cat.id === catId ? 'bg-ink text-bg border-ink' : 'border-rule hover:border-ink'}`}
+            className={`inline-flex items-center gap-2 px-4 py-[9px] rounded-full text-[13px] border transition-all duration-200 shrink-0 ${cat.id === catId ? 'bg-ink text-bg border-ink' : 'border-rule hover:border-ink'}`}
           >
             {cat.fa}
             <span className="font-mono text-[11px] opacity-60">{toFa(catProductCounts[cat.id] ?? 0)}</span>

@@ -1,17 +1,40 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useEffect, useState, type FC } from 'react'
+import { useEffect, useState, useRef, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import { toFa } from '../utils/format'
 import { listCollections, type ApiCollection } from '../api/product'
 import { toneStyle, toneClass } from '../utils/toneStyle'
+import { useInitialData } from '../context/initialData'
+
+declare global {
+  interface Window {
+    __COLLECTIONS_INITIAL__?: ApiCollection[]
+  }
+}
+
+function getInitialCollections(serverCollections: unknown): ApiCollection[] | null {
+  if (Array.isArray(serverCollections) && serverCollections.length > 0) {
+    return serverCollections as ApiCollection[]
+  }
+  if (typeof window !== 'undefined' && Array.isArray(window.__COLLECTIONS_INITIAL__)) {
+    return window.__COLLECTIONS_INITIAL__
+  }
+  return null
+}
 
 const CollectionsPage: FC = () => {
   usePageMeta({ title: 'مجموعه‌ها' })
-  const [collections, setCollections] = useState<ApiCollection[]>([])
-  const [loading, setLoading] = useState(true)
+
+  const { collections: serverCollections } = useInitialData()
+  const initial = getInitialCollections(serverCollections)
+
+  const [collections, setCollections] = useState<ApiCollection[]>(() => initial ?? [])
+  const [loading, setLoading] = useState(!initial)
+  const seededRef = useRef(!!initial)
 
   useEffect(() => {
+    if (seededRef.current) { seededRef.current = false; return }
     listCollections()
       .then(setCollections)
       .catch(() => {})

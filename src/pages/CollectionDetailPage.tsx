@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useEffect, useState, type FC } from 'react'
+import { useEffect, useState, useRef, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ProductCard from '../components/product/ProductCard'
 import Breadcrumb from '../components/shared/Breadcrumb'
@@ -7,21 +7,58 @@ import { toFa } from '../utils/format'
 import { useCartStore } from '../store/cartStore'
 import { getCollectionBySlug, adaptProduct, type ApiCollectionDetail } from '../api/product'
 import { toneStyle, toneClass } from '../utils/toneStyle'
+import { useInitialData } from '../context/initialData'
 import type { Product } from '../types'
+
+declare global {
+  interface Window {
+    __COLLECTION_INITIAL__?: ApiCollectionDetail
+  }
+}
+
+function getInitialCollection(
+  slug: string | undefined,
+  serverCollection: unknown,
+): ApiCollectionDetail | null {
+  if (!slug) return null
+  if (
+    serverCollection &&
+    typeof serverCollection === 'object' &&
+    (serverCollection as ApiCollectionDetail).slug === slug
+  ) return serverCollection as ApiCollectionDetail
+  if (
+    typeof window !== 'undefined' &&
+    window.__COLLECTION_INITIAL__?.slug === slug
+  ) return window.__COLLECTION_INITIAL__
+  return null
+}
 
 const CollectionDetailPage: FC = () => {
   const { slug } = useParams<{ slug: string }>()
   const addItem = useCartStore((s) => s.addItem)
-  const [collection, setCollection] = useState<ApiCollectionDetail | null>(null)
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+
+  const { collection: serverCollection } = useInitialData()
+  const initial = getInitialCollection(slug, serverCollection)
+
+  const [collection, setCollection] = useState<ApiCollectionDetail | null>(() => initial)
+  const [products, setProducts] = useState<Product[]>(() =>
+    initial ? initial.products.map((p) => adaptProduct(p)) : [],
+  )
+  const [loading, setLoading] = useState(!initial)
   const [error, setError] = useState('')
-  usePageMeta({ title: collection?.name_fa ?? 'مجموعه', canonical: slug ? `/collections/${slug}` : undefined })
+  const seededSlugRef = useRef<string | null>(initial?.slug ?? null)
+
+  usePageMeta({
+    title: collection?.name_fa ?? 'مجموعه',
+    canonical: slug ? `/collections/${slug}` : undefined,
+  })
 
   useEffect(() => {
     if (!slug) return
+    if (seededSlugRef.current === slug) { seededSlugRef.current = null; return }
     void (async () => {
       setLoading(true)
+      setError('')
       try {
         const col = await getCollectionBySlug(slug)
         setCollection(col)
@@ -66,7 +103,6 @@ const CollectionDetailPage: FC = () => {
         className={`relative grid grid-cols-[1fr_auto] items-center gap-10 min-h-[320px] px-[clamp(20px,4vw,56px)] py-16 overflow-hidden animate-rise max-[768px]:grid-cols-1 max-[768px]:min-h-[220px] max-[768px]:px-5 max-[768px]:py-10 ${toneClass(collection.tone, 'coll-banner')}`}
         style={toneStyle(collection.tone)}
       >
-        {/* Top tag */}
         <span className="absolute top-6 right-[clamp(20px,4vw,56px)] font-mono text-[10px] tracking-[0.18em] bg-white/12 border border-white/28 px-2.5 py-1.5 backdrop-blur-[4px]">
           کالکشن / COLLECTION
         </span>
