@@ -293,7 +293,7 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
           {sizeOptions.map((s) => (
             <button
               key={s.id}
-              className={`min-w-[54px] px-3.5 py-[11px] border rounded-[10px] font-body text-[13px] bg-surface transition-all duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.35] cursor-not-allowed line-through' : 'cursor-pointer'}`}
+              className={`min-w-[54px] px-3.5 py-[11px] border rounded-[10px] font-body text-[13px] transition-all duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.35] cursor-not-allowed line-through' : 'cursor-pointer'}`}
               disabled={s.disabled}
               onClick={() => !s.disabled && setSize(s.id)}
             >

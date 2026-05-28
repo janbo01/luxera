@@ -32,7 +32,15 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Fonts -->
+    <!-- CDN preconnect -->
+    <link rel="preconnect" href="https://luxera-images.hot.ir-central1.arvanstorage.ir" crossorigin />
+    <link rel="preconnect" href="https://hot.ir-central1.arvanstorage.ir" crossorigin />
+
+    <!-- Critical font preloads (body + heading weights used above the fold) -->
+    <link rel="preload" href="/src/assets/fonts/yekanbakh-Light.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/Morabba-Bold.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Non-critical Google font (JetBrains Mono — monospace labels) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" as="style" onload="this.rel='stylesheet'" />

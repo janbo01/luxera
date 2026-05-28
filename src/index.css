@@ -59,9 +59,7 @@
 /* ── Morabba (Persian Heading) ─────────────────────────────── */
 @font-face {
   font-family: 'Morabba';
-  src: url('./assets/fonts/Morabba-Bold.woff2') format('woff2'),
-    url('./assets/fonts/Morabba-Bold.woff') format('woff'),
-    url('./assets/fonts/Morabba-Bold.ttf') format('truetype');
+  src: url('./assets/fonts/Morabba-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -69,8 +67,7 @@
 
 @font-face {
   font-family: 'Morabba';
-  src: url('./assets/fonts/Morabba-Regular.woff2') format('woff2'),
-    url('./assets/fonts/Morabba-Regular.ttf') format('truetype');
+  src: url('./assets/fonts/Morabba-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -79,15 +76,7 @@
 /* ── Yekan Bakh (Persian Body) ─────────────────────────────── */
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Light.ttf') format('truetype');
+  src: url('./assets/fonts/yekanbakh-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -95,7 +84,15 @@
 
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Medium.ttf') format('truetype');
+  src: url('./assets/fonts/yekanbakh-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Yekan Bakh';
+  src: url('./assets/fonts/yekanbakh-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -103,16 +100,8 @@
 
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Bold.ttf') format('truetype');
+  src: url('./assets/fonts/yekanbakh-Bold.woff2') format('woff2');
   font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Heavy.ttf') format('truetype');
-  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
@@ -120,18 +109,20 @@
 /* ── Cormorant Garamond (Latin Display) ─────────────────────── */
 @font-face {
   font-family: 'Cormorant Garamond';
-  src: url('./assets/fonts/CormorantGaramond-VariableFont_wght.ttf') format('truetype');
+  src: url('./assets/fonts/CormorantGaramond-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: optional;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
   font-family: 'Cormorant Garamond';
-  src: url('./assets/fonts/CormorantGaramond-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('./assets/fonts/CormorantGaramond-Italic-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
   font-display: optional;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ── Keyframes ──────────────────────────────────────────────── */
