@@ -10,7 +10,7 @@ export default function EnamadLogo() {
         src="https://trustseal.enamad.ir/logo.aspx?id=734973&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
         alt=""
         style={{ cursor: "pointer" }}
-        code="qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
+        {...{ code: "qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" }}
       />
     </a>
   )
