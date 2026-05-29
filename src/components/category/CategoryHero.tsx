@@ -89,7 +89,7 @@ const CategoryHero: FC<CategoryHeroProps> = ({
       </nav>
 
       {/* Hero */}
-      <section className="mt-5 relative rounded-[14px] overflow-hidden text-bg isolate grid [grid-template-columns:1.05fr_.95fr] min-h-[440px] max-sm:grid-cols-1 max-sm:min-h-[auto] bg-[radial-gradient(80%_100%_at_0%_100%,rgba(196,135,58,.22),transparent_60%),linear-gradient(135deg,var(--color-plum-2)_0%,var(--color-plum)_60%,var(--color-plum-dark)_100%)] after:absolute after:inset-0 after:z-0 after:pointer-events-none after:bg-[radial-gradient(rgba(245,237,224,.06)_1px,transparent_1px)] after:[background-size:22px_22px] after:[mask-image:radial-gradient(60%_60%_at_80%_30%,#000_0%,transparent_70%)]">
+      <section className="mt-5 relative rounded-[var(--radius)] overflow-hidden text-bg isolate grid [grid-template-columns:1.05fr_.95fr] min-h-[440px] max-sm:grid-cols-1 max-sm:min-h-[auto] bg-[radial-gradient(80%_100%_at_0%_100%,rgba(196,135,58,.22),transparent_60%),linear-gradient(135deg,var(--color-plum-2)_0%,var(--color-plum)_60%,var(--color-plum-dark)_100%)] after:absolute after:inset-0 after:z-0 after:pointer-events-none after:bg-[radial-gradient(rgba(245,237,224,.06)_1px,transparent_1px)] after:[background-size:22px_22px] after:[mask-image:radial-gradient(60%_60%_at_80%_30%,#000_0%,transparent_70%)]">
 
         {/* Main content */}
         <div className="relative z-[2] px-14 py-12 flex flex-col justify-between gap-8 max-md:px-7 max-md:py-8 max-sm:px-5 max-sm:py-6 max-sm:gap-5">

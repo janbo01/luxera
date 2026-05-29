@@ -29,6 +29,9 @@
   --color-copper-dark: #8A5D22;
   --color-gold: #CBA855;
   --color-dust-rose: #D4A98E;
+  --color-dust-rose-light: #E8C9B6;
+  --color-petal: #E6CFCB;
+  --color-overlay: rgba(27, 15, 29, 0.5);
   --color-sale: #B43A2A;
   --color-ok: #1F8A5B;
 
@@ -39,6 +42,7 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   /* Border radius */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius: 14px;
   --radius-lg: 20px;

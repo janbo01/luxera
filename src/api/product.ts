@@ -176,6 +176,9 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
   const detail = api as ApiProductDetail
   const imageUrl = detail.images?.[0]?.url ?? api.image_url
   const imageUrlAlt = detail.images?.[1]?.url
+  const stockCount = detail.variants
+    ? detail.variants.reduce((sum, v) => sum + v.quantity, 0)
+    : undefined
 
   return {
     id: api.id,
@@ -192,6 +195,7 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
     meta: [],
     imageUrl,
     imageUrlAlt,
+    stockCount,
   }
 }
 

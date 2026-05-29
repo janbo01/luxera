@@ -13,6 +13,7 @@ export interface Product {
   meta: string[]
   imageUrl?: string
   imageUrlAlt?: string
+  stockCount?: number
 }
 
 export interface ProductDetail extends Product {

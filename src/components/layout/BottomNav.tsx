@@ -6,14 +6,17 @@ import { useWishlistStore, selectWishlistCount } from '../../store/wishlistStore
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
 import { useUIStore } from '../../store/uiStore'
+import { useCartStore, selectTotalQty } from '../../store/cartStore'
 
 const BottomNav: FC = () => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const wishCount = useWishlistStore(selectWishlistCount)
+  const wishCount  = useWishlistStore(selectWishlistCount)
+  const cartCount  = useCartStore(selectTotalQty)
+  const openCart   = useCartStore((s) => s.openCart)
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
   const openSearch = useSearchStore((s) => s.open)
-  const openLogin = useUIStore((s) => s.openLogin)
+  const openLogin  = useUIStore((s) => s.openLogin)
 
   if (pathname === '/checkout') return null
 
@@ -44,6 +47,18 @@ const BottomNav: FC = () => {
       <button className={tab(searchActive)} onClick={openSearch} aria-label="جستجو">
         <Icon name="search" size={22} />
         <span>جستجو</span>
+      </button>
+
+      <button className={tab(false)} onClick={openCart} aria-label="سبد خرید">
+        <span className="relative flex items-center justify-center">
+          <Icon name="bag" size={22} />
+          {cartCount > 0 && (
+            <span className="absolute -top-[5px] -end-2 bg-copper text-white text-[9px] font-mono min-w-4 h-4 rounded-lg flex items-center justify-center px-[3px]">
+              {cartCount > 9 ? '۹+' : toFa(cartCount)}
+            </span>
+          )}
+        </span>
+        <span>سبد</span>
       </button>
 
       <Link to="/wishlist" className={tab(wishActive)} aria-current={wishActive ? 'page' : undefined} aria-label="علاقه‌مندی‌ها">

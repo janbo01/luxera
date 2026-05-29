@@ -26,7 +26,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const hasApiImages = galleryImages && galleryImages.length > 0
 
   return (
-    <div className="sticky top-[96px] rounded-[14px] overflow-hidden bg-[linear-gradient(145deg,#2B1C12_0%,#1C1209_60%,#140C06_100%)] text-bg isolate grid [grid-template-columns:112px_1fr] h-[calc(100vh-128px)] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(61,43,32,.18),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-md:grid-cols-1 max-md:[grid-template-rows:auto_1fr] max-lg:static max-lg:h-auto max-lg:flex max-lg:flex-col">
+    <div className="sticky top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,#2B1C12_0%,#1C1209_60%,#140C06_100%)] text-bg isolate grid [grid-template-columns:112px_1fr] h-[calc(100vh-128px)] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(61,43,32,.18),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-md:grid-cols-1 max-md:[grid-template-rows:auto_1fr] max-lg:static max-lg:h-auto max-lg:flex max-lg:flex-col">
       {/* pthumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
       <div className="flex flex-col gap-1.5 overflow-y-auto p-2.5 scrollbar-none max-md:flex-row max-md:overflow-x-auto max-md:px-[22px] max-md:pb-[22px] max-md:py-0 max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-[rgba(245,237,224,.12)]">
         {hasApiImages

@@ -5,6 +5,7 @@ import { flyToCart } from '../../utils/flyToCart'
 import { useWishlist } from '../../hooks/useWishlist'
 import { formatNumber, toFa } from '../../utils/format'
 import Icon from '../icons/Icon'
+import Badge from '../shared/Badge'
 import type { Product } from '../../types'
 
 interface ProductCardProps {
@@ -13,11 +14,6 @@ interface ProductCardProps {
   priority?: boolean
 }
 
-const BADGE_CLASS: Record<string, string> = {
-  sale:    'bg-sale text-white',
-  new:     'bg-plum text-white',
-  limited: 'bg-gold text-ink',
-}
 
 const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false }) => {
   const cardRef = useRef<HTMLAnchorElement>(null)
@@ -49,7 +45,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
 
   return (
     <Link
-      className="bg-surface border border-rule rounded-[16px] overflow-hidden flex flex-col relative cursor-pointer min-w-0 card-lift group"
+      className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col relative cursor-pointer min-w-0 card-lift group"
       ref={cardRef}
       to={`/product/${product.id}`}
       onMouseEnter={handleMouseEnter}
@@ -60,14 +56,12 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         {/* Badges */}
         {badgeLabel && (
           <div className="product-badge absolute top-3 end-3 flex flex-col gap-1.5 items-end z-[3]">
-            <span className={`font-mono text-[10px] tracking-[0.14em] uppercase px-[9px] py-[5px] rounded-[4px] font-medium ${BADGE_CLASS[badgeKind] ?? 'bg-plum text-white'}`}>
-              {badgeLabel}
-            </span>
+            <Badge label={badgeLabel} kind={badgeKind} />
           </div>
         )}
 
         {/* Quick actions (wishlist) */}
-        <div className="absolute top-3 start-3 flex flex-col gap-1.5 z-[3] opacity-0 -translate-x-[6px] transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-x-0">
+        <div className="absolute top-3 start-3 flex flex-col gap-1.5 z-[3] opacity-0 -translate-x-[6px] transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 max-[720px]:opacity-100 max-[720px]:translate-x-0">
           <button
             className={`w-[34px] h-[34px] rounded-full bg-[rgba(251,246,238,0.92)] backdrop-blur-[8px] grid place-items-center transition-colors duration-200 border-none cursor-pointer [&>svg]:w-3.5 [&>svg]:h-3.5 ${wishlisted ? 'bg-white text-sale' : 'text-ink hover:bg-white hover:text-sale'}`}
             aria-label={wishlisted ? 'حذف از علاقه‌مندی' : 'افزودن به علاقه‌مندی'}
@@ -114,10 +108,11 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           </div>
         </div>
 
-        {/* Add to cart — expands on hover */}
+        {/* Add to cart — expands on hover/focus/touch */}
         <button
-          className="product-quick flex justify-between items-center w-full bg-ink text-bg rounded-full text-[12px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-4 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[40px] group-hover:opacity-100 group-hover:py-2.5 group-hover:mt-0 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
+          className="product-quick flex justify-between items-center w-full bg-ink text-bg rounded-full text-[12px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-4 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[40px] group-hover:opacity-100 group-hover:py-2.5 group-focus-within:max-h-[40px] group-focus-within:opacity-100 group-focus-within:py-2.5 max-[720px]:max-h-[40px] max-[720px]:opacity-100 max-[720px]:py-2.5 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
           onClick={handleAdd}
+          aria-label="افزودن به سبد"
         >
           <span>افزودن به سبد</span>
           <Icon name="bag" size={15} strokeWidth={1.6} />

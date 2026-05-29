@@ -129,6 +129,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
           <span className="font-heading text-[13px] font-semibold text-ink">فیلترها</span>
           <button
             onClick={onReset}
+            aria-label="پاک کردن فیلترها"
             className="text-[10px] font-mono tracking-[0.12em] uppercase text-copper hover:text-ink transition-colors duration-200 bg-transparent border-none cursor-pointer"
           >
             پاک کردن
@@ -140,6 +141,8 @@ const FilterPanel: FC<FilterPanelProps> = ({
           <button
             className="w-full flex items-center justify-between mb-0 cursor-pointer bg-transparent border-none p-0 text-right"
             onClick={() => toggleSection('price')}
+            aria-expanded={openSections.has('price')}
+            aria-label="فیلتر قیمت"
           >
             <SectionLabel>قیمت · تومان</SectionLabel>
             <span
@@ -178,6 +181,8 @@ const FilterPanel: FC<FilterPanelProps> = ({
             <button
               className="w-full flex items-center justify-between cursor-pointer bg-transparent border-none p-0 text-right"
               onClick={() => toggleSection('material')}
+              aria-expanded={openSections.has('material')}
+              aria-label="فیلتر جنس"
             >
               <SectionLabel count={availableMaterials.length}>جنس</SectionLabel>
               <span
@@ -220,6 +225,8 @@ const FilterPanel: FC<FilterPanelProps> = ({
             <button
               className="w-full flex items-center justify-between cursor-pointer bg-transparent border-none p-0 text-right"
               onClick={() => toggleSection('color')}
+              aria-expanded={openSections.has('color')}
+              aria-label="فیلتر رنگ"
             >
               <SectionLabel count={availableColors.length}>رنگ</SectionLabel>
               <span

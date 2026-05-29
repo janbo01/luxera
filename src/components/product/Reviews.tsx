@@ -234,7 +234,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                 <p className="col-span-2 text-[13px] text-muted py-6 text-center">هنوز نظری برای این فیلتر ثبت نشده.</p>
               )}
               {!loading && filtered.map((review) => (
-                <article key={review.id} className="p-5 bg-bg rounded-[14px] border border-rule flex flex-col gap-3">
+                <article key={review.id} className="p-5 bg-bg rounded-[var(--radius)] border border-rule flex flex-col gap-3">
                   <div className="flex items-start gap-3">
                     <div className={`w-9 h-9 rounded-full flex-shrink-0 grid place-items-center text-bg font-heading text-[14px] font-bold overflow-hidden ${AVA_BG[review.avatar] ?? 'bg-bg-2'}`}>
                       {review.name.charAt(0)}

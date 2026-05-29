@@ -1,4 +1,5 @@
 import { useState, useCallback, type FC } from 'react'
+import { Link } from 'react-router-dom'
 import HeroSlider, { type SlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
@@ -28,7 +29,7 @@ const Hero: FC = () => {
     <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.15fr_0.85fr] max-md:grid-cols-1 gap-[22px] items-stretch min-h-[560px] max-md:min-h-0">
 
       {/* ── Dark stage (left) ── */}
-      <div className="relative overflow-hidden rounded-[14px] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(196,135,58,0.25),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-[280px] max-md:order-2">
+      <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(196,135,58,0.25),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-[280px] max-md:order-2">
 
         <div className="absolute inset-0 z-[1]">
           <HeroSlider onSlide={handleSlide} />
@@ -44,7 +45,7 @@ const Hero: FC = () => {
               {slide.oldPrice && (
                 <span className="text-[11px] line-through text-[rgba(245,237,224,0.45)] font-mono">{fmtPrice(slide.oldPrice)}</span>
               )}
-              <span className="font-heading text-xl font-bold text-[#E8C9B6]">
+              <span className="font-heading text-xl font-bold text-[var(--color-dust-rose-light)]">
                 {fmtPrice(slide.price)}
                 <small className="font-body text-[11px] font-normal text-[rgba(245,237,224,0.6)] me-1"> تومان</small>
               </span>
@@ -54,7 +55,7 @@ const Hero: FC = () => {
       </div>
 
       {/* ── Cream copy panel (right) ── */}
-      <div className="rounded-[14px] bg-surface px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
+      <div className="rounded-[var(--radius)] bg-surface px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
         <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">
           <span className="w-5 h-px bg-copper-dark opacity-70" />
           <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark">
@@ -76,13 +77,13 @@ const Hero: FC = () => {
         </p>
 
         <div className="flex gap-2.5 flex-wrap mb-auto animate-rise [animation-delay:380ms]">
-          <button className={BTN_CLS}>
+          <Link to="/category/new" className={BTN_CLS}>
             مشاهده‌ی محصولات
             <span className="arr"><Icon name="arrow-left" size={16} /></span>
-          </button>
-          <button className={BTN_GHOST_CLS}>
+          </Link>
+          <a href="#about" className={BTN_GHOST_CLS}>
             بیشتر بدانید
-          </button>
+          </a>
         </div>
 
         <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">

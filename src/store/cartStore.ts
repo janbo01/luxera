@@ -28,20 +28,26 @@ export const useCartStore = create<CartState>()(
             navigator.vibrate(existing ? [8] : [15])
           }
           if (existing) {
+            const maxQty = existing.stockCount ?? Infinity
+            if (existing.qty >= maxQty) return state
             return {
               items: state.items.map((x) =>
                 x.id === product.id ? { ...x, qty: x.qty + 1 } : x
               ),
             }
           }
+          if ((product.stockCount ?? 1) < 1) return state
           return { items: [...state.items, { ...product, qty: 1 }] }
         }),
 
       increment: (id) =>
         set((state) => ({
-          items: state.items.map((x) =>
-            x.id === id ? { ...x, qty: x.qty + 1 } : x
-          ),
+          items: state.items.map((x) => {
+            if (x.id !== id) return x
+            const maxQty = x.stockCount ?? Infinity
+            if (x.qty >= maxQty) return x
+            return { ...x, qty: x.qty + 1 }
+          }),
         })),
 
       decrement: (id) =>

@@ -26,15 +26,15 @@ export class ErrorBoundary extends Component<Props, State> {
         <div style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', minHeight: '60vh', gap: '16px',
-          fontFamily: 'var(--persian-body)', direction: 'rtl',
+          fontFamily: 'var(--font-body)', direction: 'rtl',
         }}>
-          <h2 style={{ fontSize: '20px', color: 'var(--plum)' }}>مشکلی پیش آمد</h2>
-          <p style={{ color: 'var(--muted)', fontSize: '14px', textAlign: 'center' }}>
+          <h2 style={{ fontSize: '20px', color: 'var(--color-plum)' }}>مشکلی پیش آمد</h2>
+          <p style={{ color: 'var(--color-muted)', fontSize: '14px', textAlign: 'center' }}>
             لطفاً صفحه را رفرش کنید یا به صفحه‌ی اصلی بازگردید.
           </p>
           <button
             style={{
-              padding: '10px 24px', background: 'var(--plum)', color: '#fff',
+              padding: '10px 24px', background: 'var(--color-plum)', color: 'var(--color-bg)',
               borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '14px',
             }}
             onClick={() => { window.location.href = '/' }}

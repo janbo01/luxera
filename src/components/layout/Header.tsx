@@ -21,7 +21,7 @@ const STATIC_END: NavLink[] = [
 ]
 
 const AnnouncementBar = (
-  <div className="bg-plum-2 text-[#E6CFCB] text-xs tracking-[0.02em] max-[720px]:hidden">
+  <div className="bg-plum-2 text-[var(--color-petal)] text-xs tracking-[0.02em] max-[720px]:hidden">
     <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
       <div className="opacity-70 text-[11px]">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
       <div className="flex items-center gap-[18px] flex-wrap">
@@ -107,6 +107,8 @@ const Header: FC = () => {
             className="hidden max-[1100px]:flex items-center justify-center w-10 h-10 text-ink"
             onClick={() => setMenuOpen(true)}
             aria-label="منو"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-drawer"
           >
             <Icon name="menu" size={20} />
           </button>
@@ -168,6 +170,7 @@ const Header: FC = () => {
         {/* Mobile drawer */}
         <div
           ref={drawerRef}
+          id="mobile-drawer"
           className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_rgba(30,20,12,0.12)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-label="منوی ناوبری"
@@ -186,8 +189,8 @@ const Header: FC = () => {
           </nav>
 
           <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
-            <button className="flex items-center gap-1.5"><Icon name="globe" size={14} /><span>FA</span></button>
-            <button><span>پشتیبانی</span></button>
+            <button className="flex items-center gap-1.5" aria-label="تغییر زبان"><Icon name="globe" size={14} /><span>FA</span></button>
+            <button aria-label="پشتیبانی"><span>پشتیبانی</span></button>
           </div>
         </div>
       </header>

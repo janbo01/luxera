@@ -12,7 +12,7 @@ const PILLARS = [
 
 const Feature: FC = () => (
   <section className="px-[var(--pad)] max-w-[1480px] mx-auto">
-    <div className="bg-surface rounded-[14px] overflow-hidden grid grid-cols-[1.05fr_1fr] max-md:grid-cols-1">
+    <div className="bg-surface rounded-[var(--radius)] overflow-hidden grid grid-cols-[1.05fr_1fr] max-md:grid-cols-1">
 
       <div className="py-14 px-12 flex flex-col gap-6 max-md:py-9 max-md:px-6">
         <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">

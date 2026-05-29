@@ -13,7 +13,7 @@ const QuantityStepper: FC<QuantityStepperProps> = ({
   value,
   onDecrement,
   onIncrement,
-  className = 'qty-stepper',
+  className = 'inline-flex items-center gap-2 border border-rule rounded-full px-2.5 py-1 font-mono text-xs [&>button]:w-[18px] [&>button]:h-[18px] [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink',
 }) => (
   <div className={className}>
     <button onClick={onDecrement} aria-label="کم">

@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo, type FC } from 'react'
 import Icon from '../icons/Icon'
+import QuantityStepper from '../shared/QuantityStepper'
 import { IconTelegram, IconWhatsApp } from '../icons/BrandIcons'
 import Stars from './Stars'
 import { formatToman, formatNumber, toFa, normalizePhoneInput } from '../../utils/format'
@@ -130,7 +131,8 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
   const selectedColor = colorOptions.find((c) => c.id === color)
 
   const handleAdd = () => {
-    for (let i = 0; i < qty; i++) onAdd(p)
+    const safeQty = Math.min(qty, variantStock)
+    for (let i = 0; i < safeQty; i++) onAdd({ ...p, stockCount: variantStock })
   }
 
   const handleNotifySubmit = async (e: React.FormEvent) => {
@@ -213,7 +215,7 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
       </div>
 
       {/* Product name */}
-      <h1 className="font-heading font-bold leading-[1.05] tracking-[-0.01em] text-[clamp(38px,3.8vw,56px)] m-0 text-ink">
+      <h1 className="font-heading font-bold leading-[1.05] tracking-[-0.01em] text-[clamp(32px,3.2vw,48px)] m-0 text-ink">
         {p.fa}
         <span className="block font-display italic font-normal text-[18px] text-copper-dark mt-2 tracking-[0.02em]">{p.en}</span>
       </h1>
@@ -367,23 +369,12 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
       ) : (
         <div className="flex gap-2.5 mt-[22px] items-stretch">
           {/* Qty stepper */}
-          <div className="inline-flex items-center bg-surface border border-rule rounded-full p-1">
-            <button
-              className="w-9 h-9 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2"
-              onClick={() => setQty(Math.max(1, qty - 1))}
-              aria-label="کم"
-            >
-              <Icon name="minus" size={14} />
-            </button>
-            <span className="min-w-8 text-center font-body font-medium text-[14px]">{toFa(qty)}</span>
-            <button
-              className="w-9 h-9 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2"
-              onClick={() => setQty(qty + 1)}
-              aria-label="زیاد"
-            >
-              <Icon name="plus" size={14} />
-            </button>
-          </div>
+          <QuantityStepper
+            value={qty}
+            onDecrement={() => setQty(Math.max(1, qty - 1))}
+            onIncrement={() => setQty(Math.min(variantStock, qty + 1))}
+            className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-9 [&>button]:h-9 [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
+          />
           {/* Add button */}
           <button
             className="flex-1 bg-plum text-bg px-[26px] flex items-center justify-between rounded-full transition-colors duration-200 hover:bg-plum-2 min-h-[52px]"
@@ -422,7 +413,7 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
           <IconWhatsApp size={13} />
         </button>
         <button className={SHARE_BTN} onClick={handleCopyLink} aria-label="کپی لینک">
-          <Icon name="globe" size={13} />
+          <Icon name="link" size={13} />
         </button>
       </div>
 

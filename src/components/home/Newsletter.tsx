@@ -6,7 +6,7 @@ const Newsletter: FC = () => {
 
   return (
     <section className="mt-20 px-[var(--pad)]">
-      <div className="relative bg-plum text-bg rounded-[14px] overflow-hidden py-16 px-14 max-md:py-10 max-md:px-7 grid grid-cols-[1.1fr_0.9fr] max-md:grid-cols-1 gap-12 max-md:gap-8 items-center isolate before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(40%_60%_at_90%_20%,rgba(196,135,58,0.35),transparent_70%),radial-gradient(50%_70%_at_10%_90%,rgba(201,165,103,0.18),transparent_70%)]">
+      <div className="relative bg-plum text-bg rounded-[var(--radius)] overflow-hidden py-16 px-14 max-md:py-10 max-md:px-7 grid grid-cols-[1.1fr_0.9fr] max-md:grid-cols-1 gap-12 max-md:gap-8 items-center isolate before:absolute before:inset-0 before:-z-10 before:bg-[radial-gradient(40%_60%_at_90%_20%,rgba(196,135,58,0.35),transparent_70%),radial-gradient(50%_70%_at_10%_90%,rgba(201,165,103,0.18),transparent_70%)]">
 
         <div>
           <span className="font-display italic font-normal text-sm tracking-[0.04em] text-[rgba(245,237,224,0.7)] inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">

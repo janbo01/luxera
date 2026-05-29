@@ -1,4 +1,4 @@
-import { type FC, type ChangeEvent, useCallback } from 'react'
+import { type FC, type ChangeEvent, useCallback, useState } from 'react'
 import Icon from '../icons/Icon'
 import { toFa, normalizePhoneInput, toLocalPhone } from '../../utils/format'
 import { PROVINCES, CITIES_BY_PROVINCE } from '../../data/locations'
@@ -39,13 +39,15 @@ const AddressStep: FC<AddressStepProps> = ({
   onNotesChange,
   onNext,
 }) => {
+  const [saveDefault, setSaveDefault] = useState(false)
+
   const handlePhoneChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const syntheticEvent = { ...e, target: { ...e.target, name: 'phone', value: normalizePhoneInput(e.target.value) } } as ChangeEvent<HTMLInputElement>
     onAddrChange(syntheticEvent)
   }, [onAddrChange])
 
   return (
-  <section className="bg-surface rounded-[14px] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
+  <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
 
     {/* Pane header */}
     <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
@@ -62,17 +64,30 @@ const AddressStep: FC<AddressStepProps> = ({
     </div>
 
     {/* Address book */}
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2.5 mb-[22px] max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1">
+    <div
+      className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-2.5 mb-[22px] max-[1100px]:grid-cols-2 max-[640px]:grid-cols-1"
+      role="radiogroup"
+      aria-label="آدرس‌های ذخیره‌شده"
+    >
       {savedAddresses.map((adr) => {
         const isOn = selectedAdr === adr.id
         return (
-          <div
+          <label
             key={adr.id}
-            className={`relative px-4 pt-4 pb-4 border rounded-[10px] cursor-pointer transition-[border-color,background,box-shadow] flex flex-col gap-1.5 text-right hover:border-ink-2 ${
-              isOn ? 'border-ink bg-surface-2 shadow-[inset_0_0_0_1px_var(--ink)]' : 'border-rule bg-bg'
+            htmlFor={`adr-${adr.id}`}
+            className={`relative px-4 pt-4 pb-4 border rounded-[10px] cursor-pointer transition-[border-color,background,box-shadow] flex flex-col gap-1.5 text-right hover:border-ink-2 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ink has-[:focus-visible]:ring-offset-1 ${
+              isOn ? 'border-ink bg-surface-2 shadow-[inset_0_0_0_1px_var(--color-ink)]' : 'border-rule bg-bg'
             }`}
-            onClick={() => onSelectSaved(adr)}
           >
+            <input
+              type="radio"
+              id={`adr-${adr.id}`}
+              name="saved-address"
+              value={adr.id}
+              checked={isOn}
+              onChange={() => onSelectSaved(adr)}
+              className="sr-only"
+            />
             {/* Check circle */}
             <span className={`absolute top-3 left-3 w-5 h-5 rounded-full border-[1.5px] grid place-items-center transition-all [&_svg]:w-2.5 [&_svg]:h-2.5 [&_svg]:stroke-[2.5] ${
               isOn ? 'bg-ink border-ink text-bg [&_svg]:opacity-100' : 'bg-white border-rule text-white [&_svg]:opacity-0'
@@ -84,19 +99,21 @@ const AddressStep: FC<AddressStepProps> = ({
             </span>
             <span className="font-heading text-[14px] font-semibold">{adr.fullName} · {adr.phone}</span>
             <span className="text-[12px] text-ink-2 leading-[1.5] line-clamp-2">{adr.city}، {adr.street}</span>
-          </div>
+          </label>
         )
       })}
       {/* Add new card */}
-      <div
-        className="relative px-4 py-4 border border-dashed border-rule rounded-[10px] bg-bg cursor-pointer grid place-items-center text-muted text-center gap-1.5 hover:border-ink-2 transition-colors"
+      <button
+        type="button"
+        className="relative px-4 py-4 border border-dashed border-rule rounded-[10px] bg-bg cursor-pointer grid place-items-center text-muted text-center gap-1.5 hover:border-ink-2 transition-colors focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-1 focus-visible:outline-none"
         onClick={onAddNew}
+        aria-label="افزودن آدرس جدید"
       >
         <span className="w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-ink [&_svg]:w-4 [&_svg]:h-4">
           <Icon name="plus" size={18} strokeWidth={1.8} />
         </span>
         <span className="text-[13px] font-medium text-ink-2">افزودنِ آدرسِ جدید</span>
-      </div>
+      </button>
     </div>
 
     {/* Divider */}
@@ -149,7 +166,7 @@ const AddressStep: FC<AddressStepProps> = ({
             className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
           />
         </div>
-        {addr.phone && (
+        {/^9\d{9}$/.test(addr.phone) && (
           <span className="flex items-center gap-1.5 text-[11px] text-ok font-mono tracking-[.04em] -mt-0.5 [&_svg]:w-3 [&_svg]:h-3">
             <Icon name="check" size={12} strokeWidth={2} />
             با ایرانسل تأیید شد
@@ -220,10 +237,18 @@ const AddressStep: FC<AddressStepProps> = ({
 
     {/* Actions */}
     <div className="flex justify-between items-center gap-3.5 mt-7 pt-6 border-t border-rule max-[640px]:flex-col-reverse max-[640px]:items-stretch">
-      <div className="flex items-center gap-3.5 text-[12px] text-muted [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:text-ok">
-        <Icon name="shield" size={14} strokeWidth={1.8} />
+      <label className="flex items-center gap-2.5 text-[12px] text-muted cursor-pointer select-none group">
+        <span className={`w-[18px] h-[18px] rounded-[4px] border flex-shrink-0 grid place-items-center transition-all duration-150 [&_svg]:w-[10px] [&_svg]:h-[10px] ${saveDefault ? 'bg-ink border-ink text-bg' : 'bg-bg border-rule group-hover:border-ink-2'}`}>
+          {saveDefault && <Icon name="check" size={12} strokeWidth={2.5} />}
+        </span>
+        <input
+          type="checkbox"
+          checked={saveDefault}
+          onChange={(e) => setSaveDefault(e.target.checked)}
+          className="sr-only"
+        />
         ذخیره به‌عنوان آدرس پیش‌فرض
-      </div>
+      </label>
       <button className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-medium text-sm tracking-[0.01em] bg-ink text-bg border-none cursor-pointer transition-[transform,background,color,border-color,opacity] duration-200 hover:enabled:-translate-y-px hover:enabled:bg-plum disabled:opacity-50 disabled:cursor-not-allowed max-[640px]:justify-center" disabled={!addrValid} onClick={onNext}>
         ادامه — روش ارسال
         <Icon name="arrow-left" size={16} strokeWidth={1.8} />

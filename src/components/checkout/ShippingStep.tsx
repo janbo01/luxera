@@ -53,7 +53,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
   onBack,
   onNext,
 }) => (
-  <section className="bg-surface rounded-[14px] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
+  <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
 
     {/* Pane header */}
     <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
