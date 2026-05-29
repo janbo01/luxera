@@ -3,6 +3,26 @@ import { Link } from 'react-router-dom'
 import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icons/BrandIcons'
 import { listCategories, listCollections } from '../../api/product'
 import EnamadLogo from '../shared/EnamadLogo'
+import { useInitialData } from '../../context/initialData'
+
+declare global {
+  interface Window {
+    __FOOTER_INITIAL__?: {
+      categories: Array<{ id: string; name: string }>
+      collections: Array<{ id: string; slug: string; name_fa: string }>
+    }
+  }
+}
+
+type NavLink = { label: string; to: string }
+
+function makeCatLinks(cats: Array<{ id: string; name: string }>): NavLink[] {
+  return cats.slice(0, 6).map((c) => ({ label: c.name, to: `/category/${c.id}` }))
+}
+
+function makeColLinks(cols: Array<{ id: string; slug: string; name_fa: string }>): NavLink[] {
+  return cols.slice(0, 5).map((c) => ({ label: c.name_fa, to: `/collections/${c.slug}` }))
+}
 
 const STATIC_COLS = [
   {
@@ -27,21 +47,26 @@ const STATIC_COLS = [
 ]
 
 const Footer: FC = () => {
-  const [categoryLinks, setCategoryLinks] = useState<{ label: string; to: string }[] | null>(null)
-  const [collectionLinks, setCollectionLinks] = useState<{ label: string; to: string }[] | null>(null)
+  const { footerCategories, footerCollections } = useInitialData()
+
+  const [categoryLinks, setCategoryLinks] = useState<NavLink[] | null>(() => {
+    if (typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length)
+      return makeCatLinks(window.__FOOTER_INITIAL__.categories)
+    if (footerCategories?.length) return makeCatLinks(footerCategories)
+    return null
+  })
+
+  const [collectionLinks, setCollectionLinks] = useState<NavLink[] | null>(() => {
+    if (typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.collections?.length)
+      return makeColLinks(window.__FOOTER_INITIAL__.collections)
+    if (footerCollections?.length) return makeColLinks(footerCollections)
+    return null
+  })
 
   useEffect(() => {
-    listCategories()
-      .then((cats) => {
-        setCategoryLinks(cats.slice(0, 6).map((c) => ({ label: c.name, to: `/category/${c.id}` })))
-      })
-      .catch(() => {})
-
-    listCollections()
-      .then((cols) => {
-        setCollectionLinks(cols.slice(0, 5).map((c) => ({ label: c.name_fa, to: `/collections/${c.slug}` })))
-      })
-      .catch(() => {})
+    if (window.__FOOTER_INITIAL__) return
+    listCategories().then((cats) => setCategoryLinks(makeCatLinks(cats))).catch(() => {})
+    listCollections().then((cols) => setCollectionLinks(makeColLinks(cols))).catch(() => {})
   }, [])
 
   const col = 'flex flex-col gap-[11px]'

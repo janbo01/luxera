@@ -8,6 +8,8 @@ export interface ServerInitialData {
   categoryProducts?: unknown
   categoryResolvedId?: string | null
   banners?: ApiBanner[]
+  footerCategories?: Array<{ id: string; name: string }>
+  footerCollections?: Array<{ id: string; slug: string; name_fa: string }>
 }
 
 const InitialDataContext = createContext<ServerInitialData>({})

@@ -30,6 +30,19 @@ async function fetchCategories(base: string): Promise<Array<{ id: string; name: 
   return _catCache
 }
 
+// Server-side collections cache (for footer links)
+let _colCache: Array<{ id: string; slug: string; name_fa: string }> = []
+let _colExpiry = 0
+async function fetchFooterCollections(base: string): Promise<Array<{ id: string; slug: string; name_fa: string }>> {
+  if (_colCache.length && Date.now() < _colExpiry) return _colCache
+  const r = await fetch(`${base}/collections`)
+  if (!r.ok) return []
+  const raw = unwrap(await r.json()) as { items?: Array<{ id: string; slug: string; name_fa: string }> }
+  _colCache = raw?.items ?? []
+  _colExpiry = Date.now() + 15 * 60 * 1000
+  return _colCache
+}
+
 const isProd = process.env.NODE_ENV === 'production'
 const port = Number(process.env.PORT) || 3000
 const root = process.cwd()
@@ -106,6 +119,7 @@ async function createServer() {
         let initialData: Record<string, unknown> = {}
         let lcpPreloadTag = ''
         let initialScript = ''
+        let footerScript = ''
 
         const pathOnly = url.split('?')[0]
         const isHomePage      = pathOnly === '/' || pathOnly === ''
@@ -186,6 +200,17 @@ async function createServer() {
               initialScript = `<script>window.__CATEGORY_INITIAL__=${safeJson(initialData)}</script>`
             }
           }
+          // Footer links — cached in memory, fetched for every route to eliminate CLS
+          if (productApiBase) {
+            const [footerCats, footerCols] = await Promise.all([
+              fetchCategories(productApiBase).catch(() => [] as Array<{ id: string; name: string }>),
+              fetchFooterCollections(productApiBase).catch(() => [] as Array<{ id: string; slug: string; name_fa: string }>),
+            ])
+            if (footerCats.length > 0 || footerCols.length > 0) {
+              initialData = { ...initialData, footerCategories: footerCats, footerCollections: footerCols }
+              footerScript = `<script>window.__FOOTER_INITIAL__=${safeJson({ categories: footerCats, collections: footerCols })}</script>`
+            }
+          }
         } catch {
           // Non-fatal – fall back to client-side fetch for this request
         }
@@ -193,7 +218,7 @@ async function createServer() {
         const { html: appHtml } = await render(url, initialData)
         const html = template
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${lcpPreloadTag}${initialScript}</head>`)
+          .replace('</head>', `${lcpPreloadTag}${initialScript}${footerScript}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         if (cssPreloadLink) headers['Link'] = cssPreloadLink
         res.status(200).set(headers).send(html)
