@@ -162,7 +162,7 @@ const Header: FC = () => {
 
         {/* Mobile overlay */}
         <div
-          className={`fixed inset-0 bg-[rgba(0,42,34,0.45)] z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
+          className={`fixed inset-0 bg-plum/45 z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
           onClick={closeMenu}
           aria-hidden="true"
         />
@@ -171,7 +171,7 @@ const Header: FC = () => {
         <div
           ref={drawerRef}
           id="mobile-drawer"
-          className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_rgba(0,42,34,0.12)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+          className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
           role="dialog"
           aria-label="منوی ناوبری"
           aria-hidden={!menuOpen}
