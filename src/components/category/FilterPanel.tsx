@@ -25,13 +25,15 @@ interface FilterPanelProps {
   onReset: () => void
 }
 
-const Chev: FC<{ open: boolean }> = ({ open }) => (
-  <span
-    className="inline-flex text-muted transition-transform duration-200 flex-shrink-0"
-    style={{ transform: open ? '' : 'rotate(-90deg)' }}
-  >
-    <Icon name="chevron-down" size={18} />
-  </span>
+const SectionLabel: FC<{ children: React.ReactNode; count?: number }> = ({ children, count }) => (
+  <div className="flex items-center justify-between mb-4">
+    <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted select-none">
+      {children}
+    </span>
+    {count !== undefined && (
+      <span className="text-[10px] font-mono text-muted/60">{toFa(count)}</span>
+    )}
+  </div>
 )
 
 const FilterPanel: FC<FilterPanelProps> = ({
@@ -53,7 +55,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
   onReset,
 }) => {
   const [openSections, setOpenSections] = useState(
-    () => new Set(['price', 'material', 'color'])
+    () => new Set(['price', 'material', 'color', 'stock'])
   )
 
   const toggleSection = (s: string) =>
@@ -63,30 +65,38 @@ const FilterPanel: FC<FilterPanelProps> = ({
       return next
     })
 
+  const inputCls = [
+    'w-full bg-transparent border-b border-rule px-1 py-2',
+    'text-[13px] text-ink font-mono text-end outline-none',
+    'transition-[border-color] duration-200 focus:border-ink',
+    '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+  ].join(' ')
+
   return (
     <>
-      {/* Mobile backdrop overlay */}
+      {/* Mobile backdrop */}
       <div
         className={`fixed inset-0 z-40 hidden max-[1100px]:block bg-ink/40 backdrop-blur-[2px] transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/*
-        Desktop (≥1100px): sticky sidebar in grid column.
-        Mobile (<1100px): fixed bottom-sheet drawer, slides up when isOpen.
-        position:fixed removes the element from grid flow on mobile, so no empty space is left.
-      */}
       <aside
         className={[
-          // Desktop sticky sidebar
-          'sticky top-24 self-start max-h-[calc(100vh-110px)] overflow-y-auto px-2 pt-5 pb-2',
-          // Mobile: fixed bottom-sheet, always out of flow
+          // Desktop: sticky card
+          'sticky top-24 self-start max-h-[calc(100vh-110px)] overflow-y-auto',
+          'bg-surface border border-rule rounded-[18px]',
+          'px-5 pt-5 pb-5',
+          // Mobile: fixed bottom-sheet
           'max-[1100px]:fixed max-[1100px]:bottom-0 max-[1100px]:inset-x-0 max-[1100px]:top-auto',
           'max-[1100px]:max-h-[82vh] max-[1100px]:z-50 max-[1100px]:overflow-y-auto',
-          'max-[1100px]:bg-surface max-[1100px]:px-5 max-[1100px]:pt-3 max-[1100px]:[padding-bottom:calc(32px+env(safe-area-inset-bottom,0px))]',
-          'max-[1100px]:rounded-t-[22px] max-[1100px]:shadow-[0_-16px_56px_rgba(26,15,29,0.2)]',
-          'max-[1100px]:transition-transform max-[1100px]:duration-300 max-[1100px]:[transition-timing-function:cubic-bezier(.2,.7,.2,1)]',
+          'max-[1100px]:bg-surface max-[1100px]:px-5 max-[1100px]:pt-3',
+          'max-[1100px]:[padding-bottom:calc(32px+env(safe-area-inset-bottom,0px))]',
+          'max-[1100px]:rounded-t-[22px] max-[1100px]:rounded-b-none',
+          'max-[1100px]:border-x-0 max-[1100px]:border-b-0',
+          'max-[1100px]:shadow-[0_-16px_56px_rgba(26,15,29,0.18)]',
+          'max-[1100px]:transition-transform max-[1100px]:duration-300',
+          'max-[1100px]:[transition-timing-function:cubic-bezier(.2,.7,.2,1)]',
           !isOpen
             ? 'max-[1100px]:translate-y-[calc(100%+4px)] max-[1100px]:pointer-events-none'
             : 'max-[1100px]:translate-y-0',
@@ -94,152 +104,183 @@ const FilterPanel: FC<FilterPanelProps> = ({
       >
         {/* Drag handle — mobile only */}
         <div
-          className="hidden max-[1100px]:flex justify-center mb-3 mt-1 cursor-pointer shrink-0"
+          className="hidden max-[1100px]:flex justify-center mb-4 mt-1 cursor-pointer shrink-0"
           onClick={onClose}
           role="button"
           aria-label="بستن فیلترها"
         >
-          <div className="w-9 h-[3px] rounded-full bg-rule" />
+          <div className="w-8 h-[3px] rounded-full bg-rule" />
         </div>
 
         {/* Mobile header */}
-        <div className="hidden max-[1100px]:flex items-center justify-between mb-4 pb-3 border-b border-rule">
-          <h3 className="font-heading text-[16px] font-semibold m-0">فیلترها</h3>
+        <div className="hidden max-[1100px]:flex items-center justify-between mb-5 pb-4 border-b border-rule">
+          <h3 className="font-heading text-[15px] font-semibold m-0">فیلترها</h3>
           <button
             onClick={onClose}
             aria-label="بستن"
-            className="w-8 h-8 rounded-full grid place-items-center bg-bg-2 cursor-pointer"
+            className="w-7 h-7 rounded-full grid place-items-center bg-bg-2 cursor-pointer border-none"
           >
-            <Icon name="close" size={14} />
+            <Icon name="close" size={12} />
+          </button>
+        </div>
+
+        {/* Desktop panel title */}
+        <div className="hidden max-[1100px]:hidden [display:flex] items-center justify-between mb-5 pb-4 border-b border-rule">
+          <span className="font-heading text-[13px] font-semibold text-ink">فیلترها</span>
+          <button
+            onClick={onReset}
+            className="text-[10px] font-mono tracking-[0.12em] uppercase text-copper hover:text-ink transition-colors duration-200 bg-transparent border-none cursor-pointer"
+          >
+            پاک کردن
           </button>
         </div>
 
         {/* Price range */}
-        <div className="py-[18px] border-b border-rule">
-          <div
-            className="flex items-center justify-between cursor-pointer mb-0 select-none [&:has(+div)]:mb-3.5"
+        <section className="mb-5 pb-5 border-b border-rule">
+          <button
+            className="w-full flex items-center justify-between mb-0 cursor-pointer bg-transparent border-none p-0 text-right"
             onClick={() => toggleSection('price')}
           >
-            <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
-              محدوده‌ی قیمت <span className="font-mono text-[11px] text-muted font-normal">تومان</span>
-            </h4>
-            <Chev open={openSections.has('price')} />
-          </div>
+            <SectionLabel>قیمت · تومان</SectionLabel>
+            <span
+              className="text-muted transition-transform duration-200 flex-shrink-0 -mt-4"
+              style={{ transform: openSections.has('price') ? '' : 'rotate(-90deg)' }}
+            >
+              <Icon name="chevron-down" size={14} />
+            </span>
+          </button>
           {openSections.has('price') && (
-            <div className="mt-3.5 flex flex-col gap-2.5">
-              <div className="flex gap-2">
-                <label className="flex-1 flex flex-col gap-1 text-[11px] text-muted font-mono tracking-[0.04em]">
-                  از
-                  <input
-                    type="number" min={0} max={priceMax} value={priceMin}
-                    onChange={(e) => onPriceMinChange(Math.min(Number(e.target.value), priceMax))}
-                    className="bg-bg border border-rule rounded-[8px] px-2.5 py-2 text-[13px] text-ink text-end font-body w-full outline-none focus:border-ink transition-colors duration-200"
-                  />
-                </label>
-                <label className="flex-1 flex flex-col gap-1 text-[11px] text-muted font-mono tracking-[0.04em]">
-                  تا
-                  <input
-                    type="number" min={priceMin} max={MAX_PRICE} value={priceMax}
-                    onChange={(e) => onPriceMaxChange(Math.max(Number(e.target.value), priceMin))}
-                    className="bg-bg border border-rule rounded-[8px] px-2.5 py-2 text-[13px] text-ink text-end font-body w-full outline-none focus:border-ink transition-colors duration-200"
-                  />
-                </label>
-              </div>
+            <div className="flex gap-4">
+              <label className="flex-1 flex flex-col gap-1.5">
+                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">از</span>
+                <input
+                  type="number" min={0} max={priceMax} value={priceMin}
+                  onChange={(e) => onPriceMinChange(Math.min(Number(e.target.value), priceMax))}
+                  className={inputCls}
+                />
+              </label>
+              <div className="w-px bg-rule self-end mb-2" />
+              <label className="flex-1 flex flex-col gap-1.5">
+                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">تا</span>
+                <input
+                  type="number" min={priceMin} max={MAX_PRICE} value={priceMax}
+                  onChange={(e) => onPriceMaxChange(Math.max(Number(e.target.value), priceMin))}
+                  className={inputCls}
+                />
+              </label>
             </div>
           )}
-        </div>
+        </section>
 
         {/* Material */}
         {availableMaterials.length > 0 && (
-          <div className="py-[18px] border-b border-rule">
-            <div
-              className="flex items-center justify-between cursor-pointer select-none mb-0 [&:has(+div)]:mb-3.5"
+          <section className="mb-5 pb-5 border-b border-rule">
+            <button
+              className="w-full flex items-center justify-between cursor-pointer bg-transparent border-none p-0 text-right"
               onClick={() => toggleSection('material')}
             >
-              <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
-                جنس <span className="font-mono text-[11px] text-muted font-normal">{toFa(availableMaterials.length)}</span>
-              </h4>
-              <Chev open={openSections.has('material')} />
-            </div>
+              <SectionLabel count={availableMaterials.length}>جنس</SectionLabel>
+              <span
+                className="text-muted transition-transform duration-200 flex-shrink-0 -mt-4"
+                style={{ transform: openSections.has('material') ? '' : 'rotate(-90deg)' }}
+              >
+                <Icon name="chevron-down" size={14} />
+              </span>
+            </button>
             {openSections.has('material') && (
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-0">
                 {availableMaterials.map((m) => (
-                  <label key={m} className="flex items-center gap-2.5 py-1.5 text-[13px] cursor-pointer text-ink-2 hover:text-ink transition-colors duration-200">
-                    <input
-                      type="checkbox"
-                      checked={materials.includes(m)}
-                      onChange={() => onToggleMaterial(m)}
-                      className="w-4 h-4 rounded-[4px] border-[1.5px] border-rule bg-transparent cursor-pointer flex-shrink-0 accent-ink"
-                    />
-                    <span className="flex-1">{m}</span>
+                  <label
+                    key={m}
+                    className="flex items-center gap-3 py-2.5 text-[13px] cursor-pointer text-ink-2 hover:text-ink transition-colors duration-150 border-b border-rule/50 last:border-b-0"
+                  >
+                    <span
+                      className={`w-4 h-4 rounded-[4px] border flex-shrink-0 grid place-items-center transition-all duration-150 ${materials.includes(m) ? 'bg-ink border-ink' : 'bg-transparent border-rule'}`}
+                      onClick={() => onToggleMaterial(m)}
+                    >
+                      {materials.includes(m) && (
+                        <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                          <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </span>
+                    <input type="checkbox" checked={materials.includes(m)} onChange={() => onToggleMaterial(m)} className="sr-only" />
+                    <span className="flex-1 font-body">{m}</span>
                     <span className="font-mono text-[11px] text-muted">{toFa(materialCounts[m] ?? 0)}</span>
                   </label>
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {/* Color */}
         {availableColors.length > 0 && (
-          <div className="py-[18px] border-b border-rule">
-            <div
-              className="flex items-center justify-between cursor-pointer select-none mb-0 [&:has(+div)]:mb-3.5"
+          <section className="mb-5 pb-5 border-b border-rule">
+            <button
+              className="w-full flex items-center justify-between cursor-pointer bg-transparent border-none p-0 text-right"
               onClick={() => toggleSection('color')}
             >
-              <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
-                رنگ <span className="font-mono text-[11px] text-muted font-normal">{toFa(availableColors.length)}</span>
-              </h4>
-              <Chev open={openSections.has('color')} />
-            </div>
+              <SectionLabel count={availableColors.length}>رنگ</SectionLabel>
+              <span
+                className="text-muted transition-transform duration-200 flex-shrink-0 -mt-4"
+                style={{ transform: openSections.has('color') ? '' : 'rotate(-90deg)' }}
+              >
+                <Icon name="chevron-down" size={14} />
+              </span>
+            </button>
             {openSections.has('color') && (
-              <div className="grid [grid-template-columns:repeat(5,1fr)] gap-2">
-                {availableColors.map(({ id, name, hex_code }) => (
-                  <span
-                    key={id}
-                    className={`aspect-square rounded-full cursor-pointer border-2 relative grid place-items-center transition-transform duration-200 hover:scale-[1.08] ${selectedColorIds.includes(id) ? 'border-ink after:absolute after:w-1.5 after:h-1.5 after:rounded-full after:bg-white after:[mix-blend-mode:difference]' : 'border-transparent'}`}
-                    style={{ background: hexToSwatch(hex_code) }}
-                    title={name}
-                    onClick={() => onToggleColor(id)}
-                    role="button"
-                    aria-label={name}
-                    aria-pressed={selectedColorIds.includes(id)}
-                  />
-                ))}
+              <div className="grid [grid-template-columns:repeat(6,1fr)] gap-2.5">
+                {availableColors.map(({ id, name, hex_code }) => {
+                  const active = selectedColorIds.includes(id)
+                  return (
+                    <button
+                      key={id}
+                      className={`aspect-square rounded-full cursor-pointer border-none p-0 relative transition-all duration-200 hover:scale-110 focus:outline-none ${active ? 'ring-2 ring-offset-2 ring-ink ring-offset-[var(--color-surface)] scale-105' : ''}`}
+                      style={{ background: hexToSwatch(hex_code) }}
+                      title={name}
+                      onClick={() => onToggleColor(id)}
+                      aria-label={name}
+                      aria-pressed={active}
+                    />
+                  )
+                })}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {/* In-stock toggle */}
-        <div className="py-[18px] border-b border-rule">
-          <label className="flex items-center justify-between cursor-pointer text-[13px] py-2">
-            <span>فقط موجود در انبار</span>
-            <div className="relative">
+        <section className="mb-5 pb-5 border-b border-rule">
+          <label className="flex items-center justify-between cursor-pointer py-0.5 gap-4">
+            <span className="text-[13px] font-body text-ink-2">فقط موجود در انبار</span>
+            <div className="relative flex-shrink-0">
               <input
                 type="checkbox"
                 checked={inStockOnly}
                 onChange={(e) => onInStockChange(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className="w-8 h-[18px] rounded-full bg-bg-2 peer-checked:bg-ink transition-colors duration-200 relative after:absolute after:top-[2px] after:right-[2px] after:w-[14px] after:h-[14px] after:rounded-full after:bg-white after:transition-transform after:duration-200 peer-checked:after:translate-x-[-14px]" />
+              <div className={`w-[38px] h-[22px] rounded-full transition-colors duration-200 relative ${inStockOnly ? 'bg-copper' : 'bg-bg-2'}`}>
+                <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 ${inStockOnly ? 'right-[3px]' : 'right-[calc(100%-19px)]'}`} />
+              </div>
             </div>
           </label>
-        </div>
+        </section>
 
-        {/* Action row */}
-        <div className="pt-[15px] flex gap-2">
+        {/* Actions */}
+        <div className="flex gap-2 pt-1">
           <button
-            className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-[11px] text-[13px] font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg"
+            className="flex-1 py-[10px] text-[12px] font-mono tracking-[0.1em] uppercase text-muted hover:text-ink transition-colors duration-200 bg-transparent border border-rule rounded-full cursor-pointer hover:border-ink"
             onClick={onReset}
           >
-            پاک کردن همه
+            پاک کردن
           </button>
           <button
-            className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-[11px] text-[13px] font-medium tracking-[0.01em] border border-ink bg-ink text-bg rounded-full transition-all duration-200 hover:bg-plum hover:border-plum"
+            className="flex-1 py-[10px] text-[12px] font-mono tracking-[0.1em] uppercase bg-ink text-bg rounded-full cursor-pointer border-none transition-colors duration-200 hover:bg-plum"
             onClick={onClose}
           >
-            اعمال فیلترها
+            اعمال
           </button>
         </div>
       </aside>

@@ -59,10 +59,12 @@ const SECURITY_HEADERS: Record<string, string> = {
 async function createServer() {
   const app = express()
 
-  app.use((_req, res, next) => {
-    for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.setHeader(k, v)
-    next()
-  })
+  if (isProd) {
+    app.use((_req, res, next) => {
+      for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.setHeader(k, v)
+      next()
+    })
+  }
 
   if (!isProd) {
     const { createServer: createVite } = await import('vite')

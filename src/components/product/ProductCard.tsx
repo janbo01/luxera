@@ -49,7 +49,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
 
   return (
     <Link
-      className="bg-surface rounded-[14px] overflow-hidden flex flex-col relative cursor-pointer min-w-0 card-lift group"
+      className="bg-surface border border-rule rounded-[16px] overflow-hidden flex flex-col relative cursor-pointer min-w-0 card-lift group"
       ref={cardRef}
       to={`/product/${product.id}`}
       onMouseEnter={handleMouseEnter}
@@ -95,33 +95,32 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
       </div>
 
       {/* Body */}
-      <div className="px-5 pt-[18px] pb-[22px] flex flex-col gap-1.5">
-        <div className="flex flex-col gap-0.5">
-          <div className="font-heading text-[17px] font-semibold leading-[1.3] text-ink">{product.fa}</div>
-        </div>
-        <div className="flex justify-between items-center mt-2">
+      <div className="px-4 pt-4 pb-5 flex flex-col gap-3">
+        <div className="font-heading text-[16px] font-semibold leading-[1.3] text-ink">{product.fa}</div>
+
+        <div className="flex justify-between items-end">
           <div className="flex flex-col items-start [font-feature-settings:'tnum']">
             {product.oldPrice && (
-              <span className="text-muted line-through text-[11px] font-mono">{formatNumber(product.oldPrice)}</span>
+              <span className="text-muted line-through text-[11px] font-mono leading-none mb-1">{formatNumber(product.oldPrice)}</span>
             )}
-            <span className="font-heading text-lg font-bold text-ink">
+            <span className="font-heading text-[17px] font-bold text-ink leading-none">
               {formatNumber(product.price)}
               <small className="text-[11px] font-normal text-muted me-1 font-body"> تومان</small>
             </span>
           </div>
-          <div className="flex items-center gap-1 text-[11px] text-muted font-mono [&>svg]:w-3 [&>svg]:h-3 [&>svg]:text-copper">
-            <Icon name="star" size={12} />
+          <div className="flex items-center gap-1 text-[12px] text-ink-2 font-mono pb-px">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="text-copper shrink-0"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <span>{toFa(4)}.{toFa(8)}</span>
           </div>
         </div>
 
         {/* Add to cart — expands on hover */}
         <button
-          className="product-quick flex justify-between items-center w-full bg-[rgba(27,15,29,0.94)] text-bg rounded-[8px] text-[13px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-3.5 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[44px] group-hover:opacity-100 group-hover:py-2.5 group-hover:mt-2 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
+          className="product-quick flex justify-between items-center w-full bg-ink text-bg rounded-full text-[12px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-4 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[40px] group-hover:opacity-100 group-hover:py-2.5 group-hover:mt-0 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
           onClick={handleAdd}
         >
           <span>افزودن به سبد</span>
-          <Icon name="bag" size={16} strokeWidth={1.6} />
+          <Icon name="bag" size={15} strokeWidth={1.6} />
         </button>
       </div>
     </Link>

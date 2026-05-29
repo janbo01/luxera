@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type FC, type CSSProperties } from 'react'
+import { useState, useEffect, useCallback, type FC } from 'react'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
@@ -25,7 +25,6 @@ export interface SlideInfo {
 }
 
 const TONES: HeroTone[] = ['plum', 'sand', 'copper']
-const ARROW_FLIP: CSSProperties = { transform: 'scaleX(-1)', display: 'inline-flex' }
 
 const FALLBACK_SLIDES: Slide[] = [
   { key: 'plum',   tone: 'plum',   illus: 'NecklaceB', tag: 'N°۰۱ — Mahtab',  caption: 'گردنبند آوای مهتاب' },
@@ -141,12 +140,10 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
 
       <div className="hero-slider__arrows">
         <button className="hero-slider__arrow" onClick={() => go(idx - 1)} aria-label="قبل">
-          <Icon name="arrow-left" size={14} />
+          <Icon name="arrow-right" size={14} />
         </button>
         <button className="hero-slider__arrow" onClick={() => go(idx + 1)} aria-label="بعد">
-          <span style={ARROW_FLIP}>
-            <Icon name="arrow" size={14} />
-          </span>
+          <Icon name="arrow-left" size={14} />
         </button>
       </div>
     </div>

@@ -3,6 +3,8 @@ import ProductCard from '../product/ProductCard'
 import { useCartStore } from '../../store/cartStore'
 import SectionHeader from '../shared/SectionHeader'
 import { listProducts, adaptProduct } from '../../api/product'
+import { BTN_GHOST_CLS } from '../ui/Button'
+import Icon from '../icons/Icon'
 import type { Product } from '../../types'
 
 const ProductsSection: FC = () => {
@@ -22,7 +24,12 @@ const ProductsSection: FC = () => {
       <SectionHeader
         kicker="NEW ARRIVALS · تازه‌ترین‌ها"
         title={<>جدیدترین <em>محصولات</em></>}
-        aside={<a href="#all" className="inline-flex items-center gap-2.5 pb-1 border-b border-ink text-ink text-[13px] tracking-[0.04em] bg-transparent rounded-none transition-all duration-200 hover:text-plum hover:border-plum">مشاهده‌ی همه ←</a>}
+        aside={
+          <a href="#all" className={`${BTN_GHOST_CLS} self-end`}>
+            مشاهده‌ی همه
+            <span className="arr"><Icon name="arrow-left" size={16} /></span>
+          </a>
+        }
       />
       <div className="products-grid cols-4">
         {loading

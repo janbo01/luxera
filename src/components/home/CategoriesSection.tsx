@@ -6,12 +6,12 @@ import { listCategories, type ApiCategory } from '../../api/product'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 
-const CAT_STYLE: Record<string, { bg: string; text?: string; numColor?: string }> = {
-  necklaces: { bg: 'bg-[linear-gradient(160deg,var(--color-copper),#8C6825)]' },
-  bracelets: { bg: 'bg-[linear-gradient(160deg,#1F1318,#0d0709)]' },
-  rings:     { bg: 'bg-[linear-gradient(160deg,var(--color-bg-2),#C7B28A)]', text: 'text-ink', numColor: 'text-ink-2' },
-  earrings:  { bg: 'bg-[linear-gradient(160deg,var(--color-plum),var(--color-plum-2))]' },
-  sets:      { bg: 'bg-[linear-gradient(160deg,#52332b,#2c1812)]' },
+const CAT_BG: Record<string, string> = {
+  necklaces: 'bg-[linear-gradient(155deg,#a06828_0%,#6b3e10_100%)]',
+  bracelets: 'bg-[linear-gradient(155deg,#1a0f10_0%,#0d0508_100%)]',
+  rings:     'bg-[linear-gradient(155deg,#5c3d1e_0%,#2e1a08_100%)]',
+  earrings:  'bg-[linear-gradient(155deg,var(--color-plum)_0%,var(--color-plum-dark)_100%)]',
+  sets:      'bg-[linear-gradient(155deg,#4a2820_0%,#1e0e0a_100%)]',
 }
 
 const CategoriesSection: FC = () => {
@@ -32,50 +32,60 @@ const CategoriesSection: FC = () => {
         kicker="Browse by category"
         title={<>هر استایل،<br /><em>هر مناسبت</em></>}
         aside={
-          <a href="/categories"
-            className={`${BTN_GHOST_CLS} self-end`}
-          >
+          <a href="/categories" className={`${BTN_GHOST_CLS} self-end`}>
             همه‌ی دسته‌بندی‌ها
-            <span className="inline-block w-4 h-4 transition-transform duration-200"><Icon name="arrow-left" size={16} /></span>
+            <span className="arr"><Icon name="arrow-left" size={16} /></span>
           </a>
         }
       />
 
-      <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-3.5">
+      <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-3">
         {visibleCats.map((cat) => {
           const apiCat = apiByName.get(cat.fa)
           const imgSrc = apiCat?.image_url
-          const style = CAT_STYLE[cat.id] ?? { bg: 'bg-plum' }
+          const bg = CAT_BG[cat.id] ?? 'bg-plum'
 
           return (
             <Link
               key={cat.id}
               to={`/category/${cat.id}`}
-              className={`relative rounded-[14px] overflow-hidden aspect-[4/5] flex flex-col justify-end p-5 text-white isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 before:absolute before:inset-0 before:-z-10 before:bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.55)_100%)] ${style.bg} ${style.text ?? ''}`}
+              className={`group relative rounded-[16px] overflow-hidden aspect-[3/4] flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg}`}
             >
-              {/* Category number */}
-              <span className={`font-mono text-[10px] tracking-[0.22em] absolute top-[18px] end-[18px] z-[2] ${style.numColor ?? 'text-white/65'}`}>
-                {cat.num}
-              </span>
-
-              {/* Arrow button */}
-              <span className="absolute top-3.5 start-3.5 w-[34px] h-[34px] rounded-full bg-white/[0.14] backdrop-blur-[8px] grid place-items-center text-white transition-all duration-200 z-[2] hover:bg-white hover:text-ink group-hover:bg-white group-hover:text-ink [&>svg]:w-3.5 [&>svg]:h-3.5">
-                <Icon name="arrow-left" size={16} />
-              </span>
-
+              {/* Category image */}
               {imgSrc && (
                 <img
                   src={imgSrc}
                   alt={cat.fa}
-                  className="absolute inset-0 w-full h-full object-cover pointer-events-none -z-[2] transition-transform duration-500 ease-in-out hover:scale-[1.04]"
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none -z-[1] transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
                   aria-hidden="true"
                   width="400"
-                  height="500"
+                  height="533"
                 />
               )}
 
-              <div className="font-heading text-[22px] font-semibold leading-[1.2] relative z-[2]">
-                {cat.fa}
+              {/* Bottom gradient overlay */}
+              <div className="absolute inset-0 -z-[0] bg-[linear-gradient(to_top,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.1)_50%,transparent_100%)]" />
+
+              {/* Index number — top end corner */}
+              <span className="absolute top-4 end-4 z-[2] font-mono text-[10px] tracking-[0.2em] text-white/55">
+                {cat.num}
+              </span>
+
+              {/* Bottom content */}
+              <div className="relative z-[2] flex items-end justify-between gap-2 px-5 pb-5 text-white">
+                <div className="min-w-0">
+                  <div className="font-display italic text-[11px] tracking-[0.06em] mb-1 text-white/55">
+                    {cat.en}
+                  </div>
+                  <div className="font-heading text-[21px] font-semibold leading-[1.15]">
+                    {cat.fa}
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <span className="flex-shrink-0 w-8 h-8 rounded-full border border-white/20 grid place-items-center text-white/55 transition-all duration-200 group-hover:bg-white group-hover:text-ink group-hover:border-white">
+                  <Icon name="arrow-left" size={13} />
+                </span>
               </div>
             </Link>
           )

@@ -55,18 +55,21 @@ const Hero: FC = () => {
 
       {/* ── Cream copy panel (right) ── */}
       <div className="rounded-[14px] bg-surface px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
-        <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark inline-flex items-center gap-2.5 mb-[18px] animate-rise [animation-delay:80ms] before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
-          New Arrivals · پاییز ۱۴۰۴
+        <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">
+          <span className="w-5 h-px bg-copper-dark opacity-70" />
+          <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark">
+            New Arrivals · پاییز ۱۴۰۴
+          </span>
         </span>
 
-        <h1 className="font-heading font-bold text-[clamp(36px,4.2vw,58px)] leading-[1.05] tracking-[-0.01em] m-0 mb-5 text-ink animate-rise [animation-delay:160ms]">
+        <h1 className="font-heading font-bold text-[clamp(34px,4vw,56px)] leading-[1.05] tracking-[-0.01em] m-0 mb-5 text-ink animate-rise [animation-delay:160ms]">
           استایلِ امروز،<br />
           <span className="text-copper-dark relative inline-block after:absolute after:inset-x-0 after:bottom-1 after:h-2.5 after:bg-copper/[0.18] after:-z-10 after:rounded-sm">
             قیمتِ واقعی
           </span>.
         </h1>
 
-        <p className="text-ink-2 text-[15px] leading-[1.8] font-light max-w-[40ch] m-0 mb-7 animate-rise [animation-delay:260ms]">
+        <p className="text-ink-2 text-[14.5px] leading-[1.85] font-light max-w-[38ch] m-0 mb-8 animate-rise [animation-delay:260ms]">
           جواهرات فانتزی و اکسسوری مد از بهترین برندها — گردنبند،
           دستبند، انگشتر و گوشواره برای هر سبک و هر مناسبت.
           کیفیت خوب، بدون پرداخت هزینه‌ی گزاف.
@@ -75,25 +78,25 @@ const Hero: FC = () => {
         <div className="flex gap-2.5 flex-wrap mb-auto animate-rise [animation-delay:380ms]">
           <button className={BTN_CLS}>
             مشاهده‌ی محصولات
-            <span className="inline-block w-4 h-4 transition-transform duration-200"><Icon name="arrow-left" size={16} /></span>
+            <span className="arr"><Icon name="arrow-left" size={16} /></span>
           </button>
           <button className={BTN_GHOST_CLS}>
             بیشتر بدانید
           </button>
         </div>
 
-        <div className="mt-8 pt-[26px] border-t border-rule grid grid-cols-2 gap-x-[18px] gap-y-4 animate-rise [animation-delay:520ms]">
+        <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
           {[
-            { v: '۱۴', u: 'روز', l: 'ضمانت بازگشت کالا' },
+            { v: '۱۴', u: 'روز', l: 'ضمانت بازگشت' },
             { v: 'رایگان', u: '', l: 'ارسال بالای ۵۰۰ هزار' },
             { v: '۲۰۰+', u: 'مدل', l: 'محصول موجود' },
           ].map(({ v, u, l }, i) => (
-            <div key={i} className={`${i === 0 ? 'pe-[18px] border-e border-rule' : ''}`}>
-              <div className="font-heading text-[22px] font-bold text-ink leading-none flex items-baseline gap-1">
+            <div key={i} className={`${i < 2 ? 'pe-4 border-e border-rule me-4' : ''}`}>
+              <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
                 {v}
-                {u && <small className="text-xs font-medium text-copper-dark font-body">{u}</small>}
+                {u && <small className="text-[11px] font-medium text-copper-dark font-body">{u}</small>}
               </div>
-              <div className="text-xs text-muted mt-1.5 tracking-[0.02em]">{l}</div>
+              <div className="text-[11px] text-muted mt-1.5 leading-[1.4]">{l}</div>
             </div>
           ))}
         </div>

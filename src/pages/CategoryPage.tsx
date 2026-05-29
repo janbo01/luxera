@@ -373,56 +373,56 @@ const CategoryPage: FC = () => {
 
             {/* Pagination */}
             {!loading && totalPages > 1 && (
-              <div className="mt-9 py-6 border-t border-rule">
+              <div className="mt-9 pt-6 border-t border-rule">
                 {/* Mobile: simplified prev / X of Y / next */}
-                <div className="flex items-center justify-between px-2 sm:hidden">
+                <div className="flex items-center justify-between sm:hidden">
                   <button
-                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2"
                     disabled={page === 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
-                    <Icon name="arrow-left" size={14} />
+                    <Icon name="arrow-right" size={13} />
                     قبلی
                   </button>
-                  <span className="font-mono text-[13px] text-muted">
-                    {toFa(page)} از {toFa(totalPages)}
+                  <span className="font-mono text-[13px] text-muted tabular-nums">
+                    {toFa(page)} / {toFa(totalPages)}
                   </span>
                   <button
-                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2"
                     disabled={page === totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
                     بعدی
-                    <Icon name="arrow-right" size={14} />
+                    <Icon name="arrow-left" size={13} />
                   </button>
                 </div>
 
                 {/* Desktop: full page number buttons */}
-                <div className="hidden sm:flex items-center justify-center gap-1.5 flex-wrap">
+                <div className="hidden sm:flex items-center justify-center gap-1 flex-wrap">
                   <button
-                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2 me-1"
                     disabled={page === 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
-                    <Icon name="arrow-left" size={14} />
+                    <Icon name="arrow-right" size={13} />
                     قبلی
                   </button>
                   {pages.map((p) => (
                     <button
                       key={p}
-                      className={`min-w-[38px] h-[38px] rounded-lg text-[14px] border px-3 font-mono bg-transparent cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink' : 'text-ink border-transparent hover:bg-bg-2'}`}
+                      className={`w-9 h-9 rounded-full text-[13px] border font-mono cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink font-medium' : 'bg-transparent text-ink-2 border-transparent hover:border-rule hover:text-ink'}`}
                       onClick={() => setPage(p)}
                     >
                       {toFa(p)}
                     </button>
                   ))}
                   <button
-                    className="text-muted inline-flex items-center gap-1.5 font-body text-[13px] border-none bg-transparent cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed hover:enabled:text-ink"
+                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2 ms-1"
                     disabled={page === totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
                     بعدی
-                    <Icon name="arrow-right" size={14} />
+                    <Icon name="arrow-left" size={13} />
                   </button>
                 </div>
               </div>
