@@ -92,11 +92,7 @@ async function createServer() {
     const { render } = await import(entryUrl)
     const template = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf-8')
 
-    // Extract hashed asset hrefs from built template for preload headers
     const cssHref = template.match(/href="(\/assets\/[^"]+\.css)"/)?.[1] ?? null
-    // Vite emits <link rel="stylesheet" crossorigin ...> so the preload must
-    // also carry crossorigin, otherwise the browser sees two different CORS
-    // modes and fetches the same file twice.
     const cssPreloadLink = cssHref ? `<${cssHref}>; rel=preload; as=style; crossorigin` : null
 
     const productApiBase = process.env.VITE_PRODUCT_API ?? ''
@@ -105,14 +101,6 @@ async function createServer() {
     app.use('*', async (req, res) => {
       const url = req.originalUrl
       try {
-        // HTTP 103 Early Hints: tell the browser to start fetching CSS before
-        // the SSR render + API calls complete. This fires immediately on
-        // request arrival, while the 200 response header arrives much later.
-        if (cssPreloadLink) {
-          ;(res as unknown as { writeEarlyHints?: (h: Record<string, string>) => void })
-            .writeEarlyHints?.({ link: cssPreloadLink })
-        }
-
         // Pre-fetch route data so SSR renders the full layout (no spinner),
         // eliminating CLS and the LCP resource-load delay on every page.
         let initialData: Record<string, unknown> = {}
@@ -206,7 +194,9 @@ async function createServer() {
         const html = template
           .replace('<!--app-html-->', appHtml)
           .replace('</head>', `${lcpPreloadTag}${initialScript}</head>`)
-        res.status(200).set({ 'Content-Type': 'text/html' }).send(html)
+        const headers: Record<string, string> = { 'Content-Type': 'text/html' }
+        if (cssPreloadLink) headers['Link'] = cssPreloadLink
+        res.status(200).set(headers).send(html)
       } catch (e) {
         console.error(e)
         res.status(500).end((e as Error).message)
