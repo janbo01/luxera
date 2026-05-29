@@ -92,17 +92,24 @@ async function createServer() {
     const { render } = await import(entryUrl)
     const template = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf-8')
 
-    // Extract hashed CSS filename from built template for preload header
+    // Extract hashed asset hrefs from built template for preload headers
     const cssHref = template.match(/href="(\/assets\/[^"]+\.css)"/)?.[1] ?? null
+    // Vite emits <link rel="stylesheet" crossorigin ...> so the preload must
+    // also carry crossorigin, otherwise the browser sees two different CORS
+    // modes and fetches the same file twice.
+    const cssPreloadLink = cssHref ? `<${cssHref}>; rel=preload; as=style; crossorigin` : null
 
     const productApiBase = process.env.VITE_PRODUCT_API ?? ''
 
     app.use('*', async (req, res) => {
       const url = req.originalUrl
       try {
-        // Preload the CSS so the browser fetches it before parsing HTML body
-        if (cssHref) {
-          res.setHeader('Link', `<${cssHref}>; rel=preload; as=style`)
+        // HTTP 103 Early Hints: tell the browser to start fetching CSS before
+        // the SSR render + API calls complete. This fires immediately on
+        // request arrival, while the 200 response header arrives much later.
+        if (cssPreloadLink) {
+          ;(res as unknown as { writeEarlyHints?: (h: Record<string, string>) => void })
+            .writeEarlyHints?.({ link: cssPreloadLink })
         }
 
         // Pre-fetch route data so SSR renders the full layout (no spinner),
