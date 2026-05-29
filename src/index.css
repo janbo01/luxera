@@ -8,32 +8,32 @@
 /* ── Design Tokens ─────────────────────────────────────────── */
 @theme {
   /* Surfaces */
-  --color-bg: #F5EDE0;
-  --color-bg-2: #EAD9C8;
-  --color-surface: #FBF6EE;
-  --color-surface-2: #F0E6D5;
-  --color-plate: #EAD9C8;
+  --color-bg: #F6FFFE;
+  --color-bg-2: #E8FFFE;
+  --color-surface: #FAFFFF;
+  --color-surface-2: #EBF9F8;
+  --color-plate: #E0F9F6;
 
   /* Text */
-  --color-ink: #1A110A;
-  --color-ink-2: #3A2418;
-  --color-muted: #7A6555;
-  --color-rule: rgba(26, 17, 10, .10);
+  --color-ink: #0A1A18;
+  --color-ink-2: #1A3530;
+  --color-muted: #4A7A70;
+  --color-rule: rgba(10, 26, 24, .10);
 
   /* Brand */
-  --color-plum: #3D2B20;
-  --color-plum-2: #2A1C13;
-  --color-plum-dark: #5C3C2C;
-  --color-copper: #C4873A;
-  --color-copper-2: #9B6B2E;
-  --color-copper-dark: #8A5D22;
-  --color-gold: #CBA855;
-  --color-dust-rose: #D4A98E;
-  --color-dust-rose-light: #E8C9B6;
-  --color-petal: #E6CFCB;
-  --color-overlay: rgba(27, 15, 29, 0.5);
-  --color-sale: #B43A2A;
-  --color-ok: #1F8A5B;
+  --color-plum: #002A22;
+  --color-plum-2: #001A16;
+  --color-plum-dark: #004A3A;
+  --color-copper: #D42A50;
+  --color-copper-2: #B31E43;
+  --color-copper-dark: #8F1536;
+  --color-gold: #00C9A7;
+  --color-dust-rose: #FFB3C6;
+  --color-dust-rose-light: #FFD6E5;
+  --color-petal: #FFE0E8;
+  --color-overlay: rgba(0, 42, 34, 0.5);
+  --color-sale: #C42050;
+  --color-ok: #00B896;
 
   /* Fonts */
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
@@ -150,15 +150,15 @@
 
 @keyframes pdp-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(180, 58, 42, .5);
+    box-shadow: 0 0 0 0 rgba(212, 42, 80, .5);
   }
 
   70% {
-    box-shadow: 0 0 0 8px rgba(180, 58, 42, 0);
+    box-shadow: 0 0 0 8px rgba(212, 42, 80, 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(180, 58, 42, 0);
+    box-shadow: 0 0 0 0 rgba(212, 42, 80, 0);
   }
 }
 
