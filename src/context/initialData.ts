@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react'
+import type { ApiBanner } from '../api/store'
 
 export interface ServerInitialData {
   product?: unknown
@@ -6,6 +7,7 @@ export interface ServerInitialData {
   collections?: unknown
   categoryProducts?: unknown
   categoryResolvedId?: string | null
+  banners?: ApiBanner[]
 }
 
 const InitialDataContext = createContext<ServerInitialData>({})

@@ -4,6 +4,7 @@ import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
+import { useInitialData } from '../../context/initialData'
 
 interface Slide {
   key: string
@@ -48,11 +49,25 @@ function bannerToSlide(b: ApiBanner, i: number): Slide {
   }
 }
 
+declare global {
+  interface Window { __BANNERS_INITIAL__?: ApiBanner[] }
+}
+
+function getInitialSlides(ssrBanners?: ApiBanner[]): Slide[] {
+  if (typeof window !== 'undefined' && window.__BANNERS_INITIAL__?.length) {
+    return window.__BANNERS_INITIAL__.map(bannerToSlide)
+  }
+  if (ssrBanners?.length) return ssrBanners.map(bannerToSlide)
+  return FALLBACK_SLIDES
+}
+
 const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) => {
-  const [slides, setSlides] = useState<Slide[]>(FALLBACK_SLIDES)
+  const { banners: ssrBanners } = useInitialData()
+  const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides(ssrBanners))
   const [idx, setIdx] = useState(0)
 
   useEffect(() => {
+    if (window.__BANNERS_INITIAL__?.length) return
     listBanners()
       .then((banners) => {
         if (banners.length > 0) setSlides(banners.map(bannerToSlide))

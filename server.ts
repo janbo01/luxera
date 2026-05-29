@@ -100,6 +100,7 @@ async function createServer() {
     const cssPreloadLink = cssHref ? `<${cssHref}>; rel=preload; as=style; crossorigin` : null
 
     const productApiBase = process.env.VITE_PRODUCT_API ?? ''
+    const storeApiBase   = process.env.VITE_STORE_API   ?? ''
 
     app.use('*', async (req, res) => {
       const url = req.originalUrl
@@ -119,13 +120,31 @@ async function createServer() {
         let initialScript = ''
 
         const pathOnly = url.split('?')[0]
+        const isHomePage      = pathOnly === '/' || pathOnly === ''
         const productMatch    = pathOnly.match(/^\/product\/([^/?#]+)$/)
         const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
         const collListMatch   = !collDetailMatch && /^\/collections\/?$/.test(pathOnly)
         const categoryMatch   = pathOnly.match(/^\/category\/([^/?#]+)$/)
 
         try {
-          if (productApiBase && productMatch) {
+          if (storeApiBase && isHomePage) {
+            // ── / (home) — prefetch banners for hero LCP ──────────────────
+            const r = await fetch(`${storeApiBase}/store/banners`)
+            if (r.ok) {
+              const data = unwrap(await r.json())
+              const banners = Array.isArray(data) ? data : []
+              if (banners.length > 0) {
+                initialData = { banners }
+                initialScript = `<script>window.__BANNERS_INITIAL__=${safeJson(banners)}</script>`
+                const firstImg: string | undefined =
+                  banners[0]?.image_url || banners[0]?.product?.image_url
+                if (firstImg) {
+                  lcpPreloadTag = `<link rel="preload" as="image" href="${firstImg}" fetchpriority="high">`
+                }
+              }
+            }
+
+          } else if (productApiBase && productMatch) {
             // ── /product/:id ──────────────────────────────────────────────
             const r = await fetch(`${productApiBase}/products/${productMatch[1]}`)
             if (r.ok) {

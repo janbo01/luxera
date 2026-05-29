@@ -22,11 +22,17 @@ export default defineConfig(({ isSsrBuild }) => ({
           output: {
             manualChunks(id) {
               if (id.includes('zustand')) return 'vendor-state'
-              if (id.includes('react-router-dom')) return 'vendor-router'
+              // Capture react-router-dom + its peer packages (react-router, @remix-run/router)
               if (
-                id.includes('node_modules/react/') ||
-                id.includes('node_modules/react-dom/')
+                id.includes('react-router-dom') ||
+                id.includes('node_modules/react-router/') ||
+                id.includes('node_modules/@remix-run/')
               )
+                return 'vendor-router'
+              // Split react core (tiny, stable) from react-dom (large) for better caching
+              if (id.includes('node_modules/react-dom/'))
+                return 'vendor-react-dom'
+              if (id.includes('node_modules/react/'))
                 return 'vendor-react'
             },
           },
