@@ -218,6 +218,20 @@ async function createServer() {
         }
 
         const { html: appHtml } = await render(url, initialData)
+
+        // Fallback: if the route-specific logic didn't set a preload (env var missing,
+        // API timeout, or banner without a direct image_url), extract the LCP URL from
+        // the SSR output itself — guaranteed to match what the browser will request.
+        if (!lcpPreloadTag) {
+          const imgEl = /<img\b([^>]*\bfetchpriority="high"[^>]*)>/i.exec(appHtml)
+          if (imgEl) {
+            const srcAttr = /\bsrc="(https:[^"]+)"/.exec(imgEl[1])
+            if (srcAttr?.[1]) {
+              lcpPreloadTag = `<link rel="preload" as="image" href="${srcAttr[1]}" fetchpriority="high">`
+            }
+          }
+        }
+
         const html = template
           .replace('<!--app-html-->', appHtml)
           .replace('</head>', `${lcpPreloadTag}${initialScript}${footerScript}</head>`)
