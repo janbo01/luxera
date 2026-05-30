@@ -1,7 +1,6 @@
-import { useState, useEffect, type FC } from 'react'
+import { useState, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icons/BrandIcons'
-import { listCategories } from '../../api/product'
 import EnamadLogo from '../shared/EnamadLogo'
 import { useInitialData } from '../../context/initialData'
 import { CATEGORIES } from '../../data/categories'
@@ -58,10 +57,8 @@ const Footer: FC = () => {
     return STATIC_CAT_LINKS
   })
 
-  useEffect(() => {
-    if (window.__FOOTER_INITIAL__) return
-    listCategories().then((cats) => setCategoryLinks(makeCatLinks(cats))).catch(() => {})
-  }, [])
+  // No post-paint fetch: changing categoryLinks after first paint causes CLS 0.304.
+  // Initial state already covers SSR data → context → static fallback in priority order.
 
   const col = 'flex flex-col gap-[11px]'
   const colLink = 'text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper'
