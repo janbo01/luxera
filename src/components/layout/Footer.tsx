@@ -4,6 +4,7 @@ import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icon
 import { listCategories } from '../../api/product'
 import EnamadLogo from '../shared/EnamadLogo'
 import { useInitialData } from '../../context/initialData'
+import { CATEGORIES } from '../../data/categories'
 
 declare global {
   interface Window {
@@ -19,6 +20,11 @@ type NavLink = { label: string; to: string }
 function makeCatLinks(cats: Array<{ id: string; name: string }>): NavLink[] {
   return cats.slice(0, 6).map((c) => ({ label: c.name, to: `/category/${c.id}` }))
 }
+
+const STATIC_CAT_LINKS: NavLink[] = CATEGORIES.slice(0, 6).map((c) => ({
+  label: c.fa,
+  to: `/category/${c.id}`,
+}))
 
 const STATIC_COLS = [
   {
@@ -45,11 +51,11 @@ const STATIC_COLS = [
 const Footer: FC = () => {
   const { footerCategories } = useInitialData()
 
-  const [categoryLinks, setCategoryLinks] = useState<NavLink[] | null>(() => {
+  const [categoryLinks, setCategoryLinks] = useState<NavLink[]>(() => {
     if (typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length)
       return makeCatLinks(window.__FOOTER_INITIAL__.categories)
     if (footerCategories?.length) return makeCatLinks(footerCategories)
-    return null
+    return STATIC_CAT_LINKS
   })
 
   useEffect(() => {
@@ -99,14 +105,9 @@ const Footer: FC = () => {
         <div>
           <h3 className="font-heading text-sm font-semibold mb-[18px] text-ink m-0">فروشگاه</h3>
           <ul className={`list-none p-0 m-0 ${col}`}>
-            {categoryLinks === null
-              ? [6, 8, 5, 9, 7].map((w, i) => (
-                  <li key={i}><span className="block h-[13px] rounded animate-pulse bg-plate" style={{ width: `${w}ch` }} /></li>
-                ))
-              : categoryLinks.map(({ label, to }) => (
-                  <li key={to}><Link to={to} className={colLink}>{label}</Link></li>
-                ))
-            }
+            {categoryLinks.map(({ label, to }) => (
+              <li key={to}><Link to={to} className={colLink}>{label}</Link></li>
+            ))}
           </ul>
         </div>
 

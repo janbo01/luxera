@@ -66,7 +66,7 @@
   src: url('./assets/fonts/Morabba-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: optional; /* preloaded — wins 100ms window, no FOUT/CLS */
 }
 
 @font-face {
@@ -74,7 +74,7 @@
   src: url('./assets/fonts/Morabba-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 /* ── Yekan Bakh (Persian Body) ─────────────────────────────── */
@@ -83,7 +83,7 @@
   src: url('./assets/fonts/yekanbakh-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: optional; /* preloaded — wins 100ms window, no FOUT/CLS */
 }
 
 @font-face {
@@ -91,7 +91,7 @@
   src: url('./assets/fonts/yekanbakh-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -99,7 +99,7 @@
   src: url('./assets/fonts/yekanbakh-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -107,7 +107,7 @@
   src: url('./assets/fonts/yekanbakh-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 /* ── Cormorant Garamond (Latin Display) ─────────────────────── */

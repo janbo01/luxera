@@ -19,5 +19,11 @@
       "runtimeArgs": ["run", "preview"],
       "port": 4173
     }
+  ,{
+      "name": "luxera-vite",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "5174"],
+      "port": 5174
+    }
   ]
 }
