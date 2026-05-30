@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react'
+import { type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
@@ -50,15 +50,13 @@ const STATIC_COLS = [
 const Footer: FC = () => {
   const { footerCategories } = useInitialData()
 
-  const [categoryLinks, setCategoryLinks] = useState<NavLink[]>(() => {
-    if (typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length)
-      return makeCatLinks(window.__FOOTER_INITIAL__.categories)
-    if (footerCategories?.length) return makeCatLinks(footerCategories)
-    return STATIC_CAT_LINKS
-  })
-
-  // No post-paint fetch: changing categoryLinks after first paint causes CLS 0.304.
-  // Initial state already covers SSR data → context → static fallback in priority order.
+  // Derived once — no setState, no post-paint update, no CLS.
+  const categoryLinks: NavLink[] =
+    (typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length)
+      ? makeCatLinks(window.__FOOTER_INITIAL__.categories)
+      : footerCategories?.length
+        ? makeCatLinks(footerCategories)
+        : STATIC_CAT_LINKS
 
   const col = 'flex flex-col gap-[11px]'
   const colLink = 'text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper'

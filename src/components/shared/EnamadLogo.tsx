@@ -10,8 +10,8 @@ export default function EnamadLogo() {
         referrerPolicy="origin"
         src="https://trustseal.enamad.ir/logo.aspx?id=734973&Code=qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg"
         alt="نماد اعتماد الکترونیکی"
-        width={40}
-        height={40}
+        width={55}
+        height={55}
         style={{ cursor: "pointer" }}
         {...{ code: "qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" }}
       />
