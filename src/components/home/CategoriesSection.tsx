@@ -23,7 +23,7 @@ const CategoriesSection: FC = () => {
 
   const apiByName = new Map(apiCats.map((c) => [c.name, c]))
   const visibleCats = CATEGORIES.filter(
-    (c) => !['bridal', 'new', 'mens'].includes(c.id) && apiByName.has(c.fa),
+    (c) => !['bridal', 'new', 'mens'].includes(c.id),
   )
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, type FC } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, type FC } from 'react'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
@@ -81,7 +81,7 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
     return () => clearInterval(t)
   }, [total])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const s = slides[idx]
     if (s && onSlide) onSlide({ name: s.caption, price: s.price, oldPrice: s.oldPrice })
   // eslint-disable-next-line react-hooks/exhaustive-deps

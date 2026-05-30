@@ -34,7 +34,14 @@ const ProductsSection: FC = () => {
       <div className="products-grid cols-4">
         {loading
           ? Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-surface rounded-lg min-h-[300px] opacity-50" />
+              <div key={i} className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col opacity-50">
+                <div className="aspect-square bg-surface-2" />
+                <div className="px-4 pt-4 pb-5 flex flex-col gap-3">
+                  <div className="h-5 bg-surface-2 rounded w-3/4" />
+                  <div className="h-5 bg-surface-2 rounded" />
+                  <div className="max-h-0 overflow-hidden max-[720px]:max-h-[40px] rounded-full bg-surface-2" />
+                </div>
+              </div>
             ))
           : products.map((product, i) => (
               <ProductCard key={product.id} product={product} onAdd={addItem} priority={i < 4} />
