@@ -11,8 +11,6 @@ export const NAV_LINKS: NavLink[] = [
   { to: '/category/bracelets', label: 'دستبند' },
   { to: '/category/rings',     label: 'انگشتر' },
   { to: '/category/earrings',  label: 'گوشواره' },
-  { to: '/category/sets',      label: 'ست هدیه' },
-  { to: '/category/bridal',    label: 'عروس' },
-  { to: '/category/mens',      label: 'مردانه' },
+  { to: '/category/sets',      label: 'ست' },
   { to: '#about',              label: 'درباره ما' },
 ]

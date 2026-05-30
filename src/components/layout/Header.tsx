@@ -9,16 +9,6 @@ import { useSearchStore } from '../../store/searchStore'
 import { useUIStore } from '../../store/uiStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { NAV_LINKS, type NavLink } from '../../data/navigation'
-import { listCategories } from '../../api/product'
-import { CATEGORIES } from '../../data/categories'
-
-const STATIC_START: NavLink[] = [
-  { to: '/category/new', label: 'تازه‌ترین‌ها', accent: true },
-  { to: '/collections',  label: 'کالکشن‌ها' },
-]
-const STATIC_END: NavLink[] = [
-  { to: '#about', label: 'درباره ما' },
-]
 
 const AnnouncementBar = (
   <div className="bg-plum-2 text-[var(--color-petal)] text-xs tracking-[0.02em] max-[720px]:hidden">
@@ -63,25 +53,10 @@ const Header: FC = () => {
   const openLogin = useUIStore((s) => s.openLogin)
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [navLinks, setNavLinks] = useState<NavLink[]>(NAV_LINKS)
-
   const handleAccountClick = useCallback(() => {
     if (isLoggedIn) navigate('/account')
     else openLogin()
   }, [isLoggedIn, navigate, openLogin])
-
-  useEffect(() => {
-    listCategories().then((apiCats) => {
-      const dynamic: NavLink[] = CATEGORIES
-        .filter((local) => local.id !== 'new')
-        .flatMap((local) => {
-          const match = apiCats.find((c) => c.name === local.fa)
-          if (!match) return []
-          return [{ to: `/category/${local.id}`, label: local.fa }]
-        })
-      setNavLinks([...STATIC_START, ...dynamic, ...STATIC_END])
-    }).catch(() => {})
-  }, [])
 
   useBodyLock(menuOpen)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
@@ -115,7 +90,7 @@ const Header: FC = () => {
 
           {/* Desktop nav */}
           <nav className="flex max-[1100px]:hidden gap-[26px] items-center text-sm font-normal">
-            {navLinks.map((link) => <NavLinkItem key={link.to} {...link} />)}
+            {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} />)}
           </nav>
 
           {/* Logo */}
@@ -185,7 +160,7 @@ const Header: FC = () => {
           </div>
 
           <nav className="flex-1 flex flex-col overflow-y-auto">
-            {navLinks.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} mobile />)}
+            {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} mobile />)}
           </nav>
 
           <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
