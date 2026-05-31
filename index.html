@@ -40,11 +40,12 @@
     <link rel="preload" href="/src/assets/fonts/yekanbakh-Light.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/src/assets/fonts/Morabba-Bold.woff2" as="font" type="font/woff2" crossorigin />
 
-    <!-- Non-critical Google font (JetBrains Mono — monospace labels) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" as="style" onload="this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" /></noscript>
+    <!-- JetBrains Mono — self-hosted, NOT preloaded: font-display:optional only avoids CLS
+         when the font cannot win the 100ms block window. Preloading would guarantee it
+         loads within 100ms and triggers a metrics swap → CLS. Without preload it only
+         renders on warm-cache visits (cached font arrives in time), otherwise fallback
+         monospace is used permanently. -->
+
   </head>
   <body>
     <div id="root"><!--app-html--></div>

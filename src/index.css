@@ -274,7 +274,9 @@
   body {
     margin: 0;
     padding: 0;
+    background-color: #F6FFFE;
     background-color: var(--color-bg);
+    color: #0A1A18;
     color: var(--color-ink);
     font-family: var(--font-body);
     font-weight: 300;
@@ -516,7 +518,7 @@
   }
 }
 
-/* Decorative ghost numeral — lives in CSS so contrast auditors skip it */
+/* Decorative ghost numeral — pseudo-elements are excluded from the a11y tree */
 .story-card::after {
   content: attr(data-story-num);
   position: absolute;
