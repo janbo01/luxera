@@ -101,6 +101,35 @@ async function createServer() {
     )
     app.use(express.static(clientDir, { index: false }))
 
+    // Scan assets dir once at startup: map lazy page component name → chunk URL.
+    // Keyed by the component name prefix (e.g. "ProductPage") so we can look up
+    // the hash-suffixed filename without knowing the hash at build time.
+    const routeChunksByName = new Map<string, string>()
+    try {
+      for (const file of fs.readdirSync(path.join(clientDir, 'assets'))) {
+        const m = file.match(/^([A-Z][A-Za-z]+)-[A-Za-z0-9_-]+\.js$/)
+        if (m) routeChunksByName.set(m[1], `/assets/${file}`)
+      }
+    } catch { /* non-fatal */ }
+
+    // Route pattern → chunk component name (must match keys above)
+    const ROUTE_CHUNKS: Array<[RegExp, string]> = [
+      [/^\/product\//, 'ProductPage'],
+      [/^\/collections\/[^/?#]+/, 'CollectionDetailPage'],
+      [/^\/collections/, 'CollectionsPage'],
+      [/^\/category\//, 'CategoryPage'],
+      [/^\/checkout/, 'CheckoutPage'],
+      [/^\/wishlist/, 'WishlistPage'],
+      [/^\/account/, 'AccountPage'],
+      [/^\/search/, 'SearchResultsPage'],
+      [/^\/about/, 'AboutPage'],
+      [/^\/faq/, 'FaqPage'],
+      [/^\/shipping/, 'ShippingPage'],
+      [/^\/privacy/, 'PrivacyPage'],
+      [/^\/terms/, 'TermsPage'],
+      [/^\/contact/, 'ContactPage'],
+    ]
+
     const entryUrl = pathToFileURL(
       path.join(root, 'dist', 'server', 'entry-server.js'),
     ).href
@@ -124,6 +153,18 @@ async function createServer() {
         let footerScript = ''
 
         const pathOnly = url.split('?')[0]
+
+        // Preload the lazy JS chunk for the current route so React's hydrateRoot
+        // never shows the Suspense fallback (PageLoader, min-h-60vh) while the
+        // module downloads — that flash is what shifts the footer by ~30% vh.
+        let routePreloadTag = ''
+        for (const [pattern, name] of ROUTE_CHUNKS) {
+          if (pattern.test(pathOnly)) {
+            const chunkHref = routeChunksByName.get(name)
+            if (chunkHref) routePreloadTag = `<link rel="modulepreload" crossorigin href="${chunkHref}">`
+            break
+          }
+        }
         const isHomePage      = pathOnly === '/' || pathOnly === ''
         const productMatch    = pathOnly.match(/^\/product\/([^/?#]+)$/)
         const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
@@ -234,7 +275,7 @@ async function createServer() {
 
         const html = template
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${lcpPreloadTag}${initialScript}${footerScript}</head>`)
+          .replace('</head>', `${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         if (cssPreloadLink) headers['Link'] = cssPreloadLink
         res.status(200).set(headers).send(html)

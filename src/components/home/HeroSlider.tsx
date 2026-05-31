@@ -60,6 +60,11 @@ function getInitialSlides(ssrBanners?: ApiBanner[]): Slide[] {
   return FALLBACK_SLIDES
 }
 
+export function getFirstSlideInfo(ssrBanners?: ApiBanner[]): SlideInfo {
+  const first = getInitialSlides(ssrBanners)[0]
+  return { name: first?.caption ?? '', price: first?.price, oldPrice: first?.oldPrice }
+}
+
 const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) => {
   const { banners: ssrBanners } = useInitialData()
   const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides(ssrBanners))

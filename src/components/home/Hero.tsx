@@ -1,9 +1,10 @@
 import { useState, useCallback, type FC } from 'react'
 import { Link } from 'react-router-dom'
-import HeroSlider, { type SlideInfo } from './HeroSlider'
+import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
 import { formatNumber } from '../../utils/format'
+import { useInitialData } from '../../context/initialData'
 
 const TICKER_ITEMS = [
   'جواهرات فانتزی',
@@ -21,7 +22,11 @@ function fmtPrice(raw?: string): string {
 }
 
 const Hero: FC = () => {
-  const [slide, setSlide] = useState<SlideInfo>({ name: '' })
+  const { banners: ssrBanners } = useInitialData()
+  // Pre-populate the overlay with the first slide's info so SSR and the initial
+  // client render agree — avoids a repaint-driven layout shift when the name
+  // appears after useLayoutEffect fires in HeroSlider.
+  const [slide, setSlide] = useState<SlideInfo>(() => getFirstSlideInfo(ssrBanners))
   const handleSlide = useCallback((info: SlideInfo) => setSlide(info), [])
 
   return (
