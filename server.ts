@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import express from 'express'
+import compression from 'compression'
 import { CATEGORIES } from './src/data/categories'
 
 // Unwrap API envelope: { success, data } → data, or return as-is
@@ -58,6 +59,9 @@ const SECURITY_HEADERS: Record<string, string> = {
 
 async function createServer() {
   const app = express()
+
+  // Gzip all responses — critical when CSS is inlined in HTML (105 KB raw → ~20 KB)
+  app.use(compression())
 
   if (isProd) {
     app.use((_req, res, next) => {
@@ -138,6 +142,21 @@ async function createServer() {
 
     const cssHref = template.match(/href="(\/assets\/[^"]+\.css)"/)?.[1] ?? null
     const cssPreloadLink = cssHref ? `<${cssHref}>; rel=preload; as=style; crossorigin` : null
+
+    // Inline the full CSS to eliminate the render-blocking request.
+    // The blocking <link rel="stylesheet"> is replaced with a <style> tag injected
+    // per-response so the browser can render as soon as the HTML arrives.
+    // With gzip (compression middleware), the combined HTML+CSS is ~20 KB — the
+    // same as the CSS transfer alone — so inline costs nothing in extra bytes.
+    let inlineCssTag = ''
+    if (cssHref) {
+      try {
+        const cssContent = fs.readFileSync(path.join(clientDir, cssHref), 'utf-8')
+        inlineCssTag = `<style>${cssContent}</style>`
+        // Strip the blocking <link> so the browser never sees a stylesheet request
+        template = template.replace(/<link rel="stylesheet"[^>]+>/g, '')
+      } catch { /* non-fatal — blocking link stays in template */ }
+    }
 
     const productApiBase = process.env.VITE_PRODUCT_API ?? ''
     const storeApiBase   = process.env.VITE_STORE_API   ?? ''
@@ -275,8 +294,10 @@ async function createServer() {
 
         const html = template
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
+          .replace('</head>', `${inlineCssTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
+        // Keep the Link preload header: CDN edge caches can use it to push the
+        // CSS file to the browser's HTTP cache so subsequent navigations are free.
         if (cssPreloadLink) headers['Link'] = cssPreloadLink
         res.status(200).set(headers).send(html)
       } catch (e) {
