@@ -138,7 +138,7 @@ async function createServer() {
       path.join(root, 'dist', 'server', 'entry-server.js'),
     ).href
     const { render } = await import(entryUrl)
-    const template = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf-8')
+    let template = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf-8')
 
     const cssHref = template.match(/href="(\/assets\/[^"]+\.css)"/)?.[1] ?? null
     const cssPreloadLink = cssHref ? `<${cssHref}>; rel=preload; as=style; crossorigin` : null
