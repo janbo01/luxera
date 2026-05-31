@@ -42,21 +42,14 @@ const Story: FC = () => (
         {STORY_COLS.map(({ num, latinNum, title, heading, body }, i) => (
           <div
             key={num}
+            data-story-num={latinNum}
             className={[
-              'relative overflow-hidden py-12 px-10 max-md:py-9 max-md:px-[var(--pad)]',
+              'story-card relative overflow-hidden py-12 px-10 max-md:py-9 max-md:px-[var(--pad)]',
               i < STORY_COLS.length - 1
                 ? 'border-s border-rule max-md:border-s-0 max-md:border-b'
                 : '',
             ].join(' ')}
           >
-            {/* Ghost numeral watermark */}
-            <span
-              aria-hidden="true"
-              className="absolute -bottom-3 end-4 font-display font-light leading-none select-none pointer-events-none text-[140px] text-plum"
-              style={{ opacity: 0.055 }}
-            >
-              {latinNum}
-            </span>
 
             {/* Copper accent line */}
             <div className="w-7 h-px bg-copper mb-8" />
