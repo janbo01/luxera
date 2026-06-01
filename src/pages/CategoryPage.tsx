@@ -68,6 +68,8 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 
 const MAIN_CATS = CATEGORIES.filter((c) => !['new', 'bridal', 'mens'].includes(c.id))
 
+const PER_PAGE = 12
+
 // Stable references — avoids creating new array/object literals on every render
 const EMPTY_MATERIALS: string[] = []
 const EMPTY_MATERIAL_COUNTS: Record<string, number> = {}
@@ -187,7 +189,6 @@ const CategoryPage: FC = () => {
 
   const sorted = filtered
 
-  const PER_PAGE = 12
   const totalPages = Math.ceil(sorted.length / PER_PAGE)
   const paginated = sorted.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
@@ -227,6 +228,8 @@ const CategoryPage: FC = () => {
     await fetchProducts(match?.id, apiSort, activeColors)
   }, [id, apiSort, activeColors, fetchProducts])
 
+  const pages = useMemo(() => Array.from({ length: totalPages }, (_, i) => i + 1), [totalPages])
+
   if (!category) {
     return (
       <div>
@@ -235,8 +238,6 @@ const CategoryPage: FC = () => {
       </div>
     )
   }
-
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
   const currentSortLabel = SORT_OPTIONS.find((o) => o.key === sort)?.label ?? ''
 
   return (

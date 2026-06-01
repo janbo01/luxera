@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, type FC } from 'react'
+import { useState, useRef, useMemo, useEffect, type FC } from 'react'
 import Icon from '../icons/Icon'
 import QuantityStepper from '../shared/QuantityStepper'
 import { IconTelegram, IconWhatsApp } from '../icons/BrandIcons'
@@ -123,6 +123,8 @@ const InfoPanel: FC<InfoPanelProps> = ({ product: p, apiColors, apiSizes, apiVar
 
   const [toastVisible, setToastVisible] = useState(false)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current) }, [])
 
   const { wishlisted, toggle } = useWishlist(p)
 

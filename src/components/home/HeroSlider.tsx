@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useCallback, type FC } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, type FC } from 'react'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
@@ -69,6 +69,8 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
   const { banners: ssrBanners } = useInitialData()
   const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides(ssrBanners))
   const [idx, setIdx] = useState(0)
+  const onSlideRef = useRef(onSlide)
+  useLayoutEffect(() => { onSlideRef.current = onSlide })
 
   useEffect(() => {
     if (window.__BANNERS_INITIAL__?.length) return
@@ -88,8 +90,7 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
 
   useLayoutEffect(() => {
     const s = slides[idx]
-    if (s && onSlide) onSlide({ name: s.caption, price: s.price, oldPrice: s.oldPrice })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (s) onSlideRef.current?.({ name: s.caption, price: s.price, oldPrice: s.oldPrice })
   }, [idx, slides])
 
   const go = useCallback((n: number) => setIdx((n + total) % total), [total])

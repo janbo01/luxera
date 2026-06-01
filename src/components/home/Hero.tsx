@@ -16,6 +16,14 @@ const TICKER_ITEMS = [
   'طراحی اختصاصی',
 ]
 
+const TICKER_DOUBLED = [...TICKER_ITEMS, ...TICKER_ITEMS]
+
+const HERO_STATS = [
+  { v: '۱۴', u: 'روز', l: 'ضمانت بازگشت' },
+  { v: 'رایگان', u: '', l: 'ارسال بالای ۵۰۰ هزار' },
+  { v: '۲۰۰+', u: 'مدل', l: 'محصول موجود' },
+] as const
+
 function fmtPrice(raw?: string): string {
   const n = Number(raw)
   return raw && !isNaN(n) ? formatNumber(n) : (raw ?? '')
@@ -92,11 +100,7 @@ const Hero: FC = () => {
         </div>
 
         <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
-          {[
-            { v: '۱۴', u: 'روز', l: 'ضمانت بازگشت' },
-            { v: 'رایگان', u: '', l: 'ارسال بالای ۵۰۰ هزار' },
-            { v: '۲۰۰+', u: 'مدل', l: 'محصول موجود' },
-          ].map(({ v, u, l }, i) => (
+          {HERO_STATS.map(({ v, u, l }, i) => (
             <div key={i} className={`${i < 2 ? 'pe-4 border-e border-rule me-4' : ''}`}>
               <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
                 {v}
@@ -112,7 +116,7 @@ const Hero: FC = () => {
     {/* ── Ticker ── */}
     <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3.5 border-t border-b border-rule py-3.5 overflow-hidden">
       <div className="flex gap-[54px] w-max font-mono text-[11px] tracking-[0.22em] uppercase text-ink-2 animate-[hero-ticker_38s_linear_infinite]">
-        {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+        {TICKER_DOUBLED.map((item, i) => (
           <span key={i} className="inline-flex items-center gap-2.5">
             <i className="text-copper text-sm not-italic">✦</i> {item}
           </span>

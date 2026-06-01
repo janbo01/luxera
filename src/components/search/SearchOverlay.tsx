@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC } from 'react'
+import { useEffect, useRef, useMemo, type FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
@@ -18,7 +18,9 @@ const SearchOverlay: FC = () => {
   useBodyLock(isOpen)
 
   useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 50)
+    if (!isOpen) return
+    const id = setTimeout(() => inputRef.current?.focus(), 50)
+    return () => clearTimeout(id)
   }, [isOpen])
 
   useEffect(() => {
@@ -34,12 +36,17 @@ const SearchOverlay: FC = () => {
     navigate(`/search?q=${encodeURIComponent(q.trim())}`)
   }
 
+  const highlightRe = useMemo(() => {
+    const trimmed = query.trim()
+    if (!trimmed) return null
+    return new RegExp(`(${trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+  }, [query])
+
   const highlight = (text: string) => {
-    if (!query.trim()) return text
-    const re = new RegExp(`(${query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
-    const parts = text.split(re)
+    if (!highlightRe) return text
+    const parts = text.split(highlightRe)
     return parts.map((part, i) =>
-      re.test(part)
+      highlightRe.test(part)
         ? <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-[2px] px-0.5">{part}</mark>
         : part
     )
