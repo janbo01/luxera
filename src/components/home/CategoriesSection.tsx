@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from 'react'
+import { useEffect, useState, useMemo, memo, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { CATEGORIES } from '../../data/categories'
 import SectionHeader from '../shared/SectionHeader'
@@ -14,6 +14,10 @@ const CAT_BG: Record<string, string> = {
   sets:      'bg-[linear-gradient(155deg,#4a2820_0%,#1e0e0a_100%)]',
 }
 
+const VISIBLE_CATS = CATEGORIES.filter(
+  (c) => !['bridal', 'new', 'mens'].includes(c.id),
+)
+
 const CategoriesSection: FC = () => {
   const [apiCats, setApiCats] = useState<ApiCategory[]>([])
 
@@ -21,9 +25,9 @@ const CategoriesSection: FC = () => {
     listCategories().then(setApiCats).catch(() => {})
   }, [])
 
-  const apiByName = new Map(apiCats.map((c) => [c.name, c]))
-  const visibleCats = CATEGORIES.filter(
-    (c) => !['bridal', 'new', 'mens'].includes(c.id),
+  const apiByName = useMemo(
+    () => new Map(apiCats.map((c) => [c.name, c])),
+    [apiCats],
   )
 
   return (
@@ -40,7 +44,7 @@ const CategoriesSection: FC = () => {
       />
 
       <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-3">
-        {visibleCats.map((cat) => {
+        {VISIBLE_CATS.map((cat) => {
           const apiCat = apiByName.get(cat.fa)
           const imgSrc = apiCat?.image_url
           const bg = CAT_BG[cat.id] ?? 'bg-plum'
@@ -95,4 +99,4 @@ const CategoriesSection: FC = () => {
   )
 }
 
-export default CategoriesSection
+export default memo(CategoriesSection)

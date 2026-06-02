@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 210" fill="none">
+  <defs>
+
+    <!-- 5-stop metallic gradient: pale highlight → deep copper shadow -->
+    <linearGradient id="metal" x1="79" y1="7" x2="221" y2="203" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#F5CAAA"/>
+      <stop offset="18%"  stop-color="#E8A870"/>
+      <stop offset="45%"  stop-color="#C87438"/>
+      <stop offset="74%"  stop-color="#A05022"/>
+      <stop offset="100%" stop-color="#7A3412"/>
+    </linearGradient>
+
+    <!-- Secondary facet lines: same direction, softer opacity -->
+    <linearGradient id="facet" x1="79" y1="7" x2="221" y2="203" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#F5CAAA" stop-opacity="0.72"/>
+      <stop offset="50%"  stop-color="#C87438" stop-opacity="0.58"/>
+      <stop offset="100%" stop-color="#7A3412" stop-opacity="0.55"/>
+    </linearGradient>
+
+    <!-- Tertiary cross-diagonals: lightest -->
+    <linearGradient id="lite" x1="79" y1="7" x2="221" y2="203" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#F5CAAA" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7A3412" stop-opacity="0.42"/>
+    </linearGradient>
+
+    <!-- Sparkle gradient (top-left → bottom-right for warmth) -->
+    <linearGradient id="spark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#ECA870"/>
+      <stop offset="100%" stop-color="#9C5020"/>
+    </linearGradient>
+
+  </defs>
+
+  <!-- ── Crystal outline ───────────────────────────────────────── -->
+  <path d="M150,7 L98,54 L79,103 L102,153 L150,203 L198,153 L221,103 L202,54 Z"
+        stroke="url(#metal)" stroke-width="2.6" stroke-linejoin="round"/>
+
+  <!-- ── Primary structural lines ─────────────────────────────── -->
+  <!-- Top to left & right girdle points -->
+  <line x1="150" y1="7"   x2="79"  y2="103" stroke="url(#metal)" stroke-width="2.1"/>
+  <line x1="150" y1="7"   x2="221" y2="103" stroke="url(#metal)" stroke-width="2.1"/>
+  <!-- Girdle equator -->
+  <line x1="79"  y1="103" x2="221" y2="103" stroke="url(#metal)" stroke-width="2.1"/>
+  <!-- Bottom to left & right girdle -->
+  <line x1="150" y1="203" x2="79"  y2="103" stroke="url(#metal)" stroke-width="2.1"/>
+  <line x1="150" y1="203" x2="221" y2="103" stroke="url(#metal)" stroke-width="2.1"/>
+
+  <!-- ── Secondary facet lines ─────────────────────────────────── -->
+  <line x1="98"  y1="54"  x2="202" y2="54"  stroke="url(#facet)" stroke-width="1.7"/>
+  <line x1="102" y1="153" x2="198" y2="153" stroke="url(#facet)" stroke-width="1.7"/>
+
+  <!-- ── Tertiary cross-diagonal facets ───────────────────────── -->
+  <line x1="98"  y1="54"  x2="150" y2="203" stroke="url(#lite)"  stroke-width="1.2"/>
+  <line x1="202" y1="54"  x2="150" y2="203" stroke="url(#lite)"  stroke-width="1.2"/>
+
+  <!-- ── Left sparkle — 4-pointed star (quadratic bézier) ─────── -->
+  <!-- cx=31 cy=103 R=18 r=4 -->
+  <path d="M31,85 Q35,99 49,103 Q35,107 31,121 Q27,107 13,103 Q27,99 31,85 Z"
+        fill="url(#spark)"/>
+
+  <!-- ── Right sparkle — smaller ──────────────────────────────── -->
+  <!-- cx=269 cy=103 R=12 r=2.5 -->
+  <path d="M269,91 Q271.5,100.5 281,103 Q271.5,105.5 269,115 Q266.5,105.5 257,103 Q266.5,100.5 269,91 Z"
+        fill="url(#spark)"/>
+
+</svg>

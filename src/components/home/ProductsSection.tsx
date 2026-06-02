@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from 'react'
+import { useEffect, useState, memo, type FC } from 'react'
 import ProductCard from '../product/ProductCard'
 import { useCartStore } from '../../store/cartStore'
 import SectionHeader from '../shared/SectionHeader'
@@ -52,4 +52,4 @@ const ProductsSection: FC = () => {
   )
 }
 
-export default ProductsSection
+export default memo(ProductsSection)

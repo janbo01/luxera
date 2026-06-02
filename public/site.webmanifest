@@ -1,0 +1,17 @@
+{
+  "name": "Luxera · لوکسرا",
+  "short_name": "Luxera",
+  "description": "فروشگاه جواهرات فانتزی دست‌ساز",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E0E08",
+  "theme_color": "#1E0E08",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

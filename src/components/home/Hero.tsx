@@ -1,4 +1,4 @@
-import { useState, useCallback, type FC } from 'react'
+import { useState, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
@@ -35,7 +35,6 @@ const Hero: FC = () => {
   // client render agree — avoids a repaint-driven layout shift when the name
   // appears after useLayoutEffect fires in HeroSlider.
   const [slide, setSlide] = useState<SlideInfo>(() => getFirstSlideInfo(ssrBanners))
-  const handleSlide = useCallback((info: SlideInfo) => setSlide(info), [])
 
   return (
   <section className="pt-7">
@@ -45,7 +44,7 @@ const Hero: FC = () => {
       <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(196,135,58,0.25),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-[280px] max-md:order-2">
 
         <div className="absolute inset-0 z-[1]">
-          <HeroSlider onSlide={handleSlide} />
+          <HeroSlider onSlide={setSlide} />
         </div>
 
         {/* Overlay meta at bottom */}

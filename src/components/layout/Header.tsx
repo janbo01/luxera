@@ -44,6 +44,8 @@ function NavLinkItem({ to, label, accent, onClick, mobile }: NavLink & { onClick
   )
 }
 
+const ICON_BTN = 'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
+
 const Header: FC = () => {
   const cartCount = useCartStore(selectTotalQty)
   const openCart = useCartStore((s) => s.openCart)
@@ -68,69 +70,78 @@ const Header: FC = () => {
     if (drawerRef.current) drawerRef.current.inert = !menuOpen
   }, [menuOpen])
 
-  const iconBtn = 'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
-
   return (
     <>
       {AnnouncementBar}
 
       <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center px-[var(--pad)] h-[78px] gap-6">
+        {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
+        <div className="flex items-center px-[var(--pad)] h-[78px] gap-3" dir="ltr">
 
-          {/* Mobile hamburger (visible on mobile via responsive) */}
-          <button
-            className="hidden max-[1100px]:flex items-center justify-center w-10 h-10 text-ink"
-            onClick={() => setMenuOpen(true)}
-            aria-label="منو"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-drawer"
-          >
-            <Icon name="menu" size={20} />
-          </button>
+          {/* Logo — left */}
+          <Link to="/" className="flex items-center gap-2.5 shrink-0" onClick={closeMenu} aria-label="Luxera">
+            <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-[38px] w-auto" />
+            <div className="flex flex-col leading-none gap-[3px]">
+              <span className="font-display italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">Luxera</span>
+              <span className="font-mono text-[7.5px] tracking-[0.3em] text-muted uppercase">Fine Jewelry</span>
+            </div>
+          </Link>
 
-          {/* Desktop nav */}
-          <nav className="flex max-[1100px]:hidden gap-[26px] items-center text-sm font-normal">
+          {/* Desktop nav — centered, RTL for Persian text */}
+          <nav className="flex max-[1100px]:hidden gap-[24px] items-center text-sm font-normal flex-1 justify-center" dir="rtl">
             {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} />)}
           </nav>
 
-          {/* Logo */}
-          <Link to="/" className="flex flex-col items-center gap-0.5 text-center" onClick={closeMenu}>
-            <span className="font-display italic font-medium text-[32px] tracking-[0.02em] leading-none text-ink">Luxera</span>
-            <span className="font-mono text-[9px] tracking-[0.32em] text-muted uppercase">Fine Jewelry</span>
-          </Link>
+          {/* Mobile spacer */}
+          <div className="flex-1 min-[1100px]:hidden" />
 
-          {/* Actions */}
-          <div className="flex items-center gap-1 justify-end">
+          {/* Actions — right */}
+          <div className="flex items-center gap-1 shrink-0">
+            {/* Search bar — desktop */}
             <button
               className="flex items-center gap-2 py-2 ps-3.5 pe-2 bg-bg-2 rounded-full cursor-pointer text-sm text-muted min-w-[190px] border-none font-[inherit] transition-colors duration-200 hover:bg-plate max-[720px]:hidden [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0"
               onClick={openSearch}
               aria-label="جستجو"
+              dir="rtl"
             >
               <Icon name="search" size={16} strokeWidth={1.6} />
               <span>جستجو در فروشگاه…</span>
               <kbd className="ms-auto font-mono text-[10px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2">⌘K</kbd>
             </button>
 
-            <button className={`${iconBtn} hidden max-[720px]:grid`} onClick={openSearch} aria-label="جستجو">
+            {/* Search icon — mobile */}
+            <button className={`${ICON_BTN} hidden max-[720px]:grid`} onClick={openSearch} aria-label="جستجو">
               <Icon name="search" size={18} strokeWidth={1.6} />
             </button>
 
-            <button className={iconBtn} onClick={handleAccountClick} aria-label={isLoggedIn ? 'حساب من' : 'ورود'}>
+            {/* Account — hidden on mobile to avoid crowding */}
+            <button className={`${ICON_BTN} max-[720px]:hidden`} onClick={handleAccountClick} aria-label={isLoggedIn ? 'حساب من' : 'ورود'}>
               <Icon name="user" size={18} strokeWidth={1.6} />
             </button>
 
-            <Link to="/wishlist" className={iconBtn} aria-label="علاقه‌مندی‌ها">
+            <Link to="/wishlist" className={ICON_BTN} aria-label="علاقه‌مندی‌ها">
               <Icon name="heart" size={18} strokeWidth={1.6} />
               {wishCount > 0 && (
                 <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">{toFa(wishCount)}</span>
               )}
             </Link>
 
-            <button className={iconBtn} onClick={openCart} aria-label="سبد خرید">
+            <button className={ICON_BTN} onClick={openCart} aria-label="سبد خرید">
               <Icon name="bag" size={18} strokeWidth={1.6} />
               {cartCount > 0 && (
                 <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">{toFa(cartCount)}</span>
               )}
+            </button>
+
+            {/* Hamburger — mobile only, right side */}
+            <button
+              className="flex min-[1100px]:hidden items-center justify-center w-10 h-10 text-ink -me-1"
+              onClick={() => setMenuOpen(true)}
+              aria-label="منو"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-drawer"
+            >
+              <Icon name="menu" size={20} />
             </button>
           </div>
         </div>
@@ -153,7 +164,10 @@ const Header: FC = () => {
           aria-modal={menuOpen || undefined}
         >
           <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule">
-            <span className="font-display italic text-2xl tracking-[0.16em] text-ink">Luxera</span>
+            <Link to="/" className="flex items-center gap-2" onClick={closeMenu} dir="ltr">
+              <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-8 w-auto" />
+              <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
+            </Link>
             <button className="flex items-center justify-center w-9 h-9 text-ink-2" onClick={closeMenu} aria-label="بستن منو">
               <Icon name="close" size={18} />
             </button>
