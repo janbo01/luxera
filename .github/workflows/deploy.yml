@@ -36,7 +36,11 @@ jobs:
             docker run -d \
               --name luxera \
               --restart unless-stopped \
+              --network core-era \
               -p 8090:3000 \
+              -e NODE_ENV=production \
+              -e VITE_STORE_API=http://store:8084 \
+              -e VITE_PRODUCT_API=http://product:8081 \
               core-era/luxera:latest
           ENDSSH
 
