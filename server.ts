@@ -69,7 +69,7 @@ async function fetchThemeStyleTag(): Promise<string> {
     const light  = raw.theme_light  || '#F5EDE0'
     const text   = raw.theme_text   || '#1A1008'
     _themeStyleTag = `<style>${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
-    _themeExpiry   = Date.now() + 24 * 60 * 60 * 1000
+    _themeExpiry   = Date.now() + 5 * 60 * 1000
   } catch {
     return ''
   }
