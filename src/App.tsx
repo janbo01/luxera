@@ -43,9 +43,14 @@ import {
 } from './app/router'
 
 export default function App() {
+  const theme = useUIStore((s) => s.theme)
   const palette = useUIStore((s) => s.palette)
   const density = useUIStore((s) => s.density)
   const heroVariant = useUIStore((s) => s.heroVariant)
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   useEffect(() => {
     const b = document.body

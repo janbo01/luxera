@@ -6,35 +6,9 @@
 @import "tailwindcss";
 
 /* ── Design Tokens ─────────────────────────────────────────── */
+
+/* Static tokens: fonts, radii, animations — baked at build time, not per-theme */
 @theme {
-  /* Surfaces */
-  --color-bg: #F6FFFE;
-  --color-bg-2: #E8FFFE;
-  --color-surface: #FAFFFF;
-  --color-surface-2: #EBF9F8;
-  --color-plate: #E0F9F6;
-
-  /* Text */
-  --color-ink: #0A1A18;
-  --color-ink-2: #1A3530;
-  --color-muted: #4A7A70;
-  --color-rule: rgba(10, 26, 24, .10);
-
-  /* Brand */
-  --color-plum: #002A22;
-  --color-plum-2: #001A16;
-  --color-plum-dark: #004A3A;
-  --color-copper: #D42A50;
-  --color-copper-2: #B31E43;
-  --color-copper-dark: #8F1536;
-  --color-gold: #00C9A7;
-  --color-dust-rose: #FFB3C6;
-  --color-dust-rose-light: #FFD6E5;
-  --color-petal: #FFE0E8;
-  --color-overlay: rgba(0, 42, 34, 0.5);
-  --color-sale: #C42050;
-  --color-ok: #00B896;
-
   /* Fonts */
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
   --font-body: 'Yekan Bakh', 'Tahoma', sans-serif;
@@ -58,6 +32,33 @@
   --animate-panel-drop: panel-drop 220ms cubic-bezier(.2, .7, .2, 1) both;
   --animate-ptr-spin: spin 0.8s linear infinite;
   --animate-pulse-ring: pdp-pulse 1.8s ease-out infinite;
+}
+
+/* Color tokens — inline so Tailwind generates var() refs, enabling runtime theming.
+   Each --color-* points to a --lx-* variable that [data-theme] blocks override. */
+@theme inline {
+  --color-bg: var(--lx-bg);
+  --color-bg-2: var(--lx-bg-2);
+  --color-surface: var(--lx-surface);
+  --color-surface-2: var(--lx-surface-2);
+  --color-plate: var(--lx-plate);
+  --color-ink: var(--lx-ink);
+  --color-ink-2: var(--lx-ink-2);
+  --color-muted: var(--lx-muted);
+  --color-rule: var(--lx-rule);
+  --color-plum: var(--lx-plum);
+  --color-plum-2: var(--lx-plum-2);
+  --color-plum-dark: var(--lx-plum-dark);
+  --color-copper: var(--lx-copper);
+  --color-copper-2: var(--lx-copper-2);
+  --color-copper-dark: var(--lx-copper-dark);
+  --color-gold: var(--lx-gold);
+  --color-dust-rose: var(--lx-dust-rose);
+  --color-dust-rose-light: var(--lx-dust-rose-light);
+  --color-petal: var(--lx-petal);
+  --color-overlay: var(--lx-overlay);
+  --color-sale: var(--lx-sale);
+  --color-ok: var(--lx-ok);
 }
 
 /* ── Morabba (Persian Heading) ─────────────────────────────── */
@@ -160,15 +161,15 @@
 
 @keyframes pdp-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(212, 42, 80, .5);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--lx-copper) 50%, transparent);
   }
 
   70% {
-    box-shadow: 0 0 0 8px rgba(212, 42, 80, 0);
+    box-shadow: 0 0 0 8px transparent;
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(212, 42, 80, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
@@ -257,6 +258,7 @@
     --ok: var(--color-ok);
     /* typography */
     --persian-heading: var(--font-heading);
+
     --persian-body: var(--font-body);
     --persian: var(--font-body);
     --display: var(--font-display);
@@ -265,6 +267,39 @@
     --maxw: 1480px;
     --pad: clamp(20px, 4vw, 56px);
   }
+
+  /* ── Themes ──────────────────────────────────────────────────
+     :root values = watermelon-ice defaults → no flash before JS
+     sets data-theme on <html>. [data-theme] overrides take over
+     once the store rehydrates. Add future themes below.         */
+  :root,
+  [data-theme="watermelon-ice"] {
+    --lx-bg: #F6FFFE;
+    --lx-bg-2: #E8FFFE;
+    --lx-surface: #FAFFFF;
+    --lx-surface-2: #EBF9F8;
+    --lx-plate: #E0F9F6;
+    --lx-ink: #0A1A18;
+    --lx-ink-2: #1A3530;
+    --lx-muted: #4A7A70;
+    --lx-rule: rgba(10, 26, 24, .10);
+    --lx-plum: #002A22;
+    --lx-plum-2: #001A16;
+    --lx-plum-dark: #004A3A;
+    --lx-copper: #D42A50;
+    --lx-copper-2: #B31E43;
+    --lx-copper-dark: #8F1536;
+    --lx-gold: #00C9A7;
+    --lx-dust-rose: #FFB3C6;
+    --lx-dust-rose-light: #FFD6E5;
+    --lx-petal: #FFE0E8;
+    --lx-overlay: rgba(0, 42, 34, 0.5);
+    --lx-sale: #C42050;
+    --lx-ok: #00B896;
+  }
+
+  /* [data-theme="midnight-botanical"] { ... } */
+  /* [data-theme="saffron-bazaar"]     { ... } */
 }
 
 /* ── Global Base ────────────────────────────────────────────── */

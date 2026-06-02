@@ -13,6 +13,11 @@ export interface ApiStoreSettings {
   ita_link: string
   support_phone: string
   support_landline: string
+  theme_bg: string
+  theme_brand: string
+  theme_accent: string
+  theme_light: string
+  theme_text: string
   updated_at: string
 }
 

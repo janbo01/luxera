@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url'
 import express from 'express'
 import compression from 'compression'
 import { CATEGORIES } from './src/data/categories'
+import { deriveThemeCSS } from './src/utils/themeTokens'
 
 // Unwrap API envelope: { success, data } → data, or return as-is
 function unwrap(json: unknown): unknown {
@@ -48,6 +49,33 @@ const isProd = process.env.NODE_ENV === 'production'
 const port = Number(process.env.PORT) || 3000
 const root = process.cwd()
 
+const storeApiBase   = process.env.VITE_STORE_API   ?? ''
+const productApiBase = process.env.VITE_PRODUCT_API ?? ''
+
+// Theme CSS cache — 24h TTL matches the store service's Redis TTL for settings
+let _themeStyleTag = ''
+let _themeExpiry   = 0
+
+async function fetchThemeStyleTag(): Promise<string> {
+  if (_themeStyleTag && Date.now() < _themeExpiry) return _themeStyleTag
+  if (!storeApiBase) return ''
+  try {
+    const r = await fetch(`${storeApiBase}/store/settings`)
+    if (!r.ok) return ''
+    const raw = unwrap(await r.json()) as Record<string, string>
+    const bg     = raw.theme_bg     || '#FDF8F0'
+    const brand  = raw.theme_brand  || '#C4873A'
+    const accent = raw.theme_accent || '#3D2B20'
+    const light  = raw.theme_light  || '#F5EDE0'
+    const text   = raw.theme_text   || '#1A1008'
+    _themeStyleTag = `<style>${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
+    _themeExpiry   = Date.now() + 24 * 60 * 60 * 1000
+  } catch {
+    return ''
+  }
+  return _themeStyleTag
+}
+
 const SECURITY_HEADERS: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'SAMEORIGIN',
@@ -85,7 +113,10 @@ async function createServer() {
         template = await vite.transformIndexHtml(url, template)
         const { render } = await vite.ssrLoadModule('/src/entry-server.tsx')
         const { html: appHtml } = await render(url)
-        const html = template.replace('<!--app-html-->', appHtml)
+        const themeStyleTag = await fetchThemeStyleTag()
+        const html = template
+          .replace('<!--app-html-->', appHtml)
+          .replace('</head>', `${themeStyleTag}</head>`)
         res.status(200).set({ 'Content-Type': 'text/html' }).send(html)
       } catch (e) {
         vite.ssrFixStacktrace(e as Error)
@@ -157,9 +188,6 @@ async function createServer() {
         template = template.replace(/<link rel="stylesheet"[^>]+>/g, '')
       } catch { /* non-fatal — blocking link stays in template */ }
     }
-
-    const productApiBase = process.env.VITE_PRODUCT_API ?? ''
-    const storeApiBase   = process.env.VITE_STORE_API   ?? ''
 
     app.use('*', async (req, res) => {
       const url = req.originalUrl
@@ -277,7 +305,10 @@ async function createServer() {
           // Non-fatal – fall back to client-side fetch for this request
         }
 
-        const { html: appHtml } = await render(url, initialData)
+        const [{ html: appHtml }, themeStyleTag] = await Promise.all([
+          render(url, initialData),
+          fetchThemeStyleTag(),
+        ])
 
         // Fallback: if the route-specific logic didn't set a preload (env var missing,
         // API timeout, or banner without a direct image_url), extract the LCP URL from
@@ -294,7 +325,7 @@ async function createServer() {
 
         const html = template
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${inlineCssTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
+          .replace('</head>', `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         // Keep the Link preload header: CDN edge caches can use it to push the
         // CSS file to the browser's HTTP cache so subsequent navigations are free.
