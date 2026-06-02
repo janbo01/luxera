@@ -76,7 +76,7 @@ const Header: FC = () => {
 
       <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule">
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
-        <div className="flex items-center px-[var(--pad)] h-[78px] gap-3" dir="ltr">
+        <div className="relative flex items-center justify-between px-[var(--pad)] h-[78px] gap-3" dir="ltr">
 
           {/* Logo — left */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0" onClick={closeMenu} aria-label="Luxera">
@@ -88,12 +88,9 @@ const Header: FC = () => {
           </Link>
 
           {/* Desktop nav — centered, RTL for Persian text */}
-          <nav className="flex max-[1100px]:hidden gap-[24px] items-center text-sm font-normal flex-1 justify-center" dir="rtl">
+          <nav className="absolute left-1/2 -translate-x-1/2 flex max-[1100px]:hidden gap-[24px] items-center text-sm font-normal" dir="rtl">
             {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} />)}
           </nav>
-
-          {/* Mobile spacer */}
-          <div className="flex-1 min-[1100px]:hidden" />
 
           {/* Actions — right */}
           <div className="flex items-center gap-1 shrink-0">

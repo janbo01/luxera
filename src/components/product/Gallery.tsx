@@ -18,7 +18,7 @@ const TONE_BG: Record<string, string> = {
 }
 
 const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
-  const galleryImages = images && images.length > 1 ? images.slice(1) : images
+  const galleryImages = images
   const count = galleryImages && galleryImages.length > 0 ? galleryImages.length : PRODUCT_GALLERY.length
 
   const { activeIdx, selectThumb } = useGallery({ count })
