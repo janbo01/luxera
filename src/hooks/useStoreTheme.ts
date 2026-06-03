@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { getStoreSettings } from '../api/store'
 import { deriveThemeCSS } from '../utils/themeTokens'
+import { useSettingsStore } from '../store/settingsStore'
 
 export function useStoreTheme() {
   useEffect(() => {
@@ -14,6 +15,17 @@ export function useStoreTheme() {
           document.head.appendChild(el)
         }
         el.textContent = css
+
+        useSettingsStore.getState().setSettings({
+          instagram_url: s.instagram_url,
+          whatsapp_number: s.whatsapp_number,
+          bale_link: s.bale_link,
+          ita_link: s.ita_link,
+          support_phone: s.support_phone,
+          support_landline: s.support_landline,
+          store_name: s.store_name,
+          tagline: s.tagline,
+        })
       })
       .catch(() => {})
   }, [])

@@ -7,13 +7,16 @@ import { useWishlistStore, selectWishlistCount } from '../../store/wishlistStore
 import { useAuthStore } from '../../store/authStore'
 import { useSearchStore } from '../../store/searchStore'
 import { useUIStore } from '../../store/uiStore'
+import { useSettingsStore } from '../../store/settingsStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { NAV_LINKS, type NavLink } from '../../data/navigation'
 
-const AnnouncementBar = (
+function AnnouncementBar() {
+  const supportPhone = useSettingsStore((s) => s.support_phone || s.support_landline)
+  return (
   <div className="bg-plum-2 text-[var(--color-petal)] text-xs tracking-[0.02em] max-[720px]:hidden">
     <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
-      <div className="opacity-70 text-[11px]">تماس: ۰۹۱۲-۸۴۹۴۳۰۸</div>
+      <div className="opacity-70 text-[11px]">{supportPhone ? `تماس: ${supportPhone}` : null}</div>
       <div className="flex items-center gap-[18px] flex-wrap">
         <span className="inline-flex items-center gap-2">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
@@ -27,7 +30,8 @@ const AnnouncementBar = (
       <div className="opacity-70 text-[11px]">فارسی · تومان</div>
     </div>
   </div>
-)
+  )
+}
 
 function NavLinkItem({ to, label, accent, onClick, mobile }: NavLink & { onClick?: () => void; mobile?: boolean }) {
   const cls = mobile
@@ -72,7 +76,7 @@ const Header: FC = () => {
 
   return (
     <>
-      {AnnouncementBar}
+      <AnnouncementBar />
 
       <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden">
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}

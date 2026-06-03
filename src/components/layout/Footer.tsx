@@ -1,8 +1,9 @@
 import { type FC } from 'react'
 import { Link } from 'react-router-dom'
-import { IconInstagram, IconTelegram, IconXTwitter, IconWhatsApp } from '../icons/BrandIcons'
+import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
 import { useInitialData } from '../../context/initialData'
+import { useSettingsStore } from '../../store/settingsStore'
 import { CATEGORIES } from '../../data/categories'
 
 declare global {
@@ -49,6 +50,10 @@ const STATIC_COLS = [
 
 const Footer: FC = () => {
   const { footerCategories } = useInitialData()
+  const instagram_url   = useSettingsStore((s) => s.instagram_url)
+  const whatsapp_number = useSettingsStore((s) => s.whatsapp_number)
+  const bale_link       = useSettingsStore((s) => s.bale_link)
+  const ita_link        = useSettingsStore((s) => s.ita_link)
 
   // Derived once — no setState, no post-paint update, no CLS.
   const categoryLinks: NavLink[] =
@@ -57,6 +62,13 @@ const Footer: FC = () => {
       : footerCategories?.length
         ? makeCatLinks(footerCategories)
         : STATIC_CAT_LINKS
+
+  const socialLinks = [
+    instagram_url   && { href: instagram_url,                                icon: <IconInstagram size={14} />, label: 'اینستاگرام' },
+    whatsapp_number && { href: `https://wa.me/${whatsapp_number.replace(/\D/g, '')}`, icon: <IconWhatsApp size={14} />,  label: 'واتس‌اپ' },
+    bale_link       && { href: bale_link,                                     icon: <IconBale size={14} />,      label: 'بله' },
+    ita_link        && { href: ita_link,                                       icon: <IconIta size={14} />,       label: 'ایتا' },
+  ].filter(Boolean) as { href: string; icon: React.ReactNode; label: string }[]
 
   const col = 'flex flex-col gap-[11px]'
   const colLink = 'text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper'
@@ -69,20 +81,17 @@ const Footer: FC = () => {
         <div className="flex flex-col gap-[18px] max-w-[34ch] max-md:col-span-2">
           <span className="font-display italic text-[42px] text-ink leading-none font-normal">Luxera</span>
           <p className="text-muted text-[13px] leading-[1.7] m-0">جواهرات فانتزی، طراحی اختصاصی.</p>
+          {socialLinks.length > 0 && (
           <div className="flex gap-2 mt-1">
-            {[
-              { icon: <IconInstagram size={14} />, label: 'اینستاگرام' },
-              { icon: <IconTelegram size={14} />,  label: 'تلگرام' },
-              { icon: <IconXTwitter size={14} />,  label: 'توییتر' },
-              { icon: <IconWhatsApp size={14} />,  label: 'واتس‌اپ' },
-            ].map(({ icon, label }) => (
-              <a key={label} href="#" aria-label={label}
+            {socialLinks.map(({ href, icon, label }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
                 className="w-9 h-9 rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg [&>svg]:w-3.5 [&>svg]:h-3.5"
               >
                 {icon}
               </a>
             ))}
           </div>
+          )}
 
           {/* Trust badge */}
           <div className="mt-1 pt-5 border-t border-rule">
