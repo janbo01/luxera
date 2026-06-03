@@ -153,7 +153,7 @@ const ProductPage: FC = () => {
         { label: product.cat || 'محصولات', to: product.cat ? `/category/${product.catId}` : '/' },
         { label: product.fa },
       ]} />
-      <section className="px-[var(--pad)] max-w-[var(--maxw)] mx-auto pt-6 pb-20">
+      <section className="px-[var(--pad)] max-w-[var(--maxw)] mx-auto pt-2 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-[52%_1fr] gap-8 lg:gap-12 items-start">
           <Gallery images={apiDetail?.images} productName={product.fa} />
           <InfoPanel

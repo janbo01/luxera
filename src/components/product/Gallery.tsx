@@ -26,7 +26,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const hasApiImages = galleryImages && galleryImages.length > 0
 
   return (
-    <div className="sticky top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,var(--color-plum)_0%,var(--color-plum-2)_100%)] text-bg isolate grid [grid-template-columns:100px_1fr] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-plum)_18%,transparent),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-lg:relative max-lg:flex max-lg:flex-col">
+    <div className="lg:sticky lg:top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,var(--color-plum)_0%,var(--color-plum-2)_100%)] text-bg isolate grid [grid-template-columns:100px_1fr] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-plum)_18%,transparent),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-lg:relative max-lg:flex max-lg:flex-col">
       {/* thumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
       <div className="flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-bg/[12%]">
         {hasApiImages
@@ -64,7 +64,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
                 <img
                   src={img.url}
                   alt={`${productName} - تصویر ${i + 1}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                   loading={i === 0 ? 'eager' : 'lazy'}
                   fetchPriority={i === 0 ? 'high' : 'auto'}
                   decoding="async"
