@@ -168,3 +168,8 @@ export async function addWishlistItem(productId: string): Promise<void> {
 export async function removeWishlistItem(productId: string): Promise<void> {
   await apiFetch(`${BASE}/wishlist/items/${productId}`, { method: 'DELETE' })
 }
+
+export async function getLoyaltyBalance(): Promise<number> {
+  const res = await apiFetch<{ balance: number }>(`${BASE}/profile/loyalty`)
+  return res.balance ?? 0
+}

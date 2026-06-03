@@ -124,6 +124,7 @@ interface PaneProps { setTab: (t: Tab) => void }
 const OverviewPane: FC<PaneProps> = ({ setTab }) => {
   const orders   = useAuthStore((s) => s.orders)
   const wishCount = useWishlistStore((s) => s.items.length)
+  const [loyaltyBalance, setLoyaltyBalance] = useState<number | null>(null)
   const inTransit = useMemo(
     () => orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length,
     [orders],
@@ -137,12 +138,18 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
     }).length
   }, [orders])
 
-  const kpis = [
+  useEffect(() => {
+    import('../api/user').then(({ getLoyaltyBalance }) => {
+      getLoyaltyBalance().then(setLoyaltyBalance).catch(() => {})
+    })
+  }, [])
+
+  const kpis = useMemo(() => [
     { icon: <IcoBag />, value: toFa(orders.length), label: 'سفارش‌های کل', extra: thisMonthOrders > 0 ? `+${toFa(thisMonthOrders)} این ماه` : null },
     { icon: <IcoTruck />, value: toFa(inTransit), label: 'در حالِ ارسال', extra: inTransit > 0 ? 'در راه' : null },
     { icon: <IcoHeart />, value: toFa(wishCount), unit: 'قطعه', label: 'علاقه‌مندی‌ها', extra: null },
-    { icon: <IcoStar />, value: '—', muted: true, label: 'امتیازِ شما', extra: null },
-  ]
+    { icon: <IcoStar />, value: loyaltyBalance === null ? '…' : toFa(loyaltyBalance), unit: loyaltyBalance !== null ? 'امتیاز' : undefined, muted: loyaltyBalance === null, label: 'امتیازِ شما', extra: null },
+  ], [orders.length, thisMonthOrders, inTransit, wishCount, loyaltyBalance])
 
   return (
     <div className="flex flex-col gap-[18px]">
@@ -241,7 +248,10 @@ const GENDER_OPTIONS = [
 ]
 
 const ProfilePane: FC = () => {
-  const { profile, updateProfile, uploadAvatar, deleteAvatar } = useAuthStore()
+  const profile = useAuthStore((s) => s.profile)
+  const updateProfile = useAuthStore((s) => s.updateProfile)
+  const uploadAvatar = useAuthStore((s) => s.uploadAvatar)
+  const deleteAvatar = useAuthStore((s) => s.deleteAvatar)
   const [form, setForm] = useState({
     name:       profile?.name?.split(' ')[0] ?? '',
     family:     profile?.name?.split(' ').slice(1).join(' ') ?? '',
@@ -423,12 +433,12 @@ const OrdersPane: FC = () => {
     return result
   }, [orders, filter, search, dateRange])
 
-  const chips = [
-    { key: 'all',       label: 'همه',         count: orders.length },
-    { key: 'transit',   label: 'در راه',       count: orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length },
-    { key: 'delivered', label: 'تحویل شده',   count: orders.filter((o) => o.status === 'delivered').length },
-    { key: 'cancelled', label: 'لغو شده',     count: orders.filter((o) => o.status === 'cancelled').length },
-  ]
+  const chips = useMemo(() => [
+    { key: 'all',       label: 'همه',        count: orders.length },
+    { key: 'transit',   label: 'در راه',     count: orders.filter((o) => o.status === 'shipped' || o.status === 'processing').length },
+    { key: 'delivered', label: 'تحویل شده', count: orders.filter((o) => o.status === 'delivered').length },
+    { key: 'cancelled', label: 'لغو شده',   count: orders.filter((o) => o.status === 'cancelled').length },
+  ], [orders])
 
   return (
     <div className="flex flex-col gap-3.5">
@@ -930,7 +940,13 @@ const NAV_ITEMS = [
 const AccountPage: FC = () => {
   usePageMeta({ title: 'حساب کاربری' })
   const [tab, setTab] = useState<Tab>('overview')
-  const { profile, logout, orders, addresses, fetchOrders, fetchAddresses, isLoggedIn } = useAuthStore()
+  const profile = useAuthStore((s) => s.profile)
+  const logout = useAuthStore((s) => s.logout)
+  const orders = useAuthStore((s) => s.orders)
+  const addresses = useAuthStore((s) => s.addresses)
+  const fetchOrders = useAuthStore((s) => s.fetchOrders)
+  const fetchAddresses = useAuthStore((s) => s.fetchAddresses)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
 
   const createdAt    = profile?.createdAt
   const memberSince  = useMemo(() => {

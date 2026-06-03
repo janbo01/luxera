@@ -49,6 +49,9 @@ export interface ApiOrder {
   delivery_date?: string
   delivery_slot?: string
   notes?: string
+  loyalty_points_used?: number
+  loyalty_discount_amount?: string
+  loyalty_points_earned?: number
   items: ApiOrderItem[]
   created_at: string
 }
@@ -71,6 +74,7 @@ export interface ApiCheckoutInput {
   delivery_slot?: string
   notes?: string
   items?: ApiCheckoutItem[]
+  loyalty_points_to_use?: number
 }
 
 export interface ApiCoupon {

@@ -26,6 +26,11 @@ interface OrderSummaryProps {
   addrCity: string
   addrProvince: string
   addrStreet: string
+  loyaltyBalance: number
+  loyaltyPointValue: number
+  loyaltyPointsToUse: number
+  loyaltyDiscount: number
+  onLoyaltyPointsChange: (n: number) => void
   onCouponChange: (e: ChangeEvent<HTMLInputElement>) => void
   onApplyCoupon: () => void
   onRemoveCoupon: () => void
@@ -34,11 +39,18 @@ interface OrderSummaryProps {
 
 const inputCls = 'flex-1 bg-bg border border-rule rounded-[10px] px-3.5 py-[11px] text-[13px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
 
+const PERKS = [
+  'ارسالِ بیمه‌شده · بیمه‌ی البرز',
+  '۱۴ روز بازگشتِ بدونِ پرسش',
+  'گواهیِ اصالتِ همراهِ کالا',
+]
+
 const OrderSummary: FC<OrderSummaryProps> = ({
   items, step, subtotal, selectedShipping, snappDate, snappTime,
   giftWrap, couponState, couponError, appliedCode, appliedCoupon, couponDiscount, coupon, total,
   addrName, addrCity, addrProvince, addrStreet,
-  onCouponChange, onApplyCoupon, onRemoveCoupon, onGoStep,
+  loyaltyBalance, loyaltyPointValue, loyaltyPointsToUse, loyaltyDiscount,
+  onLoyaltyPointsChange, onCouponChange, onApplyCoupon, onRemoveCoupon, onGoStep,
 }) => (
   <aside className="sticky top-[98px] self-start flex flex-col gap-3.5 max-[1100px]:static max-[1100px]:top-0">
     <div className="bg-surface rounded-[var(--radius)] border border-rule overflow-hidden">
@@ -104,6 +116,12 @@ const OrderSummary: FC<OrderSummaryProps> = ({
             <div className="flex justify-between items-center text-[13px] text-ink-2">
               <span>تخفیف کد</span>
               <span className="font-body text-ok">−{formatToman(couponDiscount)}</span>
+            </div>
+          )}
+          {loyaltyDiscount > 0 && (
+            <div className="flex justify-between items-center text-[13px] text-ink-2">
+              <span>تخفیفِ امتیاز</span>
+              <span className="font-body text-ok">−{formatToman(loyaltyDiscount)}</span>
             </div>
           )}
           {giftWrap && step >= 1 && (
@@ -172,6 +190,50 @@ const OrderSummary: FC<OrderSummaryProps> = ({
           </span>
         </div>
 
+        {/* Loyalty points */}
+        {loyaltyBalance > 0 && loyaltyPointValue > 0 && (
+          <div className="mt-3.5">
+            <div className="px-3.5 py-3 bg-bg border border-rule rounded-[10px]">
+              <div className="flex items-center justify-between gap-2 mb-2.5">
+                <span className="font-heading text-[13px] font-semibold flex items-center gap-1.5">
+                  <Icon name="star" size={13} strokeWidth={1.8} />
+                  امتیازِ شما
+                </span>
+                <span className="font-mono text-[11px] text-copper bg-copper/10 px-2 py-[3px] rounded-full">
+                  {toFa(loyaltyBalance)} امتیاز موجود
+                </span>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  className={`${inputCls} text-center`}
+                  type="number"
+                  min={0}
+                  max={loyaltyBalance}
+                  value={loyaltyPointsToUse || ''}
+                  onChange={(e) => {
+                    const v = Math.max(0, Math.min(loyaltyBalance, Number(e.target.value) || 0))
+                    onLoyaltyPointsChange(v)
+                  }}
+                  placeholder="تعداد امتیاز"
+                  dir="ltr"
+                />
+                <button
+                  type="button"
+                  className="shrink-0 px-3.5 py-[11px] bg-bg-2 text-ink-2 text-[12px] rounded-[10px] border border-rule cursor-pointer hover:bg-bg hover:text-ink transition-colors whitespace-nowrap"
+                  onClick={() => onLoyaltyPointsChange(loyaltyBalance)}
+                >
+                  همه
+                </button>
+              </div>
+              {loyaltyPointsToUse > 0 && (
+                <p className="text-[11px] text-ok mt-1.5 font-body">
+                  معادلِ {formatToman(loyaltyDiscount)} تخفیف
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Coupon */}
         <div className="mt-3.5">
           {couponState !== 'applied' ? (
@@ -219,11 +281,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
 
         {/* Perks */}
         <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[11px] text-muted">
-          {[
-            'ارسالِ بیمه‌شده · بیمه‌ی البرز',
-            '۱۴ روز بازگشتِ بدونِ پرسش',
-            'گواهیِ اصالتِ همراهِ کالا',
-          ].map((text) => (
+          {PERKS.map((text) => (
             <span key={text} className="inline-flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-ok [&_svg]:shrink-0">
               <Icon name="check" size={12} strokeWidth={2} />
               {text}

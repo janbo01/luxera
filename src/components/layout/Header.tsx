@@ -80,7 +80,7 @@ const Header: FC = () => {
 
           {/* Logo — left */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0" onClick={closeMenu} aria-label="Luxera">
-            <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-[38px] w-auto" />
+            <img src="/logo-crystal.svg" alt="" aria-hidden="true" width={300} height={210} className="h-[38px] w-auto" />
             <div className="flex flex-col leading-none gap-[3px]">
               <span className="font-display italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">Luxera</span>
               <span className="font-mono text-[7.5px] tracking-[0.3em] text-muted uppercase">Fine Jewelry</span>
@@ -164,7 +164,7 @@ const Header: FC = () => {
       >
         <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule" dir="ltr">
           <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
-            <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-8 w-auto" />
+            <img src="/logo-crystal.svg" alt="" aria-hidden="true" width={300} height={210} className="h-8 w-auto" />
             <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
           </Link>
           <button className="flex items-center justify-center w-9 h-9 text-ink-2" onClick={closeMenu} aria-label="بستن منو">

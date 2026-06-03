@@ -97,8 +97,7 @@ export const useAuthStore = create<AuthState>()(
               avatarUrl: profile.avatar_url,
             },
           })
-          await get().fetchAddresses()
-          await get().fetchOrders()
+          await Promise.all([get().fetchAddresses(), get().fetchOrders()])
         } catch {
           // profile fetch errors are non-fatal
         }

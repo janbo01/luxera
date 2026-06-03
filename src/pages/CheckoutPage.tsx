@@ -15,7 +15,8 @@ import {
 } from '../data/checkout'
 import { getDeliverySlots, getCoupon, checkout, type ApiDeliverySlot, type ApiCoupon } from '../api/order'
 import { initiatePayment, getPaymentProviders } from '../api/payment'
-import { createAddress } from '../api/user'
+import { createAddress, getLoyaltyBalance } from '../api/user'
+import { getStoreSettings } from '../api/store'
 import type { Address, CheckoutStep, CouponState, PaymentGateway, AddressForm } from '../types'
 import Icon from '../components/icons/Icon'
 import OrderSummary from '../components/checkout/OrderSummary'
@@ -29,7 +30,9 @@ const CheckoutPage: FC = () => {
   usePageMeta({ title: 'پرداخت و تکمیل سفارش' })
   const items     = useCartStore((s) => s.items)
   const clearCart = useCartStore((s) => s.clearCart)
-  const { addresses, fetchAddresses, isLoggedIn } = useAuthStore()
+  const addresses = useAuthStore((s) => s.addresses)
+  const fetchAddresses = useAuthStore((s) => s.fetchAddresses)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
 
   const [step, setStep]     = useState<CheckoutStep>(0)
   const [paying, setPaying] = useState(false)
@@ -41,6 +44,10 @@ const CheckoutPage: FC = () => {
 
   const [deliveryOptions, setDeliveryOptions] = useState<ApiDeliverySlot[]>([])
   const [paymentOptions, setPaymentOptions]   = useState<PaymentOption[]>([])
+
+  const [loyaltyBalance, setLoyaltyBalance]       = useState(0)
+  const [loyaltyPointValue, setLoyaltyPointValue] = useState(0)
+  const [loyaltyPointsToUse, setLoyaltyPointsToUse] = useState(0)
 
   useEffect(() => {
     Promise.all([getDeliverySlots(), getPaymentProviders()])
@@ -55,6 +62,12 @@ const CheckoutPage: FC = () => {
   useEffect(() => {
     if (isLoggedIn) fetchAddresses().catch(() => {})
   }, [isLoggedIn, fetchAddresses])
+
+  useEffect(() => {
+    if (!isLoggedIn) return
+    getLoyaltyBalance().then(setLoyaltyBalance).catch(() => {})
+    getStoreSettings().then((s) => setLoyaltyPointValue(s.loyalty_point_value ?? 0)).catch(() => {})
+  }, [isLoggedIn])
 
   useEffect(() => {
     if (addresses.length === 0 || selectedAdr !== null) return
@@ -84,7 +97,8 @@ const CheckoutPage: FC = () => {
 
   const subtotal     = items.reduce((s, it) => s + it.price * it.qty, 0)
   const shippingCost = selectedShipping?.price ?? 0
-  const total        = subtotal + shippingCost + (giftWrap ? GIFT_WRAP_PRICE : 0) - couponDiscount
+  const loyaltyDiscount = loyaltyPointsToUse * loyaltyPointValue
+  const total        = subtotal + shippingCost + (giftWrap ? GIFT_WRAP_PRICE : 0) - couponDiscount - loyaltyDiscount
 
   const addrValid = addr.name.trim() !== '' && addr.phone.trim() !== '' &&
                     addr.province !== '' && addr.city.trim() !== '' &&
@@ -194,6 +208,7 @@ const CheckoutPage: FC = () => {
         coupon_code: appliedCode || undefined,
         notes: orderNotes || undefined,
         items: items.map((item) => ({ product_id: item.id, quantity: item.qty })),
+        loyalty_points_to_use: loyaltyPointsToUse > 0 ? loyaltyPointsToUse : undefined,
       })
 
       const payment = await initiatePayment({ order_id: order.id, provider: gateway })
@@ -352,6 +367,11 @@ const CheckoutPage: FC = () => {
             addrCity={addr.city}
             addrProvince={addr.province}
             addrStreet={addr.street}
+            loyaltyBalance={loyaltyBalance}
+            loyaltyPointValue={loyaltyPointValue}
+            loyaltyPointsToUse={loyaltyPointsToUse}
+            loyaltyDiscount={loyaltyDiscount}
+            onLoyaltyPointsChange={setLoyaltyPointsToUse}
             onCouponChange={handleCouponChange}
             onApplyCoupon={handleApplyCoupon}
             onRemoveCoupon={handleRemoveCoupon}

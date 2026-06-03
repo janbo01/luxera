@@ -18,6 +18,8 @@ export interface ApiStoreSettings {
   theme_accent: string
   theme_light: string
   theme_text: string
+  loyalty_point_value: number
+  loyalty_earn_percent: string
   updated_at: string
 }
 
