@@ -68,7 +68,7 @@ async function fetchThemeStyleTag(): Promise<string> {
     const accent = raw.theme_accent || '#3D2B20'
     const light  = raw.theme_light  || '#F5EDE0'
     const text   = raw.theme_text   || '#1A1008'
-    _themeStyleTag = `<style>${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
+    _themeStyleTag = `<style id="lx-theme">${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
     _themeExpiry   = Date.now() + 5 * 60 * 1000
   } catch {
     return ''

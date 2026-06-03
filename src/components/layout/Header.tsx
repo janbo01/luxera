@@ -74,7 +74,7 @@ const Header: FC = () => {
     <>
       {AnnouncementBar}
 
-      <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule">
+      <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden">
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
         <div className="relative flex items-center justify-between px-[var(--pad)] h-[78px] gap-3" dir="ltr">
 
@@ -88,7 +88,7 @@ const Header: FC = () => {
           </Link>
 
           {/* Desktop nav — centered, RTL for Persian text */}
-          <nav className="absolute left-1/2 -translate-x-1/2 flex max-[1100px]:hidden gap-[24px] items-center text-sm font-normal" dir="rtl">
+          <nav className="flex-1 flex justify-center max-[1100px]:hidden gap-[24px] items-center text-sm font-normal min-w-0" dir="rtl">
             {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} />)}
           </nav>
 
@@ -143,43 +143,44 @@ const Header: FC = () => {
           </div>
         </div>
 
-        {/* Mobile overlay */}
-        <div
-          className={`fixed inset-0 bg-plum/45 z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
-          onClick={closeMenu}
-          aria-hidden="true"
-        />
-
-        {/* Mobile drawer */}
-        <div
-          ref={drawerRef}
-          id="mobile-drawer"
-          className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
-          role="dialog"
-          aria-label="منوی ناوبری"
-          aria-hidden={!menuOpen}
-          aria-modal={menuOpen || undefined}
-        >
-          <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule">
-            <Link to="/" className="flex items-center gap-2" onClick={closeMenu} dir="ltr">
-              <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-8 w-auto" />
-              <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
-            </Link>
-            <button className="flex items-center justify-center w-9 h-9 text-ink-2" onClick={closeMenu} aria-label="بستن منو">
-              <Icon name="close" size={18} />
-            </button>
-          </div>
-
-          <nav className="flex-1 flex flex-col overflow-y-auto">
-            {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} mobile />)}
-          </nav>
-
-          <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
-            <button className="flex items-center gap-1.5" aria-label="تغییر زبان"><Icon name="globe" size={14} /><span>FA</span></button>
-            <button aria-label="پشتیبانی"><span>پشتیبانی</span></button>
-          </div>
-        </div>
       </header>
+
+      {/* Mobile overlay — outside header so backdrop-filter doesn't create a containing block */}
+      <div
+        className={`fixed inset-0 bg-plum/45 z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
+        onClick={closeMenu}
+        aria-hidden="true"
+      />
+
+      {/* Mobile drawer — outside header so it's positioned relative to viewport, not the backdrop-filter header */}
+      <div
+        ref={drawerRef}
+        id="mobile-drawer"
+        className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        role="dialog"
+        aria-label="منوی ناوبری"
+        aria-hidden={!menuOpen}
+        aria-modal={menuOpen || undefined}
+      >
+        <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule" dir="ltr">
+          <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
+            <img src="/logo-crystal.svg" alt="" aria-hidden="true" className="h-8 w-auto" />
+            <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
+          </Link>
+          <button className="flex items-center justify-center w-9 h-9 text-ink-2" onClick={closeMenu} aria-label="بستن منو">
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+
+        <nav className="flex-1 flex flex-col overflow-y-auto">
+          {NAV_LINKS.map((link) => <NavLinkItem key={link.to} {...link} onClick={closeMenu} mobile />)}
+        </nav>
+
+        <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
+          <button className="flex items-center gap-1.5" aria-label="تغییر زبان"><Icon name="globe" size={14} /><span>FA</span></button>
+          <button aria-label="پشتیبانی"><span>پشتیبانی</span></button>
+        </div>
+      </div>
     </>
   )
 }

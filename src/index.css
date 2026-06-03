@@ -268,38 +268,33 @@
     --pad: clamp(20px, 4vw, 56px);
   }
 
-  /* ── Themes ──────────────────────────────────────────────────
-     :root values = watermelon-ice defaults → no flash before JS
-     sets data-theme on <html>. [data-theme] overrides take over
-     once the store rehydrates. Add future themes below.         */
-  :root,
-  [data-theme="watermelon-ice"] {
-    --lx-bg: #F6FFFE;
-    --lx-bg-2: #E8FFFE;
-    --lx-surface: #FAFFFF;
-    --lx-surface-2: #EBF9F8;
-    --lx-plate: #E0F9F6;
-    --lx-ink: #0A1A18;
-    --lx-ink-2: #1A3530;
-    --lx-muted: #4A7A70;
-    --lx-rule: rgba(10, 26, 24, .10);
-    --lx-plum: #002A22;
-    --lx-plum-2: #001A16;
-    --lx-plum-dark: #004A3A;
-    --lx-copper: #D42A50;
-    --lx-copper-2: #B31E43;
-    --lx-copper-dark: #8F1536;
-    --lx-gold: #00C9A7;
-    --lx-dust-rose: #FFB3C6;
-    --lx-dust-rose-light: #FFD6E5;
-    --lx-petal: #FFE0E8;
-    --lx-overlay: rgba(0, 42, 34, 0.5);
-    --lx-sale: #C42050;
+  /* ── Theme fallback ──────────────────────────────────────────
+     Saffron Bazaar defaults — overridden at runtime by the
+     <style id="lx-theme"> tag injected from the store API.      */
+  :root {
+    --lx-bg: #FFFBF0;
+    --lx-bg-2: #f0ece2;
+    --lx-surface: #fffdf6;
+    --lx-surface-2: #ebe7dd;
+    --lx-plate: #e0ddd3;
+    --lx-ink: #1A1000;
+    --lx-ink-2: #3c3426;
+    --lx-muted: #817c73;
+    --lx-rule: rgba(26,16,0,0.10);
+    --lx-plum: #C0296A;
+    --lx-plum-2: #a9245d;
+    --lx-plum-dark: #901f50;
+    --lx-copper: #B86800;
+    --lx-copper-2: #a25c00;
+    --lx-copper-dark: #8a4e00;
+    --lx-gold: #FFD559;
+    --lx-dust-rose: #e3c399;
+    --lx-dust-rose-light: #edd9bf;
+    --lx-petal: #f4e8d9;
+    --lx-overlay: rgba(192,41,106,0.50);
+    --lx-sale: #a96000;
     --lx-ok: #00B896;
   }
-
-  /* [data-theme="midnight-botanical"] { ... } */
-  /* [data-theme="saffron-bazaar"]     { ... } */
 }
 
 /* ── Global Base ────────────────────────────────────────────── */
@@ -354,10 +349,12 @@
     color: var(--color-bg);
   }
 
-  @media (max-width: 720px) {
-    html {
-      overflow-x: hidden;
-    }
+  html {
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: hidden;
   }
 }
 

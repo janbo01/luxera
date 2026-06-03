@@ -2,6 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { useUIStore } from './store/uiStore'
 import { useAuthStore } from './store/authStore'
+import { useStoreTheme } from './hooks/useStoreTheme'
 
 import ScrollToTop from './components/layout/ScrollToTop'
 import Header from './components/layout/Header'
@@ -43,14 +44,11 @@ import {
 } from './app/router'
 
 export default function App() {
-  const theme = useUIStore((s) => s.theme)
   const palette = useUIStore((s) => s.palette)
   const density = useUIStore((s) => s.density)
   const heroVariant = useUIStore((s) => s.heroVariant)
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
+  useStoreTheme()
 
   useEffect(() => {
     const b = document.body

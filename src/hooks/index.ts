@@ -1,4 +1,5 @@
 export { useBodyLock } from './useBodyLock'
+export { useStoreTheme } from './useStoreTheme'
 export { useClickOutside } from './useClickOutside'
 export { useToggle } from './useToggle'
 export { useMediaQuery, BREAKPOINTS } from './useMediaQuery'

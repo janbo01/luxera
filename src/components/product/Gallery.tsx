@@ -26,7 +26,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const hasApiImages = galleryImages && galleryImages.length > 0
 
   return (
-    <div className="sticky top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,var(--color-plum)_0%,var(--color-plum-2)_100%)] text-bg isolate grid [grid-template-columns:100px_1fr] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-plum)_18%,transparent),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-lg:static max-lg:flex max-lg:flex-col">
+    <div className="sticky top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,var(--color-plum)_0%,var(--color-plum-2)_100%)] text-bg isolate grid [grid-template-columns:100px_1fr] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-plum)_18%,transparent),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-lg:relative max-lg:flex max-lg:flex-col">
       {/* thumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
       <div className="flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-bg/[12%]">
         {hasApiImages
@@ -82,7 +82,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
             ))}
 
         {/* Bottom caption + nav */}
-        <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between px-5 py-4 bg-[linear-gradient(to_top,color-mix(in_srgb,var(--color-plum-2)_72%,transparent)_0%,transparent_100%)] font-mono text-[10px] tracking-[0.16em] uppercase text-bg/60">
+        <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between px-5 py-4 bg-[linear-gradient(to_top,rgba(0,0,0,0.75)_0%,rgba(0,0,0,0.2)_60%,transparent_100%)] font-mono text-[10px] tracking-[0.16em] uppercase text-bg/60">
           <span>
             {formatPaddedIndex(activeIdx + 1)} / {formatPaddedIndex(count)} — {productName}
           </span>
