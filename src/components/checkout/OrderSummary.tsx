@@ -41,7 +41,7 @@ const inputCls = 'flex-1 bg-bg border border-rule rounded-[10px] px-3.5 py-[11px
 
 const PERKS = [
   'ارسالِ بیمه‌شده · بیمه‌ی البرز',
-  '۱۴ روز بازگشتِ بدونِ پرسش',
+  '۴ روز بازگشتِ بدونِ پرسش',
   'گواهیِ اصالتِ همراهِ کالا',
 ]
 

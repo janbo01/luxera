@@ -6,7 +6,7 @@ import type { Category } from '../../types'
 import Icon from '../icons/Icon'
 
 const CAT_DESC: Record<string, string> = {
-  necklaces: 'از زنجیرهای ظریف روزمره تا گردنبندهای دست‌ساز — با روکش‌های باکیفیت و طراحی اختصاصی برای هر سبک.',
+  necklaces: 'از زنجیرهای ظریف روزمره تا گردنبندهای ظریف و شیک — با روکش‌های باکیفیت و طرح‌های روز برای هر سبک.',
   bracelets: 'دستبندهای ظریف و زیبا برای هر مناسبت، با متریال بی‌آلرژی و روکش ماندگار.',
   rings:     'انگشترهای طراحی‌شده با ذوق، از مینیمال تا جواهری — برای هر انگشت و هر سبک.',
   earrings:  'گوشواره‌های سبک و شیک از آویزان تا دکمه‌ای — متناسب با هر چهره و هر لباس.',
@@ -116,7 +116,7 @@ const CategoryHero: FC<CategoryHeroProps> = ({
               { v: toFa(productCount), l: 'محصول' },
               { v: toFa(Math.min(productCount, 12)), l: 'طرح جدید' },
               { v: 'بی‌آلرژی', l: 'متریال' },
-              { v: 'دست‌ساز', l: 'تهران' },
+              { v: 'تضمین', l: 'کیفیت' },
             ].map(({ v, l }, i) => (
               <Fragment key={i}>
                 {i > 0 && <div className="w-px h-7 bg-[rgba(245,237,224,.18)] flex-shrink-0 max-sm:hidden" aria-hidden="true" />}

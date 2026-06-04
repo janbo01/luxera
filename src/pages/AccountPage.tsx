@@ -220,7 +220,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
           <div className="p-2.5">
             {[
               { icon: <IcoEmail />, title: 'پیگیریِ سفارش', desc: 'با کدِ رهگیری', tab: 'orders' as Tab },
-              { icon: <IcoReorder />, title: 'درخواستِ بازگشت', desc: '۱۴ روز فرصت دارید', tab: 'orders' as Tab },
+              { icon: <IcoReorder />, title: 'درخواستِ بازگشت', desc: '۴ روز فرصت دارید', tab: 'orders' as Tab },
               { icon: <IcoInfo />, title: 'تماس با پشتیبانی', desc: 'پاسخگویی روزانه ۹–۲۱', tab: null },
               { icon: <IcoInvoice />, title: 'گارانتی و اصالت', desc: 'گواهی‌های دیجیتالِ شما', tab: null },
             ].map((item, i) => (

@@ -89,7 +89,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
         { icon: <Icon name="shield" size={18} strokeWidth={1.8} />, title: 'پرداختِ امن', sub: 'رمزنگاری ۲۵۶ بیتی SSL' },
         { icon: <Icon name="truck" size={18} strokeWidth={1.8} />, title: 'ارسالِ تضمینی', sub: 'بیمه‌ی کاملِ مرسوله' },
         { icon: <CircleCheck size={18} strokeWidth={1.7} />, title: 'اصالتِ کالا', sub: 'گارانتی کیفیت همراهِ سفارش' },
-        { icon: <Icon name="refresh" size={18} strokeWidth={1.8} />, title: '۱۴ روز بازگشت', sub: 'بدونِ پرسش، بدونِ هزینه' },
+        { icon: <Icon name="refresh" size={18} strokeWidth={1.8} />, title: '۴ روز بازگشت', sub: 'بدونِ پرسش، بدونِ هزینه' },
       ].map(({ icon, title, sub }) => (
         <div key={title} className="flex items-start gap-2.5 text-[12px] text-ink-2 leading-[1.5]">
           <span className="w-8 h-8 rounded-full bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">

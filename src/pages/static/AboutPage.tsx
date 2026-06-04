@@ -29,7 +29,7 @@ const STATS = [
 ]
 
 const AboutPage: FC = () => {
-  usePageMeta({ title: 'درباره‌ی ما', description: 'داستان لوکسرا — جواهرات فانتزی دست‌ساز ایرانی' })
+  usePageMeta({ title: 'درباره‌ی ما', description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران' })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

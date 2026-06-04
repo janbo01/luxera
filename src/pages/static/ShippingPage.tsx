@@ -28,7 +28,7 @@ const ShippingPage: FC = () => {
         <em className="font-heading not-italic text-plum font-normal"> بازگشت</em>
       </h1>
       <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-        ارسال رایگان به سراسر ایران. بازگشت بدون دردسر تا ۱۴ روز.
+        ارسال رایگان بالای ۲.۵ میلیون تومان. بازگشت تا ۴ روز پس از دریافت.
       </p>
     </div>
 
@@ -59,7 +59,7 @@ const ShippingPage: FC = () => {
           </table>
         </div>
         <div className="bg-plate px-5 py-4 text-sm text-ink-2 mt-5">
-          <strong className="text-ink">هزینه‌ی ارسال:</strong> رایگان برای تمام سفارش‌ها، بدون حداقل مبلغ.
+          <strong className="text-ink">هزینه‌ی ارسال:</strong> رایگان برای سفارش‌های بالای ۲٫۵ میلیون تومان. سایر سفارش‌ها مشمول هزینه‌ی ارسال جداگانه هستند.
         </div>
       </section>
 
@@ -72,7 +72,7 @@ const ShippingPage: FC = () => {
       {/* Returns */}
       <section className="mb-14">
         <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">سیاست بازگشت</h2>
-        <p className="text-ink-2 text-sm m-0 mb-6">تا ۱۴ روز پس از دریافت سفارش، امکان بازگشت وجود دارد.</p>
+        <p className="text-ink-2 text-sm m-0 mb-6">تا ۴ روز پس از دریافت سفارش امکان بازگشت وجود دارد. پس از این مهلت مرجوعی پذیرفته نمی‌شود.</p>
         <div className="flex flex-col mt-6">
           {RETURN_STEPS.map((s) => (
             <div key={s.n} className="grid grid-cols-[48px_1fr] gap-5 py-6 border-b border-rule">
@@ -93,7 +93,7 @@ const ShippingPage: FC = () => {
           <div>
             <h4 className="font-body text-sm font-medium m-0 mb-3 text-ink">✓ مشمول بازگشت</h4>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5 text-sm text-ink-2">
-              {['قطعه سالم و بدون آسیب فیزیکی','پلاک اصلی دست‌نخورده','در بسته‌بندی اصلی','تا ۱۴ روز از تاریخ دریافت'].map((t) => (
+              {['قطعه سالم و بدون آسیب فیزیکی','پلاک اصلی دست‌نخورده','در بسته‌بندی اصلی','تا ۴ روز از تاریخ دریافت'].map((t) => (
                 <li key={t} className="before:content-['✓'] before:text-plum before:ml-2">{t}</li>
               ))}
             </ul>

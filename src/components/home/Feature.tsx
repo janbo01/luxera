@@ -5,9 +5,9 @@ import Icon from '../icons/Icon'
 
 const PILLARS = [
   { icon: 'shield',  title: 'گواهیِ اصالت',    desc: 'برای هر قطعه‌ی جواهر فانتزی' },
-  { icon: 'check',   title: '۱۴ روز بازگشت',   desc: 'بدون پرسش، بدون هزینه' },
-  { icon: 'bag',     title: 'دست‌ساز',          desc: 'در کارگاه طراحی لوکسرا' },
-  { icon: 'clock',   title: 'ارسال یک‌روزه',   desc: 'در تهران، رایگان' },
+  { icon: 'check',   title: '۴ روز بازگشت',    desc: 'بدون پرسش، بدون هزینه' },
+  { icon: 'bag',     title: 'کیفیت تضمینی',    desc: 'از برندهای معتبر' },
+  { icon: 'clock',   title: 'ارسال سریع',       desc: 'رایگان بالای ۲.۵ میلیون' },
 ]
 
 const Feature: FC = () => (
@@ -16,7 +16,7 @@ const Feature: FC = () => (
 
       <div className="py-14 px-12 flex flex-col gap-6 max-md:py-9 max-md:px-6">
         <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
-          Our Atelier
+          Our Promise
         </span>
         <h3 className="font-heading font-bold text-[clamp(30px,2.8vw,40px)] leading-[1.2] m-0 [&_em]:font-body [&_em]:italic [&_em]:font-normal [&_em]:text-copper-dark">
           جواهراتِ فانتزی، <em>قیمتِ واقعی.</em>

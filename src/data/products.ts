@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
     badgeKind: 'new',
     illus: 'EarringB',
     illusAlt: 'EarringC',
-    meta: ['رنگ طلایی + مینا', 'دست‌ساز'],
+    meta: ['رنگ طلایی + مینا', 'بی‌آلرژی'],
   },
   {
     id: 'p5',
@@ -149,7 +149,7 @@ export const PRODUCTS: Product[] = [
     badge: null,
     illus: 'EarringA',
     illusAlt: 'EarringC',
-    meta: ['کریستال آبشاری', 'دست‌ساز'],
+    meta: ['کریستال آبشاری', 'بی‌آلرژی'],
   },
   {
     id: 'p12',

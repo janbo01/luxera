@@ -20,10 +20,10 @@ function AnnouncementBar() {
       <div className="flex items-center gap-[18px] flex-wrap">
         <span className="inline-flex items-center gap-2">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13"><path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6"/></svg>
-          ارسال رایگان سفارش‌های بالای ۲ میلیون تومان
+          ارسال رایگان سفارش‌های بالای ۲.۵ میلیون تومان
         </span>
         <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
-        <span>۱۴ روز ضمانت بازگشت</span>
+        <span>۴ روز ضمانت بازگشت</span>
         <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
         <span>گارانتی کیفیت محصول</span>
       </div>

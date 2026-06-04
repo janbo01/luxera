@@ -6,7 +6,7 @@ export const STORAGE_KEYS = {
   search: 'luxera-search',
 } as const
 
-export const FREE_SHIPPING_THRESHOLD = 2_000_000
+export const FREE_SHIPPING_THRESHOLD = 2_500_000
 export const SEARCH_MAX_PRODUCTS = 5
 export const SEARCH_MAX_CATEGORIES = 3
 export const SEARCH_MIN_QUERY_LENGTH = 2

@@ -88,12 +88,12 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
                 <Icon name="shield" size={13} strokeWidth={2} />
               </span>
-              ساختِ ایران
+              کیفیت و اصالت
             </h3>
             <ul className="flex flex-col gap-3 list-none p-0 m-0">
               <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5"><Icon name="check" size={11} strokeWidth={2.4} /></span>
-                طراحی و ساخت در کارگاهِ Luxera، تهران
+                انتخاب و تأیید کیفیت توسط تیم لوکسرا
               </li>
               <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5"><Icon name="check" size={11} strokeWidth={2.4} /></span>
@@ -101,7 +101,7 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               </li>
               <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5"><Icon name="check" size={11} strokeWidth={2.4} /></span>
-                پولیشِ نهایی و کنترلِ کیفیتِ ۳ مرحله‌ای
+                کنترلِ کیفیتِ ۳ مرحله‌ای پیش از ارسال
               </li>
             </ul>
           </div>
@@ -147,8 +147,8 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               ارسال و بازگشت
               <span className="font-display italic font-normal text-copper-dark text-[16px]">— Shipping &amp; returns</span>
             </h2>
-            <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">سفارش‌های تهران در ۴ تا ۶ ساعت با اسنپ‌باکس به‌دستِ شما می‌رسد. شهرستان‌ها از طریقِ تیپاکس یا پستِ پیشتاز در ۲۴ تا ۷۲ ساعت ارسال می‌شود. سفارش‌های بالای ۲ میلیون تومان شاملِ ارسالِ رایگان هستند.</p>
-            <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">شما تا ۱۴ روز پس از دریافتِ قطعه می‌توانید آن را با بسته‌بندیِ اصلی به ما بازگردانید. هزینه‌ی بازگشت در شهرِ تهران رایگان است.</p>
+            <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">سفارش‌های تهران در ۴ تا ۶ ساعت با اسنپ‌باکس به‌دستِ شما می‌رسد. شهرستان‌ها از طریقِ تیپاکس یا پستِ پیشتاز در ۲ تا ۵ روز کاری ارسال می‌شود. سفارش‌های بالای ۲٫۵ میلیون تومان شاملِ ارسالِ رایگان هستند.</p>
+            <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">شما تا ۴ روز پس از دریافتِ قطعه می‌توانید آن را با بسته‌بندیِ اصلی به ما بازگردانید. پس از این مهلت امکان پذیرش مرجوعی وجود ندارد.</p>
           </div>
           <div>
             <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
