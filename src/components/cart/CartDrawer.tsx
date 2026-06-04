@@ -96,14 +96,14 @@ const CartDrawer: FC = () => {
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className={`fixed inset-0 bg-[rgba(17,17,17,0.4)] backdrop-blur-[2px] z-[90] transition-opacity duration-[350ms] ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-[rgba(17,17,17,0.4)] backdrop-blur-[2px] z-[120] transition-opacity duration-[350ms] ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={closeCart}
       />
 
       {/* Drawer */}
       <aside
         ref={drawerRef}
-        className={`fixed top-0 bottom-0 right-0 w-[min(440px,100vw)] bg-surface z-[100] flex flex-col shadow-[-6px_0_40px_rgba(0,0,0,0.08)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 bottom-0 right-0 w-[min(440px,100vw)] bg-surface z-[130] flex flex-col shadow-[-6px_0_40px_rgba(0,0,0,0.08)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         role="dialog"
         aria-label="سبد خرید"
         onTouchStart={onTouchStart}
