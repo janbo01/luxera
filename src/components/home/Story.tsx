@@ -46,7 +46,7 @@ const Story: FC = () => (
             className={[
               'story-card relative overflow-hidden py-12 px-10 max-md:py-9 max-md:px-[var(--pad)]',
               i < STORY_COLS.length - 1
-                ? 'border-s border-rule max-md:border-s-0 max-md:border-b'
+                ? 'border-e border-rule max-md:border-e-0 max-md:border-b'
                 : '',
             ].join(' ')}
           >

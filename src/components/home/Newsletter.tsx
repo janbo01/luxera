@@ -1,8 +1,11 @@
-import type { FC, FormEvent } from 'react'
+import { memo, type FC, type FormEvent } from 'react'
 import Icon from '../icons/Icon'
 
+const PERKS = ['۱۰٪ تخفیفِ خرید نخست', 'دسترسی زودهنگام', 'بدون اسپم']
+
+function handleSubmit(e: FormEvent) { e.preventDefault() }
+
 const Newsletter: FC = () => {
-  const handleSubmit = (e: FormEvent) => e.preventDefault()
 
   return (
     <section className="mt-20 px-[var(--pad)]">
@@ -24,8 +27,12 @@ const Newsletter: FC = () => {
         <form className="flex flex-col gap-3.5" onSubmit={handleSubmit}>
           <div className="flex items-center py-1.5 pe-[22px] ps-1.5 bg-[rgba(245,237,224,0.08)] border border-[rgba(245,237,224,0.18)] rounded-full backdrop-blur-[8px]">
             <input
+              id="newsletter-email"
+              name="email"
               type="email"
+              autoComplete="email"
               placeholder="ایمیل شما…"
+              aria-label="آدرس ایمیل"
               className="flex-1 bg-transparent border-none outline-none text-bg font-[inherit] text-sm py-2.5 text-right placeholder:text-[rgba(245,237,224,0.4)]"
             />
             <button
@@ -36,7 +43,7 @@ const Newsletter: FC = () => {
             </button>
           </div>
           <div className="flex gap-[18px] flex-wrap text-xs text-[rgba(245,237,224,0.65)]">
-            {['۱۰٪ تخفیفِ خرید نخست', 'دسترسی زودهنگام', 'بدون اسپم'].map((perk) => (
+            {PERKS.map((perk) => (
               <span key={perk} className="inline-flex items-center gap-1.5 [&>svg]:w-[13px] [&>svg]:h-[13px] [&>svg]:text-copper">
                 <Icon name="check" size={12} strokeWidth={2} /> {perk}
               </span>
@@ -48,4 +55,4 @@ const Newsletter: FC = () => {
   )
 }
 
-export default Newsletter
+export default memo(Newsletter)

@@ -186,6 +186,7 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
 
   return {
     id: api.id,
+    slug: api.slug ?? undefined,
     fa: api.title_fa ?? api.title,
     en: api.title_en ?? api.title,
     cat: categoryName ?? '',

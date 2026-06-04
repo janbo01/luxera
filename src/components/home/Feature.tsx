@@ -1,4 +1,5 @@
-import type { FC } from 'react'
+import { memo, type FC } from 'react'
+import { Link } from 'react-router-dom'
 import whyLuxera from '../../assets/images/why-luxera.webp'
 import { BTN_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
@@ -40,10 +41,10 @@ const Feature: FC = () => (
           ))}
         </div>
         <div className="flex gap-2.5 mt-2">
-          <a href="/about" className={BTN_CLS}>
+          <Link to="/about" className={BTN_CLS}>
             داستانِ ما را بخوانید
-            <span className="inline-block w-4 h-4 transition-transform duration-200 group-hover:-translate-x-[3px]"><Icon name="arrow-left" size={16} /></span>
-          </a>
+            <span className="arr"><Icon name="arrow-left" size={16} /></span>
+          </Link>
         </div>
       </div>
 
@@ -52,6 +53,7 @@ const Feature: FC = () => (
           src={whyLuxera}
           alt="Fashion jewelry flat lay"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
           width="1200"
           height="800"
         />
@@ -60,4 +62,4 @@ const Feature: FC = () => (
   </section>
 )
 
-export default Feature
+export default memo(Feature)

@@ -52,22 +52,22 @@ const Hero: FC = () => {
           <div>
             <div className="font-heading text-lg font-semibold text-bg">{slide.name}</div>
           </div>
-          {slide.price && (
+          {slide.price ? (
             <div className="flex flex-col items-end gap-0.5">
-              {slide.oldPrice && (
+              {slide.oldPrice ? (
                 <span className="text-[11px] line-through text-[rgba(245,237,224,0.45)] font-mono">{fmtPrice(slide.oldPrice)}</span>
-              )}
+              ) : null}
               <span className="font-heading text-xl font-bold text-[var(--color-dust-rose-light)]">
                 {fmtPrice(slide.price)}
                 <small className="font-body text-[11px] font-normal text-[rgba(245,237,224,0.6)] me-1"> تومان</small>
               </span>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
       {/* ── Cream copy panel (right) ── */}
-      <div className="rounded-[var(--radius)] bg-surface px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
+      <div className="rounded-[var(--radius)] bg-surface border border-rule px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
         <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">
           <span className="w-5 h-px bg-copper-dark opacity-70" />
           <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark">
@@ -93,9 +93,9 @@ const Hero: FC = () => {
             مشاهده‌ی محصولات
             <span className="arr"><Icon name="arrow-left" size={16} /></span>
           </Link>
-          <a href="#about" className={BTN_GHOST_CLS}>
+          <Link to="/about" className={BTN_GHOST_CLS}>
             بیشتر بدانید
-          </a>
+          </Link>
         </div>
 
         <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">

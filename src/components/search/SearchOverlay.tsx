@@ -146,7 +146,7 @@ const SearchOverlay: FC = () => {
                       className={`flex items-center gap-3.5 w-full px-6 py-2 h-[58px] text-end border-b border-rule transition-colors duration-150 ${rowHover} last:border-b-0`}
                       role="option"
                       aria-selected="false"
-                      onClick={() => { commit(query); close(); navigate(`/product/${p.id}`) }}
+                      onClick={() => { commit(query); close(); navigate(`/product/${p.slug ?? p.id}`) }}
                     >
                       <div className="w-10 h-10 bg-bg-2 rounded-[4px] flex items-center justify-center flex-shrink-0 overflow-hidden text-ink [&>svg]:w-[80%] [&>svg]:h-auto">
                         <Illustration name={p.illus} />

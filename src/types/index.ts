@@ -1,5 +1,6 @@
 export interface Product {
   id: string
+  slug?: string
   fa: string
   en: string
   cat: string

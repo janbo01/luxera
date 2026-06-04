@@ -36,10 +36,10 @@ const CategoriesSection: FC = () => {
         kicker="Browse by category"
         title={<>هر استایل،<br /><em>هر مناسبت</em></>}
         aside={
-          <a href="/categories" className={`${BTN_GHOST_CLS} self-end`}>
+          <Link to="/collections" className={`${BTN_GHOST_CLS} self-end`}>
             همه‌ی دسته‌بندی‌ها
             <span className="arr"><Icon name="arrow-left" size={16} /></span>
-          </a>
+          </Link>
         }
       />
 
@@ -56,7 +56,7 @@ const CategoriesSection: FC = () => {
               className={`group relative rounded-[16px] overflow-hidden aspect-[3/4] flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg}`}
             >
               {/* Category image */}
-              {imgSrc && (
+              {imgSrc ? (
                 <img
                   src={imgSrc}
                   alt={cat.fa}
@@ -65,7 +65,7 @@ const CategoriesSection: FC = () => {
                   width="400"
                   height="533"
                 />
-              )}
+              ) : null}
 
               {/* Bottom gradient overlay */}
               <div className="absolute inset-0 -z-[0] bg-[linear-gradient(to_top,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.1)_50%,transparent_100%)]" />

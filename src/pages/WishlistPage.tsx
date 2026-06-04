@@ -73,7 +73,7 @@ const WishlistPage: FC = () => {
           <div className="grid grid-cols-4 max-[1100px]:grid-cols-3 max-[760px]:grid-cols-2 gap-5 max-[760px]:gap-x-3 max-[760px]:gap-y-5">
             {items.map((product) => (
               <div key={product.id} className="group flex flex-col bg-surface border border-rule transition-[box-shadow,border-color] duration-300 hover:border-plum hover:[box-shadow:0_8px_32px_rgba(74,34,64,0.08)]">
-                <Link to={`/product/${product.id}`} className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline">
+                <Link to={`/product/${product.slug ?? product.id}`} className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline">
                   <Badge label={product.badge} kind={product.badgeKind} />
                   <button
                     className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-muted opacity-0 scale-[0.8] transition-[opacity,transform,color,background] duration-[250ms] z-[4] backdrop-blur-sm group-hover:opacity-100 group-hover:scale-100 hover:text-sale hover:bg-[#fff5f5]"
@@ -91,7 +91,7 @@ const WishlistPage: FC = () => {
 
                 <div className="flex flex-col flex-1 p-4 gap-3">
                   <div className="flex-1">
-                    <Link to={`/product/${product.id}`} className="no-underline text-inherit">
+                    <Link to={`/product/${product.slug ?? product.id}`} className="no-underline text-inherit">
                       <div className="text-sm font-normal text-ink mb-0.5">{product.fa}</div>
                       <span className="font-display italic text-[11px] text-muted block mb-2">{product.en}</span>
                     </Link>

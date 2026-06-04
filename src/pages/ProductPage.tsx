@@ -34,14 +34,18 @@ function adaptDetail(api: ApiProductDetail): ProductDetail {
   }
 }
 
+function matchesProduct(product: ApiProductDetail, idOrSlug: string): boolean {
+  return product.id === idOrSlug || product.slug === idOrSlug
+}
+
 function getInitialApiDetail(id: string | undefined, serverProduct: unknown): ApiProductDetail | null {
   if (!id) return null
   // SSR path: data provided via React context
-  if (serverProduct && typeof serverProduct === 'object' && (serverProduct as ApiProductDetail).id === id) {
+  if (serverProduct && typeof serverProduct === 'object' && matchesProduct(serverProduct as ApiProductDetail, id)) {
     return serverProduct as ApiProductDetail
   }
   // Client path: data injected as window variable by server
-  if (typeof window !== 'undefined' && window.__PRODUCT_INITIAL__?.id === id) {
+  if (typeof window !== 'undefined' && window.__PRODUCT_INITIAL__ && matchesProduct(window.__PRODUCT_INITIAL__, id)) {
     return window.__PRODUCT_INITIAL__
   }
   return null
@@ -65,12 +69,15 @@ const ProductPage: FC = () => {
   const [loading, setLoading] = useState(!initialApiDetail)
   const [error, setError] = useState('')
 
-  // Track which product id was seeded by the server so we skip the initial fetch
-  const seededIdRef = useRef<string | null>(initialApiDetail?.id ?? null)
+  // Track which id/slug was seeded by the server so we skip the initial fetch
+  const seededIdRef = useRef<string | null>(
+    initialApiDetail ? (initialApiDetail.slug ?? initialApiDetail.id) : null,
+  )
 
   const productJsonLd = useMemo(() => {
     if (!product || !apiDetail || !id) return undefined
-    const productUrl = `https://luxera.ir/product/${id}`
+    const urlSlug = apiDetail.slug ?? id
+    const productUrl = `https://luxera.ir/product/${urlSlug}`
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Product',
@@ -103,7 +110,7 @@ const ProductPage: FC = () => {
     title: apiDetail?.seo_title || product?.fa || 'محصول',
     description: apiDetail?.seo_description || product?.description || undefined,
     keywords: apiDetail?.seo_keywords || undefined,
-    canonical: id ? `/product/${id}` : undefined,
+    canonical: id ? `/product/${apiDetail?.slug ?? id}` : undefined,
     ogImage: apiDetail?.images?.[0]?.url,
     jsonLd: productJsonLd,
   })
