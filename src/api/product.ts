@@ -91,6 +91,7 @@ export interface ApiBatchItem {
   title: string
   price: string
   image_url: string
+  slug?: string
 }
 
 export interface ApiCategory {

@@ -34,7 +34,7 @@ const FALLBACK_SLIDES: Slide[] = [
 
 function bannerToSlide(b: ApiBanner, i: number): Slide {
   const product = b.product
-  const linkUrl = b.link_url || (product ? `/products/${product.id}` : undefined)
+  const linkUrl = b.link_url || (product ? `/product/${product.slug ?? product.id}` : undefined)
 
   return {
     key: b.id,

@@ -18,6 +18,7 @@ function isLoggedIn(): boolean {
 function batchItemToProduct(b: ApiBatchItem): Product {
   return {
     id: b.id,
+    slug: b.slug ?? undefined,
     fa: b.title,
     en: b.title,
     cat: '',
