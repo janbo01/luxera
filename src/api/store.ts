@@ -30,6 +30,7 @@ export interface ApiBannerProduct {
   price: string
   old_price: string
   image_url: string
+  slug?: string
 }
 
 export interface ApiBanner {
