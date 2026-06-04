@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 const SITE_URL = 'https://luxera.ir'
@@ -6,6 +6,7 @@ const SITE_URL = 'https://luxera.ir'
 interface PageMetaOptions {
   title: string
   description?: string
+  keywords?: string
   canonical?: string
   ogImage?: string
   jsonLd?: Record<string, unknown>
@@ -17,8 +18,8 @@ function setMetaContent(selector: string, value: string) {
   if (el) el.content = value
 }
 
-export function usePageMeta({ title, description, canonical, ogImage, jsonLd, noIndex }: PageMetaOptions) {
-  const jsonLdString = jsonLd ? JSON.stringify(jsonLd) : undefined
+export function usePageMeta({ title, description, keywords, canonical, ogImage, jsonLd, noIndex }: PageMetaOptions) {
+  const jsonLdString = useMemo(() => (jsonLd ? JSON.stringify(jsonLd) : undefined), [jsonLd])
 
   useEffect(() => {
     const fullTitle = title ? `${title} | ${BASE_TITLE}` : BASE_TITLE
@@ -39,6 +40,17 @@ export function usePageMeta({ title, description, canonical, ogImage, jsonLd, no
     // Description
     if (description) {
       setMetaContent('meta[name="description"]', description)
+    }
+
+    // Keywords
+    if (keywords) {
+      let kwEl = document.querySelector<HTMLMetaElement>('meta[name="keywords"]')
+      if (!kwEl) {
+        kwEl = document.createElement('meta')
+        kwEl.name = 'keywords'
+        document.head.appendChild(kwEl)
+      }
+      kwEl.content = keywords
     }
 
     // Open Graph
@@ -70,7 +82,8 @@ export function usePageMeta({ title, description, canonical, ogImage, jsonLd, no
       document.title = BASE_TITLE
       if (canonicalEl) canonicalEl.href = `${SITE_URL}/`
       if (robotsEl) robotsEl.content = 'index, follow'
+      document.querySelector('meta[name="keywords"]')?.remove()
       document.getElementById('jsonld-page')?.remove()
     }
-  }, [title, description, canonical, ogImage, jsonLdString, noIndex])
+  }, [title, description, keywords, canonical, ogImage, jsonLdString, noIndex])
 }

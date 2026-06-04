@@ -100,8 +100,9 @@ const ProductPage: FC = () => {
   }, [product, apiDetail, id])
 
   usePageMeta({
-    title: product?.fa ?? 'محصول',
-    description: product?.description || undefined,
+    title: apiDetail?.seo_title || product?.fa || 'محصول',
+    description: apiDetail?.seo_description || product?.description || undefined,
+    keywords: apiDetail?.seo_keywords || undefined,
     canonical: id ? `/product/${id}` : undefined,
     ogImage: apiDetail?.images?.[0]?.url,
     jsonLd: productJsonLd,

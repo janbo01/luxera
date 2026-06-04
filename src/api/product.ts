@@ -27,6 +27,10 @@ export interface ApiProduct {
   category_id: string
   subcategory_id?: string
   image_url?: string
+  seo_title?: string
+  seo_description?: string
+  seo_keywords?: string
+  slug?: string
   created_at: string
   updated_at: string
 }

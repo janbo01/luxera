@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 import { useUIStore } from './store/uiStore'
 import { useAuthStore } from './store/authStore'
 import { useStoreTheme } from './hooks/useStoreTheme'
-
 import ScrollToTop from './components/layout/ScrollToTop'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
@@ -13,6 +12,16 @@ import SearchOverlay from './components/search/SearchOverlay'
 import LoginModal from './components/account/LoginModal'
 import { ErrorBoundary } from './components/shared/ErrorBoundary'
 import PageLoader from './components/shared/PageLoader'
+
+function applyBodyAttrs(palette: string, density: string, heroVariant: string) {
+  const b = document.body
+  if (palette !== 'white') b.setAttribute('data-palette', palette)
+  else b.removeAttribute('data-palette')
+  if (density !== 'balanced') b.setAttribute('data-density', density)
+  else b.removeAttribute('data-density')
+  if (heroVariant !== 'default') b.setAttribute('data-hero', heroVariant)
+  else b.removeAttribute('data-hero')
+}
 
 // Isolated so only this subtree re-renders when the login modal opens/closes
 function LoginModalContainer() {
@@ -44,21 +53,18 @@ import {
 } from './app/router'
 
 export default function App() {
-  const palette = useUIStore((s) => s.palette)
-  const density = useUIStore((s) => s.density)
-  const heroVariant = useUIStore((s) => s.heroVariant)
-
   useStoreTheme()
 
+  // Don't subscribe reactively — palette/density/heroVariant are only needed as
+  // DOM attributes, not in the render tree. Subscribing via getState/subscribe
+  // prevents App (and its whole subtree) from re-rendering on theme changes.
   useEffect(() => {
-    const b = document.body
-    if (palette !== 'white') b.setAttribute('data-palette', palette)
-    else b.removeAttribute('data-palette')
-    if (density !== 'balanced') b.setAttribute('data-density', density)
-    else b.removeAttribute('data-density')
-    if (heroVariant !== 'default') b.setAttribute('data-hero', heroVariant)
-    else b.removeAttribute('data-hero')
-  }, [palette, density, heroVariant])
+    const { palette, density, heroVariant } = useUIStore.getState()
+    applyBodyAttrs(palette, density, heroVariant)
+    return useUIStore.subscribe(({ palette, density, heroVariant }) =>
+      applyBodyAttrs(palette, density, heroVariant),
+    )
+  }, [])
 
   // Access stores via getState() so this effect never re-runs and App never
   // re-renders when the session/login state changes — LoginModalContainer owns that.

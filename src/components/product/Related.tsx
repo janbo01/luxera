@@ -1,4 +1,4 @@
-import { useState, useEffect, type FC } from 'react'
+import { useState, useEffect, memo, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '../icons/Icon'
 import { useCartStore } from '../../store/cartStore'
@@ -60,4 +60,4 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
   )
 }
 
-export default Related
+export default memo(Related)

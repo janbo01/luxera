@@ -94,7 +94,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
 
         <div className="flex justify-between items-end">
           <div className="flex flex-col items-start [font-feature-settings:'tnum']">
-            {product.oldPrice && (
+            {product.oldPrice != null && (
               <span className="text-muted line-through text-[11px] font-mono leading-none mb-1">{formatNumber(product.oldPrice)}</span>
             )}
             <span className="font-heading text-[17px] font-bold text-ink leading-none">
