@@ -27,6 +27,9 @@ export function useGallery({ count }: UseGalleryOptions) {
     lastTapTime: 0,
     lastTapX: 0,
     lastTapY: 0,
+    // Cached once at touchstart to avoid layout reads on every touchmove
+    containerW: 0,
+    containerH: 0,
   })
 
   const applyZoom = (next: ZoomState) => {
@@ -35,10 +38,10 @@ export function useGallery({ count }: UseGalleryOptions) {
   }
 
   const clampPos = (x: number, y: number, s: number) => {
-    const el = mainRef.current
-    if (!el || s <= 1) return { x: 0, y: 0 }
-    const hw = (el.clientWidth  * (s - 1)) / 2
-    const hh = (el.clientHeight * (s - 1)) / 2
+    if (s <= 1) return { x: 0, y: 0 }
+    // Use dimensions cached at gesture start — no layout read on every touchmove
+    const hw = (gesture.current.containerW * (s - 1)) / 2
+    const hh = (gesture.current.containerH * (s - 1)) / 2
     return {
       x: Math.max(-hw, Math.min(hw, x)),
       y: Math.max(-hh, Math.min(hh, y)),
@@ -53,6 +56,9 @@ export function useGallery({ count }: UseGalleryOptions) {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const g = gesture.current
+    // Cache container size once per gesture — avoids layout reads during touchmove
+    const el = mainRef.current
+    if (el) { g.containerW = el.clientWidth; g.containerH = el.clientHeight }
     if (e.touches.length === 2) {
       g.startScale  = zoomRef.current.scale
       g.startSpread = getSpread(e.touches)

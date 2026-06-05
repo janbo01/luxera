@@ -93,8 +93,9 @@ const Hero: FC = () => {
             مشاهده‌ی محصولات
             <span className="arr"><Icon name="arrow-left" size={16} /></span>
           </Link>
-          <Link to="/about" className={BTN_GHOST_CLS} aria-label="بیشتر بدانید درباره‌ی لوکسرا">
+          <Link to="/about" className={BTN_GHOST_CLS}>
             بیشتر بدانید
+            <span className="sr-only"> درباره‌ی لوکسرا</span>
           </Link>
         </div>
 
