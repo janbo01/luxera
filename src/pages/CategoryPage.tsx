@@ -363,7 +363,7 @@ const CategoryPage: FC = () => {
                   <Icon name="search" size={30} strokeWidth={1.4} />
                 </span>
                 <div>
-                  <h4 className="font-heading text-[18px] font-semibold m-0 mb-1">محصولی با این فیلترها یافت نشد</h4>
+                  <h2 className="font-heading text-[18px] font-semibold m-0 mb-1">محصولی با این فیلترها یافت نشد</h2>
                   <p className="m-0 text-muted text-[13px]">فیلترها را آزادتر کنید یا همه را پاک کنید.</p>
                 </div>
                 <button className={BTN_CLS} onClick={resetFilters} style={{ padding: '11px 18px' }}>
