@@ -51,7 +51,7 @@ export function deriveThemeCSS(
     ['--lx-plate',           lightBg ? darken(bg, 0.12)  : lighten(bg, 0.13)],
     ['--lx-ink',             text],
     ['--lx-ink-2',           lightText ? darken(text, 0.15) : lighten(text, 0.15)],
-    ['--lx-muted',           lightText ? darken(text, 0.45) : lighten(text, 0.45)],
+    ['--lx-muted',           lightText ? darken(text, 0.38) : lighten(text, 0.38)],
     ['--lx-rule',            `rgba(${tr},${tg},${tb},0.10)`],
     ['--lx-plum',            accent],
     ['--lx-plum-2',          darken(accent, 0.12)],
