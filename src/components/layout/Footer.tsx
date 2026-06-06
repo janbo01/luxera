@@ -41,6 +41,7 @@ const STATIC_COLS = [
     title: 'درباره‌ی ما',
     links: [
       { label: 'داستان لوکسرا', to: '/about' },
+      { label: 'بلاگ', to: '/blog' },
       { label: 'تماس با ما', to: '/contact' },
       { label: 'حریم خصوصی', to: '/privacy' },
       { label: 'شرایط استفاده', to: '/terms' },
