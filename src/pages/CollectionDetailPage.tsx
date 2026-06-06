@@ -108,64 +108,129 @@ const CollectionDetailPage: FC = () => {
     )
   }
 
+  const col = collection
+
   return (
     <>
       <Breadcrumb items={[
         { label: 'خانه', to: '/' },
         { label: 'کالکشن‌ها', to: '/collections' },
-        { label: collection.name_fa },
+        { label: col.name_fa },
       ]} />
 
-      {/* Collection banner */}
+      {/* ── Cinematic banner ── */}
       <div
-        className={`relative grid grid-cols-[1fr_auto] items-center gap-10 min-h-[320px] px-[clamp(20px,4vw,56px)] py-16 overflow-hidden animate-rise max-[768px]:grid-cols-1 max-[768px]:min-h-[220px] max-[768px]:px-5 max-[768px]:py-10 ${toneClass(collection.tone, 'coll-banner')}`}
-        style={toneStyle(collection.tone)}
+        className={[
+          'relative overflow-hidden flex flex-col justify-end animate-rise',
+          toneClass(col.tone, 'coll-banner'),
+        ].join(' ')}
+        style={{
+          ...toneStyle(col.tone),
+          minHeight: 'clamp(360px, 52vh, 580px)',
+          paddingInline: 'clamp(20px, 4vw, 56px)',
+          paddingBottom: 'clamp(40px, 6vw, 72px)',
+          paddingTop: '80px',
+        }}
       >
-        <span className="absolute top-6 right-[clamp(20px,4vw,56px)] font-mono text-[10px] tracking-[0.18em] bg-white/12 border border-white/28 px-2.5 py-1.5 backdrop-blur-[4px]">
-          کالکشن / COLLECTION
-        </span>
+        {/* Cover image (if present) — full bleed behind content */}
+        {col.cover_image_url && (
+          <img
+            src={col.cover_image_url}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+            aria-hidden
+          />
+        )}
 
-        <div className="flex flex-col gap-2 z-[2]">
-          <span className="font-mono text-[11px] tracking-[0.2em] opacity-55">کالکشن / COLLECTION</span>
-          <h1 className="font-heading font-bold text-[clamp(44px,6vw,72px)] leading-none tracking-[-0.01em] m-0">
-            {collection.name_fa}
+        {/* English name — massive ghost watermark */}
+        {col.name_en && (
+          <div
+            className="absolute inset-0 flex items-center justify-end overflow-hidden pointer-events-none"
+            aria-hidden
+          >
+            <span
+              className="font-display italic font-light leading-[0.85] whitespace-nowrap pe-[clamp(20px,4vw,56px)]"
+              style={{
+                fontSize: 'clamp(140px, 20vw, 300px)',
+                opacity: 0.1,
+                transform: 'translateY(8%)',
+              }}
+            >
+              {col.name_en}
+            </span>
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col gap-4 max-w-[800px]">
+          {/* Kicker */}
+          <span className="font-mono text-[10px] tracking-[0.22em] opacity-60 uppercase">
+            COLLECTION
+            {col.name_en ? ` · ${col.name_en}` : ''}
+          </span>
+
+          {/* Persian heading — editorial scale */}
+          <h1
+            className="font-heading font-bold leading-[0.95] tracking-[-0.02em] m-0"
+            style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
+          >
+            {col.name_fa}
           </h1>
-          {collection.name_en && (
-            <span className="font-body text-xl opacity-65">{collection.name_en}</span>
-          )}
-          {collection.description && (
-            <p className="text-[15px] opacity-75 mt-1 max-w-[40ch] max-[768px]:hidden">
-              {collection.description}
+
+          {/* Ornamental separator */}
+          <div className="flex items-center gap-3 mt-1">
+            <div className="h-px w-12 bg-current opacity-30" />
+            <span className="opacity-25 text-[11px] font-display" aria-hidden>✦</span>
+            <div className="h-px w-40 bg-current opacity-15" />
+          </div>
+
+          {/* Description */}
+          {col.description && (
+            <p
+              className="text-[14px] leading-[1.9] opacity-75 max-[768px]:hidden"
+              style={{ maxWidth: '52ch' }}
+            >
+              {col.description}
             </p>
           )}
-        </div>
 
-        <div className="relative w-[clamp(120px,16vw,220px)] flex items-center justify-center shrink-0 z-[2] max-[768px]:hidden" aria-hidden>
-          {collection.cover_image_url ? (
-            <img src={collection.cover_image_url} alt={collection.name_fa} className="w-full h-full object-cover" style={{ borderRadius: 8 }} />
-          ) : (
-            <span className="font-display italic text-[200px] font-normal opacity-[0.12] leading-none select-none">
-              {(collection.name_en ?? collection.name_fa).charAt(0)}
-            </span>
-          )}
+          {/* Product count pill */}
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] opacity-55 mt-1">
+            <span
+              className="w-1.5 h-1.5 rounded-full bg-current opacity-70"
+              aria-hidden
+            />
+            {toFa(products.length)} محصول در این کالکشن
+          </span>
         </div>
       </div>
 
-      <section className="py-[88px] px-[clamp(20px,4vw,56px)]">
-        <div className="flex items-center justify-between mb-12 gap-6">
-          <h2 className="font-heading font-bold text-[clamp(24px,3vw,36px)] m-0 text-ink">
-            {toFa(products.length)} محصول در این کالکشن
-          </h2>
+      {/* ── Product grid section ── */}
+      <section className="py-[88px] px-[clamp(20px,4vw,56px)] max-w-[1480px] mx-auto">
+
+        {/* Ornamental divider */}
+        <div className="flex items-center gap-5 mb-14">
+          <div className="h-px flex-1 bg-rule" />
+          <span className="font-display italic text-[22px] text-muted/60 font-light select-none" aria-hidden>
+            ✦
+          </span>
+          <div className="h-px flex-1 bg-rule" />
         </div>
 
         {products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} onAdd={addItem} />
+            {products.map((p, i) => (
+              <div
+                key={p.id}
+                className="animate-rise"
+                style={{ animationDelay: `${Math.min(i, 7) * 60}ms` } as React.CSSProperties}
+              >
+                <ProductCard product={p} onAdd={addItem} />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="py-[88px] px-[clamp(20px,4vw,56px)] text-center text-muted font-body text-lg">
+          <div className="py-[88px] text-center text-muted font-body text-lg">
             <p>این کالکشن موقتاً تمام شده.</p>
             <Link to="/collections" className="text-plum underline mt-4 inline-block">
               بازگشت به کالکشن‌ها

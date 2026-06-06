@@ -703,3 +703,21 @@
   font-style: italic;
   line-height: 1.5;
 }
+
+/* ── Collection named-tone palettes ──────────────────────── */
+/* Applied when the API returns a named tone rather than hex  */
+.coll-card--plum,
+.coll-banner--plum {
+  background: linear-gradient(160deg, #4A1125 0%, #1D0510 100%);
+  color: #F0E4D8;
+}
+.coll-card--sand,
+.coll-banner--sand {
+  background: linear-gradient(160deg, #C49060 0%, #7A5232 100%);
+  color: #1A0E04;
+}
+.coll-card--copper,
+.coll-banner--copper {
+  background: linear-gradient(160deg, #9A5500 0%, #5A3000 100%);
+  color: #F5EAD8;
+}
