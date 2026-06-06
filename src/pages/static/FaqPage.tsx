@@ -1,5 +1,5 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
-import { useState, type FC } from 'react'
+import { useState, memo, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import { BTN_CLS } from '../../components/ui/Button'
 
@@ -50,7 +50,7 @@ const SECTIONS: FaqSection[] = [
   },
 ]
 
-const AccordionItem: FC<{ q: string; a: string }> = ({ q, a }) => {
+const AccordionItem = memo<{ q: string; a: string }>(({ q, a }) => {
   const [open, setOpen] = useState(false)
   return (
     <div className="border-b border-rule">
@@ -71,10 +71,20 @@ const AccordionItem: FC<{ q: string; a: string }> = ({ q, a }) => {
       )}
     </div>
   )
+})
+
+const FAQ_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: SECTIONS.flatMap((s) => s.items).map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
 }
 
 const FaqPage: FC = () => {
-  usePageMeta({ title: 'پرسش‌های متداول' })
+  usePageMeta({ title: 'پرسش‌های متداول', jsonLd: FAQ_JSON_LD })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

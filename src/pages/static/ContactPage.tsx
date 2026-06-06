@@ -14,8 +14,24 @@ const FIELD = 'flex flex-col gap-[7px]'
 const LABEL = 'text-[12px] font-mono tracking-[.1em] text-muted uppercase'
 const INPUT = 'font-body text-sm text-ink bg-surface border border-rule px-3.5 py-[11px] outline-none transition-[border-color] focus:border-ink resize-y appearance-none'
 
+const CONTACT_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'لوکسرا',
+  url: 'https://luxera.ir',
+  description: 'فروشگاه تخصصی جواهرات فانتزی ایران',
+  telephone: '+989128494308',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+989128494308',
+    contactType: 'customer service',
+    availableLanguage: 'Persian',
+    hoursAvailable: 'Mo-Su 10:00-22:00',
+  },
+}
+
 const ContactPage: FC = () => {
-  usePageMeta({ title: 'تماس با ما' })
+  usePageMeta({ title: 'تماس با ما', jsonLd: CONTACT_JSON_LD })
   const [form, setForm] = useState({ name: '', phone: '', subject: SUBJECTS[0], message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)

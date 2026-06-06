@@ -83,14 +83,35 @@ const VIEW_MODES = [
   { mode: 'list',   title: 'لیست',   Icon: List },
 ] as const
 
+const PRODUCT_SKELETON = (
+  <div className="products-grid" style={{ opacity: 0.5 }}>
+    {Array.from({ length: 8 }, (_, i) => (
+      <div key={i} style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }} />
+    ))}
+  </div>
+)
+
 const CategoryPage: FC = () => {
   const addItem = useCartStore((s) => s.addItem)
   const { id } = useParams<{ id: string }>()
   const category = CATEGORIES.find((c) => c.id === id)
-  usePageMeta({ title: category?.fa ?? 'دسته‌بندی', canonical: id ? `/category/${id}` : undefined })
+
+  const categoryJsonLd = useMemo(() => {
+    if (!category || !id) return undefined
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
+        { '@type': 'ListItem', position: 2, name: category.fa, item: `https://luxera.ir/category/${id}` },
+      ],
+    }
+  }, [category, id])
+
+  usePageMeta({ title: category?.fa ?? 'دسته‌بندی', canonical: id ? `/category/${id}` : undefined, jsonLd: categoryJsonLd })
 
   const { categoryProducts: serverCatProducts, categoryResolvedId: serverResolvedId } = useInitialData()
-  const initial = getInitialCategoryData(id, serverCatProducts, serverResolvedId)
+  const [initial] = useState(() => getInitialCategoryData(id, serverCatProducts, serverResolvedId))
 
   const [allProducts, setAllProducts] = useState<Product[]>(() => initial?.products ?? [])
   const [loading, setLoading] = useState(!initial)
@@ -347,13 +368,7 @@ const CategoryPage: FC = () => {
           />
 
           <section>
-            {loading ? (
-              <div className="products-grid" style={{ opacity: 0.5 }}>
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }} />
-                ))}
-              </div>
-            ) : paginated.length > 0 ? (
+            {loading ? PRODUCT_SKELETON : paginated.length > 0 ? (
               <div className={`products-grid${viewMode ? ` ${viewMode}` : ''}`}>
                 {paginated.map((p, i) => <ProductCard key={p.id} product={p} onAdd={addItem} priority={i < 4} />)}
               </div>

@@ -28,8 +28,22 @@ const STATS = [
   { value: '+۱۲,۰۰۰', label: 'خرید موفق' },
 ]
 
+const ABOUT_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'لوکسرا',
+  url: 'https://luxera.ir',
+  description: 'فروشگاه تخصصی جواهرات فانتزی ایران — انتخاب دقیق برندهای معتبر، بدون نیکل، با ضمانت یک‌ساله',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+989128494308',
+    contactType: 'customer service',
+    availableLanguage: 'Persian',
+  },
+}
+
 const AboutPage: FC = () => {
-  usePageMeta({ title: 'درباره‌ی ما', description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران' })
+  usePageMeta({ title: 'درباره‌ی ما', description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران', jsonLd: ABOUT_JSON_LD })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

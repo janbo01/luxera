@@ -1,5 +1,5 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useEffect, useState, useRef, type FC } from 'react'
+import { useEffect, useState, useRef, useMemo, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ProductCard from '../components/product/ProductCard'
 import Breadcrumb from '../components/shared/Breadcrumb'
@@ -38,9 +38,9 @@ const CollectionDetailPage: FC = () => {
   const addItem = useCartStore((s) => s.addItem)
 
   const { collection: serverCollection } = useInitialData()
-  const initial = getInitialCollection(slug, serverCollection)
+  const [initial] = useState(() => getInitialCollection(slug, serverCollection))
 
-  const [collection, setCollection] = useState<ApiCollectionDetail | null>(() => initial)
+  const [collection, setCollection] = useState<ApiCollectionDetail | null>(initial)
   const [products, setProducts] = useState<Product[]>(() =>
     initial ? initial.products.map((p) => adaptProduct(p)) : [],
   )
@@ -48,9 +48,27 @@ const CollectionDetailPage: FC = () => {
   const [error, setError] = useState('')
   const seededSlugRef = useRef<string | null>(initial?.slug ?? null)
 
+  const collectionJsonLd = useMemo(() => {
+    if (!collection || !slug) return undefined
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: collection.name_fa,
+      url: `https://luxera.ir/collections/${slug}`,
+      numberOfItems: products.length,
+      itemListElement: products.slice(0, 20).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: p.fa,
+        url: `https://luxera.ir/product/${p.slug ?? p.id}`,
+      })),
+    }
+  }, [collection, slug, products])
+
   usePageMeta({
     title: collection?.name_fa ?? 'مجموعه',
     canonical: slug ? `/collections/${slug}` : undefined,
+    jsonLd: collectionJsonLd,
   })
 
   useEffect(() => {
