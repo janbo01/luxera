@@ -157,6 +157,8 @@ async function createServer() {
       [/^\/wishlist/, 'WishlistPage'],
       [/^\/account/, 'AccountPage'],
       [/^\/search/, 'SearchResultsPage'],
+      [/^\/blog\/[^/?#]+/, 'BlogDetailPage'],
+      [/^\/blog/, 'BlogListPage'],
       [/^\/about/, 'AboutPage'],
       [/^\/faq/, 'FaqPage'],
       [/^\/shipping/, 'ShippingPage'],
@@ -217,6 +219,8 @@ async function createServer() {
         const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
         const collListMatch   = !collDetailMatch && /^\/collections\/?$/.test(pathOnly)
         const categoryMatch   = pathOnly.match(/^\/category\/([^/?#]+)$/)
+        const blogPostMatch   = pathOnly.match(/^\/blog\/([^/?#]+)$/)
+        const isBlogList      = pathOnly === '/blog' || pathOnly === '/blog/'
 
         try {
           if (storeApiBase && isHomePage) {
@@ -267,6 +271,26 @@ async function createServer() {
               const items = (raw as { items?: unknown[] })?.items ?? (Array.isArray(raw) ? raw : [])
               initialData = { collections: items }
               initialScript = `<script>window.__COLLECTIONS_INITIAL__=${safeJson(items)}</script>`
+            }
+
+          } else if (storeApiBase && blogPostMatch) {
+            // ── /blog/:slug ────────────────────────────────────────────────
+            const r = await fetch(`${storeApiBase}/store/blog/${encodeURIComponent(blogPostMatch[1])}`)
+            if (r.ok) {
+              const data = unwrap(await r.json())
+              initialData = { blogPost: data }
+              initialScript = `<script>window.__BLOG_POST_INITIAL__=${safeJson(data)}</script>`
+              const img = (data as { featured_image_url?: string })?.featured_image_url
+              if (img) lcpPreloadTag = `<link rel="preload" as="image" href="${img}" fetchpriority="high">`
+            }
+
+          } else if (storeApiBase && isBlogList) {
+            // ── /blog ──────────────────────────────────────────────────────
+            const r = await fetch(`${storeApiBase}/store/blog?page=1&page_size=12`)
+            if (r.ok) {
+              const data = unwrap(await r.json())
+              initialData = { blogList: data }
+              initialScript = `<script>window.__BLOG_LIST_INITIAL__=${safeJson(data)}</script>`
             }
 
           } else if (productApiBase && categoryMatch) {

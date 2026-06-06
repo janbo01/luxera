@@ -12,6 +12,26 @@ import SearchOverlay from './components/search/SearchOverlay'
 import LoginModal from './components/account/LoginModal'
 import { ErrorBoundary } from './components/shared/ErrorBoundary'
 import PageLoader from './components/shared/PageLoader'
+import {
+  HomePage,
+  ProductPage,
+  CategoryPage,
+  CheckoutPage,
+  WishlistPage,
+  AccountPage,
+  SearchResultsPage,
+  CollectionsPage,
+  CollectionDetailPage,
+  AboutPage,
+  FaqPage,
+  ShippingPage,
+  PrivacyPage,
+  TermsPage,
+  ContactPage,
+  NotFoundPage,
+  BlogListPage,
+  BlogDetailPage,
+} from './app/router'
 
 function applyBodyAttrs(palette: string, density: string, heroVariant: string) {
   const b = document.body
@@ -32,25 +52,6 @@ function LoginModalContainer() {
   if (!isLoginOpen || isLoggedIn) return null
   return <LoginModal onClose={closeLogin} message={loginMessage ?? undefined} />
 }
-
-import {
-  HomePage,
-  ProductPage,
-  CategoryPage,
-  CheckoutPage,
-  WishlistPage,
-  AccountPage,
-  SearchResultsPage,
-  CollectionsPage,
-  CollectionDetailPage,
-  AboutPage,
-  FaqPage,
-  ShippingPage,
-  PrivacyPage,
-  TermsPage,
-  ContactPage,
-  NotFoundPage,
-} from './app/router'
 
 export default function App() {
   useStoreTheme()
@@ -101,6 +102,8 @@ export default function App() {
               <Route path="/privacy"             element={<PrivacyPage />} />
               <Route path="/terms"               element={<TermsPage />} />
               <Route path="/contact"             element={<ContactPage />} />
+              <Route path="/blog"                element={<BlogListPage />} />
+              <Route path="/blog/:slug"          element={<BlogDetailPage />} />
               <Route path="*"                    element={<NotFoundPage />} />
               </Routes>
             </Suspense>

@@ -412,7 +412,7 @@
 
   /* Common card hover lift */
   .card-lift {
-    transition: transform 350ms ease-out, box-shadow 350ms ease-out;
+    transition: transform 350ms ease-out, box-shadow 350ms ease-out, border-color 280ms ease;
   }
   .card-lift:hover {
     transform: translateY(-4px);
@@ -567,3 +567,139 @@
 }
 
 
+
+/* ── Blog article prose ──────────────────────────────────────────────────── */
+.prose-blog {
+  color: var(--color-ink-2);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  line-height: 1.25;
+}
+
+.prose-blog h2 { font-size: clamp(22px, 2.5vw, 28px); }
+.prose-blog h3 { font-size: clamp(18px, 2vw, 22px); }
+
+.prose-blog p { margin-bottom: 1.4em; }
+
+.prose-blog a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-blog ul,
+.prose-blog ol {
+  padding-right: 1.5em;
+  margin-bottom: 1.4em;
+}
+
+.prose-blog li { margin-bottom: 0.4em; }
+
+.prose-blog img {
+  max-width: 100%;
+  height: auto;
+  margin: 2em 0;
+}
+
+.prose-blog blockquote {
+  position: relative;
+  border-right: 3px solid var(--color-plum);
+  border-left: none;
+  padding: 1.2em 2.2em 1.2em 1em;
+  margin: 2em 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-style: normal;
+}
+
+.prose-blog blockquote::before {
+  content: '\201C';
+  font-family: var(--font-display);
+  font-size: 4.5em;
+  line-height: 1;
+  color: var(--color-plum);
+  opacity: 0.18;
+  position: absolute;
+  top: 0em;
+  right: 0.35em;
+  pointer-events: none;
+}
+
+.prose-blog pre,
+.prose-blog code {
+  background: var(--color-plate);
+  border-radius: 4px;
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  direction: ltr;
+}
+
+.prose-blog pre {
+  padding: 1em 1.2em;
+  overflow-x: auto;
+}
+
+.prose-blog pre code { padding: 0; background: none; }
+
+.prose-blog hr {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  margin: 2.5em 0;
+}
+
+/* ── Blog image placeholder ─────────────────────────────────── */
+.blog-placeholder-art {
+  background:
+    radial-gradient(ellipse at 30% 40%, color-mix(in srgb, var(--color-plum) 9%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse at 72% 66%, color-mix(in srgb, var(--color-copper) 7%, transparent) 0%, transparent 55%),
+    var(--color-plate);
+}
+
+/* ── prose-blog refinements ─────────────────────────────────── */
+
+/* Lead paragraph — slightly larger, darker */
+.prose-blog > p:first-of-type {
+  font-size: 17px;
+  line-height: 2;
+  color: var(--color-ink);
+}
+
+/* Drop cap */
+.prose-blog > p:first-of-type::first-letter {
+  font-family: var(--font-heading);
+  font-size: 3.6em;
+  font-weight: 700;
+  line-height: 0.82;
+  float: right;
+  margin-left: 0.1em;
+  margin-top: 0.08em;
+  color: var(--color-plum);
+}
+
+/* Heading scroll offset for anchor links */
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  scroll-margin-top: 80px;
+}
+
+/* Figure captions */
+.prose-blog figcaption {
+  font-size: 13px;
+  color: var(--color-muted);
+  text-align: center;
+  margin-top: 0.6em;
+  font-style: italic;
+  line-height: 1.5;
+}

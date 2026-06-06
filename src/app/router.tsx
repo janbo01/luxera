@@ -17,5 +17,7 @@ export const PrivacyPage         = lazy(() => import('../pages/static/PrivacyPag
 export const TermsPage           = lazy(() => import('../pages/static/TermsPage'))
 export const ContactPage         = lazy(() => import('../pages/static/ContactPage'))
 export const NotFoundPage        = lazy(() => import('../pages/NotFoundPage'))
+export const BlogListPage        = lazy(() => import('../pages/BlogListPage'))
+export const BlogDetailPage      = lazy(() => import('../pages/BlogDetailPage'))
 
 export { HomePage }
