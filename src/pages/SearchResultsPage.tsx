@@ -15,7 +15,7 @@ import { listProducts, adaptProduct } from '../api/product'
 import type { Product } from '../types'
 
 const SearchResultsPage: FC = () => {
-  usePageMeta({ title: 'نتایج جستجو' })
+  usePageMeta({ title: 'نتایج جستجو', noIndex: true })
   const [params] = useSearchParams()
   const q = params.get('q') ?? ''
   const addItem = useCartStore((s) => s.addItem)

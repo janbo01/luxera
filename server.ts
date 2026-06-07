@@ -1,10 +1,180 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import express from 'express'
+import express, { type Request, type Response } from 'express'
 import compression from 'compression'
 import { CATEGORIES } from './src/data/categories'
 import { deriveThemeCSS } from './src/utils/themeTokens'
+
+const SITE_URL = 'https://luxera.ir'
+const BASE_TITLE = 'Luxera · لوکسرا'
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+interface PageMeta {
+  title: string
+  description: string
+  canonical: string
+}
+
+const DEFAULT_DESCRIPTION = 'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.'
+
+const STATIC_PAGE_META: Record<string, { title: string; description?: string }> = {
+  '/collections': { title: `مجموعه‌ها | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا' },
+  '/blog':        { title: `بلاگ | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد' },
+  '/about':       { title: `درباره‌ی ما | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران' },
+  '/faq':         { title: `پرسش‌های متداول | ${BASE_TITLE}` },
+  '/shipping':    { title: `ارسال و تحویل | ${BASE_TITLE}` },
+  '/contact':     { title: `تماس با ما | ${BASE_TITLE}` },
+  '/privacy':     { title: `حریم خصوصی | ${BASE_TITLE}` },
+  '/terms':       { title: `شرایط استفاده | ${BASE_TITLE}` },
+}
+
+function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): PageMeta {
+  const canonical = pathOnly === '/' || pathOnly === '' ? `${SITE_URL}/` : `${SITE_URL}${pathOnly}`
+
+  // /product/:id
+  const productMatch = pathOnly.match(/^\/product\/([^/?#]+)$/)
+  if (productMatch && initialData.product) {
+    const p = initialData.product as { seo_title?: string; title_fa?: string; title?: string; seo_description?: string; short_description?: string }
+    const name = p.seo_title || p.title_fa || p.title || 'محصول'
+    return { title: `${name} | ${BASE_TITLE}`, description: p.seo_description || p.short_description || DEFAULT_DESCRIPTION, canonical }
+  }
+
+  // /blog/:slug
+  const blogPostMatch = pathOnly.match(/^\/blog\/([^/?#]+)$/)
+  if (blogPostMatch && initialData.blogPost) {
+    const post = initialData.blogPost as { seo_title?: string; title?: string; seo_description?: string; excerpt?: string }
+    const name = post.seo_title || post.title || 'مقاله'
+    return { title: `${name} | ${BASE_TITLE}`, description: post.seo_description || post.excerpt || DEFAULT_DESCRIPTION, canonical }
+  }
+
+  // /collections/:slug
+  const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
+  if (collDetailMatch && initialData.collection) {
+    const col = initialData.collection as { name_fa?: string; description?: string }
+    return { title: `${col.name_fa || 'مجموعه'} | ${BASE_TITLE}`, description: col.description || DEFAULT_DESCRIPTION, canonical }
+  }
+
+  // /category/:id
+  const categoryMatch = pathOnly.match(/^\/category\/([^/?#]+)$/)
+  if (categoryMatch) {
+    const cat = CATEGORIES.find((c) => c.id === categoryMatch[1])
+    return { title: `${cat?.fa || 'دسته‌بندی'} | ${BASE_TITLE}`, description: DEFAULT_DESCRIPTION, canonical }
+  }
+
+  // Static routes with known meta
+  const staticNorm = pathOnly.replace(/\/$/, '') || '/'
+  const staticMeta = STATIC_PAGE_META[staticNorm]
+  if (staticMeta) return { title: staticMeta.title, description: staticMeta.description || DEFAULT_DESCRIPTION, canonical }
+
+  // Homepage / fallback
+  return { title: `${BASE_TITLE} — جواهرات فانتزی دست‌ساز`, description: DEFAULT_DESCRIPTION, canonical }
+}
+
+function injectPageMeta(html: string, meta: PageMeta): string {
+  return html
+    .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
+    .replace(/(<link rel="canonical" href=")[^"]*(")/,        `$1${escapeHtml(meta.canonical)}$2`)
+    .replace(/(<meta property="og:title" content=")[^"]*(")/,       `$1${escapeHtml(meta.title)}$2`)
+    .replace(/(<meta property="og:description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
+    .replace(/(<meta property="og:url" content=")[^"]*(")/,          `$1${escapeHtml(meta.canonical)}$2`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(")/,       `$1${escapeHtml(meta.title)}$2`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
+}
+
+// Dynamic sitemap — cached 1h to avoid hammering the API on every crawler visit
+let _sitemapCache = ''
+let _sitemapExpiry = 0
+
+async function generateSitemapXml(productApiBase: string, storeApiBase: string): Promise<string> {
+  if (_sitemapCache && Date.now() < _sitemapExpiry) return _sitemapCache
+
+  const today = new Date().toISOString().split('T')[0]
+
+  function url(loc: string, priority: string, changefreq: string, lastmod = today): string {
+    return `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
+  }
+
+  const parts: string[] = [
+    url('/',             '1.0', 'daily'),
+    url('/collections',  '0.9', 'weekly'),
+    url('/category/necklaces', '0.8', 'daily'),
+    url('/category/bracelets', '0.8', 'daily'),
+    url('/category/rings',     '0.8', 'daily'),
+    url('/category/earrings',  '0.8', 'daily'),
+    url('/category/sets',      '0.8', 'daily'),
+    url('/blog',     '0.7', 'weekly'),
+    url('/about',    '0.6', 'monthly'),
+    url('/contact',  '0.6', 'monthly'),
+    url('/faq',      '0.5', 'monthly'),
+    url('/shipping', '0.5', 'monthly'),
+    url('/privacy',  '0.3', 'yearly'),
+    url('/terms',    '0.3', 'yearly'),
+  ]
+
+  // Products (cursor-paginated)
+  if (productApiBase) {
+    try {
+      let cursor = ''
+      let hasMore = true
+      while (hasMore) {
+        const qs = new URLSearchParams({ limit: '500', sort: 'newest' })
+        if (cursor) qs.set('after_id', cursor)
+        const r = await fetch(`${productApiBase}/products?${qs}`)
+        if (!r.ok) break
+        const data = unwrap(await r.json()) as { items?: Array<{ slug?: string; id: string; updated_at?: string }>; next_cursor?: string }
+        for (const p of data.items ?? []) {
+          const slug = p.slug ?? p.id
+          const lastmod = p.updated_at?.split('T')[0] ?? today
+          parts.push(url(`/product/${slug}`, '0.7', 'weekly', lastmod))
+        }
+        cursor = data.next_cursor ?? ''
+        hasMore = !!cursor && (data.items?.length ?? 0) > 0
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  // Collections
+  if (productApiBase) {
+    try {
+      const r = await fetch(`${productApiBase}/collections`)
+      if (r.ok) {
+        const data = unwrap(await r.json()) as { items?: Array<{ slug: string; created_at?: string }> }
+        for (const c of data.items ?? []) {
+          parts.push(url(`/collections/${c.slug}`, '0.8', 'weekly', c.created_at?.split('T')[0] ?? today))
+        }
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  // Blog posts (page-paginated, max 50/page)
+  if (storeApiBase) {
+    try {
+      let page = 1
+      let hasMore = true
+      while (hasMore) {
+        const r = await fetch(`${storeApiBase}/store/blog?page=${page}&page_size=50`)
+        if (!r.ok) break
+        const data = unwrap(await r.json()) as { posts?: Array<{ slug: string; updated_at?: string; published_at?: string | null }> }
+        const posts = data.posts ?? []
+        for (const p of posts) {
+          const lastmod = (p.updated_at ?? p.published_at ?? today).split('T')[0]
+          parts.push(url(`/blog/${p.slug}`, '0.6', 'monthly', lastmod))
+        }
+        hasMore = posts.length === 50
+        page++
+      }
+    } catch { /* non-fatal */ }
+  }
+
+  _sitemapCache = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${parts.join('\n')}\n</urlset>`
+  _sitemapExpiry = Date.now() + 60 * 60 * 1000
+  return _sitemapCache
+}
 
 // Unwrap API envelope: { success, data } → data, or return as-is
 function unwrap(json: unknown): unknown {
@@ -91,6 +261,16 @@ async function createServer() {
   // Gzip all responses — critical when CSS is inlined in HTML (105 KB raw → ~20 KB)
   app.use(compression())
 
+  // Dynamic sitemap — registered before static middleware so it wins in prod
+  app.get('/sitemap.xml', async (_req: Request, res: Response) => {
+    try {
+      const xml = await generateSitemapXml(productApiBase, storeApiBase)
+      res.set({ 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' }).send(xml)
+    } catch (e) {
+      res.status(500).end((e as Error).message)
+    }
+  })
+
   if (isProd) {
     app.use((_req, res, next) => {
       for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.setHeader(k, v)
@@ -114,7 +294,10 @@ async function createServer() {
         const { render } = await vite.ssrLoadModule('/src/entry-server.tsx')
         const { html: appHtml } = await render(url)
         const themeStyleTag = await fetchThemeStyleTag()
-        const html = template
+        const pathOnly = url.split('?')[0]
+        const pageMeta = buildPageMeta(pathOnly, {})
+        let html = injectPageMeta(template, pageMeta)
+        html = html
           .replace('<!--app-html-->', appHtml)
           .replace('</head>', `${themeStyleTag}</head>`)
         res.status(200).set({ 'Content-Type': 'text/html' }).send(html)
@@ -347,7 +530,9 @@ async function createServer() {
           }
         }
 
-        const html = template
+        const pageMeta = buildPageMeta(pathOnly, initialData)
+        let html = injectPageMeta(template, pageMeta)
+        html = html
           .replace('<!--app-html-->', appHtml)
           .replace('</head>', `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }

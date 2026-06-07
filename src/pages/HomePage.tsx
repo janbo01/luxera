@@ -36,7 +36,7 @@ const HOME_JSON_LD = {
 }
 
 const HomePage: FC = () => {
-  usePageMeta({ title: 'خانه', jsonLd: HOME_JSON_LD })
+  usePageMeta({ jsonLd: HOME_JSON_LD })
   return (
   <>
     <Hero />

@@ -3,4 +3,20 @@ Allow: /
 Disallow: /checkout
 Disallow: /account
 
+# AI search crawlers — allowed (permits citation in AI search results)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
 Sitemap: https://luxera.ir/sitemap.xml

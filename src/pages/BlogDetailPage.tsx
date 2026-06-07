@@ -28,11 +28,8 @@ function buildJsonLd(post: ApiBlogPost): Record<string, unknown> {
     image: post.featured_image_url ?? undefined,
     datePublished: post.published_at ?? post.created_at,
     dateModified: post.updated_at,
-    publisher: {
-      '@type': 'Organization',
-      name: 'لوکسرا',
-      url: 'https://luxera.ir',
-    },
+    author: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
+    publisher: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `https://luxera.ir/blog/${post.slug}`,
@@ -64,6 +61,7 @@ const BlogDetailPage: FC = () => {
     keywords: post?.seo_keywords,
     canonical: slug ? `/blog/${slug}` : undefined,
     ogImage: post?.featured_image_url ?? undefined,
+    ogType: 'article',
     jsonLd,
   })
 

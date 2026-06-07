@@ -85,6 +85,7 @@ const ProductPage: FC = () => {
       description: product.description || undefined,
       image: apiDetail.images?.map((img) => img.url) ?? [],
       url: productUrl,
+      brand: { '@type': 'Brand', name: 'لوکسرا' },
       offers: {
         '@type': 'Offer',
         priceCurrency: 'IRR',
@@ -112,6 +113,7 @@ const ProductPage: FC = () => {
     keywords: apiDetail?.seo_keywords || undefined,
     canonical: id ? `/product/${apiDetail?.slug ?? id}` : undefined,
     ogImage: apiDetail?.images?.[0]?.url,
+    ogType: 'product',
     jsonLd: productJsonLd,
   })
 

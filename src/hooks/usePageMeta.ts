@@ -4,11 +4,12 @@ const BASE_TITLE = 'Luxera · لوکسرا'
 const SITE_URL = 'https://luxera.ir'
 
 interface PageMetaOptions {
-  title: string
+  title?: string
   description?: string
   keywords?: string
   canonical?: string
   ogImage?: string
+  ogType?: string
   jsonLd?: Record<string, unknown>
   noIndex?: boolean
 }
@@ -18,7 +19,7 @@ function setMetaContent(selector: string, value: string) {
   if (el) el.content = value
 }
 
-export function usePageMeta({ title, description, keywords, canonical, ogImage, jsonLd, noIndex }: PageMetaOptions) {
+export function usePageMeta({ title, description, keywords, canonical, ogImage, ogType, jsonLd, noIndex }: PageMetaOptions) {
   const jsonLdString = useMemo(() => (jsonLd ? JSON.stringify(jsonLd) : undefined), [jsonLd])
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export function usePageMeta({ title, description, keywords, canonical, ogImage, 
     // Open Graph
     setMetaContent('meta[property="og:title"]', fullTitle)
     setMetaContent('meta[property="og:url"]', canonicalUrl)
+    if (ogType) setMetaContent('meta[property="og:type"]', ogType)
     if (description) setMetaContent('meta[property="og:description"]', description)
     if (ogImage) setMetaContent('meta[property="og:image"]', ogImage)
 
@@ -82,8 +84,9 @@ export function usePageMeta({ title, description, keywords, canonical, ogImage, 
       document.title = BASE_TITLE
       if (canonicalEl) canonicalEl.href = `${SITE_URL}/`
       if (robotsEl) robotsEl.content = 'index, follow'
+      setMetaContent('meta[property="og:type"]', 'website')
       document.querySelector('meta[name="keywords"]')?.remove()
       document.getElementById('jsonld-page')?.remove()
     }
-  }, [title, description, keywords, canonical, ogImage, jsonLdString, noIndex])
+  }, [title, description, keywords, canonical, ogImage, ogType, jsonLdString, noIndex])
 }
