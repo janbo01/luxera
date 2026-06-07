@@ -17,19 +17,33 @@ interface PageMeta {
   title: string
   description: string
   canonical: string
+  ogImage?: string
 }
 
 const DEFAULT_DESCRIPTION = 'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.'
 
 const STATIC_PAGE_META: Record<string, { title: string; description?: string }> = {
-  '/collections': { title: `مجموعه‌ها | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا' },
-  '/blog':        { title: `بلاگ | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد' },
-  '/about':       { title: `درباره‌ی ما | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران' },
-  '/faq':         { title: `پرسش‌های متداول | ${BASE_TITLE}` },
-  '/shipping':    { title: `ارسال و تحویل | ${BASE_TITLE}` },
-  '/contact':     { title: `تماس با ما | ${BASE_TITLE}` },
-  '/privacy':     { title: `حریم خصوصی | ${BASE_TITLE}` },
-  '/terms':       { title: `شرایط استفاده | ${BASE_TITLE}` },
+  '/collections': { title: `مجموعه‌ها | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.' },
+  '/blog':        { title: `بلاگ | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.' },
+  '/about':       { title: `درباره‌ی ما | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.' },
+  '/faq':         { title: `پرسش‌های متداول | ${BASE_TITLE}`, description: 'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.' },
+  '/shipping':    { title: `ارسال و تحویل | ${BASE_TITLE}`, description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.' },
+  '/contact':     { title: `تماس با ما | ${BASE_TITLE}`, description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.' },
+  '/privacy':     { title: `حریم خصوصی | ${BASE_TITLE}`, description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.' },
+  '/terms':       { title: `شرایط استفاده | ${BASE_TITLE}`, description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' },
+}
+
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`
+
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
+  bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
+  rings:     'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
+  earrings:  'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
+  sets:      'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
+  new:       'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  bridal:    'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
+  mens:      'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
 }
 
 function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): PageMeta {
@@ -38,31 +52,35 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
   // /product/:id
   const productMatch = pathOnly.match(/^\/product\/([^/?#]+)$/)
   if (productMatch && initialData.product) {
-    const p = initialData.product as { seo_title?: string; title_fa?: string; title?: string; seo_description?: string; short_description?: string }
+    const p = initialData.product as { seo_title?: string; title_fa?: string; title?: string; seo_description?: string; short_description?: string; images?: Array<{ url: string }> }
     const name = p.seo_title || p.title_fa || p.title || 'محصول'
-    return { title: `${name} | ${BASE_TITLE}`, description: p.seo_description || p.short_description || DEFAULT_DESCRIPTION, canonical }
+    const ogImage = p.images?.[0]?.url || DEFAULT_OG_IMAGE
+    return { title: `${name} | ${BASE_TITLE}`, description: p.seo_description || p.short_description || DEFAULT_DESCRIPTION, canonical, ogImage }
   }
 
   // /blog/:slug
   const blogPostMatch = pathOnly.match(/^\/blog\/([^/?#]+)$/)
   if (blogPostMatch && initialData.blogPost) {
-    const post = initialData.blogPost as { seo_title?: string; title?: string; seo_description?: string; excerpt?: string }
+    const post = initialData.blogPost as { seo_title?: string; title?: string; seo_description?: string; excerpt?: string; featured_image_url?: string }
     const name = post.seo_title || post.title || 'مقاله'
-    return { title: `${name} | ${BASE_TITLE}`, description: post.seo_description || post.excerpt || DEFAULT_DESCRIPTION, canonical }
+    const ogImage = post.featured_image_url || DEFAULT_OG_IMAGE
+    return { title: `${name} | ${BASE_TITLE}`, description: post.seo_description || post.excerpt || DEFAULT_DESCRIPTION, canonical, ogImage }
   }
 
   // /collections/:slug
   const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
   if (collDetailMatch && initialData.collection) {
-    const col = initialData.collection as { name_fa?: string; description?: string }
-    return { title: `${col.name_fa || 'مجموعه'} | ${BASE_TITLE}`, description: col.description || DEFAULT_DESCRIPTION, canonical }
+    const col = initialData.collection as { name_fa?: string; description?: string; cover_image_url?: string }
+    const ogImage = col.cover_image_url || DEFAULT_OG_IMAGE
+    return { title: `${col.name_fa || 'مجموعه'} | ${BASE_TITLE}`, description: col.description || DEFAULT_DESCRIPTION, canonical, ogImage }
   }
 
   // /category/:id
   const categoryMatch = pathOnly.match(/^\/category\/([^/?#]+)$/)
   if (categoryMatch) {
     const cat = CATEGORIES.find((c) => c.id === categoryMatch[1])
-    return { title: `${cat?.fa || 'دسته‌بندی'} | ${BASE_TITLE}`, description: DEFAULT_DESCRIPTION, canonical }
+    const description = CATEGORY_DESCRIPTIONS[categoryMatch[1]] || DEFAULT_DESCRIPTION
+    return { title: `${cat?.fa || 'دسته‌بندی'} | ${BASE_TITLE}`, description, canonical }
   }
 
   // Static routes with known meta
@@ -75,7 +93,7 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
 }
 
 function injectPageMeta(html: string, meta: PageMeta): string {
-  return html
+  let result = html
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
     .replace(/(<meta name="description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
     .replace(/(<link rel="canonical" href=")[^"]*(")/,        `$1${escapeHtml(meta.canonical)}$2`)
@@ -84,6 +102,12 @@ function injectPageMeta(html: string, meta: PageMeta): string {
     .replace(/(<meta property="og:url" content=")[^"]*(")/,          `$1${escapeHtml(meta.canonical)}$2`)
     .replace(/(<meta name="twitter:title" content=")[^"]*(")/,       `$1${escapeHtml(meta.title)}$2`)
     .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
+  if (meta.ogImage) {
+    result = result
+      .replace(/(<meta property="og:image" content=")[^"]*(")/,  `$1${escapeHtml(meta.ogImage)}$2`)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/,  `$1${escapeHtml(meta.ogImage)}$2`)
+  }
+  return result
 }
 
 // Dynamic sitemap — cached 1h to avoid hammering the API on every crawler visit

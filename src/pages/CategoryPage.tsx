@@ -91,6 +91,17 @@ const PRODUCT_SKELETON = (
   </div>
 )
 
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
+  bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
+  rings:     'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
+  earrings:  'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
+  sets:      'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
+  new:       'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  bridal:    'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
+  mens:      'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
+}
+
 const CategoryPage: FC = () => {
   const addItem = useCartStore((s) => s.addItem)
   const { id } = useParams<{ id: string }>()
@@ -108,7 +119,12 @@ const CategoryPage: FC = () => {
     }
   }, [category, id])
 
-  usePageMeta({ title: category?.fa ?? 'دسته‌بندی', canonical: id ? `/category/${id}` : undefined, jsonLd: categoryJsonLd })
+  usePageMeta({
+    title: category?.fa ?? 'دسته‌بندی',
+    description: id ? CATEGORY_DESCRIPTIONS[id] : undefined,
+    canonical: id ? `/category/${id}` : undefined,
+    jsonLd: categoryJsonLd,
+  })
 
   const { categoryProducts: serverCatProducts, categoryResolvedId: serverResolvedId } = useInitialData()
   const [initial] = useState(() => getInitialCategoryData(id, serverCatProducts, serverResolvedId))

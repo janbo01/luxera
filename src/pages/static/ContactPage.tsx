@@ -31,7 +31,7 @@ const CONTACT_JSON_LD = {
 }
 
 const ContactPage: FC = () => {
-  usePageMeta({ title: 'تماس با ما', jsonLd: CONTACT_JSON_LD })
+  usePageMeta({ title: 'تماس با ما', description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.', jsonLd: CONTACT_JSON_LD })
   const [form, setForm] = useState({ name: '', phone: '', subject: SUBJECTS[0], message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)

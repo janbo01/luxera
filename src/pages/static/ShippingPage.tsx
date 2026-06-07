@@ -17,7 +17,7 @@ const RETURN_STEPS = [
 ]
 
 const ShippingPage: FC = () => {
-  usePageMeta({ title: 'ارسال و تحویل' })
+  usePageMeta({ title: 'ارسال و تحویل', description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.' })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

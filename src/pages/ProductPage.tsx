@@ -80,29 +80,41 @@ const ProductPage: FC = () => {
     const productUrl = `https://luxera.ir/product/${urlSlug}`
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: product.fa,
-      description: product.description || undefined,
-      image: apiDetail.images?.map((img) => img.url) ?? [],
-      url: productUrl,
-      brand: { '@type': 'Brand', name: 'لوکسرا' },
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'IRR',
-        price: String(product.price),
-        availability:
-          apiDetail.variants?.some((v) => v.quantity > 0)
-            ? 'https://schema.org/InStock'
-            : 'https://schema.org/OutOfStock',
-        url: productUrl,
-      },
-    }
-    if (product.rating && product.reviewCount) {
-      schema.aggregateRating = {
-        '@type': 'AggregateRating',
-        ratingValue: String(product.rating),
-        reviewCount: String(product.reviewCount),
-      }
+      '@graph': [
+        {
+          '@type': 'Product',
+          name: product.fa,
+          description: product.description || undefined,
+          image: apiDetail.images?.map((img) => img.url) ?? [],
+          url: productUrl,
+          brand: { '@type': 'Brand', name: 'لوکسرا' },
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'IRR',
+            price: String(product.price),
+            availability:
+              apiDetail.variants?.some((v) => v.quantity > 0)
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            url: productUrl,
+          },
+          ...(product.rating && product.reviewCount ? {
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: String(product.rating),
+              reviewCount: String(product.reviewCount),
+            },
+          } : {}),
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
+            ...(product.cat && product.catId ? [{ '@type': 'ListItem', position: 2, name: product.cat, item: `https://luxera.ir/category/${product.catId}` }] : []),
+            { '@type': 'ListItem', position: product.catId ? 3 : 2, name: product.fa, item: productUrl },
+          ],
+        },
+      ],
     }
     return schema
   }, [product, apiDetail, id])

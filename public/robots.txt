@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /checkout
 Disallow: /account
+Disallow: /search
 
 # AI search crawlers — allowed (permits citation in AI search results)
 User-agent: OAI-SearchBot

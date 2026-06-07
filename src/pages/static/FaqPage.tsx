@@ -84,7 +84,7 @@ const FAQ_JSON_LD = {
 }
 
 const FaqPage: FC = () => {
-  usePageMeta({ title: 'پرسش‌های متداول', jsonLd: FAQ_JSON_LD })
+  usePageMeta({ title: 'پرسش‌های متداول', description: 'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.', jsonLd: FAQ_JSON_LD })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

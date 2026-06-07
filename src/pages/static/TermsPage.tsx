@@ -7,7 +7,7 @@ const P = 'text-sm leading-[1.95] text-ink-2 m-0 mb-3 last:mb-0'
 const LI = 'text-sm leading-[1.7] text-ink-2'
 
 const TermsPage: FC = () => {
-  usePageMeta({ title: 'شرایط استفاده' })
+  usePageMeta({ title: 'شرایط استفاده', description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}
