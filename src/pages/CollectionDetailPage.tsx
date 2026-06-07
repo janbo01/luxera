@@ -151,8 +151,8 @@ const CollectionDetailPage: FC = () => {
             <span
               className="font-display italic font-light leading-[0.85] whitespace-nowrap pe-[clamp(20px,4vw,56px)]"
               style={{
-                fontSize: 'clamp(140px, 20vw, 300px)',
-                opacity: 0.1,
+                fontSize: 'clamp(90px, 12vw, 200px)',
+                opacity: 0.07,
                 transform: 'translateY(8%)',
               }}
             >
@@ -171,8 +171,8 @@ const CollectionDetailPage: FC = () => {
 
           {/* Persian heading — editorial scale */}
           <h1
-            className="font-heading font-bold leading-[0.95] tracking-[-0.02em] m-0"
-            style={{ fontSize: 'clamp(52px, 8vw, 96px)' }}
+            className="font-heading font-bold leading-[1.05] tracking-[-0.02em] m-0"
+            style={{ fontSize: 'clamp(44px, 6vw, 78px)' }}
           >
             {col.name_fa}
           </h1>

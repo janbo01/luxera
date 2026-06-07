@@ -94,19 +94,28 @@ const CollectionsPage: FC = () => {
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {collections.map((col, i) => {
+              const total = collections.length
               const isWide = i === 0 || (i > 0 && i % 3 === 0)
+              // Solo card spans the full grid; last card in an odd list fills the row
+              const isFullRow = total === 1 || (isWide && i === total - 1 && total % 3 === 1)
+              const colSpan = isFullRow
+                ? 'col-span-2 lg:col-span-3'
+                : isWide
+                  ? 'col-span-2 lg:col-span-2'
+                  : 'col-span-1'
+              const ratio = isFullRow ? '16/7' : isWide ? '3/2' : '3/4'
               return (
                 <Link
                   key={col.slug}
                   to={`/collections/${col.slug}`}
                   className={[
                     'group relative overflow-hidden rounded-[var(--radius-sm)] cursor-pointer animate-rise',
-                    isWide ? 'col-span-2 lg:col-span-2' : 'col-span-1',
+                    colSpan,
                     toneClass(col.tone, 'coll-card'),
                   ].join(' ')}
                   style={{
                     ...toneStyle(col.tone),
-                    aspectRatio: isWide ? '3/2' : '3/4',
+                    aspectRatio: ratio,
                     animationDelay: `${i * 90}ms`,
                   } as React.CSSProperties}
                   aria-label={`مشاهده کالکشن ${col.name_fa}، ${toFa(col.product_count)} محصول`}
