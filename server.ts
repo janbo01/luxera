@@ -389,12 +389,14 @@ async function createServer() {
     // With gzip (compression middleware), the combined HTML+CSS is ~20 KB — the
     // same as the CSS transfer alone — so inline costs nothing in extra bytes.
     let inlineCssTag = ''
+    let cssInlined = false
     if (cssHref) {
       try {
         const cssContent = fs.readFileSync(path.join(clientDir, cssHref), 'utf-8')
         inlineCssTag = `<style>${cssContent}</style>`
         // Strip the blocking <link> so the browser never sees a stylesheet request
         template = template.replace(/<link rel="stylesheet"[^>]+>/g, '')
+        cssInlined = true
       } catch { /* non-fatal — blocking link stays in template */ }
     }
 
@@ -567,7 +569,7 @@ async function createServer() {
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         // Keep the Link preload header: CDN edge caches can use it to push the
         // CSS file to the browser's HTTP cache so subsequent navigations are free.
-        if (cssPreloadLink) headers['Link'] = cssPreloadLink
+        if (cssPreloadLink && !cssInlined) headers['Link'] = cssPreloadLink
         res.status(200).set(headers).send(html)
       } catch (e) {
         console.error(e)
