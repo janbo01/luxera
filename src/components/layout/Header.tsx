@@ -163,8 +163,7 @@ const Header: FC = () => {
         className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
         role="dialog"
         aria-label="منوی ناوبری"
-        aria-hidden={!menuOpen}
-        aria-modal={menuOpen || undefined}
+        aria-modal="true"
       >
         <div className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule" dir="ltr">
           <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
