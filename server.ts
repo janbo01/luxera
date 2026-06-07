@@ -523,10 +523,15 @@ async function createServer() {
           }
           // Footer links — cached in memory, fetched for every route to eliminate CLS
           if (productApiBase) {
-            const [footerCats, footerCols] = await Promise.all([
+            const [rawFooterCats, footerCols] = await Promise.all([
               fetchCategories(productApiBase).catch(() => [] as Array<{ id: string; name: string }>),
               fetchFooterCollections(productApiBase).catch(() => [] as Array<{ id: string; slug: string; name_fa: string }>),
             ])
+            // Map API UUIDs → slug IDs so footer links use /category/necklaces not /category/<uuid>
+            const footerCats = rawFooterCats.map((c) => {
+              const local = CATEGORIES.find((cat) => cat.fa === c.name)
+              return { id: local?.id ?? c.id, name: c.name }
+            })
             if (footerCats.length > 0 || footerCols.length > 0) {
               initialData = { ...initialData, footerCategories: footerCats, footerCollections: footerCols }
               footerScript = `<script>window.__FOOTER_INITIAL__=${safeJson({ categories: footerCats, collections: footerCols })}</script>`
