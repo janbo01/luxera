@@ -19,9 +19,9 @@ const Feature: FC = () => (
         <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
           Our Promise
         </span>
-        <h3 className="font-heading font-bold text-[clamp(30px,2.8vw,40px)] leading-[1.2] m-0 [&_em]:font-body [&_em]:italic [&_em]:font-normal [&_em]:text-copper-dark">
+        <h2 className="font-heading font-bold text-[clamp(30px,2.8vw,40px)] leading-[1.2] m-0 [&_em]:font-body [&_em]:italic [&_em]:font-normal [&_em]:text-copper-dark">
           جواهراتِ فانتزی، <em>قیمتِ واقعی.</em>
-        </h3>
+        </h2>
         <p className="text-ink-2 text-[15px] leading-[1.85] m-0 max-w-[48ch]">
           در لوکسرا، بهترین جواهرات فانتزی و اکسسوری مد را برایتان انتخاب
           می‌کنیم. فلزات بی‌آلرژی، روکش‌های با کیفیت، و طرح‌های روز —
@@ -34,7 +34,7 @@ const Feature: FC = () => (
                 <Icon name={p.icon} size={22} strokeWidth={1.6} />
               </span>
               <div>
-                <h4 className="font-heading text-sm font-semibold leading-[1.2] m-0 mb-0.5 text-ink">{p.title}</h4>
+                <h3 className="font-heading text-sm font-semibold leading-[1.2] m-0 mb-0.5 text-ink">{p.title}</h3>
                 <p className="text-[11px] text-muted m-0 leading-[1.3]">{p.desc}</p>
               </div>
             </div>

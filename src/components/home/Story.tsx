@@ -61,7 +61,7 @@ const Story: FC = () => (
               <span className="font-mono text-[10px] text-muted tracking-[0.12em]">{title}</span>
             </div>
 
-            <h4 className="font-heading font-bold text-[20px] leading-[1.4] m-0 mb-4 text-ink">
+            <h3 className="font-heading font-bold text-[20px] leading-[1.4] m-0 mb-4 text-ink">
               {heading}
             </h4>
             <p className="text-[13px] text-muted leading-[1.9] m-0">{body}</p>

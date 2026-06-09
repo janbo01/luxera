@@ -15,7 +15,7 @@ const Newsletter: FC = () => {
           <span className="font-display italic font-normal text-sm tracking-[0.04em] text-[rgba(245,237,224,0.7)] inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
             Stay in the loop
           </span>
-          <h3 className="font-heading font-bold text-[clamp(30px,3vw,44px)] mt-3.5 mb-0 leading-[1.15] [&_em]:font-display [&_em]:italic [&_em]:text-[#E8C9B6] [&_em]:font-normal">
+          <h2 className="font-heading font-bold text-[clamp(30px,3vw,44px)] mt-3.5 mb-0 leading-[1.15] [&_em]:font-display [&_em]:italic [&_em]:text-[#E8C9B6] [&_em]:font-normal">
             اولین کسی باشید که <em>می‌داند</em>.
           </h3>
           <p className="mt-3.5 text-sm text-[rgba(245,237,224,0.75)] max-w-[42ch] leading-[1.7] m-0">
