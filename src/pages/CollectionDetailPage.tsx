@@ -136,7 +136,7 @@ const CollectionDetailPage: FC = () => {
         {col.cover_image_url && (
           <img
             src={col.cover_image_url}
-            alt=""
+            alt={col.name_fa}
             className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
             aria-hidden
           />

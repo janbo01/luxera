@@ -37,7 +37,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
-                <img src={img.url} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                <img src={img.url} alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </button>
             ))
           : PRODUCT_GALLERY.map((item, i) => (

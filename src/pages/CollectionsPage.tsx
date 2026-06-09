@@ -124,7 +124,7 @@ const CollectionsPage: FC = () => {
                   {col.cover_image_url ? (
                     <img
                       src={col.cover_image_url}
-                      alt=""
+                      alt={col.name_fa}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
                       aria-hidden
                     />
