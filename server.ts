@@ -214,6 +214,106 @@ function safeJson(val: unknown): string {
   return JSON.stringify(val).replace(/<\/script>/gi, '<\\/script>')
 }
 
+type ProductData = Record<string, unknown>
+type CommentData = { id: string; user_id: string; content: string; rating?: number; created_at: string }
+
+// Static store-wide structured data — mirrors the live /shipping page
+const MERCHANT_RETURN_POLICY = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: 'IR',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  merchantReturnDays: 4,
+  returnMethod: 'https://schema.org/ReturnByMail',
+  returnFees: 'https://schema.org/FreeReturn',
+  returnPolicyLink: `${SITE_URL}/shipping`,
+}
+
+const SHIPPING_DETAILS = {
+  '@type': 'OfferShippingDetails',
+  shippingRate: {
+    '@type': 'MonetaryAmount',
+    value: '180000',
+    currency: 'IRR',
+  },
+  shippingDestination: {
+    '@type': 'DefinedRegion',
+    addressCountry: 'IR',
+  },
+  deliveryTime: {
+    '@type': 'ShippingDeliveryTime',
+    handlingTime: {
+      '@type': 'QuantitativeValue',
+      minValue: 0,
+      maxValue: 1,
+      unitCode: 'DAY',
+    },
+    transitTime: {
+      '@type': 'QuantitativeValue',
+      minValue: 1,
+      maxValue: 5,
+      unitCode: 'DAY',
+    },
+  },
+}
+
+function buildProductJsonLdTag(product: ProductData, comments: CommentData[]): string {
+  const urlSlug = (product.slug as string) || (product.id as string)
+  const productUrl = `${SITE_URL}/product/${urlSlug}`
+  const rating = (product.rating as number) || 0
+  const reviewCount = (product.review_count as number) || 0
+  const images = (product.images as Array<{ url: string }>) || []
+  const variants = (product.variants as Array<{ quantity: number }>) || []
+
+  const productNode: Record<string, unknown> = {
+    '@type': 'Product',
+    name: (product.title_fa as string) || (product.title as string),
+    description: (product.long_description as string) || (product.short_description as string) || undefined,
+    image: images.map((img) => img.url),
+    url: productUrl,
+    sku: urlSlug,
+    brand: { '@type': 'Brand', name: 'لوکسرا' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'IRR',
+      price: String(product.price),
+      availability: variants.some((v) => v.quantity > 0)
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      url: productUrl,
+      hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
+      shippingDetails: SHIPPING_DETAILS,
+    },
+  }
+
+  if (reviewCount > 0) {
+    productNode.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: String(Math.max(rating, 1)),
+      reviewCount: String(reviewCount),
+      bestRating: '5',
+      worstRating: '1',
+    }
+  }
+
+  if (comments.length > 0) {
+    productNode.review = comments.map((c, i) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: `کاربر ${c.user_id?.slice(0, 4) || String(i + 1)}` },
+      datePublished: c.created_at?.slice(0, 10),
+      reviewBody: c.content,
+      reviewRating: {
+        '@type': 'Rating',
+        ratingValue: String(c.rating || 5),
+        bestRating: '5',
+        worstRating: '1',
+      },
+    }))
+  }
+
+  const schema = { '@context': 'https://schema.org', '@graph': [productNode] }
+  return `<script type="application/ld+json">${safeJson(schema)}</script>`
+}
+
 // Server-side category cache (avoids a round-trip on every /category/:id request)
 let _catCache: Array<{ id: string; name: string }> = []
 let _catExpiry = 0
@@ -409,6 +509,7 @@ async function createServer() {
         let lcpPreloadTag = ''
         let initialScript = ''
         let footerScript = ''
+        let productJsonLdTag = ''
 
         const pathOnly = url.split('?')[0]
 
@@ -451,12 +552,22 @@ async function createServer() {
 
           } else if (productApiBase && productMatch) {
             // ── /product/:id ──────────────────────────────────────────────
-            const r = await fetch(`${productApiBase}/products/${productMatch[1]}`)
-            if (r.ok) {
-              const data = unwrap(await r.json())
-              initialData = { product: data }
+            const productId = productMatch[1]
+            const [productRes, commentsRes] = await Promise.allSettled([
+              fetch(`${productApiBase}/products/${productId}`),
+              fetch(`${productApiBase}/products/${productId}/comments?limit=5`),
+            ])
+            if (productRes.status === 'fulfilled' && productRes.value.ok) {
+              const data = unwrap(await productRes.value.json()) as ProductData
+              let comments: CommentData[] = []
+              if (commentsRes.status === 'fulfilled' && commentsRes.value.ok) {
+                const raw = unwrap(await commentsRes.value.json()) as { items?: CommentData[] }
+                comments = raw?.items ?? []
+              }
+              initialData = { product: data, productComments: comments }
               initialScript = `<script>window.__PRODUCT_INITIAL__=${safeJson(data)}</script>`
-              const imgs = (data as { images?: Array<{ url: string }> })?.images
+              productJsonLdTag = buildProductJsonLdTag(data, comments)
+              const imgs = data?.images as Array<{ url: string }> | undefined
               const lcpUrl = imgs && imgs.length > 1 ? imgs[1].url : imgs?.[0]?.url
               if (lcpUrl) lcpPreloadTag = `<link rel="preload" as="image" href="${lcpUrl}" fetchpriority="high">`
             }
@@ -565,7 +676,7 @@ async function createServer() {
         let html = injectPageMeta(template, pageMeta)
         html = html
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}</head>`)
+          .replace('</head>', `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}${productJsonLdTag}</head>`)
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         // Keep the Link preload header: CDN edge caches can use it to push the
         // CSS file to the browser's HTTP cache so subsequent navigations are free.

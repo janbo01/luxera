@@ -58,7 +58,7 @@ const ProductPage: FC = () => {
   const handleSizeGuide = useCallback(() => setSizeGuideOpen(true), [])
   const handleCloseSizeGuide = useCallback(() => setSizeGuideOpen(false), [])
 
-  const { product: serverProduct } = useInitialData()
+  const { product: serverProduct, productComments: serverComments } = useInitialData()
   const initialApiDetail = getInitialApiDetail(id, serverProduct)
 
   // Initialise from server-provided data so SSR and first client render match
@@ -74,38 +74,86 @@ const ProductPage: FC = () => {
     initialApiDetail ? (initialApiDetail.slug ?? initialApiDetail.id) : null,
   )
 
+  type InitialComment = { id: string; user_id: string; content: string; rating?: number; created_at: string }
+  const initialComments = (serverComments as InitialComment[] | undefined) ?? []
+
   const productJsonLd = useMemo(() => {
     if (!product || !apiDetail || !id) return undefined
     const urlSlug = apiDetail.slug ?? id
     const productUrl = `https://luxera.ir/product/${urlSlug}`
-    const schema: Record<string, unknown> = {
+
+    const merchantReturnPolicy = {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'IR',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: 4,
+      returnMethod: 'https://schema.org/ReturnByMail',
+      returnFees: 'https://schema.org/FreeReturn',
+      returnPolicyLink: 'https://luxera.ir/shipping',
+    }
+
+    const shippingDetails = {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: '180000', currency: 'IRR' },
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IR' },
+      deliveryTime: {
+        '@type': 'ShippingDeliveryTime',
+        handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+        transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 5, unitCode: 'DAY' },
+      },
+    }
+
+    const productNode: Record<string, unknown> = {
+      '@type': 'Product',
+      name: product.fa,
+      description: product.description || undefined,
+      image: apiDetail.images?.map((img) => img.url) ?? [],
+      url: productUrl,
+      sku: apiDetail.slug ?? id,
+      brand: { '@type': 'Brand', name: 'لوکسرا' },
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'IRR',
+        price: String(product.price),
+        availability:
+          apiDetail.variants?.some((v) => v.quantity > 0)
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+        url: productUrl,
+        hasMerchantReturnPolicy: merchantReturnPolicy,
+        shippingDetails,
+      },
+    }
+
+    if (product.reviewCount > 0) {
+      productNode.aggregateRating = {
+        '@type': 'AggregateRating',
+        ratingValue: String(Math.max(product.rating, 1)),
+        reviewCount: String(product.reviewCount),
+        bestRating: '5',
+        worstRating: '1',
+      }
+    }
+
+    if (initialComments.length > 0) {
+      productNode.review = initialComments.map((c, i) => ({
+        '@type': 'Review',
+        author: { '@type': 'Person', name: `کاربر ${c.user_id?.slice(0, 4) || String(i + 1)}` },
+        datePublished: c.created_at?.slice(0, 10),
+        reviewBody: c.content,
+        reviewRating: {
+          '@type': 'Rating',
+          ratingValue: String(c.rating || 5),
+          bestRating: '5',
+          worstRating: '1',
+        },
+      }))
+    }
+
+    return {
       '@context': 'https://schema.org',
       '@graph': [
-        {
-          '@type': 'Product',
-          name: product.fa,
-          description: product.description || undefined,
-          image: apiDetail.images?.map((img) => img.url) ?? [],
-          url: productUrl,
-          brand: { '@type': 'Brand', name: 'لوکسرا' },
-          offers: {
-            '@type': 'Offer',
-            priceCurrency: 'IRR',
-            price: String(product.price),
-            availability:
-              apiDetail.variants?.some((v) => v.quantity > 0)
-                ? 'https://schema.org/InStock'
-                : 'https://schema.org/OutOfStock',
-            url: productUrl,
-          },
-          ...(product.rating && product.reviewCount ? {
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: String(product.rating),
-              reviewCount: String(product.reviewCount),
-            },
-          } : {}),
-        },
+        productNode,
         {
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -116,8 +164,7 @@ const ProductPage: FC = () => {
         },
       ],
     }
-    return schema
-  }, [product, apiDetail, id])
+  }, [product, apiDetail, id, initialComments])
 
   usePageMeta({
     title: apiDetail?.seo_title || product?.fa || 'محصول',
