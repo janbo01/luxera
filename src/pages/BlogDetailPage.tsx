@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition, useMemo, type FC } from 'react'
+import { useState, useEffect, useTransition, useMemo, useRef, type FC } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useInitialData } from '../context/initialData'
@@ -44,7 +44,7 @@ const BlogDetailPage: FC = () => {
   const [post, setPost] = useState<ApiBlogPost | null>(() => getInitialPost(slug, serverPost))
   const [notFound, setNotFound] = useState(false)
   const [isPending, startTransition] = useTransition()
-  const [progress, setProgress] = useState(0)
+  const progressBarRef = useRef<HTMLDivElement>(null)
 
   const jsonLd = useMemo(() => (post ? buildJsonLd(post) : undefined), [post])
   const date = useMemo(
@@ -80,13 +80,14 @@ const BlogDetailPage: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]) // post?.slug intentionally excluded — checked as early-exit guard only
 
-  // Reading progress bar
+  // Reading progress bar — updates DOM directly to avoid re-renders on scroll
   useEffect(() => {
     if (!post) return
     const update = () => {
       const el = document.documentElement
       const h = el.scrollHeight - el.clientHeight
-      setProgress(h > 0 ? (window.scrollY / h) * 100 : 0)
+      const p = h > 0 ? (window.scrollY / h) * 100 : 0
+      if (progressBarRef.current) progressBarRef.current.style.width = `${p}%`
     }
     window.addEventListener('scroll', update, { passive: true })
     update()
@@ -142,9 +143,10 @@ const BlogDetailPage: FC = () => {
     <>
       {/* Reading progress bar — anchored right in RTL, grows leftward */}
       <div
+        ref={progressBarRef}
         aria-hidden="true"
         className="fixed top-0 right-0 h-[2px] bg-plum z-50 pointer-events-none"
-        style={{ width: `${progress}%`, transition: 'width 80ms linear' }}
+        style={{ width: '0%', transition: 'width 80ms linear' }}
       />
 
       <div className="max-w-[780px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">

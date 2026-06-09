@@ -23,6 +23,7 @@ interface PageMeta {
 const DEFAULT_DESCRIPTION = 'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.'
 
 const STATIC_PAGE_META: Record<string, { title: string; description?: string }> = {
+  '/':            { title: `فروشگاه جواهرات فانتزی دست‌ساز | ${BASE_TITLE}`, description: DEFAULT_DESCRIPTION },
   '/collections': { title: `مجموعه‌ها | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.' },
   '/blog':        { title: `بلاگ | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.' },
   '/about':       { title: `درباره‌ی ما | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.' },
@@ -31,6 +32,10 @@ const STATIC_PAGE_META: Record<string, { title: string; description?: string }> 
   '/contact':     { title: `تماس با ما | ${BASE_TITLE}`, description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.' },
   '/privacy':     { title: `حریم خصوصی | ${BASE_TITLE}`, description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.' },
   '/terms':       { title: `شرایط استفاده | ${BASE_TITLE}`, description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' },
+  '/account':     { title: `حساب کاربری | ${BASE_TITLE}` },
+  '/checkout':    { title: `پرداخت و تکمیل سفارش | ${BASE_TITLE}` },
+  '/wishlist':    { title: `علاقه‌مندی‌ها | ${BASE_TITLE}` },
+  '/search':      { title: `جستجو | ${BASE_TITLE}` },
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`
@@ -88,8 +93,8 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
   const staticMeta = STATIC_PAGE_META[staticNorm]
   if (staticMeta) return { title: staticMeta.title, description: staticMeta.description || DEFAULT_DESCRIPTION, canonical }
 
-  // Homepage / fallback
-  return { title: `${BASE_TITLE} — جواهرات فانتزی دست‌ساز`, description: DEFAULT_DESCRIPTION, canonical }
+  // Fallback for unmatched routes (404, etc.)
+  return { title: BASE_TITLE, description: DEFAULT_DESCRIPTION, canonical }
 }
 
 function injectPageMeta(html: string, meta: PageMeta): string {
@@ -317,26 +322,42 @@ function buildProductJsonLdTag(product: ProductData, comments: CommentData[]): s
 // Server-side category cache (avoids a round-trip on every /category/:id request)
 let _catCache: Array<{ id: string; name: string }> = []
 let _catExpiry = 0
+let _catInflight: Promise<Array<{ id: string; name: string }>> | null = null
 async function fetchCategories(base: string): Promise<Array<{ id: string; name: string }>> {
   if (_catCache.length && Date.now() < _catExpiry) return _catCache
-  const r = await fetch(`${base}/categories`)
-  if (!r.ok) return []
-  _catCache = (unwrap(await r.json()) as Array<{ id: string; name: string }>) ?? []
-  _catExpiry = Date.now() + 15 * 60 * 1000
-  return _catCache
+  if (_catInflight) return _catInflight
+  _catInflight = fetch(`${base}/categories`)
+    .then(async (r) => {
+      if (!r.ok) return []
+      const data = (unwrap(await r.json()) as Array<{ id: string; name: string }>) ?? []
+      _catCache = data
+      _catExpiry = Date.now() + 15 * 60 * 1000
+      return data
+    })
+    .catch(() => [])
+    .finally(() => { _catInflight = null })
+  return _catInflight
 }
 
 // Server-side collections cache (for footer links)
 let _colCache: Array<{ id: string; slug: string; name_fa: string }> = []
 let _colExpiry = 0
+let _colInflight: Promise<Array<{ id: string; slug: string; name_fa: string }>> | null = null
 async function fetchFooterCollections(base: string): Promise<Array<{ id: string; slug: string; name_fa: string }>> {
   if (_colCache.length && Date.now() < _colExpiry) return _colCache
-  const r = await fetch(`${base}/collections`)
-  if (!r.ok) return []
-  const raw = unwrap(await r.json()) as { items?: Array<{ id: string; slug: string; name_fa: string }> }
-  _colCache = raw?.items ?? []
-  _colExpiry = Date.now() + 15 * 60 * 1000
-  return _colCache
+  if (_colInflight) return _colInflight
+  _colInflight = fetch(`${base}/collections`)
+    .then(async (r) => {
+      if (!r.ok) return []
+      const raw = unwrap(await r.json()) as { items?: Array<{ id: string; slug: string; name_fa: string }> }
+      const data = raw?.items ?? []
+      _colCache = data
+      _colExpiry = Date.now() + 15 * 60 * 1000
+      return data
+    })
+    .catch(() => [])
+    .finally(() => { _colInflight = null })
+  return _colInflight
 }
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -533,6 +554,15 @@ async function createServer() {
         const isBlogList      = pathOnly === '/blog' || pathOnly === '/blog/'
 
         try {
+          // Footer links — started early so they run in parallel with route-specific fetches.
+          // fetchCategories is shared with the category route (inflight-promise dedup prevents duplicate calls).
+          const footerPromise = productApiBase
+            ? Promise.all([
+                fetchCategories(productApiBase).catch(() => [] as Array<{ id: string; name: string }>),
+                fetchFooterCollections(productApiBase).catch(() => [] as Array<{ id: string; slug: string; name_fa: string }>),
+              ])
+            : null
+
           if (storeApiBase && isHomePage) {
             // ── / (home) — prefetch banners for hero LCP ──────────────────
             const r = await fetch(`${storeApiBase}/store/banners`)
@@ -618,6 +648,7 @@ async function createServer() {
             const slug = categoryMatch[1]
             let apiCategoryId: string | undefined
             if (slug !== 'new') {
+              // fetchCategories deduplicates against the inflight footerPromise call
               const cats = await fetchCategories(productApiBase)
               const local = CATEGORIES.find((c) => c.id === slug)
               apiCategoryId = cats.find((c) => c.name === local?.fa)?.id
@@ -634,12 +665,10 @@ async function createServer() {
               initialScript = `<script>window.__CATEGORY_INITIAL__=${safeJson(initialData)}</script>`
             }
           }
-          // Footer links — cached in memory, fetched for every route to eliminate CLS
-          if (productApiBase) {
-            const [rawFooterCats, footerCols] = await Promise.all([
-              fetchCategories(productApiBase).catch(() => [] as Array<{ id: string; name: string }>),
-              fetchFooterCollections(productApiBase).catch(() => [] as Array<{ id: string; slug: string; name_fa: string }>),
-            ])
+
+          // Footer links — await here; likely already resolved while route data was fetched
+          if (footerPromise) {
+            const [rawFooterCats, footerCols] = await footerPromise
             // Map API UUIDs → slug IDs so footer links use /category/necklaces not /category/<uuid>
             const footerCats = rawFooterCats.map((c) => {
               const local = CATEGORIES.find((cat) => cat.fa === c.name)

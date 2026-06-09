@@ -83,7 +83,11 @@ export const useAuthStore = create<AuthState>()(
         const { token } = await userApi.verifyOTP(phone, otp)
         set({ isLoggedIn: true, token })
         try {
-          const profile = await userApi.getProfile()
+          const [profile] = await Promise.all([
+            userApi.getProfile(),
+            get().fetchAddresses(),
+            get().fetchOrders(),
+          ])
           set({
             profile: {
               name: profile.full_name,
@@ -97,7 +101,6 @@ export const useAuthStore = create<AuthState>()(
               avatarUrl: profile.avatar_url,
             },
           })
-          await Promise.all([get().fetchAddresses(), get().fetchOrders()])
         } catch {
           // profile fetch errors are non-fatal
         }

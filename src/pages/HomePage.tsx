@@ -36,7 +36,7 @@ const HOME_JSON_LD = {
 }
 
 const HomePage: FC = () => {
-  usePageMeta({ jsonLd: HOME_JSON_LD })
+  usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز', jsonLd: HOME_JSON_LD })
   return (
   <>
     <Hero />

@@ -74,11 +74,10 @@ const ProductPage: FC = () => {
     initialApiDetail ? (initialApiDetail.slug ?? initialApiDetail.id) : null,
   )
 
-  type InitialComment = { id: string; user_id: string; content: string; rating?: number; created_at: string }
-  const initialComments = (serverComments as InitialComment[] | undefined) ?? []
-
   const productJsonLd = useMemo(() => {
     if (!product || !apiDetail || !id) return undefined
+    type InitialComment = { id: string; user_id: string; content: string; rating?: number; created_at: string }
+    const initialComments = (serverComments as InitialComment[] | undefined) ?? []
     const urlSlug = apiDetail.slug ?? id
     const productUrl = `https://luxera.ir/product/${urlSlug}`
 
@@ -164,7 +163,7 @@ const ProductPage: FC = () => {
         },
       ],
     }
-  }, [product, apiDetail, id, initialComments])
+  }, [product, apiDetail, id, serverComments])
 
   usePageMeta({
     title: apiDetail?.seo_title || product?.fa || 'محصول',
