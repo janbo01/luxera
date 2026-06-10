@@ -60,6 +60,8 @@ const SkeletonCard = () => (
   </div>
 )
 
+const SKELETONS = Array.from({ length: VISIBLE }, (_, i) => <SkeletonCard key={i} />)
+
 const BlogCarousel: FC = () => {
   const [posts, setPosts] = useState<ApiBlogPost[]>([])
   const [loading, setLoading] = useState(true)
@@ -146,7 +148,7 @@ const BlogCarousel: FC = () => {
           style={{ scrollbarWidth: 'none' }}
         >
           {showSkeletons
-            ? Array.from({ length: VISIBLE }).map((_, i) => <SkeletonCard key={i} />)
+            ? SKELETONS
             : posts.map((post) => (
                 <div key={post.id} className="snap-start [direction:ltr]">
                   <BlogCard post={post} />
