@@ -5,7 +5,7 @@ import CategoriesSection from '../components/home/CategoriesSection'
 import ProductsSection from '../components/home/ProductsSection'
 import Feature from '../components/home/Feature'
 import Story from '../components/home/Story'
-import Newsletter from '../components/home/Newsletter'
+import BlogCarousel from '../components/home/BlogCarousel'
 
 const HOME_JSON_LD = {
   '@context': 'https://schema.org',
@@ -44,7 +44,7 @@ const HomePage: FC = () => {
     <ProductsSection />
     <Feature />
     <Story />
-    <Newsletter />
+    <BlogCarousel />
   </>
 )
 }
