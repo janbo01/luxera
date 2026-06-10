@@ -114,7 +114,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
 
         {/* Mobile header */}
         <div className="hidden max-[1100px]:flex items-center justify-between mb-5 pb-4 border-b border-rule">
-          <h2 className="font-heading text-[15px] font-semibold m-0">فیلترها</h2>
+          <h3 className="font-heading text-[15px] font-semibold m-0">فیلترها</h3>
           <button
             onClick={onClose}
             aria-label="بستن"
