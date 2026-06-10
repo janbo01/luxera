@@ -176,7 +176,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
         {/* Recent orders */}
         <div className={CARD}>
           <div className={CARD_H}>
-            <h3 className={CARD_H3}><span className={IC_CIR}><IcoClock /></span> سفارش‌های اخیر</h3>
+            <h2 className={CARD_H3}><span className={IC_CIR}><IcoClock /></span> سفارش‌های اخیر</h2>
             <button className="text-[12px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]" onClick={() => setTab('orders')}>همه‌ی سفارش‌ها →</button>
           </div>
           <div className="flex flex-col">
@@ -215,7 +215,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
         {/* Quick actions */}
         <div className={CARD}>
           <div className={CARD_H}>
-            <h3 className={CARD_H3}><span className={IC_CIR}><IcoLightning /></span> دسترسیِ سریع</h3>
+            <h2 className={CARD_H3}><span className={IC_CIR}><IcoLightning /></span> دسترسیِ سریع</h2>
           </div>
           <div className="p-2.5">
             {[

@@ -79,6 +79,7 @@ const CollectionsPage: FC = () => {
         </header>
 
         {/* ── Grid ── */}
+        <h2 className="sr-only">مجموعه‌های لوکسرا</h2>
         {loading ? (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
             {Array.from({ length: 4 }).map((_, i) => (

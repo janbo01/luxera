@@ -307,13 +307,13 @@ const CategoryPage: FC = () => {
           {/* Main row */}
           <div className="flex items-center gap-[18px] px-[22px] py-[18px] max-sm:px-4 max-sm:py-3 max-sm:gap-3">
             {/* Product count */}
-            <div className="font-heading text-base font-semibold flex items-center gap-2">
+            <h2 className="font-heading text-base font-semibold flex items-center gap-2 m-0">
               <span>نمایش</span>
               <span className="font-mono text-copper">{loading ? '…' : toFa(paginated.length)}</span>
               <span>از</span>
               <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
               <span>{category.fa}</span>
-            </div>
+            </h2>
 
             <div className="flex-1" />
 

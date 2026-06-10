@@ -217,6 +217,8 @@ const CollectionDetailPage: FC = () => {
           <div className="h-px flex-1 bg-rule" />
         </div>
 
+        <h2 className="sr-only">محصولاتِ این کالکشن</h2>
+
         {products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]">
             {products.map((p, i) => (
