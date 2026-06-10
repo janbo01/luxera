@@ -24,21 +24,32 @@ const DEFAULT_DESCRIPTION = 'لوکسرا — فروشگاه اینترنتی ج
 
 const STATIC_PAGE_META: Record<string, { title: string; description?: string }> = {
   '/':            { title: `فروشگاه جواهرات فانتزی دست‌ساز | ${BASE_TITLE}`, description: DEFAULT_DESCRIPTION },
-  '/collections': { title: `مجموعه‌ها | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.' },
-  '/blog':        { title: `بلاگ | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.' },
-  '/about':       { title: `درباره‌ی ما | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.' },
-  '/faq':         { title: `پرسش‌های متداول | ${BASE_TITLE}`, description: 'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.' },
-  '/shipping':    { title: `ارسال و تحویل | ${BASE_TITLE}`, description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.' },
-  '/contact':     { title: `تماس با ما | ${BASE_TITLE}`, description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.' },
-  '/privacy':     { title: `حریم خصوصی | ${BASE_TITLE}`, description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.' },
-  '/terms':       { title: `شرایط استفاده | ${BASE_TITLE}`, description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' },
-  '/account':     { title: `حساب کاربری | ${BASE_TITLE}` },
+  '/collections': { title: `مجموعه‌های اختصاصی جواهرات لوکسرا | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.' },
+  '/blog':        { title: `بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.' },
+  '/about':       { title: `درباره لوکسرا؛ فروشگاه جواهرات فانتزی | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.' },
+  '/faq':         { title: `پرسش‌های متداول | راهنمای خرید از لوکسرا | ${BASE_TITLE}`, description: 'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.' },
+  '/shipping':    { title: `ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`, description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.' },
+  '/contact':     { title: `تماس با لوکسرا و پشتیبانی فروشگاه | ${BASE_TITLE}`, description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.' },
+  '/privacy':     { title: `حریم خصوصی و سیاست داده‌های لوکسرا | ${BASE_TITLE}`, description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.' },
+  '/terms':       { title: `شرایط استفاده | قوانین خرید از لوکسرا | ${BASE_TITLE}`, description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' },
+  '/account':     { title: `ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}` },
   '/checkout':    { title: `پرداخت و تکمیل سفارش | ${BASE_TITLE}` },
   '/wishlist':    { title: `علاقه‌مندی‌ها | ${BASE_TITLE}` },
   '/search':      { title: `جستجو | ${BASE_TITLE}` },
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`
+
+const CATEGORY_SEO_TITLES: Record<string, string> = {
+  necklaces: 'خرید گردنبند فانتزی زنانه',
+  bracelets: 'خرید دستبند فانتزی زنانه',
+  rings:     'خرید انگشتر فانتزی زنانه',
+  earrings:  'خرید گوشواره فانتزی دخترانه',
+  sets:      'خرید ست جواهرات فانتزی زنانه',
+  new:       'جدیدترین محصولات جواهرات فانتزی',
+  bridal:    'خرید جواهرات عروس و نامزدی فانتزی',
+  mens:      'خرید جواهرات مردانه فانتزی',
+}
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
@@ -85,7 +96,8 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
   if (categoryMatch) {
     const cat = CATEGORIES.find((c) => c.id === categoryMatch[1])
     const description = CATEGORY_DESCRIPTIONS[categoryMatch[1]] || DEFAULT_DESCRIPTION
-    return { title: `${cat?.fa || 'دسته‌بندی'} | ${BASE_TITLE}`, description, canonical }
+    const seoTitle = CATEGORY_SEO_TITLES[categoryMatch[1]] || cat?.fa || 'دسته‌بندی'
+    return { title: `${seoTitle} | ${BASE_TITLE}`, description, canonical }
   }
 
   // Static routes with known meta

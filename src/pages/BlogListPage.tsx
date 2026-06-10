@@ -135,7 +135,7 @@ const BlogListPage: FC = () => {
   const hadInitialData = useRef(!!getInitialList(serverList))
 
   usePageMeta({
-    title: 'بلاگ',
+    title: 'بلاگ جواهرات فانتزی و راهنمای مد',
     description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد',
     canonical: '/blog',
     jsonLd: PAGE_JSON_LD,

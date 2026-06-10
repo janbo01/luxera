@@ -24,7 +24,7 @@ function getInitialCollections(serverCollections: unknown): ApiCollection[] | nu
 }
 
 const CollectionsPage: FC = () => {
-  usePageMeta({ title: 'مجموعه‌ها' })
+  usePageMeta({ title: 'مجموعه‌های اختصاصی جواهرات لوکسرا' })
 
   const { collections: serverCollections } = useInitialData()
   const initial = getInitialCollections(serverCollections)

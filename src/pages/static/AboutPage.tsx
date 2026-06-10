@@ -43,7 +43,7 @@ const ABOUT_JSON_LD = {
 }
 
 const AboutPage: FC = () => {
-  usePageMeta({ title: 'درباره‌ی ما', description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران', jsonLd: ABOUT_JSON_LD })
+  usePageMeta({ title: 'درباره لوکسرا؛ فروشگاه جواهرات فانتزی', description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران', jsonLd: ABOUT_JSON_LD })
   return (
   <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
     {/* Hero */}

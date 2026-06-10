@@ -91,6 +91,17 @@ const PRODUCT_SKELETON = (
   </div>
 )
 
+const CATEGORY_SEO_TITLES: Record<string, string> = {
+  necklaces: 'خرید گردنبند فانتزی زنانه',
+  bracelets: 'خرید دستبند فانتزی زنانه',
+  rings:     'خرید انگشتر فانتزی زنانه',
+  earrings:  'خرید گوشواره فانتزی دخترانه',
+  sets:      'خرید ست جواهرات فانتزی زنانه',
+  new:       'جدیدترین محصولات جواهرات فانتزی',
+  bridal:    'خرید جواهرات عروس و نامزدی فانتزی',
+  mens:      'خرید جواهرات مردانه فانتزی',
+}
+
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
   bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
@@ -120,7 +131,7 @@ const CategoryPage: FC = () => {
   }, [category, id])
 
   usePageMeta({
-    title: category?.fa ?? 'دسته‌بندی',
+    title: (id && CATEGORY_SEO_TITLES[id]) || category?.fa || 'دسته‌بندی',
     description: id ? CATEGORY_DESCRIPTIONS[id] : undefined,
     canonical: id ? `/category/${id}` : undefined,
     jsonLd: categoryJsonLd,

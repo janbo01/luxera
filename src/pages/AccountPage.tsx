@@ -938,7 +938,7 @@ const NAV_ITEMS = [
 ] as const
 
 const AccountPage: FC = () => {
-  usePageMeta({ title: 'حساب کاربری' })
+  usePageMeta({ title: 'ورود به حساب کاربری و پیگیری سفارش' })
   const [tab, setTab] = useState<Tab>('overview')
   const profile = useAuthStore((s) => s.profile)
   const logout = useAuthStore((s) => s.logout)
