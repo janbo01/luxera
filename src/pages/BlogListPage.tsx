@@ -106,9 +106,9 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
 
       <div className="p-5 sm:p-6 flex flex-col gap-2.5 flex-1 bg-surface">
         {date && <span className="label-mono">{date}</span>}
-        <h2 className="font-heading font-bold text-[clamp(15px,1.8vw,18px)] leading-[1.35] text-ink group-hover:text-plum transition-colors duration-200 flex-1">
+        <h3 className="font-heading font-bold text-[clamp(15px,1.8vw,18px)] leading-[1.35] text-ink group-hover:text-plum transition-colors duration-200 flex-1">
           {post.title}
-        </h2>
+        </h3>
         {post.excerpt && (
           <p className="text-[13px] leading-[1.8] text-ink-2 line-clamp-2">{post.excerpt}</p>
         )}

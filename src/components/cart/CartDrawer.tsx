@@ -112,10 +112,10 @@ const CartDrawer: FC = () => {
       >
         {/* Head */}
         <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
-          <h2 className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
+          <div className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
             سبد خرید
             <small className="font-mono text-[11px] text-muted font-normal">{toFa(totalQty)} قطعه</small>
-          </h2>
+          </div>
           <button
             className="w-9 h-9 flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
             onClick={closeCart}
