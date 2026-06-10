@@ -67,7 +67,12 @@ const Hero: FC = () => {
       </div>
 
       {/* ── Cream copy panel (right) ── */}
-      <div className="rounded-[var(--radius)] bg-surface border border-rule px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
+      <div className="relative overflow-hidden rounded-[var(--radius)] bg-surface border border-rule px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
+        {/* Decorative display watermark */}
+        <div aria-hidden="true" className="absolute bottom-0 start-0 font-display italic font-semibold text-[clamp(72px,8.5vw,128px)] leading-none text-ink/[0.038] pointer-events-none select-none translate-y-[30%] whitespace-nowrap ps-2">
+          Fine Jewelry
+        </div>
+
         <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">
           <span className="w-5 h-px bg-copper-dark opacity-70" />
           <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark">

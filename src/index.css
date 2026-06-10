@@ -566,6 +566,11 @@
   user-select: none;
 }
 
+.story-section--dark .story-card::after {
+  color: var(--color-copper);
+  opacity: 0.07;
+}
+
 
 
 /* ── Blog article prose ──────────────────────────────────────────────────── */

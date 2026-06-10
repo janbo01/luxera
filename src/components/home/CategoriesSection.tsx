@@ -43,17 +43,18 @@ const CategoriesSection: FC = () => {
         }
       />
 
-      <div className="grid grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 gap-3">
-        {VISIBLE_CATS.map((cat) => {
+      <div className="grid grid-cols-3 max-md:grid-cols-2 gap-3">
+        {VISIBLE_CATS.map((cat, index) => {
           const apiCat = apiByName.get(cat.fa)
           const imgSrc = apiCat?.image_url
           const bg = CAT_BG[cat.id] ?? 'bg-plum'
+          const isFeatured = index === 0
 
           return (
             <Link
               key={cat.id}
               to={`/category/${cat.id}`}
-              className={`group relative rounded-[16px] overflow-hidden aspect-[3/4] flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg}`}
+              className={`group relative rounded-[16px] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 aspect-[16/10]' : 'aspect-[3/4]'}`}
             >
               {/* Category image */}
               {imgSrc ? (
@@ -62,8 +63,8 @@ const CategoriesSection: FC = () => {
                   alt={cat.fa}
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none -z-[1] transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
                   aria-hidden="true"
-                  width="400"
-                  height="533"
+                  width={isFeatured ? 640 : 400}
+                  height={isFeatured ? 400 : 533}
                 />
               ) : null}
 
