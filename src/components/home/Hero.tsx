@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react'
+import { useState, memo, type FC } from 'react'
 import { Link } from 'react-router-dom'
 import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
@@ -18,11 +18,27 @@ const TICKER_ITEMS = [
 
 const TICKER_DOUBLED = [...TICKER_ITEMS, ...TICKER_ITEMS]
 
+const TICKER_JSX = TICKER_DOUBLED.map((item, i) => (
+  <span key={i} className="inline-flex items-center gap-2.5">
+    <i className="text-copper text-sm not-italic">✦</i> {item}
+  </span>
+))
+
 const HERO_STATS = [
   { v: '۴', u: 'روز', l: 'ضمانت بازگشت' },
   { v: 'رایگان', u: '', l: 'ارسال بالای ۲.۵ میلیون' },
   { v: '۲۰۰+', u: 'مدل', l: 'محصول موجود' },
 ] as const
+
+const STATS_JSX = HERO_STATS.map(({ v, u, l }, i) => (
+  <div key={i} className={`${i < 2 ? 'pe-4 border-e border-rule me-4' : ''}`}>
+    <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
+      {v}
+      {u ? <small className="text-[11px] font-medium text-copper-dark font-body">{u}</small> : null}
+    </div>
+    <div className="text-[11px] text-muted mt-1.5 leading-[1.4]">{l}</div>
+  </div>
+))
 
 function fmtPrice(raw?: string): string {
   const n = Number(raw)
@@ -105,15 +121,7 @@ const Hero: FC = () => {
         </div>
 
         <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
-          {HERO_STATS.map(({ v, u, l }, i) => (
-            <div key={i} className={`${i < 2 ? 'pe-4 border-e border-rule me-4' : ''}`}>
-              <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
-                {v}
-                {u && <small className="text-[11px] font-medium text-copper-dark font-body">{u}</small>}
-              </div>
-              <div className="text-[11px] text-muted mt-1.5 leading-[1.4]">{l}</div>
-            </div>
-          ))}
+          {STATS_JSX}
         </div>
       </div>
     </div>
@@ -121,15 +129,11 @@ const Hero: FC = () => {
     {/* ── Ticker ── */}
     <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3.5 border-t border-b border-rule py-3.5 overflow-hidden">
       <div className="flex gap-[54px] w-max font-mono text-[11px] tracking-[0.22em] uppercase text-ink-2 animate-[hero-ticker_38s_linear_infinite]">
-        {TICKER_DOUBLED.map((item, i) => (
-          <span key={i} className="inline-flex items-center gap-2.5">
-            <i className="text-copper text-sm not-italic">✦</i> {item}
-          </span>
-        ))}
+        {TICKER_JSX}
       </div>
     </div>
   </section>
   )
 }
 
-export default Hero
+export default memo(Hero)

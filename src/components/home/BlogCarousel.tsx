@@ -36,9 +36,9 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
         <h3 className="font-heading font-bold text-[clamp(14px,1.6vw,17px)] leading-[1.35] text-ink group-hover:text-plum transition-colors duration-200 flex-1 line-clamp-2">
           {post.title}
         </h3>
-        {post.excerpt && (
+        {post.excerpt ? (
           <p className="text-[12px] leading-[1.8] text-ink-2 line-clamp-2">{post.excerpt}</p>
-        )}
+        ) : null}
         <span className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-plum font-medium">
           ادامه مطلب
           <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
