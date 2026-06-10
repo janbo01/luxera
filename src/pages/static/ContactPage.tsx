@@ -65,12 +65,12 @@ const ContactPage: FC = () => {
         {/* Info column */}
         <aside className="flex flex-col">
           <div className="py-6 border-b border-rule first:pt-0">
-            <h3 className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">تلفن و پیام</h3>
+            <h2 className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">تلفن و پیام</h2>
             <p dir="ltr" className="text-right font-mono text-[13px] tracking-[.06em] text-ink-2 m-0">+98 912 849 4308</p>
             <p className="text-sm leading-[1.85] text-ink-2 m-0 mt-2">پشتیبانی واتس‌اپ: ۱۰ تا ۲۲ روزانه</p>
           </div>
           <div className="py-6 border-b border-rule">
-            <h3 className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">شبکه‌های اجتماعی</h3>
+            <h2 className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">شبکه‌های اجتماعی</h2>
             <div className="flex gap-4 flex-wrap mt-2">
               {['Instagram','Telegram','WhatsApp'].map((s) => (
                 <a key={s} href="#" aria-label={`${s} لوکسرا`} className="font-mono text-[11px] tracking-[.1em] text-muted border-b border-rule pb-0.5 transition-[color,border-color] hover:text-plum hover:border-plum">{s}</a>

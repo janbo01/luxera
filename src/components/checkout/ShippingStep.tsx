@@ -208,10 +208,10 @@ const ShippingStep: FC<ShippingStepProps> = ({
         <Icon name="gift" size={18} strokeWidth={1.8} />
       </span>
       <span className="flex-1 flex flex-col gap-0.5">
-        <h4 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
+        <h3 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
           بسته‌بندیِ هدیه
           <span className="font-display italic text-[12px] text-muted font-normal">Gift Wrapping</span>
-        </h4>
+        </h3>
         <p className="m-0 text-[12px] text-muted">کارتِ دست‌نویس + جعبه‌ی مخمل — مناسب برای هدیه</p>
       </span>
       <span className="font-heading text-[14px] font-semibold">

@@ -112,10 +112,10 @@ const CartDrawer: FC = () => {
       >
         {/* Head */}
         <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
-          <h3 className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
+          <h2 className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
             سبد خرید
             <small className="font-mono text-[11px] text-muted font-normal">{toFa(totalQty)} قطعه</small>
-          </h3>
+          </h2>
           <button
             className="w-9 h-9 flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
             onClick={closeCart}
@@ -132,7 +132,7 @@ const CartDrawer: FC = () => {
               <span className="inline-flex">
                 <Icon name="bag" size={36} />
               </span>
-              <h4 className="font-body font-light text-[22px] text-ink mt-4 mb-2">سبد شما خالی است</h4>
+              <h3 className="font-body font-light text-[22px] text-ink mt-4 mb-2">سبد شما خالی است</h3>
               <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.</p>
               <button
                 className="inline-flex items-center gap-2.5 px-[18px] py-2.5 text-xs font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg hover:-translate-y-px"

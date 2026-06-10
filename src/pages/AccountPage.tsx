@@ -300,7 +300,7 @@ const ProfilePane: FC = () => {
             : <span className={AVA_LG}>{firstLetter(profile?.name)}</span>
           }
           <div className="flex-1">
-            <h4 className="font-heading text-sm font-semibold m-0">عکسِ پروفایل</h4>
+            <h3 className="font-heading text-sm font-semibold m-0">عکسِ پروفایل</h3>
             <p className="m-0 mt-0.5 text-[12px] text-muted">JPG یا PNG · حداکثر ۲ مگابایت · ۴۰۰×۴۰۰ پیکسل</p>
           </div>
           <div className="flex gap-2">
@@ -384,7 +384,7 @@ const ProfilePane: FC = () => {
             <div key={key} className="flex items-start gap-3.5 py-3.5 border-t border-rule first:border-t-0 first:pt-0">
               <span className="w-[34px] h-[34px] rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">{icon}</span>
               <div className="flex-1">
-                <h4 className="font-heading text-[13px] font-semibold m-0">{title}</h4>
+                <h3 className="font-heading text-[13px] font-semibold m-0">{title}</h3>
                 <p className="m-0 mt-0.5 text-[11px] text-muted">{desc}</p>
               </div>
               {/* Toggle switch using peer */}
@@ -528,9 +528,9 @@ const OrdersPane: FC = () => {
                   <div className="grid grid-cols-[1fr_280px] gap-7 max-[1100px]:grid-cols-1">
                     {/* Items */}
                     <div>
-                      <h4 className="font-heading text-[13px] m-0 mb-2.5 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px]">
+                      <h3 className="font-heading text-[13px] m-0 mb-2.5 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px]">
                         <IcoBag /> اقلامِ سفارش
-                      </h4>
+                      </h3>
                       <div className="flex flex-col gap-2.5">
                         {order.items.map((item, i) => (
                           <div key={i} className="grid grid-cols-[54px_1fr_auto] gap-3.5 items-center p-3 px-3.5 bg-surface border border-rule rounded-[10px]">
@@ -563,9 +563,9 @@ const OrdersPane: FC = () => {
                     {/* Timeline */}
                     <div>
                       <div className="bg-surface border border-rule rounded-[10px] p-[18px_20px]">
-                        <h4 className="font-heading text-[13px] font-semibold m-0 mb-3 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-copper">
+                        <h3 className="font-heading text-[13px] font-semibold m-0 mb-3 flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-copper">
                           <IcoTruck /> وضعیتِ ارسال
-                        </h4>
+                        </h3>
                         {steps.map((step, i) => {
                           const isDone = i <= doneIdx
                           return (
@@ -853,7 +853,7 @@ const WishlistPane: FC = () => {
                   </div>
                   <div className="p-3.5 px-4">
                     <span className="font-mono text-[10px] tracking-[.14em] uppercase text-muted">{product.cat}</span>
-                    <h4 className="font-heading text-sm font-semibold leading-[1.3] mt-1">{product.fa}</h4>
+                    <h3 className="font-heading text-sm font-semibold leading-[1.3] mt-1">{product.fa}</h3>
                     <div className="flex justify-between items-center mt-2">
                       <span className="font-heading text-sm font-bold">
                         {formatToman(product.price)}<small className="text-[10px] text-muted font-normal mr-[3px]">ت</small>
@@ -894,7 +894,7 @@ const SecurityPane: FC = () => {
             <div key={key} className="flex items-start gap-3.5 py-3.5 border-t border-rule first:border-t-0 first:pt-0">
               <span className="w-[34px] h-[34px] rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]"><IcoLock /></span>
               <div className="flex-1">
-                <h4 className="font-heading text-[13px] font-semibold m-0">{title}</h4>
+                <h3 className="font-heading text-[13px] font-semibold m-0">{title}</h3>
                 <p className="m-0 mt-0.5 text-[11px] text-muted">{desc}</p>
               </div>
               <label className="relative w-9 h-5 shrink-0 cursor-pointer mt-0.5">
@@ -1017,7 +1017,7 @@ const AccountPage: FC = () => {
       </section>
 
       {/* Dashboard */}
-      <main className="pb-20">
+      <section className="pb-20">
         <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
           <div className="grid grid-cols-[260px_1fr] gap-6 items-start max-[1100px]:grid-cols-1">
             {/* Sidebar */}
@@ -1080,7 +1080,7 @@ const AccountPage: FC = () => {
             </div>
           </div>
         </div>
-      </main>
+      </section>
     </div>
   )
 }

@@ -225,7 +225,7 @@ const CheckoutPage: FC = () => {
     return (
       <div className="flex flex-col items-center gap-3.5 text-center py-24 px-[var(--pad)] text-muted">
         <Icon name="bag" size={40} strokeWidth={1.5} />
-        <h3 className="font-heading font-light text-[26px] text-ink m-0">سبد خرید شما خالی است</h3>
+        <h1 className="font-heading font-light text-[26px] text-ink m-0">سبد خرید شما خالی است</h1>
         <p className="text-sm max-w-[30ch] m-0">محصولی به سبد اضافه کنید تا بتوانید سفارش دهید.</p>
         <Link to="/" className={BTN_CLS}>بازگشت به فروشگاه</Link>
       </div>

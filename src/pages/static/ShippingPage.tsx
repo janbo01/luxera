@@ -78,7 +78,7 @@ const ShippingPage: FC = () => {
             <div key={s.n} className="grid grid-cols-[48px_1fr] gap-5 py-6 border-b border-rule">
               <span className="w-9 h-9 bg-plum text-bg font-mono text-[12px] flex items-center justify-center shrink-0">{s.n}</span>
               <div>
-                <h4 className="font-body text-[15px] font-medium mt-1 mb-1.5 text-ink">{s.title}</h4>
+                <h3 className="font-body text-[15px] font-medium mt-1 mb-1.5 text-ink">{s.title}</h3>
                 <p className="text-sm leading-[1.8] text-ink-2 m-0">{s.body}</p>
               </div>
             </div>
@@ -91,7 +91,7 @@ const ShippingPage: FC = () => {
         <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">شرایط بازگشت</h2>
         <div className="grid grid-cols-2 gap-10 mt-6 max-[900px]:grid-cols-1 max-[900px]:gap-7">
           <div>
-            <h4 className="font-body text-sm font-medium m-0 mb-3 text-ink">✓ مشمول بازگشت</h4>
+            <h3 className="font-body text-sm font-medium m-0 mb-3 text-ink">✓ مشمول بازگشت</h3>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5 text-sm text-ink-2">
               {['قطعه سالم و بدون آسیب فیزیکی','پلاک اصلی دست‌نخورده','در بسته‌بندی اصلی','تا ۴ روز از تاریخ دریافت'].map((t) => (
                 <li key={t} className="before:content-['✓'] before:text-plum before:ml-2">{t}</li>
@@ -99,7 +99,7 @@ const ShippingPage: FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-body text-sm font-medium m-0 mb-3 text-ink">✗ شامل بازگشت نمی‌شود</h4>
+            <h3 className="font-body text-sm font-medium m-0 mb-3 text-ink">✗ شامل بازگشت نمی‌شود</h3>
             <ul className="list-none p-0 m-0 flex flex-col gap-2.5 text-sm text-ink-2">
               {['قطعاتی که استفاده شده‌اند','قطعاتی که پلاکشان جدا شده','آسیب فیزیکی ناشی از بی‌احتیاطی','محصولات سفارشی‌سازی شده'].map((t) => (
                 <li key={t} className="before:content-['✗'] before:text-sale before:ml-2">{t}</li>

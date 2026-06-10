@@ -299,7 +299,7 @@ const CategoryPage: FC = () => {
         />
       </div>
 
-      <main className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
+      <section className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
 
         {/* ── Toolbar ─────────────────────────────────────────────── */}
         <div className="mt-7 mb-[18px] bg-surface rounded-[var(--radius)] border border-rule">
@@ -483,7 +483,7 @@ const CategoryPage: FC = () => {
             )}
           </section>
         </div>
-      </main>
+      </section>
 
       {/* ── Mobile sticky action bar ─────────────────────────────── */}
       <div className="hidden max-[1100px]:flex fixed bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom,0px))] inset-x-0 z-[110] bg-surface/95 backdrop-blur-sm border-t border-rule px-4 pt-3 pb-3">
