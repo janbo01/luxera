@@ -562,7 +562,7 @@ async function createServer() {
     })
     app.use(vite.middlewares)
 
-    app.use('*', async (req, res) => {
+    app.use('/{*path}', async (req, res) => {
       const url = req.originalUrl
       try {
         let template = fs.readFileSync(path.join(root, 'index.html'), 'utf-8')
@@ -654,7 +654,7 @@ async function createServer() {
       }
     }
 
-    app.use('*', async (req, res) => {
+    app.use('/{*path}', async (req, res) => {
       const url = req.originalUrl
       try {
         // Pre-fetch route data so SSR renders the full layout (no spinner),
