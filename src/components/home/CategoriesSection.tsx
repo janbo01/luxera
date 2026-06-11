@@ -54,7 +54,7 @@ const CategoriesSection: FC = () => {
             <Link
               key={cat.id}
               to={`/category/${cat.id}`}
-              className={`group relative rounded-[16px] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 aspect-[16/10]' : 'aspect-[3/4]'}`}
+              className={`group relative rounded-[16px] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 min-h-[480px] max-md:min-h-0 max-md:aspect-[16/10]' : 'aspect-[3/4]'}`}
             >
               {/* Category image */}
               {imgSrc ? (
