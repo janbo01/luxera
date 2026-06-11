@@ -175,8 +175,8 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
   const badgeKind: 'new' | 'sale' | undefined = api.is_new
     ? 'new'
     : api.is_sale
-    ? 'sale'
-    : undefined
+      ? 'sale'
+      : undefined
 
   const detail = api as ApiProductDetail
   const imageUrl = detail.images?.[0]?.url ?? api.image_url
@@ -281,9 +281,7 @@ export async function listCollections(): Promise<ApiCollection[]> {
   )
 }
 
-export async function getCollectionBySlug(
-  slug: string,
-): Promise<ApiCollectionDetail> {
+export async function getCollectionBySlug(slug: string): Promise<ApiCollectionDetail> {
   return cachedFetch(
     `collection:${slug}`,
     () => apiFetch<ApiCollectionDetail>(`${BASE}/collections/${slug}`),
@@ -317,10 +315,7 @@ export async function createComment(
   })
 }
 
-export async function subscribeStockNotification(
-  productId: string,
-  phone: string,
-): Promise<void> {
+export async function subscribeStockNotification(productId: string, phone: string): Promise<void> {
   await apiFetch(`${BASE}/products/${productId}/notify`, {
     method: 'POST',
     body: JSON.stringify({ phone }),

@@ -29,9 +29,15 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
     const first = focusable[0]
     const last = focusable[focusable.length - 1]
     if (e.shiftKey) {
-      if (document.activeElement === first) { e.preventDefault(); last.focus() }
+      if (document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      }
     } else {
-      if (document.activeElement === last) { e.preventDefault(); first.focus() }
+      if (document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
   }, [])
 
@@ -72,7 +78,9 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-rule sticky top-0 bg-surface z-[1]">
-          <h2 className="font-body font-light text-[18px] m-0 text-ink" id="sg-title">راهنمای سایز</h2>
+          <h2 className="font-body font-light text-[18px] m-0 text-ink" id="sg-title">
+            راهنمای سایز
+          </h2>
           <button
             ref={closeBtnRef}
             className="w-9 h-9 flex items-center justify-center text-muted hover:text-ink transition-colors duration-200 flex-shrink-0"
@@ -86,18 +94,81 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
 
         {/* Illustration */}
         <div className="px-6 pt-6 bg-[var(--color-bg-2)]" aria-hidden="true">
-          <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[180px]">
+          <svg
+            viewBox="0 0 280 200"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-[180px]"
+          >
             <path
               d="M100 10 Q120 8 140 10 Q160 8 180 10 L185 60 Q170 90 155 100 Q150 105 140 108 Q130 105 125 100 Q110 90 95 60 Z"
-              fill="var(--color-bg-2)" stroke="var(--color-rule)" strokeWidth="1"
+              fill="var(--color-bg-2)"
+              stroke="var(--color-rule)"
+              strokeWidth="1"
             />
-            <ellipse cx="140" cy="100" rx="28" ry="6" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            <ellipse cx="140" cy="108" rx="34" ry="8" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            <ellipse cx="140" cy="118" rx="42" ry="11" stroke="var(--color-plum)" strokeWidth="1.5" fill="none"/>
-            <circle cx="140" cy="129" r="3" fill="var(--color-plum)"/>
-            <ellipse cx="140" cy="130" rx="50" ry="14" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            <ellipse cx="140" cy="144" rx="60" ry="17" stroke="#b8a98a" strokeWidth="1" strokeDasharray="3 2" fill="none" opacity="0.5"/>
-            <text x="196" y="122" fontSize="9" fill="var(--color-plum)" fontFamily="var(--font-body)">۴۵ سانت</text>
+            <ellipse
+              cx="140"
+              cy="100"
+              rx="28"
+              ry="6"
+              stroke="#b8a98a"
+              strokeWidth="1"
+              strokeDasharray="3 2"
+              fill="none"
+              opacity="0.5"
+            />
+            <ellipse
+              cx="140"
+              cy="108"
+              rx="34"
+              ry="8"
+              stroke="#b8a98a"
+              strokeWidth="1"
+              strokeDasharray="3 2"
+              fill="none"
+              opacity="0.5"
+            />
+            <ellipse
+              cx="140"
+              cy="118"
+              rx="42"
+              ry="11"
+              stroke="var(--color-plum)"
+              strokeWidth="1.5"
+              fill="none"
+            />
+            <circle cx="140" cy="129" r="3" fill="var(--color-plum)" />
+            <ellipse
+              cx="140"
+              cy="130"
+              rx="50"
+              ry="14"
+              stroke="#b8a98a"
+              strokeWidth="1"
+              strokeDasharray="3 2"
+              fill="none"
+              opacity="0.5"
+            />
+            <ellipse
+              cx="140"
+              cy="144"
+              rx="60"
+              ry="17"
+              stroke="#b8a98a"
+              strokeWidth="1"
+              strokeDasharray="3 2"
+              fill="none"
+              opacity="0.5"
+            />
+            <text
+              x="196"
+              y="122"
+              fontSize="9"
+              fill="var(--color-plum)"
+              fontFamily="var(--font-body)"
+            >
+              ۴۵ سانت
+            </text>
           </svg>
         </div>
 
@@ -107,9 +178,15 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
             <caption className="sr-only">جدول اندازه‌های گردنبند</caption>
             <thead>
               <tr>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">طول</th>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">سبک</th>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">مناسب برای</th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                  طول
+                </th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                  سبک
+                </th>
+                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                  مناسب برای
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -121,8 +198,16 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
                   >
                     {s.cm} سانت
                   </td>
-                  <td className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}>{s.label}</td>
-                  <td className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}>{s.fit}</td>
+                  <td
+                    className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}
+                  >
+                    {s.label}
+                  </td>
+                  <td
+                    className={`py-[11px] px-3 border-b border-rule align-middle ${s.recommended ? 'text-ink' : 'text-ink-2'}`}
+                  >
+                    {s.fit}
+                  </td>
                 </tr>
               ))}
             </tbody>

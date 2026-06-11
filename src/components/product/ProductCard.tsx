@@ -14,7 +14,6 @@ interface ProductCardProps {
   priority?: boolean
 }
 
-
 const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false }) => {
   const cardRef = useRef<HTMLAnchorElement>(null)
   const { wishlisted, toggle } = useWishlist(product)
@@ -26,19 +25,25 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
     }
   }, [product.imageUrlAlt])
 
-  const handleAdd = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const mediaEl = cardRef.current?.querySelector('.product-media')
-    if (mediaEl) flyToCart(mediaEl.getBoundingClientRect())
-    onAdd(product)
-  }, [onAdd, product])
+  const handleAdd = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      const mediaEl = cardRef.current?.querySelector('.product-media')
+      if (mediaEl) flyToCart(mediaEl.getBoundingClientRect())
+      onAdd(product)
+    },
+    [onAdd, product],
+  )
 
-  const handleWish = useCallback((e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    toggle()
-  }, [toggle])
+  const handleWish = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      toggle()
+    },
+    [toggle],
+  )
 
   const badgeKind = product.badgeKind ?? 'new'
   const badgeLabel = product.badge
@@ -52,7 +57,6 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
     >
       {/* Media */}
       <div className="product-media relative bg-gradient-to-br from-[#EFE5D5] to-[#E6D8C2] aspect-square overflow-hidden">
-
         {/* Badges */}
         {badgeLabel && (
           <div className="product-badge absolute top-3 end-3 flex flex-col gap-1.5 items-end z-[3]">
@@ -74,28 +78,34 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         {/* Product image */}
         <div className="absolute inset-0 flex items-center justify-center transition-transform duration-500 ease-in-out group-hover:scale-[1.04]">
           <div className="absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-opacity duration-500">
-            {product.imageUrl
-              ? <img
-                  src={product.imageUrl}
-                  alt={product.fa}
-                  loading={priority ? 'eager' : 'lazy'}
-                  fetchPriority={priority ? 'high' : 'auto'}
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              : <Illustration name={product.illus} />}
+            {product.imageUrl ? (
+              <img
+                src={product.imageUrl}
+                alt={product.fa}
+                loading={priority ? 'eager' : 'lazy'}
+                fetchPriority={priority ? 'high' : 'auto'}
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Illustration name={product.illus} />
+            )}
           </div>
         </div>
       </div>
 
       {/* Body */}
       <div className="px-4 pt-4 pb-5 flex flex-col gap-3">
-        <div className="font-heading text-[16px] font-semibold leading-[1.3] text-ink">{product.fa}</div>
+        <div className="font-heading text-[16px] font-semibold leading-[1.3] text-ink">
+          {product.fa}
+        </div>
 
         <div className="flex justify-between items-end">
           <div className="flex flex-col items-start [font-feature-settings:'tnum']">
             {product.oldPrice != null && (
-              <span className="text-muted line-through text-[11px] font-mono leading-none mb-1">{formatNumber(product.oldPrice)}</span>
+              <span className="text-muted line-through text-[11px] font-mono leading-none mb-1">
+                {formatNumber(product.oldPrice)}
+              </span>
             )}
             <span className="font-heading text-[17px] font-bold text-ink leading-none">
               {formatNumber(product.price)}

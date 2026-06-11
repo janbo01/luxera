@@ -19,7 +19,16 @@ function setMetaContent(selector: string, value: string) {
   if (el) el.content = value
 }
 
-export function usePageMeta({ title, description, keywords, canonical, ogImage, ogType, jsonLd, noIndex }: PageMetaOptions) {
+export function usePageMeta({
+  title,
+  description,
+  keywords,
+  canonical,
+  ogImage,
+  ogType,
+  jsonLd,
+  noIndex,
+}: PageMetaOptions) {
   const jsonLdString = useMemo(() => (jsonLd ? JSON.stringify(jsonLd) : undefined), [jsonLd])
 
   useEffect(() => {

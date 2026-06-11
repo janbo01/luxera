@@ -10,7 +10,11 @@ const SITE_URL = 'https://luxera.ir'
 const BASE_TITLE = 'Luxera · لوکسرا'
 
 function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
 }
 
 interface PageMeta {
@@ -20,22 +24,55 @@ interface PageMeta {
   ogImage?: string
 }
 
-const DEFAULT_DESCRIPTION = 'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.'
+const DEFAULT_DESCRIPTION =
+  'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.'
 
 const STATIC_PAGE_META: Record<string, { title: string; description?: string }> = {
-  '/':            { title: `فروشگاه جواهرات فانتزی دست‌ساز | ${BASE_TITLE}`, description: DEFAULT_DESCRIPTION },
-  '/collections': { title: `مجموعه‌های اختصاصی جواهرات لوکسرا | ${BASE_TITLE}`, description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.' },
-  '/blog':        { title: `بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`, description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.' },
-  '/about':       { title: `درباره لوکسرا؛ فروشگاه جواهرات فانتزی | ${BASE_TITLE}`, description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.' },
-  '/faq':         { title: `پرسش‌های متداول | راهنمای خرید از لوکسرا | ${BASE_TITLE}`, description: 'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.' },
-  '/shipping':    { title: `ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`, description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.' },
-  '/contact':     { title: `تماس با لوکسرا و پشتیبانی فروشگاه | ${BASE_TITLE}`, description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.' },
-  '/privacy':     { title: `حریم خصوصی و سیاست داده‌های لوکسرا | ${BASE_TITLE}`, description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.' },
-  '/terms':       { title: `شرایط استفاده | قوانین خرید از لوکسرا | ${BASE_TITLE}`, description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.' },
-  '/account':     { title: `ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}` },
-  '/checkout':    { title: `پرداخت و تکمیل سفارش | ${BASE_TITLE}` },
-  '/wishlist':    { title: `علاقه‌مندی‌ها | ${BASE_TITLE}` },
-  '/search':      { title: `جستجو | ${BASE_TITLE}` },
+  '/': {
+    title: `فروشگاه جواهرات فانتزی دست‌ساز | ${BASE_TITLE}`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  '/collections': {
+    title: `مجموعه‌های اختصاصی جواهرات لوکسرا | ${BASE_TITLE}`,
+    description:
+      'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.',
+  },
+  '/blog': {
+    title: `بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`,
+    description:
+      'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.',
+  },
+  '/about': {
+    title: `درباره لوکسرا؛ فروشگاه جواهرات فانتزی | ${BASE_TITLE}`,
+    description:
+      'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.',
+  },
+  '/faq': {
+    title: `پرسش‌های متداول | راهنمای خرید از لوکسرا | ${BASE_TITLE}`,
+    description:
+      'پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا.',
+  },
+  '/shipping': {
+    title: `ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`,
+    description:
+      'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.',
+  },
+  '/contact': {
+    title: `تماس با لوکسرا و پشتیبانی فروشگاه | ${BASE_TITLE}`,
+    description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.',
+  },
+  '/privacy': {
+    title: `حریم خصوصی و سیاست داده‌های لوکسرا | ${BASE_TITLE}`,
+    description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.',
+  },
+  '/terms': {
+    title: `شرایط استفاده | قوانین خرید از لوکسرا | ${BASE_TITLE}`,
+    description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.',
+  },
+  '/account': { title: `ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}` },
+  '/checkout': { title: `پرداخت و تکمیل سفارش | ${BASE_TITLE}` },
+  '/wishlist': { title: `علاقه‌مندی‌ها | ${BASE_TITLE}` },
+  '/search': { title: `جستجو | ${BASE_TITLE}` },
 }
 
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`
@@ -43,23 +80,27 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.webp`
 const CATEGORY_SEO_TITLES: Record<string, string> = {
   necklaces: 'خرید گردنبند فانتزی زنانه',
   bracelets: 'خرید دستبند فانتزی زنانه',
-  rings:     'خرید انگشتر فانتزی زنانه',
-  earrings:  'خرید گوشواره فانتزی دخترانه',
-  sets:      'خرید ست جواهرات فانتزی زنانه',
-  new:       'جدیدترین محصولات جواهرات فانتزی',
-  bridal:    'خرید جواهرات عروس و نامزدی فانتزی',
-  mens:      'خرید جواهرات مردانه فانتزی',
+  rings: 'خرید انگشتر فانتزی زنانه',
+  earrings: 'خرید گوشواره فانتزی دخترانه',
+  sets: 'خرید ست جواهرات فانتزی زنانه',
+  new: 'جدیدترین محصولات جواهرات فانتزی',
+  bridal: 'خرید جواهرات عروس و نامزدی فانتزی',
+  mens: 'خرید جواهرات مردانه فانتزی',
 }
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
-  bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
-  rings:     'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
-  earrings:  'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
-  sets:      'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
-  new:       'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
-  bridal:    'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
-  mens:      'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
+  necklaces:
+    'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
+  bracelets:
+    'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
+  rings:
+    'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
+  earrings:
+    'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
+  sets: 'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
+  new: 'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  bridal: 'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
+  mens: 'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
 }
 
 function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): PageMeta {
@@ -68,27 +109,59 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
   // /product/:id
   const productMatch = pathOnly.match(/^\/product\/([^/?#]+)$/)
   if (productMatch && initialData.product) {
-    const p = initialData.product as { seo_title?: string; title_fa?: string; title?: string; seo_description?: string; short_description?: string; images?: Array<{ url: string }> }
+    const p = initialData.product as {
+      seo_title?: string
+      title_fa?: string
+      title?: string
+      seo_description?: string
+      short_description?: string
+      images?: Array<{ url: string }>
+    }
     const name = p.seo_title || p.title_fa || p.title || 'محصول'
     const ogImage = p.images?.[0]?.url || DEFAULT_OG_IMAGE
-    return { title: `${name} | ${BASE_TITLE}`, description: p.seo_description || p.short_description || DEFAULT_DESCRIPTION, canonical, ogImage }
+    return {
+      title: `${name} | ${BASE_TITLE}`,
+      description: p.seo_description || p.short_description || DEFAULT_DESCRIPTION,
+      canonical,
+      ogImage,
+    }
   }
 
   // /blog/:slug
   const blogPostMatch = pathOnly.match(/^\/blog\/([^/?#]+)$/)
   if (blogPostMatch && initialData.blogPost) {
-    const post = initialData.blogPost as { seo_title?: string; title?: string; seo_description?: string; excerpt?: string; featured_image_url?: string }
+    const post = initialData.blogPost as {
+      seo_title?: string
+      title?: string
+      seo_description?: string
+      excerpt?: string
+      featured_image_url?: string
+    }
     const name = post.seo_title || post.title || 'مقاله'
     const ogImage = post.featured_image_url || DEFAULT_OG_IMAGE
-    return { title: `${name} | ${BASE_TITLE}`, description: post.seo_description || post.excerpt || DEFAULT_DESCRIPTION, canonical, ogImage }
+    return {
+      title: `${name} | ${BASE_TITLE}`,
+      description: post.seo_description || post.excerpt || DEFAULT_DESCRIPTION,
+      canonical,
+      ogImage,
+    }
   }
 
   // /collections/:slug
   const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
   if (collDetailMatch && initialData.collection) {
-    const col = initialData.collection as { name_fa?: string; description?: string; cover_image_url?: string }
+    const col = initialData.collection as {
+      name_fa?: string
+      description?: string
+      cover_image_url?: string
+    }
     const ogImage = col.cover_image_url || DEFAULT_OG_IMAGE
-    return { title: `${col.name_fa || 'مجموعه'} | ${BASE_TITLE}`, description: col.description || DEFAULT_DESCRIPTION, canonical, ogImage }
+    return {
+      title: `${col.name_fa || 'مجموعه'} | ${BASE_TITLE}`,
+      description: col.description || DEFAULT_DESCRIPTION,
+      canonical,
+      ogImage,
+    }
   }
 
   // /category/:id
@@ -103,7 +176,12 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
   // Static routes with known meta
   const staticNorm = pathOnly.replace(/\/$/, '') || '/'
   const staticMeta = STATIC_PAGE_META[staticNorm]
-  if (staticMeta) return { title: staticMeta.title, description: staticMeta.description || DEFAULT_DESCRIPTION, canonical }
+  if (staticMeta)
+    return {
+      title: staticMeta.title,
+      description: staticMeta.description || DEFAULT_DESCRIPTION,
+      canonical,
+    }
 
   // Fallback for unmatched routes (404, etc.)
   return { title: BASE_TITLE, description: DEFAULT_DESCRIPTION, canonical }
@@ -112,17 +190,23 @@ function buildPageMeta(pathOnly: string, initialData: Record<string, unknown>): 
 function injectPageMeta(html: string, meta: PageMeta): string {
   let result = html
     .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(meta.title)}</title>`)
-    .replace(/(<meta name="description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
-    .replace(/(<link rel="canonical" href=")[^"]*(")/,        `$1${escapeHtml(meta.canonical)}$2`)
-    .replace(/(<meta property="og:title" content=")[^"]*(")/,       `$1${escapeHtml(meta.title)}$2`)
-    .replace(/(<meta property="og:description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
-    .replace(/(<meta property="og:url" content=")[^"]*(")/,          `$1${escapeHtml(meta.canonical)}$2`)
-    .replace(/(<meta name="twitter:title" content=")[^"]*(")/,       `$1${escapeHtml(meta.title)}$2`)
-    .replace(/(<meta name="twitter:description" content=")[^"]*(")/,  `$1${escapeHtml(meta.description)}$2`)
+    .replace(/(<meta name="description" content=")[^"]*(")/, `$1${escapeHtml(meta.description)}$2`)
+    .replace(/(<link rel="canonical" href=")[^"]*(")/, `$1${escapeHtml(meta.canonical)}$2`)
+    .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${escapeHtml(meta.title)}$2`)
+    .replace(
+      /(<meta property="og:description" content=")[^"]*(")/,
+      `$1${escapeHtml(meta.description)}$2`,
+    )
+    .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${escapeHtml(meta.canonical)}$2`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*(")/, `$1${escapeHtml(meta.title)}$2`)
+    .replace(
+      /(<meta name="twitter:description" content=")[^"]*(")/,
+      `$1${escapeHtml(meta.description)}$2`,
+    )
   if (meta.ogImage) {
     result = result
-      .replace(/(<meta property="og:image" content=")[^"]*(")/,  `$1${escapeHtml(meta.ogImage)}$2`)
-      .replace(/(<meta name="twitter:image" content=")[^"]*(")/,  `$1${escapeHtml(meta.ogImage)}$2`)
+      .replace(/(<meta property="og:image" content=")[^"]*(")/, `$1${escapeHtml(meta.ogImage)}$2`)
+      .replace(/(<meta name="twitter:image" content=")[^"]*(")/, `$1${escapeHtml(meta.ogImage)}$2`)
   }
   return result
 }
@@ -141,20 +225,20 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
   }
 
   const parts: string[] = [
-    url('/',             '1.0', 'daily'),
-    url('/collections',  '0.9', 'weekly'),
+    url('/', '1.0', 'daily'),
+    url('/collections', '0.9', 'weekly'),
     url('/category/necklaces', '0.8', 'daily'),
     url('/category/bracelets', '0.8', 'daily'),
-    url('/category/rings',     '0.8', 'daily'),
-    url('/category/earrings',  '0.8', 'daily'),
-    url('/category/sets',      '0.8', 'daily'),
-    url('/blog',     '0.7', 'weekly'),
-    url('/about',    '0.6', 'monthly'),
-    url('/contact',  '0.6', 'monthly'),
-    url('/faq',      '0.5', 'monthly'),
+    url('/category/rings', '0.8', 'daily'),
+    url('/category/earrings', '0.8', 'daily'),
+    url('/category/sets', '0.8', 'daily'),
+    url('/blog', '0.7', 'weekly'),
+    url('/about', '0.6', 'monthly'),
+    url('/contact', '0.6', 'monthly'),
+    url('/faq', '0.5', 'monthly'),
     url('/shipping', '0.5', 'monthly'),
-    url('/privacy',  '0.3', 'yearly'),
-    url('/terms',    '0.3', 'yearly'),
+    url('/privacy', '0.3', 'yearly'),
+    url('/terms', '0.3', 'yearly'),
   ]
 
   // Products (cursor-paginated)
@@ -167,7 +251,10 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
         if (cursor) qs.set('after_id', cursor)
         const r = await fetch(`${productApiBase}/products?${qs}`)
         if (!r.ok) break
-        const data = unwrap(await r.json()) as { items?: Array<{ slug?: string; id: string; updated_at?: string }>; next_cursor?: string }
+        const data = unwrap(await r.json()) as {
+          items?: Array<{ slug?: string; id: string; updated_at?: string }>
+          next_cursor?: string
+        }
         for (const p of data.items ?? []) {
           const slug = p.slug ?? p.id
           const lastmod = p.updated_at?.split('T')[0] ?? today
@@ -176,7 +263,9 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
         cursor = data.next_cursor ?? ''
         hasMore = !!cursor && (data.items?.length ?? 0) > 0
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
   }
 
   // Collections
@@ -184,12 +273,18 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
     try {
       const r = await fetch(`${productApiBase}/collections`)
       if (r.ok) {
-        const data = unwrap(await r.json()) as { items?: Array<{ slug: string; created_at?: string }> }
+        const data = unwrap(await r.json()) as {
+          items?: Array<{ slug: string; created_at?: string }>
+        }
         for (const c of data.items ?? []) {
-          parts.push(url(`/collections/${c.slug}`, '0.8', 'weekly', c.created_at?.split('T')[0] ?? today))
+          parts.push(
+            url(`/collections/${c.slug}`, '0.8', 'weekly', c.created_at?.split('T')[0] ?? today),
+          )
         }
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
   }
 
   // Blog posts (page-paginated, max 50/page)
@@ -200,7 +295,9 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
       while (hasMore) {
         const r = await fetch(`${storeApiBase}/store/blog?page=${page}&page_size=50`)
         if (!r.ok) break
-        const data = unwrap(await r.json()) as { posts?: Array<{ slug: string; updated_at?: string; published_at?: string | null }> }
+        const data = unwrap(await r.json()) as {
+          posts?: Array<{ slug: string; updated_at?: string; published_at?: string | null }>
+        }
         const posts = data.posts ?? []
         for (const p of posts) {
           const lastmod = (p.updated_at ?? p.published_at ?? today).split('T')[0]
@@ -209,7 +306,9 @@ async function generateSitemapXml(productApiBase: string, storeApiBase: string):
         hasMore = posts.length === 50
         page++
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
   }
 
   _sitemapCache = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${parts.join('\n')}\n</urlset>`
@@ -232,7 +331,13 @@ function safeJson(val: unknown): string {
 }
 
 type ProductData = Record<string, unknown>
-type CommentData = { id: string; user_id: string; content: string; rating?: number; created_at: string }
+type CommentData = {
+  id: string
+  user_id: string
+  content: string
+  rating?: number
+  created_at: string
+}
 
 // Static store-wide structured data — mirrors the live /shipping page
 const MERCHANT_RETURN_POLICY = {
@@ -284,7 +389,8 @@ function buildProductJsonLdTag(product: ProductData, comments: CommentData[]): s
   const productNode: Record<string, unknown> = {
     '@type': 'Product',
     name: (product.title_fa as string) || (product.title as string),
-    description: (product.long_description as string) || (product.short_description as string) || undefined,
+    description:
+      (product.long_description as string) || (product.short_description as string) || undefined,
     image: images.map((img) => img.url),
     url: productUrl,
     sku: urlSlug,
@@ -347,7 +453,9 @@ async function fetchCategories(base: string): Promise<Array<{ id: string; name: 
       return data
     })
     .catch(() => [])
-    .finally(() => { _catInflight = null })
+    .finally(() => {
+      _catInflight = null
+    })
   return _catInflight
 }
 
@@ -355,20 +463,26 @@ async function fetchCategories(base: string): Promise<Array<{ id: string; name: 
 let _colCache: Array<{ id: string; slug: string; name_fa: string }> = []
 let _colExpiry = 0
 let _colInflight: Promise<Array<{ id: string; slug: string; name_fa: string }>> | null = null
-async function fetchFooterCollections(base: string): Promise<Array<{ id: string; slug: string; name_fa: string }>> {
+async function fetchFooterCollections(
+  base: string,
+): Promise<Array<{ id: string; slug: string; name_fa: string }>> {
   if (_colCache.length && Date.now() < _colExpiry) return _colCache
   if (_colInflight) return _colInflight
   _colInflight = fetch(`${base}/collections`)
     .then(async (r) => {
       if (!r.ok) return []
-      const raw = unwrap(await r.json()) as { items?: Array<{ id: string; slug: string; name_fa: string }> }
+      const raw = unwrap(await r.json()) as {
+        items?: Array<{ id: string; slug: string; name_fa: string }>
+      }
       const data = raw?.items ?? []
       _colCache = data
       _colExpiry = Date.now() + 15 * 60 * 1000
       return data
     })
     .catch(() => [])
-    .finally(() => { _colInflight = null })
+    .finally(() => {
+      _colInflight = null
+    })
   return _colInflight
 }
 
@@ -376,12 +490,12 @@ const isProd = process.env.NODE_ENV === 'production'
 const port = Number(process.env.PORT) || 3000
 const root = process.cwd()
 
-const storeApiBase   = process.env.VITE_STORE_API   ?? ''
+const storeApiBase = process.env.VITE_STORE_API ?? ''
 const productApiBase = process.env.VITE_PRODUCT_API ?? ''
 
 // Theme CSS cache — 24h TTL matches the store service's Redis TTL for settings
 let _themeStyleTag = ''
-let _themeExpiry   = 0
+let _themeExpiry = 0
 
 async function fetchThemeStyleTag(): Promise<string> {
   if (_themeStyleTag && Date.now() < _themeExpiry) return _themeStyleTag
@@ -390,13 +504,13 @@ async function fetchThemeStyleTag(): Promise<string> {
     const r = await fetch(`${storeApiBase}/store/settings`)
     if (!r.ok) return ''
     const raw = unwrap(await r.json()) as Record<string, string>
-    const bg     = raw.theme_bg     || '#FDF8F0'
-    const brand  = raw.theme_brand  || '#C4873A'
+    const bg = raw.theme_bg || '#FDF8F0'
+    const brand = raw.theme_brand || '#C4873A'
     const accent = raw.theme_accent || '#3D2B20'
-    const light  = raw.theme_light  || '#F5EDE0'
-    const text   = raw.theme_text   || '#1A1008'
+    const light = raw.theme_light || '#F5EDE0'
+    const text = raw.theme_text || '#1A1008'
     _themeStyleTag = `<style id="lx-theme">${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
-    _themeExpiry   = Date.now() + 5 * 60 * 1000
+    _themeExpiry = Date.now() + 5 * 60 * 1000
   } catch {
     return ''
   }
@@ -422,7 +536,12 @@ async function createServer() {
   app.get('/sitemap.xml', async (_req: Request, res: Response) => {
     try {
       const xml = await generateSitemapXml(productApiBase, storeApiBase)
-      res.set({ 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' }).send(xml)
+      res
+        .set({
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+        })
+        .send(xml)
     } catch (e) {
       res.status(500).end((e as Error).message)
     }
@@ -485,7 +604,9 @@ async function createServer() {
         const m = file.match(/^([A-Z][A-Za-z]+)-[A-Za-z0-9_-]+\.js$/)
         if (m) routeChunksByName.set(m[1], `/assets/${file}`)
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     // Route pattern → chunk component name (must match keys above)
     const ROUTE_CHUNKS: Array<[RegExp, string]> = [
@@ -507,9 +628,7 @@ async function createServer() {
       [/^\/contact/, 'ContactPage'],
     ]
 
-    const entryUrl = pathToFileURL(
-      path.join(root, 'dist', 'server', 'entry-server.js'),
-    ).href
+    const entryUrl = pathToFileURL(path.join(root, 'dist', 'server', 'entry-server.js')).href
     const { render } = await import(entryUrl)
     let template = fs.readFileSync(path.join(clientDir, 'index.html'), 'utf-8')
 
@@ -530,7 +649,9 @@ async function createServer() {
         // Strip the blocking <link> so the browser never sees a stylesheet request
         template = template.replace(/<link rel="stylesheet"[^>]+>/g, '')
         cssInlined = true
-      } catch { /* non-fatal — blocking link stays in template */ }
+      } catch {
+        /* non-fatal — blocking link stays in template */
+      }
     }
 
     app.use('*', async (req, res) => {
@@ -553,25 +674,30 @@ async function createServer() {
         for (const [pattern, name] of ROUTE_CHUNKS) {
           if (pattern.test(pathOnly)) {
             const chunkHref = routeChunksByName.get(name)
-            if (chunkHref) routePreloadTag = `<link rel="modulepreload" crossorigin href="${chunkHref}">`
+            if (chunkHref)
+              routePreloadTag = `<link rel="modulepreload" crossorigin href="${chunkHref}">`
             break
           }
         }
-        const isHomePage      = pathOnly === '/' || pathOnly === ''
-        const productMatch    = pathOnly.match(/^\/product\/([^/?#]+)$/)
+        const isHomePage = pathOnly === '/' || pathOnly === ''
+        const productMatch = pathOnly.match(/^\/product\/([^/?#]+)$/)
         const collDetailMatch = pathOnly.match(/^\/collections\/([^/?#]+)$/)
-        const collListMatch   = !collDetailMatch && /^\/collections\/?$/.test(pathOnly)
-        const categoryMatch   = pathOnly.match(/^\/category\/([^/?#]+)$/)
-        const blogPostMatch   = pathOnly.match(/^\/blog\/([^/?#]+)$/)
-        const isBlogList      = pathOnly === '/blog' || pathOnly === '/blog/'
+        const collListMatch = !collDetailMatch && /^\/collections\/?$/.test(pathOnly)
+        const categoryMatch = pathOnly.match(/^\/category\/([^/?#]+)$/)
+        const blogPostMatch = pathOnly.match(/^\/blog\/([^/?#]+)$/)
+        const isBlogList = pathOnly === '/blog' || pathOnly === '/blog/'
 
         try {
           // Footer links — started early so they run in parallel with route-specific fetches.
           // fetchCategories is shared with the category route (inflight-promise dedup prevents duplicate calls).
           const footerPromise = productApiBase
             ? Promise.all([
-                fetchCategories(productApiBase).catch(() => [] as Array<{ id: string; name: string }>),
-                fetchFooterCollections(productApiBase).catch(() => [] as Array<{ id: string; slug: string; name_fa: string }>),
+                fetchCategories(productApiBase).catch(
+                  () => [] as Array<{ id: string; name: string }>,
+                ),
+                fetchFooterCollections(productApiBase).catch(
+                  () => [] as Array<{ id: string; slug: string; name_fa: string }>,
+                ),
               ])
             : null
 
@@ -591,7 +717,6 @@ async function createServer() {
                 }
               }
             }
-
           } else if (productApiBase && productMatch) {
             // ── /product/:id ──────────────────────────────────────────────
             const productId = productMatch[1]
@@ -611,9 +736,9 @@ async function createServer() {
               productJsonLdTag = buildProductJsonLdTag(data, comments)
               const imgs = data?.images as Array<{ url: string }> | undefined
               const lcpUrl = imgs && imgs.length > 1 ? imgs[1].url : imgs?.[0]?.url
-              if (lcpUrl) lcpPreloadTag = `<link rel="preload" as="image" href="${lcpUrl}" fetchpriority="high">`
+              if (lcpUrl)
+                lcpPreloadTag = `<link rel="preload" as="image" href="${lcpUrl}" fetchpriority="high">`
             }
-
           } else if (productApiBase && collDetailMatch) {
             // ── /collections/:slug ────────────────────────────────────────
             const r = await fetch(`${productApiBase}/collections/${collDetailMatch[1]}`)
@@ -622,9 +747,9 @@ async function createServer() {
               initialData = { collection: data }
               initialScript = `<script>window.__COLLECTION_INITIAL__=${safeJson(data)}</script>`
               const cover = (data as { cover_image_url?: string })?.cover_image_url
-              if (cover) lcpPreloadTag = `<link rel="preload" as="image" href="${cover}" fetchpriority="high">`
+              if (cover)
+                lcpPreloadTag = `<link rel="preload" as="image" href="${cover}" fetchpriority="high">`
             }
-
           } else if (productApiBase && collListMatch) {
             // ── /collections ──────────────────────────────────────────────
             const r = await fetch(`${productApiBase}/collections`)
@@ -634,18 +759,19 @@ async function createServer() {
               initialData = { collections: items }
               initialScript = `<script>window.__COLLECTIONS_INITIAL__=${safeJson(items)}</script>`
             }
-
           } else if (storeApiBase && blogPostMatch) {
             // ── /blog/:slug ────────────────────────────────────────────────
-            const r = await fetch(`${storeApiBase}/store/blog/${encodeURIComponent(blogPostMatch[1])}`)
+            const r = await fetch(
+              `${storeApiBase}/store/blog/${encodeURIComponent(blogPostMatch[1])}`,
+            )
             if (r.ok) {
               const data = unwrap(await r.json())
               initialData = { blogPost: data }
               initialScript = `<script>window.__BLOG_POST_INITIAL__=${safeJson(data)}</script>`
               const img = (data as { featured_image_url?: string })?.featured_image_url
-              if (img) lcpPreloadTag = `<link rel="preload" as="image" href="${img}" fetchpriority="high">`
+              if (img)
+                lcpPreloadTag = `<link rel="preload" as="image" href="${img}" fetchpriority="high">`
             }
-
           } else if (storeApiBase && isBlogList) {
             // ── /blog ──────────────────────────────────────────────────────
             const r = await fetch(`${storeApiBase}/store/blog?page=1&page_size=12`)
@@ -654,7 +780,6 @@ async function createServer() {
               initialData = { blogList: data }
               initialScript = `<script>window.__BLOG_LIST_INITIAL__=${safeJson(data)}</script>`
             }
-
           } else if (productApiBase && categoryMatch) {
             // ── /category/:id ─────────────────────────────────────────────
             const slug = categoryMatch[1]
@@ -687,7 +812,11 @@ async function createServer() {
               return { id: local?.id ?? c.id, name: c.name }
             })
             if (footerCats.length > 0 || footerCols.length > 0) {
-              initialData = { ...initialData, footerCategories: footerCats, footerCollections: footerCols }
+              initialData = {
+                ...initialData,
+                footerCategories: footerCats,
+                footerCollections: footerCols,
+              }
               footerScript = `<script>window.__FOOTER_INITIAL__=${safeJson({ categories: footerCats, collections: footerCols })}</script>`
             }
           }
@@ -717,7 +846,10 @@ async function createServer() {
         let html = injectPageMeta(template, pageMeta)
         html = html
           .replace('<!--app-html-->', appHtml)
-          .replace('</head>', `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}${productJsonLdTag}</head>`)
+          .replace(
+            '</head>',
+            `${inlineCssTag}${themeStyleTag}${routePreloadTag}${lcpPreloadTag}${initialScript}${footerScript}${productJsonLdTag}</head>`,
+          )
         const headers: Record<string, string> = { 'Content-Type': 'text/html' }
         // Keep the Link preload header: CDN edge caches can use it to push the
         // CSS file to the browser's HTTP cache so subsequent navigations are free.

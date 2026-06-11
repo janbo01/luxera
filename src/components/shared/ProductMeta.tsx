@@ -7,7 +7,9 @@ interface ProductMetaProps {
 
 const ProductMeta: FC<ProductMetaProps> = ({ items, className }) => (
   <div className={className}>
-    {items.map((m, i) => <span key={i}>{m}</span>)}
+    {items.map((m, i) => (
+      <span key={i}>{m}</span>
+    ))}
   </div>
 )
 

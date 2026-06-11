@@ -40,49 +40,65 @@ const HOME_JSON_LD = {
 const HomePage: FC = () => {
   usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز', jsonLd: HOME_JSON_LD })
   return (
-  <>
-    <Hero />
-    <CategoriesSection />
-    <ProductsSection />
-    <ProductCarousel
-      sectionId="necklaces"
-      kicker="NECKLACES · گردنبند"
-      title={<>کلکسیون <em>گردنبند</em></>}
-      link="/category/necklaces"
-      catSlug="necklaces"
-    />
-    <ProductCarousel
-      sectionId="rings"
-      kicker="RINGS · انگشتر"
-      title={<>کلکسیون <em>انگشتر</em></>}
-      link="/category/rings"
-      catSlug="rings"
-    />
-    <ProductCarousel
-      sectionId="earrings"
-      kicker="EARRINGS · گوشواره"
-      title={<>کلکسیون <em>گوشواره</em></>}
-      link="/category/earrings"
-      catSlug="earrings"
-    />
-    <ProductCarousel
-      sectionId="bracelets"
-      kicker="BRACELETS · دستبند"
-      title={<>کلکسیون <em>دستبند</em></>}
-      link="/category/bracelets"
-      catSlug="bracelets"
-    />
-    <Suspense>
-      <Feature />
-    </Suspense>
-    <Suspense>
-      <Story />
-    </Suspense>
-    <Suspense>
-      <BlogCarousel />
-    </Suspense>
-  </>
-)
+    <>
+      <Hero />
+      <CategoriesSection />
+      <ProductsSection />
+      <ProductCarousel
+        sectionId="necklaces"
+        kicker="NECKLACES · گردنبند"
+        title={
+          <>
+            کلکسیون <em>گردنبند</em>
+          </>
+        }
+        link="/category/necklaces"
+        catSlug="necklaces"
+      />
+      <ProductCarousel
+        sectionId="rings"
+        kicker="RINGS · انگشتر"
+        title={
+          <>
+            کلکسیون <em>انگشتر</em>
+          </>
+        }
+        link="/category/rings"
+        catSlug="rings"
+      />
+      <ProductCarousel
+        sectionId="earrings"
+        kicker="EARRINGS · گوشواره"
+        title={
+          <>
+            کلکسیون <em>گوشواره</em>
+          </>
+        }
+        link="/category/earrings"
+        catSlug="earrings"
+      />
+      <ProductCarousel
+        sectionId="bracelets"
+        kicker="BRACELETS · دستبند"
+        title={
+          <>
+            کلکسیون <em>دستبند</em>
+          </>
+        }
+        link="/category/bracelets"
+        catSlug="bracelets"
+      />
+      <Suspense>
+        <Feature />
+      </Suspense>
+      <Suspense>
+        <Story />
+      </Suspense>
+      <Suspense>
+        <BlogCarousel />
+      </Suspense>
+    </>
+  )
 }
 
 export default HomePage

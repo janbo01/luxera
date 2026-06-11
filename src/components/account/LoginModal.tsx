@@ -109,8 +109,12 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           <Icon name="close" size={16} />
         </button>
 
-        <div className="font-display italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">Luxera</div>
-        <div className="font-body text-[11px] tracking-[.12em] text-muted uppercase mb-7">Fine Jewelry</div>
+        <div className="font-display italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
+          Luxera
+        </div>
+        <div className="font-body text-[11px] tracking-[.12em] text-muted uppercase mb-7">
+          Fine Jewelry
+        </div>
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />
 
         {message && (
@@ -131,8 +135,12 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         {step === 'phone' ? (
           <div className="flex flex-col gap-3.5">
             <div className="flex flex-col gap-1.5 text-right">
-              <div className={`flex items-stretch [direction:ltr] border rounded-[10px] overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink ${error ? 'border-sale' : 'border-rule'}`}>
-                <span className="flex items-center px-[11px] text-[13px] font-mono tracking-[0.03em] text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">+98</span>
+              <div
+                className={`flex items-stretch [direction:ltr] border rounded-[10px] overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink ${error ? 'border-sale' : 'border-rule'}`}
+              >
+                <span className="flex items-center px-[11px] text-[13px] font-mono tracking-[0.03em] text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">
+                  +98
+                </span>
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -152,9 +160,11 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
               onClick={handlePhoneSubmit}
               disabled={loading}
             >
-              {loading
-                ? <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                : 'دریافت کد تأیید'}
+              {loading ? (
+                <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              ) : (
+                'دریافت کد تأیید'
+              )}
             </button>
           </div>
         ) : (
@@ -163,7 +173,9 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
               {otp.map((digit, i) => (
                 <input
                   key={i}
-                  ref={(el) => { otpRefs.current[i] = el }}
+                  ref={(el) => {
+                    otpRefs.current[i] = el
+                  }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
@@ -180,7 +192,10 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
             {loading && <div className="text-[13px] text-muted text-center">در حال تأیید…</div>}
             <button
               className="text-[12px] text-muted text-center mt-1 cursor-pointer transition-colors hover:text-plum bg-transparent border-0 p-0"
-              onClick={() => { setStep('phone'); setOtp(Array(OTP_LENGTH).fill('')) }}
+              onClick={() => {
+                setStep('phone')
+                setOtp(Array(OTP_LENGTH).fill(''))
+              }}
             >
               تغییر شماره یا ارسال مجدد کد
             </button>
@@ -188,7 +203,14 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         )}
 
         <p className="text-[11px] text-muted mt-6 leading-[1.8]">
-          با ورود، <a href="#" className="text-plum border-b border-transparent transition-[border-color] hover:border-plum">قوانین و مقررات لوکسرا</a> را می‌پذیرید.
+          با ورود،{' '}
+          <a
+            href="#"
+            className="text-plum border-b border-transparent transition-[border-color] hover:border-plum"
+          >
+            قوانین و مقررات لوکسرا
+          </a>{' '}
+          را می‌پذیرید.
         </p>
       </div>
     </div>

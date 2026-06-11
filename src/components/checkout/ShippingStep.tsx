@@ -12,14 +12,16 @@ const DAY_LABELS = ['امروز', 'فردا', 'پس‌فردا']
 function formatPersianDate(isoDate: string): string {
   if (!isoDate) return ''
   return new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-    weekday: 'long', day: 'numeric', month: 'long',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
   }).format(new Date(isoDate + 'T00:00:00'))
 }
 
 const LOGO_STYLE: Record<string, string> = {
-  snap:  'bg-[#FFE8D6] text-copper',
+  snap: 'bg-[#FFE8D6] text-copper',
   tipax: 'bg-[#E0E6FF] text-[#3656C9]',
-  post:  'bg-[#FFE8DD] text-[var(--copper-2)]',
+  post: 'bg-[#FFE8DD] text-[var(--copper-2)]',
 }
 
 interface ShippingStepProps {
@@ -54,7 +56,6 @@ const ShippingStep: FC<ShippingStepProps> = ({
   onNext,
 }) => (
   <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
-
     {/* Pane header */}
     <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
       <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3">
@@ -84,15 +85,21 @@ const ShippingStep: FC<ShippingStepProps> = ({
               onClick={() => onSelectShipping(opt.id)}
             >
               {/* Radio */}
-              <span className={`w-[22px] h-[22px] rounded-full border-[1.5px] bg-white grid place-items-center shrink-0 transition-colors ${isOn ? 'border-ink' : 'border-rule'}`}>
-                <span className={`w-[10px] h-[10px] rounded-full bg-ink transition-transform duration-150 ${isOn ? 'scale-100' : 'scale-0'}`} />
+              <span
+                className={`w-[22px] h-[22px] rounded-full border-[1.5px] bg-white grid place-items-center shrink-0 transition-colors ${isOn ? 'border-ink' : 'border-rule'}`}
+              >
+                <span
+                  className={`w-[10px] h-[10px] rounded-full bg-ink transition-transform duration-150 ${isOn ? 'scale-100' : 'scale-0'}`}
+                />
               </span>
 
               {/* Info */}
               <span className="flex flex-col gap-1 min-w-0">
                 <span className="font-heading text-[16px] font-semibold leading-[1.2] flex items-center gap-2.5 flex-wrap">
                   {opt.name}
-                  <span className="font-display italic text-[13px] text-muted font-normal tracking-[.02em]">{opt.nameEn}</span>
+                  <span className="font-display italic text-[13px] text-muted font-normal tracking-[.02em]">
+                    {opt.nameEn}
+                  </span>
                   {opt.id === 'snapp_box' && (
                     <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-[4px] font-mono text-[9px] tracking-[.14em] font-medium uppercase">
                       پرطرفدار
@@ -102,28 +109,34 @@ const ShippingStep: FC<ShippingStepProps> = ({
                 <span className="text-[13px] text-muted leading-[1.55] flex items-center gap-2 flex-wrap">
                   {opt.desc}
                   <span className="inline-flex items-center gap-[5px] px-[9px] py-[3px] bg-surface-2 border border-rule rounded-full text-[11px] text-ink-2 font-mono tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:text-ink-2">
-                    {opt.id === 'snapp_box'
-                      ? <Icon name="clock" size={12} strokeWidth={1.8} />
-                      : <Calendar size={12} strokeWidth={1.8} />
-                    }
+                    {opt.id === 'snapp_box' ? (
+                      <Icon name="clock" size={12} strokeWidth={1.8} />
+                    ) : (
+                      <Calendar size={12} strokeWidth={1.8} />
+                    )}
                     {opt.etaLabel}
                   </span>
                 </span>
               </span>
 
               {/* Logo (hidden on ≤1100px) */}
-              <span className={`w-[50px] h-[50px] rounded-[10px] grid place-items-center font-display italic text-[20px] shrink-0 font-medium max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}>
+              <span
+                className={`w-[50px] h-[50px] rounded-[10px] grid place-items-center font-display italic text-[20px] shrink-0 font-medium max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}
+              >
                 {opt.id === 'snapp_box' ? 'S' : opt.id === 'tipax' ? 'T' : 'P'}
               </span>
 
               {/* Price */}
               <span className="flex flex-col items-start gap-0.5 text-left">
                 <span className="font-heading text-[17px] font-bold leading-none">
-                  {opt.price === 0
-                    ? <span className="text-ok">رایگان</span>
-                    : formatToman(opt.price).replace(' تومان', '')
-                  }
-                  {opt.price > 0 && <small className="text-[11px] font-normal text-muted mr-1">تومان</small>}
+                  {opt.price === 0 ? (
+                    <span className="text-ok">رایگان</span>
+                  ) : (
+                    formatToman(opt.price).replace(' تومان', '')
+                  )}
+                  {opt.price > 0 && (
+                    <small className="text-[11px] font-normal text-muted mr-1">تومان</small>
+                  )}
                 </span>
                 {opt.id === 'snapp_box' && (
                   <span className="text-[11px] line-through text-muted font-mono">۳۲۰٬۰۰۰</span>
@@ -134,7 +147,6 @@ const ShippingStep: FC<ShippingStepProps> = ({
             {/* Snapp scheduler — shown only when selected */}
             {opt.id === 'snapp_box' && isOn && (
               <div className="bg-surface-2 px-[22px] py-[22px] border-t border-rule flex flex-col gap-[18px]">
-
                 {/* Date row */}
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between gap-3">
@@ -154,8 +166,12 @@ const ShippingStep: FC<ShippingStepProps> = ({
                         }`}
                         onClick={() => onSnappDayChange(i)}
                       >
-                        <span className="font-heading text-[14px] font-semibold">{DAY_LABELS[i]}</span>
-                        <span className={`font-mono text-[11px] tracking-[.04em] ${snappDayIdx === i ? 'text-[rgba(245,237,224,.6)]' : 'text-muted'}`}>
+                        <span className="font-heading text-[14px] font-semibold">
+                          {DAY_LABELS[i]}
+                        </span>
+                        <span
+                          className={`font-mono text-[11px] tracking-[.04em] ${snappDayIdx === i ? 'text-[rgba(245,237,224,.6)]' : 'text-muted'}`}
+                        >
                           {formatPersianDate(d.date)}
                         </span>
                       </button>
@@ -167,7 +183,9 @@ const ShippingStep: FC<ShippingStepProps> = ({
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-heading text-[13px] font-semibold">بازه‌ی زمانی</span>
-                    <span className="text-[11px] text-muted font-mono tracking-[.04em]">پیک ۱۵ دقیقه قبل تماس می‌گیرد</span>
+                    <span className="text-[11px] text-muted font-mono tracking-[.04em]">
+                      پیک ۱۵ دقیقه قبل تماس می‌گیرد
+                    </span>
                   </div>
                   <div className="flex gap-2 flex-wrap max-[640px]:flex-col">
                     {(deliveryOptions[snappDayIdx]?.slots ?? []).map((t, i) => (
@@ -185,7 +203,6 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     ))}
                   </div>
                 </div>
-
               </div>
             )}
           </div>
@@ -202,42 +219,55 @@ const ShippingStep: FC<ShippingStepProps> = ({
       }`}
       onClick={onGiftWrapToggle}
     >
-      <span className={`w-[38px] h-[38px] rounded-full grid place-items-center shrink-0 transition-colors [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg]:stroke-[1.6] ${
-        giftWrap ? 'bg-copper text-white' : 'bg-surface-2 text-copper'
-      }`}>
+      <span
+        className={`w-[38px] h-[38px] rounded-full grid place-items-center shrink-0 transition-colors [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg]:stroke-[1.6] ${
+          giftWrap ? 'bg-copper text-white' : 'bg-surface-2 text-copper'
+        }`}
+      >
         <Icon name="gift" size={18} strokeWidth={1.8} />
       </span>
       <span className="flex-1 flex flex-col gap-0.5">
         <h3 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
           بسته‌بندیِ هدیه
-          <span className="font-display italic text-[12px] text-muted font-normal">Gift Wrapping</span>
+          <span className="font-display italic text-[12px] text-muted font-normal">
+            Gift Wrapping
+          </span>
         </h3>
         <p className="m-0 text-[12px] text-muted">کارتِ دست‌نویس + جعبه‌ی مخمل — مناسب برای هدیه</p>
       </span>
       <span className="font-heading text-[14px] font-semibold">
-        {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰<small className="text-[11px] font-normal text-muted mr-[3px]">تومان</small>
+        {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰
+        <small className="text-[11px] font-normal text-muted mr-[3px]">تومان</small>
       </span>
-      <span className={`w-[22px] h-[22px] rounded-[6px] border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${
-        giftWrap
-          ? 'bg-copper border-copper text-white [&_svg]:opacity-100'
-          : 'bg-white border-rule text-white [&_svg]:opacity-0'
-      }`}>
+      <span
+        className={`w-[22px] h-[22px] rounded-[6px] border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${
+          giftWrap
+            ? 'bg-copper border-copper text-white [&_svg]:opacity-100'
+            : 'bg-white border-rule text-white [&_svg]:opacity-0'
+        }`}
+      >
         <Icon name="check" size={16} strokeWidth={2.5} />
       </span>
     </div>
 
     {/* Actions */}
     <div className="flex justify-between items-center gap-3.5 mt-7 pt-6 border-t border-rule max-[640px]:flex-col-reverse max-[640px]:items-stretch">
-      <button className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-medium text-sm tracking-[0.01em] bg-bg-2 text-ink-2 border border-rule cursor-pointer transition-[transform,background,color,border-color,opacity] duration-200 hover:enabled:-translate-y-px hover:enabled:bg-bg hover:enabled:text-ink hover:enabled:border-ink disabled:opacity-50 disabled:cursor-not-allowed max-[640px]:justify-center" onClick={onBack}>
+      <button
+        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-medium text-sm tracking-[0.01em] bg-bg-2 text-ink-2 border border-rule cursor-pointer transition-[transform,background,color,border-color,opacity] duration-200 hover:enabled:-translate-y-px hover:enabled:bg-bg hover:enabled:text-ink hover:enabled:border-ink disabled:opacity-50 disabled:cursor-not-allowed max-[640px]:justify-center"
+        onClick={onBack}
+      >
         <Icon name="arrow-right" size={16} strokeWidth={1.8} />
         ویرایش آدرس
       </button>
-      <button className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-medium text-sm tracking-[0.01em] bg-ink text-bg border-none cursor-pointer transition-[transform,background,color,border-color,opacity] duration-200 hover:enabled:-translate-y-px hover:enabled:bg-plum disabled:opacity-50 disabled:cursor-not-allowed max-[640px]:justify-center" disabled={!shippingValid} onClick={onNext}>
+      <button
+        className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full font-medium text-sm tracking-[0.01em] bg-ink text-bg border-none cursor-pointer transition-[transform,background,color,border-color,opacity] duration-200 hover:enabled:-translate-y-px hover:enabled:bg-plum disabled:opacity-50 disabled:cursor-not-allowed max-[640px]:justify-center"
+        disabled={!shippingValid}
+        onClick={onNext}
+      >
         ادامه — پرداخت
         <Icon name="arrow" size={16} strokeWidth={1.8} />
       </button>
     </div>
-
   </section>
 )
 

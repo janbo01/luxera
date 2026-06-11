@@ -38,14 +38,25 @@ function matchesProduct(product: ApiProductDetail, idOrSlug: string): boolean {
   return product.id === idOrSlug || product.slug === idOrSlug
 }
 
-function getInitialApiDetail(id: string | undefined, serverProduct: unknown): ApiProductDetail | null {
+function getInitialApiDetail(
+  id: string | undefined,
+  serverProduct: unknown,
+): ApiProductDetail | null {
   if (!id) return null
   // SSR path: data provided via React context
-  if (serverProduct && typeof serverProduct === 'object' && matchesProduct(serverProduct as ApiProductDetail, id)) {
+  if (
+    serverProduct &&
+    typeof serverProduct === 'object' &&
+    matchesProduct(serverProduct as ApiProductDetail, id)
+  ) {
     return serverProduct as ApiProductDetail
   }
   // Client path: data injected as window variable by server
-  if (typeof window !== 'undefined' && window.__PRODUCT_INITIAL__ && matchesProduct(window.__PRODUCT_INITIAL__, id)) {
+  if (
+    typeof window !== 'undefined' &&
+    window.__PRODUCT_INITIAL__ &&
+    matchesProduct(window.__PRODUCT_INITIAL__, id)
+  ) {
     return window.__PRODUCT_INITIAL__
   }
   return null
@@ -76,7 +87,13 @@ const ProductPage: FC = () => {
 
   const productJsonLd = useMemo(() => {
     if (!product || !apiDetail || !id) return undefined
-    type InitialComment = { id: string; user_id: string; content: string; rating?: number; created_at: string }
+    type InitialComment = {
+      id: string
+      user_id: string
+      content: string
+      rating?: number
+      created_at: string
+    }
     const initialComments = (serverComments as InitialComment[] | undefined) ?? []
     const urlSlug = apiDetail.slug ?? id
     const productUrl = `https://luxera.ir/product/${urlSlug}`
@@ -114,10 +131,9 @@ const ProductPage: FC = () => {
         '@type': 'Offer',
         priceCurrency: 'IRR',
         price: String(product.price),
-        availability:
-          apiDetail.variants?.some((v) => v.quantity > 0)
-            ? 'https://schema.org/InStock'
-            : 'https://schema.org/OutOfStock',
+        availability: apiDetail.variants?.some((v) => v.quantity > 0)
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/OutOfStock',
         url: productUrl,
         hasMerchantReturnPolicy: merchantReturnPolicy,
         shippingDetails,
@@ -157,8 +173,22 @@ const ProductPage: FC = () => {
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
-            ...(product.cat && product.catId ? [{ '@type': 'ListItem', position: 2, name: product.cat, item: `https://luxera.ir/category/${product.catId}` }] : []),
-            { '@type': 'ListItem', position: product.catId ? 3 : 2, name: product.fa, item: productUrl },
+            ...(product.cat && product.catId
+              ? [
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: product.cat,
+                    item: `https://luxera.ir/category/${product.catId}`,
+                  },
+                ]
+              : []),
+            {
+              '@type': 'ListItem',
+              position: product.catId ? 3 : 2,
+              name: product.fa,
+              item: productUrl,
+            },
           ],
         },
       ],
@@ -216,11 +246,13 @@ const ProductPage: FC = () => {
 
   return (
     <>
-      <Breadcrumb items={[
-        { label: 'خانه', to: '/' },
-        { label: product.cat || 'محصولات', to: product.cat ? `/category/${product.catId}` : '/' },
-        { label: product.fa },
-      ]} />
+      <Breadcrumb
+        items={[
+          { label: 'خانه', to: '/' },
+          { label: product.cat || 'محصولات', to: product.cat ? `/category/${product.catId}` : '/' },
+          { label: product.fa },
+        ]}
+      />
       <section className="px-[var(--pad)] max-w-[var(--maxw)] mx-auto pt-2 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-[52%_1fr] gap-8 lg:gap-12 items-start">
           <Gallery images={apiDetail?.images} productName={product.fa} />

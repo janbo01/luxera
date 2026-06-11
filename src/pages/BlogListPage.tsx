@@ -29,7 +29,11 @@ const PAGE_JSON_LD = {
 /* ─── Featured hero card (first post on each page) ─────────── */
 const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlogPost }) {
   const date = post.published_at
-    ? new Date(post.published_at).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
+    ? new Date(post.published_at).toLocaleDateString('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     : null
 
   return (
@@ -58,7 +62,9 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
           <span
             aria-hidden="true"
             className="transition-transform duration-300 group-hover:-translate-x-1.5"
-          >←</span>
+          >
+            ←
+          </span>
           <span className="block h-px bg-plum/40 transition-all duration-400 w-5 group-hover:w-10" />
         </span>
       </div>
@@ -82,7 +88,11 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
 /* ─── Standard grid card ────────────────────────────────────── */
 const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; index: number }) {
   const date = post.published_at
-    ? new Date(post.published_at).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
+    ? new Date(post.published_at).toLocaleDateString('fa-IR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
     : null
 
   return (
@@ -117,7 +127,9 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
           <span
             aria-hidden="true"
             className="transition-transform duration-300 group-hover:-translate-x-1"
-          >←</span>
+          >
+            ←
+          </span>
         </span>
       </div>
     </Link>
@@ -172,7 +184,6 @@ const BlogListPage: FC = () => {
 
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-
       {/* ── Page header ── */}
       <div className="pt-[72px] pb-14 mb-14 relative max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
         <span className="label-mono mb-4 block">BLOG</span>
@@ -231,8 +242,11 @@ const BlogListPage: FC = () => {
       ) : data?.posts.length === 0 ? (
         <p className="text-center text-muted py-24">هنوز مقاله‌ای منتشر نشده است.</p>
       ) : data ? (
-        <div className={isPending ? 'opacity-50 pointer-events-none transition-opacity duration-200' : undefined}>
-
+        <div
+          className={
+            isPending ? 'opacity-50 pointer-events-none transition-opacity duration-200' : undefined
+          }
+        >
           {/* Featured card */}
           <FeaturedPostCard post={data.posts[0]} />
 
@@ -273,7 +287,9 @@ const BlogListPage: FC = () => {
               ))}
 
               {totalPages > 7 && page < totalPages - 3 && (
-                <span className="w-10 h-10 flex items-center justify-center text-muted text-sm">…</span>
+                <span className="w-10 h-10 flex items-center justify-center text-muted text-sm">
+                  …
+                </span>
               )}
 
               <button

@@ -6,11 +6,7 @@ interface CacheEntry<T> {
 const store = new Map<string, CacheEntry<unknown>>()
 const inflight = new Map<string, Promise<unknown>>()
 
-export function cachedFetch<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlMs: number,
-): Promise<T> {
+export function cachedFetch<T>(key: string, fetcher: () => Promise<T>, ttlMs: number): Promise<T> {
   const hit = store.get(key) as CacheEntry<T> | undefined
   if (hit && Date.now() < hit.expiresAt) return Promise.resolve(hit.value)
 

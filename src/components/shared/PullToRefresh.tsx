@@ -5,20 +5,20 @@ interface Props {
   children: ReactNode
 }
 
-const THRESHOLD = 80   // raw px pull required to trigger refresh
-const DAMPEN    = 0.45 // visual resistance factor
-const MAX_VIS   = 56   // max visual indicator travel (px)
-const INDICATOR = 44   // indicator height (px)
+const THRESHOLD = 80 // raw px pull required to trigger refresh
+const DAMPEN = 0.45 // visual resistance factor
+const MAX_VIS = 56 // max visual indicator travel (px)
+const INDICATOR = 44 // indicator height (px)
 
 const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
-  const [pullY, setPullY]           = useState(0)
+  const [pullY, setPullY] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
-  const [isPulling, setIsPulling]   = useState(false)
+  const [isPulling, setIsPulling] = useState(false)
 
-  const startY  = useRef(0)
-  const rawDy   = useRef(0)
+  const startY = useRef(0)
+  const rawDy = useRef(0)
   const pulling = useRef(false)
-  const busy    = useRef(false)
+  const busy = useRef(false)
 
   const doRefresh = useCallback(async () => {
     busy.current = true
@@ -37,8 +37,8 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
   useEffect(() => {
     const onStart = (e: TouchEvent) => {
       if (window.scrollY !== 0 || busy.current) return
-      startY.current  = e.touches[0].clientY
-      rawDy.current   = 0
+      startY.current = e.touches[0].clientY
+      rawDy.current = 0
       pulling.current = true
       setIsPulling(true)
     }
@@ -46,7 +46,11 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
     const onMove = (e: TouchEvent) => {
       if (!pulling.current || busy.current) return
       const dy = e.touches[0].clientY - startY.current
-      if (dy <= 0) { rawDy.current = 0; setPullY(0); return }
+      if (dy <= 0) {
+        rawDy.current = 0
+        setPullY(0)
+        return
+      }
       rawDy.current = dy
       setPullY(Math.min(dy * DAMPEN, MAX_VIS))
     }
@@ -64,16 +68,16 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
     }
 
     document.addEventListener('touchstart', onStart, { passive: true })
-    document.addEventListener('touchmove',  onMove,  { passive: true })
-    document.addEventListener('touchend',   onEnd,   { passive: true })
+    document.addEventListener('touchmove', onMove, { passive: true })
+    document.addEventListener('touchend', onEnd, { passive: true })
     return () => {
       document.removeEventListener('touchstart', onStart)
-      document.removeEventListener('touchmove',  onMove)
-      document.removeEventListener('touchend',   onEnd)
+      document.removeEventListener('touchmove', onMove)
+      document.removeEventListener('touchend', onEnd)
     }
   }, [doRefresh])
 
-  const visible  = pullY > 0
+  const visible = pullY > 0
   // Derive progress from pullY (inverse of: pullY = Math.min(dy * DAMPEN, MAX_VIS))
   const progress = Math.min(pullY / (THRESHOLD * DAMPEN), 1)
 
@@ -93,7 +97,10 @@ const PullToRefresh: FC<Props> = ({ onRefresh, children }) => {
           ) : (
             <span
               className="inline-block w-4 h-4 border-l-2 border-b-2 border-copper"
-              style={{ transform: `rotate(${progress * 180 - 45}deg)`, transition: 'transform 100ms' }}
+              style={{
+                transform: `rotate(${progress * 180 - 45}deg)`,
+                transition: 'transform 100ms',
+              }}
             />
           )}
         </div>

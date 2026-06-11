@@ -19,7 +19,6 @@ interface EmptyStateProps {
   className?: string
 }
 
-
 const EmptyState: FC<EmptyStateProps> = ({
   icon,
   iconSize = 40,
@@ -28,19 +27,27 @@ const EmptyState: FC<EmptyStateProps> = ({
   action,
   className,
 }) => (
-  <div className={className ?? 'flex flex-col items-center justify-center gap-4 py-20 px-[var(--pad)] text-center text-muted'}>
+  <div
+    className={
+      className ??
+      'flex flex-col items-center justify-center gap-4 py-20 px-[var(--pad)] text-center text-muted'
+    }
+  >
     <div className="opacity-35">
       <Icon name={icon} size={iconSize} />
     </div>
     <h3 className="font-heading text-xl font-bold text-ink-2 m-0">{title}</h3>
     {body && <p className="text-sm leading-[1.7] text-muted m-0 max-w-[340px]">{body}</p>}
-    {action && (
-      action.to ? (
-        <Link to={action.to} className={action.ghost ? BTN_GHOST_CLS : BTN_CLS}>{action.label}</Link>
+    {action &&
+      (action.to ? (
+        <Link to={action.to} className={action.ghost ? BTN_GHOST_CLS : BTN_CLS}>
+          {action.label}
+        </Link>
       ) : (
-        <button className={action.ghost ? BTN_GHOST_CLS : BTN_CLS} onClick={action.onClick}>{action.label}</button>
-      )
-    )}
+        <button className={action.ghost ? BTN_GHOST_CLS : BTN_CLS} onClick={action.onClick}>
+          {action.label}
+        </button>
+      ))}
   </div>
 )
 

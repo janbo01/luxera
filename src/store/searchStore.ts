@@ -52,7 +52,7 @@ export const useSearchStore = create<SearchState>()(
         }
 
         const categories = CATEGORIES.filter(
-          (c) => c.fa.includes(trimmed) || c.en.toLowerCase().includes(trimmed.toLowerCase())
+          (c) => c.fa.includes(trimmed) || c.en.toLowerCase().includes(trimmed.toLowerCase()),
         ).slice(0, SEARCH_MAX_CATEGORIES)
 
         set({ results: { products: get().results.products, categories } })
@@ -76,9 +76,7 @@ export const useSearchStore = create<SearchState>()(
       commit: (q) => {
         const trimmed = q.trim()
         if (!trimmed) return
-        const prev = get().recentSearches.filter(
-          (r) => r.toLowerCase() !== trimmed.toLowerCase()
-        )
+        const prev = get().recentSearches.filter((r) => r.toLowerCase() !== trimmed.toLowerCase())
         set({ recentSearches: [trimmed, ...prev].slice(0, SEARCH_MAX_RECENT) })
       },
 
@@ -92,6 +90,6 @@ export const useSearchStore = create<SearchState>()(
     {
       name: STORAGE_KEYS.search,
       partialize: (state) => ({ recentSearches: state.recentSearches }),
-    }
-  )
+    },
+  ),
 )

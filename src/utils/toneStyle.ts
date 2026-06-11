@@ -9,7 +9,10 @@ function hexLuminance(hex: string): number {
 
 export function toneStyle(tone: string | undefined): CSSProperties {
   if (!tone?.includes('#')) return {}
-  const stops = tone.split(',').map((s) => s.trim()).filter(Boolean)
+  const stops = tone
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
   if (stops.length === 0) return {}
   const bg = stops.length === 1 ? stops[0] : `linear-gradient(160deg, ${stops.join(', ')})`
   const color = hexLuminance(stops[0]) > 0.5 ? 'var(--color-ink)' : 'var(--color-bg)'

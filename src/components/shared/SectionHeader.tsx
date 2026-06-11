@@ -7,13 +7,13 @@ interface SectionHeaderProps {
   headClass?: string
 }
 
-const SectionHeader: FC<SectionHeaderProps> = ({
-  kicker,
-  title,
-  aside,
-  headClass,
-}) => (
-  <div className={headClass ?? 'flex flex-col gap-5 mb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:mb-12'}>
+const SectionHeader: FC<SectionHeaderProps> = ({ kicker, title, aside, headClass }) => (
+  <div
+    className={
+      headClass ??
+      'flex flex-col gap-5 mb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:mb-12'
+    }
+  >
     <div>
       <span className="font-mono text-[10px] tracking-[0.2em] text-muted uppercase mb-3.5 block">
         {kicker}

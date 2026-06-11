@@ -25,11 +25,10 @@ function getInitialCollection(
     serverCollection &&
     typeof serverCollection === 'object' &&
     (serverCollection as ApiCollectionDetail).slug === slug
-  ) return serverCollection as ApiCollectionDetail
-  if (
-    typeof window !== 'undefined' &&
-    window.__COLLECTION_INITIAL__?.slug === slug
-  ) return window.__COLLECTION_INITIAL__
+  )
+    return serverCollection as ApiCollectionDetail
+  if (typeof window !== 'undefined' && window.__COLLECTION_INITIAL__?.slug === slug)
+    return window.__COLLECTION_INITIAL__
   return null
 }
 
@@ -73,7 +72,10 @@ const CollectionDetailPage: FC = () => {
 
   useEffect(() => {
     if (!slug) return
-    if (seededSlugRef.current === slug) { seededSlugRef.current = null; return }
+    if (seededSlugRef.current === slug) {
+      seededSlugRef.current = null
+      return
+    }
     void (async () => {
       setLoading(true)
       setError('')
@@ -112,11 +114,13 @@ const CollectionDetailPage: FC = () => {
 
   return (
     <>
-      <Breadcrumb items={[
-        { label: 'خانه', to: '/' },
-        { label: 'کالکشن‌ها', to: '/collections' },
-        { label: col.name_fa },
-      ]} />
+      <Breadcrumb
+        items={[
+          { label: 'خانه', to: '/' },
+          { label: 'کالکشن‌ها', to: '/collections' },
+          { label: col.name_fa },
+        ]}
+      />
 
       {/* ── Cinematic banner ── */}
       <div
@@ -180,7 +184,9 @@ const CollectionDetailPage: FC = () => {
           {/* Ornamental separator */}
           <div className="flex items-center gap-3 mt-1">
             <div className="h-px w-12 bg-current opacity-30" />
-            <span className="opacity-25 text-[11px] font-display" aria-hidden>✦</span>
+            <span className="opacity-25 text-[11px] font-display" aria-hidden>
+              ✦
+            </span>
             <div className="h-px w-40 bg-current opacity-15" />
           </div>
 
@@ -196,10 +202,7 @@ const CollectionDetailPage: FC = () => {
 
           {/* Product count pill */}
           <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] opacity-55 mt-1">
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-current opacity-70"
-              aria-hidden
-            />
+            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" aria-hidden />
             {toFa(products.length)} محصول در این کالکشن
           </span>
         </div>
@@ -207,11 +210,13 @@ const CollectionDetailPage: FC = () => {
 
       {/* ── Product grid section ── */}
       <section className="py-[88px] px-[clamp(20px,4vw,56px)] max-w-[1480px] mx-auto">
-
         {/* Ornamental divider */}
         <div className="flex items-center gap-5 mb-14">
           <div className="h-px flex-1 bg-rule" />
-          <span className="font-display italic text-[22px] text-muted/60 font-light select-none" aria-hidden>
+          <span
+            className="font-display italic text-[22px] text-muted/60 font-light select-none"
+            aria-hidden
+          >
             ✦
           </span>
           <div className="h-px flex-1 bg-rule" />

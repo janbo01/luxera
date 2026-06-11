@@ -27,7 +27,6 @@ const STORY_COLS = [
 const Story: FC = () => (
   <section className="mt-20 max-md:mt-12 bg-ink story-section--dark">
     <div className="max-w-[var(--maxw)] mx-auto">
-
       {/* Section kicker */}
       <div className="flex items-center gap-5 px-[var(--pad)] pt-10 pb-0">
         <span className="font-display italic text-copper text-[13px] tracking-[0.04em] shrink-0 flex items-center gap-2.5">
@@ -50,7 +49,6 @@ const Story: FC = () => (
                 : '',
             ].join(' ')}
           >
-
             {/* Copper accent line */}
             <div className="w-7 h-px bg-copper mb-8" />
 
@@ -58,7 +56,9 @@ const Story: FC = () => (
             <div className="flex items-center gap-2.5 mb-5">
               <span className="font-mono text-[11px] text-copper tracking-[0.16em]">{num}</span>
               <span className="text-[rgba(255,251,240,0.3)] select-none">·</span>
-              <span className="font-mono text-[10px] text-[rgba(245,237,224,0.45)] tracking-[0.12em]">{title}</span>
+              <span className="font-mono text-[10px] text-[rgba(245,237,224,0.45)] tracking-[0.12em]">
+                {title}
+              </span>
             </div>
 
             <h3 className="font-heading font-bold text-[20px] leading-[1.4] m-0 mb-4 text-[var(--color-bg)]">
@@ -68,7 +68,6 @@ const Story: FC = () => (
           </div>
         ))}
       </div>
-
     </div>
   </section>
 )

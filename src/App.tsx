@@ -87,24 +87,24 @@ export default function App() {
           <main>
             <Suspense fallback={<PageLoader />}>
               <Routes>
-              <Route path="/"                    element={<HomePage />} />
-              <Route path="/product/:id"         element={<ProductPage />} />
-              <Route path="/category/:id"        element={<CategoryPage />} />
-              <Route path="/checkout"            element={<CheckoutPage />} />
-              <Route path="/wishlist"            element={<WishlistPage />} />
-              <Route path="/account"             element={<AccountPage />} />
-              <Route path="/search"              element={<SearchResultsPage />} />
-              <Route path="/collections"         element={<CollectionsPage />} />
-              <Route path="/collections/:slug"   element={<CollectionDetailPage />} />
-              <Route path="/about"               element={<AboutPage />} />
-              <Route path="/faq"                 element={<FaqPage />} />
-              <Route path="/shipping"            element={<ShippingPage />} />
-              <Route path="/privacy"             element={<PrivacyPage />} />
-              <Route path="/terms"               element={<TermsPage />} />
-              <Route path="/contact"             element={<ContactPage />} />
-              <Route path="/blog"                element={<BlogListPage />} />
-              <Route path="/blog/:slug"          element={<BlogDetailPage />} />
-              <Route path="*"                    element={<NotFoundPage />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/category/:id" element={<CategoryPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/wishlist" element={<WishlistPage />} />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
+                <Route path="/collections" element={<CollectionsPage />} />
+                <Route path="/collections/:slug" element={<CollectionDetailPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/faq" element={<FaqPage />} />
+                <Route path="/shipping" element={<ShippingPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/blog" element={<BlogListPage />} />
+                <Route path="/blog/:slug" element={<BlogDetailPage />} />
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Suspense>
           </main>

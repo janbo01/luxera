@@ -9,41 +9,41 @@ import QuantityStepper from '../shared/QuantityStepper'
 import { calcSimpleShipping } from '../../data/shipping'
 
 const CartDrawer: FC = () => {
-  const items     = useCartStore((s) => s.items)
-  const isOpen    = useCartStore((s) => s.isOpen)
+  const items = useCartStore((s) => s.items)
+  const isOpen = useCartStore((s) => s.isOpen)
   const closeCart = useCartStore((s) => s.closeCart)
   const increment = useCartStore((s) => s.increment)
   const decrement = useCartStore((s) => s.decrement)
-  const remove    = useCartStore((s) => s.remove)
+  const remove = useCartStore((s) => s.remove)
 
   const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0)
   const shipping = calcSimpleShipping(subtotal)
   const total = subtotal + shipping
   const totalQty = items.reduce((s, it) => s + it.qty, 0)
 
-  const drawerRef    = useRef<HTMLElement>(null)
-  const overlayRef   = useRef<HTMLDivElement>(null)
-  const touchStartX  = useRef(0)
+  const drawerRef = useRef<HTMLElement>(null)
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const touchStartX = useRef(0)
   const touchStartMs = useRef(0)
-  const dragX        = useRef(0)
+  const dragX = useRef(0)
 
   useBodyLock(isOpen)
 
   useEffect(() => {
     if (!isOpen && drawerRef.current) {
       drawerRef.current.style.transition = ''
-      drawerRef.current.style.transform  = ''
+      drawerRef.current.style.transform = ''
     }
     if (!isOpen && overlayRef.current) {
       overlayRef.current.style.transition = ''
-      overlayRef.current.style.opacity    = ''
+      overlayRef.current.style.opacity = ''
     }
   }, [isOpen])
 
   const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current  = e.touches[0].clientX
+    touchStartX.current = e.touches[0].clientX
     touchStartMs.current = e.timeStamp
-    dragX.current        = 0
+    dragX.current = 0
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
@@ -54,38 +54,38 @@ const CartDrawer: FC = () => {
     const ov = overlayRef.current
     if (!el) return
     el.style.transition = 'none'
-    el.style.transform  = `translateX(${dx}px)`
+    el.style.transform = `translateX(${dx}px)`
     if (ov) {
-      const w       = Math.min(320, window.innerWidth * 0.88)
+      const w = Math.min(320, window.innerWidth * 0.88)
       const opacity = Math.max(0, (1 - dx / w) * 0.45)
       ov.style.transition = 'none'
-      ov.style.opacity    = String(opacity)
+      ov.style.opacity = String(opacity)
     }
   }
 
   const onTouchEnd = (e: React.TouchEvent) => {
-    const dx       = dragX.current
-    const dt       = e.timeStamp - touchStartMs.current
+    const dx = dragX.current
+    const dt = e.timeStamp - touchStartMs.current
     const velocity = dt > 0 ? dx / dt : 0
-    const w        = Math.min(320, window.innerWidth * 0.88)
-    const el       = drawerRef.current
-    const ov       = overlayRef.current
+    const w = Math.min(320, window.innerWidth * 0.88)
+    const el = drawerRef.current
+    const ov = overlayRef.current
     if (!el) return
 
     if (dx > w * 0.4 || velocity > 0.5) {
       el.style.transition = 'transform 220ms ease-in'
-      el.style.transform  = 'translateX(100%)'
+      el.style.transform = 'translateX(100%)'
       if (ov) {
         ov.style.transition = 'opacity 220ms ease-in'
-        ov.style.opacity    = '0'
+        ov.style.opacity = '0'
       }
       setTimeout(closeCart, 220)
     } else {
       el.style.transition = 'transform 280ms cubic-bezier(.25,.7,.25,1)'
-      el.style.transform  = 'translateX(0)'
+      el.style.transform = 'translateX(0)'
       if (ov) {
         ov.style.transition = ''
-        ov.style.opacity    = ''
+        ov.style.opacity = ''
       }
     }
     dragX.current = 0
@@ -114,7 +114,9 @@ const CartDrawer: FC = () => {
         <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
           <div className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
             سبد خرید
-            <small className="font-mono text-[11px] text-muted font-normal">{toFa(totalQty)} قطعه</small>
+            <small className="font-mono text-[11px] text-muted font-normal">
+              {toFa(totalQty)} قطعه
+            </small>
           </div>
           <button
             className="w-9 h-9 flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
@@ -132,8 +134,12 @@ const CartDrawer: FC = () => {
               <span className="inline-flex">
                 <Icon name="bag" size={36} />
               </span>
-              <h3 className="font-body font-light text-[22px] text-ink mt-4 mb-2">سبد شما خالی است</h3>
-              <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.</p>
+              <h3 className="font-body font-light text-[22px] text-ink mt-4 mb-2">
+                سبد شما خالی است
+              </h3>
+              <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">
+                قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.
+              </p>
               <button
                 className="inline-flex items-center gap-2.5 px-[18px] py-2.5 text-xs font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg hover:-translate-y-px"
                 onClick={closeCart}
@@ -143,16 +149,23 @@ const CartDrawer: FC = () => {
             </div>
           ) : (
             items.map((item) => (
-              <div key={item.id} className="grid grid-cols-[80px_1fr_auto] gap-4 py-5 border-b border-rule items-start">
+              <div
+                key={item.id}
+                className="grid grid-cols-[80px_1fr_auto] gap-4 py-5 border-b border-rule items-start"
+              >
                 <div className="bg-plate aspect-square flex items-center justify-center text-ink rounded-[var(--radius)] overflow-hidden [&>svg]:w-[70%] [&>svg]:h-auto">
-                  {item.imageUrl
-                    ? <img src={item.imageUrl} alt={item.fa} className="w-full h-full object-cover" />
-                    : <Illustration name={item.illus} />}
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.fa} className="w-full h-full object-cover" />
+                  ) : (
+                    <Illustration name={item.illus} />
+                  )}
                 </div>
                 <div>
                   <div className="text-[13px] font-normal mb-1 leading-[1.4]">{item.fa}</div>
                   <span className="font-display italic text-[11px] text-muted">{item.en}</span>
-                  <div className="font-mono text-[10px] text-muted tracking-[0.08em] mt-1.5">{item.meta.join(' · ')}</div>
+                  <div className="font-mono text-[10px] text-muted tracking-[0.08em] mt-1.5">
+                    {item.meta.join(' · ')}
+                  </div>
                   <QuantityStepper
                     value={item.qty}
                     onDecrement={() => decrement(item.id)}
@@ -178,10 +191,17 @@ const CartDrawer: FC = () => {
         {items.length > 0 && (
           <div className="border-t border-rule px-7 pt-6 pb-7 bg-surface">
             <div className="flex flex-col gap-2 mb-[18px] text-[13px]">
-              <div className="flex justify-between text-muted"><span>جمع جزء</span><span>{formatToman(subtotal)}</span></div>
-              <div className="flex justify-between text-muted"><span>ارسال</span><span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span></div>
+              <div className="flex justify-between text-muted">
+                <span>جمع جزء</span>
+                <span>{formatToman(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-muted">
+                <span>ارسال</span>
+                <span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span>
+              </div>
               <div className="flex justify-between text-ink pt-3 mt-1.5 border-t border-rule text-base font-normal [font-feature-settings:'tnum']">
-                <span>قابل پرداخت</span><span>{formatToman(total)}</span>
+                <span>قابل پرداخت</span>
+                <span>{formatToman(total)}</span>
               </div>
             </div>
             <Link

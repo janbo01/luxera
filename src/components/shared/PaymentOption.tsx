@@ -9,11 +9,15 @@ interface PaymentOptionProps {
   onSelect: () => void
 }
 
-const PaymentOption: FC<PaymentOptionProps> = ({ modifier, iconChar, name, sub, selected, onSelect }) => (
-  <button
-    className={`payment-option ${selected ? 'is-selected' : ''}`}
-    onClick={onSelect}
-  >
+const PaymentOption: FC<PaymentOptionProps> = ({
+  modifier,
+  iconChar,
+  name,
+  sub,
+  selected,
+  onSelect,
+}) => (
+  <button className={`payment-option ${selected ? 'is-selected' : ''}`} onClick={onSelect}>
     <div className="payment-option__radio" />
     <div className={`payment-option__icon payment-option__icon--${modifier}`}>{iconChar}</div>
     <div>

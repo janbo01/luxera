@@ -22,26 +22,42 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback ?? (
-        <div style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', minHeight: '60vh', gap: '16px',
-          fontFamily: 'var(--font-body)', direction: 'rtl',
-        }}>
-          <h2 style={{ fontSize: '20px', color: 'var(--color-plum)' }}>مشکلی پیش آمد</h2>
-          <p style={{ color: 'var(--color-muted)', fontSize: '14px', textAlign: 'center' }}>
-            لطفاً صفحه را رفرش کنید یا به صفحه‌ی اصلی بازگردید.
-          </p>
-          <button
+      return (
+        this.props.fallback ?? (
+          <div
             style={{
-              padding: '10px 24px', background: 'var(--color-plum)', color: 'var(--color-bg)',
-              borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '60vh',
+              gap: '16px',
+              fontFamily: 'var(--font-body)',
+              direction: 'rtl',
             }}
-            onClick={() => { window.location.href = '/' }}
           >
-            بازگشت به خانه
-          </button>
-        </div>
+            <h2 style={{ fontSize: '20px', color: 'var(--color-plum)' }}>مشکلی پیش آمد</h2>
+            <p style={{ color: 'var(--color-muted)', fontSize: '14px', textAlign: 'center' }}>
+              لطفاً صفحه را رفرش کنید یا به صفحه‌ی اصلی بازگردید.
+            </p>
+            <button
+              style={{
+                padding: '10px 24px',
+                background: 'var(--color-plum)',
+                color: 'var(--color-bg)',
+                borderRadius: '8px',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+              onClick={() => {
+                window.location.href = '/'
+              }}
+            >
+              بازگشت به خانه
+            </button>
+          </div>
+        )
       )
     }
     return this.props.children

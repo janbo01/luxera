@@ -26,9 +26,7 @@ export interface ApiBlogPostList {
 }
 
 export function getBlogPosts(page = 1, pageSize = 12): Promise<ApiBlogPostList> {
-  return apiFetch<ApiBlogPostList>(
-    `${BASE}/store/blog?page=${page}&page_size=${pageSize}`,
-  )
+  return apiFetch<ApiBlogPostList>(`${BASE}/store/blog?page=${page}&page_size=${pageSize}`)
 }
 
 export function getBlogPostBySlug(slug: string): Promise<ApiBlogPost> {

@@ -27,9 +27,21 @@ export interface SlideInfo {
 const TONES: HeroTone[] = ['plum', 'sand', 'copper']
 
 const FALLBACK_SLIDES: Slide[] = [
-  { key: 'plum',   tone: 'plum',   illus: 'NecklaceB', tag: 'N°۰۱ — Mahtab',  caption: 'گردنبند آوای مهتاب' },
-  { key: 'sand',   tone: 'sand',   illus: 'RingA',     tag: 'N°۰۲ — Satin',   caption: 'انگشتر ساتن' },
-  { key: 'copper', tone: 'copper', illus: 'EarringB',  tag: 'N°۰۳ — Mina',    caption: 'گوشواره میناکار' },
+  {
+    key: 'plum',
+    tone: 'plum',
+    illus: 'NecklaceB',
+    tag: 'N°۰۱ — Mahtab',
+    caption: 'گردنبند آوای مهتاب',
+  },
+  { key: 'sand', tone: 'sand', illus: 'RingA', tag: 'N°۰۲ — Satin', caption: 'انگشتر ساتن' },
+  {
+    key: 'copper',
+    tone: 'copper',
+    illus: 'EarringB',
+    tag: 'N°۰۳ — Mina',
+    caption: 'گوشواره میناکار',
+  },
 ]
 
 function bannerToSlide(b: ApiBanner, i: number): Slide {
@@ -49,7 +61,9 @@ function bannerToSlide(b: ApiBanner, i: number): Slide {
 }
 
 declare global {
-  interface Window { __BANNERS_INITIAL__?: ApiBanner[] }
+  interface Window {
+    __BANNERS_INITIAL__?: ApiBanner[]
+  }
 }
 
 function getInitialSlides(ssrBanners?: ApiBanner[]): Slide[] {
@@ -70,7 +84,9 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
   const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides(ssrBanners))
   const [idx, setIdx] = useState(0)
   const onSlideRef = useRef(onSlide)
-  useLayoutEffect(() => { onSlideRef.current = onSlide })
+  useLayoutEffect(() => {
+    onSlideRef.current = onSlide
+  })
 
   useEffect(() => {
     if (window.__BANNERS_INITIAL__?.length) return
@@ -84,6 +100,8 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
   const total = slides.length
 
   useEffect(() => {
+    // No autoplay for a single slide or when the user prefers reduced motion.
+    if (total <= 1 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const t = setInterval(() => setIdx((i) => (i + 1) % total), 5500)
     return () => clearInterval(t)
   }, [total])
@@ -105,24 +123,24 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
           <span className="hero-slide__tag">{slide.tag}</span>
           <div className="hero-slide__art">
             <div className={slide.imageUrl ? 'has-image' : ''}>
-              {slide.imageUrl
-                ? <img
-                    src={slide.imageUrl}
-                    alt={slide.caption}
-                    className="w-full h-full object-cover"
-                    loading={i === 0 ? 'eager' : 'lazy'}
-                    fetchPriority={i === 0 ? 'high' : 'low'}
-                    decoding="async"
-                  />
-                : <Illustration name={slide.illus ?? 'NecklaceB'} />}
+              {slide.imageUrl ? (
+                <img
+                  src={slide.imageUrl}
+                  alt={slide.caption}
+                  className="w-full h-full object-cover"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={i === 0 ? 'high' : 'low'}
+                  decoding="async"
+                />
+              ) : (
+                <Illustration name={slide.illus ?? 'NecklaceB'} />
+              )}
             </div>
           </div>
           <span className="hero-slide__caption">{slide.caption}</span>
           {slide.price && (
             <span className="hero-slide__price">
-              {slide.oldPrice && (
-                <s className="hero-slide__old-price">{slide.oldPrice}</s>
-              )}
+              {slide.oldPrice && <s className="hero-slide__old-price">{slide.oldPrice}</s>}
               {slide.price}
             </span>
           )}

@@ -55,13 +55,14 @@ const FilterPanel: FC<FilterPanelProps> = ({
   onReset,
 }) => {
   const [openSections, setOpenSections] = useState(
-    () => new Set(['price', 'material', 'color', 'stock'])
+    () => new Set(['price', 'material', 'color', 'stock']),
   )
 
   const toggleSection = (s: string) =>
     setOpenSections((prev) => {
       const next = new Set(prev)
-      if (next.has(s)) next.delete(s); else next.add(s)
+      if (next.has(s)) next.delete(s)
+      else next.add(s)
       return next
     })
 
@@ -155,18 +156,28 @@ const FilterPanel: FC<FilterPanelProps> = ({
           {openSections.has('price') && (
             <div className="flex gap-4">
               <label className="flex-1 flex flex-col gap-1.5">
-                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">از</span>
+                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">
+                  از
+                </span>
                 <input
-                  type="number" min={0} max={priceMax} value={priceMin}
+                  type="number"
+                  min={0}
+                  max={priceMax}
+                  value={priceMin}
                   onChange={(e) => onPriceMinChange(Math.min(Number(e.target.value), priceMax))}
                   className={inputCls}
                 />
               </label>
               <div className="w-px bg-rule self-end mb-2" />
               <label className="flex-1 flex flex-col gap-1.5">
-                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">تا</span>
+                <span className="text-[10px] font-mono tracking-[0.12em] text-muted uppercase">
+                  تا
+                </span>
                 <input
-                  type="number" min={priceMin} max={MAX_PRICE} value={priceMax}
+                  type="number"
+                  min={priceMin}
+                  max={MAX_PRICE}
+                  value={priceMax}
                   onChange={(e) => onPriceMaxChange(Math.max(Number(e.target.value), priceMin))}
                   className={inputCls}
                 />
@@ -205,13 +216,26 @@ const FilterPanel: FC<FilterPanelProps> = ({
                     >
                       {materials.includes(m) && (
                         <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-                          <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path
+                            d="M1 3.5L3.5 6L8 1"
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       )}
                     </span>
-                    <input type="checkbox" checked={materials.includes(m)} onChange={() => onToggleMaterial(m)} className="sr-only" />
+                    <input
+                      type="checkbox"
+                      checked={materials.includes(m)}
+                      onChange={() => onToggleMaterial(m)}
+                      className="sr-only"
+                    />
                     <span className="flex-1 font-body">{m}</span>
-                    <span className="font-mono text-[11px] text-muted">{toFa(materialCounts[m] ?? 0)}</span>
+                    <span className="font-mono text-[11px] text-muted">
+                      {toFa(materialCounts[m] ?? 0)}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -268,8 +292,12 @@ const FilterPanel: FC<FilterPanelProps> = ({
                 onChange={(e) => onInStockChange(e.target.checked)}
                 className="sr-only peer"
               />
-              <div className={`w-[38px] h-[22px] rounded-full transition-colors duration-200 relative ${inStockOnly ? 'bg-copper' : 'bg-bg-2'}`}>
-                <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 ${inStockOnly ? 'right-[3px]' : 'right-[calc(100%-19px)]'}`} />
+              <div
+                className={`w-[38px] h-[22px] rounded-full transition-colors duration-200 relative ${inStockOnly ? 'bg-copper' : 'bg-bg-2'}`}
+              >
+                <div
+                  className={`absolute top-[3px] w-4 h-4 rounded-full bg-white shadow-sm transition-all duration-200 ${inStockOnly ? 'right-[3px]' : 'right-[calc(100%-19px)]'}`}
+                />
               </div>
             </div>
           </label>

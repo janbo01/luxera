@@ -10,7 +10,15 @@ import PullToRefresh from '../components/shared/PullToRefresh'
 import CategoryHero from '../components/category/CategoryHero'
 import FilterPanel, { MAX_PRICE } from '../components/category/FilterPanel'
 import { toFa, formatNumber } from '../utils/format'
-import { listProducts, listCategories, listColors, adaptProduct, type ApiCategory, type ApiColor, type ApiProduct } from '../api/product'
+import {
+  listProducts,
+  listCategories,
+  listColors,
+  adaptProduct,
+  type ApiCategory,
+  type ApiColor,
+  type ApiProduct,
+} from '../api/product'
 import { useInitialData } from '../context/initialData'
 import type { Product } from '../types'
 import Icon from '../components/icons/Icon'
@@ -61,8 +69,8 @@ function getInitialCategoryData(
 type SortKey = 'newest' | 'price-asc' | 'price-desc'
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: 'newest',      label: 'جدیدترین' },
-  { key: 'price-asc',  label: 'ارزان‌ترین' },
+  { key: 'newest', label: 'جدیدترین' },
+  { key: 'price-asc', label: 'ارزان‌ترین' },
   { key: 'price-desc', label: 'گران‌ترین' },
 ]
 
@@ -78,15 +86,18 @@ const CAT_PRODUCT_COUNTS = Object.fromEntries(MAIN_CATS.map((c) => [c.id, 0]))
 
 const VIEW_MODES = [
   { mode: 'cols-2', title: '۲ ستون', Icon: LayoutGrid },
-  { mode: '',       title: '۳ ستون', Icon: Grid3x3 },
+  { mode: '', title: '۳ ستون', Icon: Grid3x3 },
   { mode: 'cols-4', title: '۴ ستون', Icon: Columns4 },
-  { mode: 'list',   title: 'لیست',   Icon: List },
+  { mode: 'list', title: 'لیست', Icon: List },
 ] as const
 
 const PRODUCT_SKELETON = (
   <div className="products-grid" style={{ opacity: 0.5 }}>
     {Array.from({ length: 8 }, (_, i) => (
-      <div key={i} style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }} />
+      <div
+        key={i}
+        style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }}
+      />
     ))}
   </div>
 )
@@ -94,23 +105,27 @@ const PRODUCT_SKELETON = (
 const CATEGORY_SEO_TITLES: Record<string, string> = {
   necklaces: 'خرید گردنبند فانتزی زنانه',
   bracelets: 'خرید دستبند فانتزی زنانه',
-  rings:     'خرید انگشتر فانتزی زنانه',
-  earrings:  'خرید گوشواره فانتزی دخترانه',
-  sets:      'خرید ست جواهرات فانتزی زنانه',
-  new:       'جدیدترین محصولات جواهرات فانتزی',
-  bridal:    'خرید جواهرات عروس و نامزدی فانتزی',
-  mens:      'خرید جواهرات مردانه فانتزی',
+  rings: 'خرید انگشتر فانتزی زنانه',
+  earrings: 'خرید گوشواره فانتزی دخترانه',
+  sets: 'خرید ست جواهرات فانتزی زنانه',
+  new: 'جدیدترین محصولات جواهرات فانتزی',
+  bridal: 'خرید جواهرات عروس و نامزدی فانتزی',
+  mens: 'خرید جواهرات مردانه فانتزی',
 }
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
-  necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
-  bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
-  rings:     'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
-  earrings:  'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
-  sets:      'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
-  new:       'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
-  bridal:    'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
-  mens:      'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
+  necklaces:
+    'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
+  bracelets:
+    'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
+  rings:
+    'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
+  earrings:
+    'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
+  sets: 'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
+  new: 'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  bridal: 'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
+  mens: 'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
 }
 
 const CategoryPage: FC = () => {
@@ -125,7 +140,12 @@ const CategoryPage: FC = () => {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
-        { '@type': 'ListItem', position: 2, name: category.fa, item: `https://luxera.ir/category/${id}` },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: category.fa,
+          item: `https://luxera.ir/category/${id}`,
+        },
       ],
     }
   }, [category, id])
@@ -137,7 +157,8 @@ const CategoryPage: FC = () => {
     jsonLd: categoryJsonLd,
   })
 
-  const { categoryProducts: serverCatProducts, categoryResolvedId: serverResolvedId } = useInitialData()
+  const { categoryProducts: serverCatProducts, categoryResolvedId: serverResolvedId } =
+    useInitialData()
   const [initial] = useState(() => getInitialCategoryData(id, serverCatProducts, serverResolvedId))
 
   const [allProducts, setAllProducts] = useState<Product[]>(() => initial?.products ?? [])
@@ -163,48 +184,57 @@ const CategoryPage: FC = () => {
 
   // Skip the initial resolve + fetch when the server already seeded data for this slug.
   const skipResolveRef = useRef(!!initial)
-  const skipFetchRef   = useRef(!!initial)
+  const skipFetchRef = useRef(!!initial)
 
   useBodyLock(filterOpen)
 
-  const apiSort = sort === 'price-asc' ? 'price_asc' : sort === 'price-desc' ? 'price_desc' : 'newest'
+  const apiSort =
+    sort === 'price-asc' ? 'price_asc' : sort === 'price-desc' ? 'price_desc' : 'newest'
 
-  const fetchProducts = useCallback(async (
-    apiCategoryId: string | undefined,
-    sortValue: string,
-    colorIds?: string[],
-    afterId?: string,
-  ) => {
-    setLoading(true)
-    try {
-      const { items, nextCursor: nc } = await listProducts({
-        categoryId: apiCategoryId,
-        sort: sortValue,
-        colorIds,
-        limit: 60,
-        afterId,
-      })
-      if (afterId) {
-        setAllProducts((prev) => [...prev, ...items.map((p) => adaptProduct(p))])
-      } else {
-        setAllProducts(items.map((p) => adaptProduct(p)))
+  const fetchProducts = useCallback(
+    async (
+      apiCategoryId: string | undefined,
+      sortValue: string,
+      colorIds?: string[],
+      afterId?: string,
+    ) => {
+      setLoading(true)
+      try {
+        const { items, nextCursor: nc } = await listProducts({
+          categoryId: apiCategoryId,
+          sort: sortValue,
+          colorIds,
+          limit: 60,
+          afterId,
+        })
+        if (afterId) {
+          setAllProducts((prev) => [...prev, ...items.map((p) => adaptProduct(p))])
+        } else {
+          setAllProducts(items.map((p) => adaptProduct(p)))
+        }
+        setNextCursor(nc)
+      } catch {
+        setAllProducts([])
+      } finally {
+        setLoading(false)
       }
-      setNextCursor(nc)
-    } catch {
-      setAllProducts([])
-    } finally {
-      setLoading(false)
-    }
-  }, [])
+    },
+    [],
+  )
 
   useEffect(() => {
-    void listColors().then(setAvailableColors).catch(() => {})
+    void listColors()
+      .then(setAvailableColors)
+      .catch(() => {})
   }, [])
 
   // Resolve the API category ID once when the route param changes.
   useEffect(() => {
     if (!id) return
-    if (skipResolveRef.current) { skipResolveRef.current = false; return }
+    if (skipResolveRef.current) {
+      skipResolveRef.current = false
+      return
+    }
     const resolve = async () => {
       if (id === 'new') return undefined
       const cats = await listCategories()
@@ -212,18 +242,31 @@ const CategoryPage: FC = () => {
       return cats.find((c) => c.name === local?.fa)?.id ?? undefined
     }
     void resolve()
-      .then((catId) => { setResolvedCatId(catId); setPage(1) })
-      .catch(() => { setResolvedCatId(undefined); setPage(1) })
+      .then((catId) => {
+        setResolvedCatId(catId)
+        setPage(1)
+      })
+      .catch(() => {
+        setResolvedCatId(undefined)
+        setPage(1)
+      })
   }, [id])
 
   // Re-fetch whenever category, sort, or color filter changes.
   const colorKey = selectedColorIds.join(',')
   useEffect(() => {
     if (resolvedCatId === null) return
-    if (skipFetchRef.current) { skipFetchRef.current = false; return }
-    void fetchProducts(resolvedCatId, apiSort, selectedColorIds.length ? selectedColorIds : undefined)
-  // colorKey is a stable primitive derived from selectedColorIds
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (skipFetchRef.current) {
+      skipFetchRef.current = false
+      return
+    }
+    void fetchProducts(
+      resolvedCatId,
+      apiSort,
+      selectedColorIds.length ? selectedColorIds : undefined,
+    )
+    // colorKey is a stable primitive derived from selectedColorIds
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedCatId, apiSort, colorKey, fetchProducts])
 
   // Deferred price bounds keep the filter inputs snappy while the grid re-renders lazily
@@ -241,18 +284,44 @@ const CategoryPage: FC = () => {
   const paginated = sorted.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   const toggleColor = useCallback(
-    (id: string) => setSelectedColorIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]),
+    (id: string) =>
+      setSelectedColorIds((prev) =>
+        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+      ),
     [],
   )
   const resetFilters = useCallback(() => {
-    setPriceMin(0); setPriceMax(MAX_PRICE); setSelectedColorIds([]); setInStockOnly(false); setPage(1)
+    setPriceMin(0)
+    setPriceMax(MAX_PRICE)
+    setSelectedColorIds([])
+    setInStockOnly(false)
+    setPage(1)
   }, [])
 
-  const handlePriceMin = useCallback((v: number) => { setPriceMin(v); setPage(1) }, [])
-  const handlePriceMax = useCallback((v: number) => { setPriceMax(v); setPage(1) }, [])
-  const handleToggleColor = useCallback((id: string) => { toggleColor(id); setPage(1) }, [toggleColor])
-  const handleInStock = useCallback((v: boolean) => { setInStockOnly(v); setPage(1) }, [])
-  const handleSort = useCallback((key: SortKey) => { setSort(key); setSortOpen(false); setPage(1) }, [])
+  const handlePriceMin = useCallback((v: number) => {
+    setPriceMin(v)
+    setPage(1)
+  }, [])
+  const handlePriceMax = useCallback((v: number) => {
+    setPriceMax(v)
+    setPage(1)
+  }, [])
+  const handleToggleColor = useCallback(
+    (id: string) => {
+      toggleColor(id)
+      setPage(1)
+    },
+    [toggleColor],
+  )
+  const handleInStock = useCallback((v: boolean) => {
+    setInStockOnly(v)
+    setPage(1)
+  }, [])
+  const handleSort = useCallback((key: SortKey) => {
+    setSort(key)
+    setSortOpen(false)
+    setPage(1)
+  }, [])
 
   const appliedChips = useMemo(() => {
     const colorMap = new Map(availableColors.map((c) => [c.id, c.name]))
@@ -261,15 +330,32 @@ const CategoryPage: FC = () => {
         label: colorMap.get(id) ?? id,
         remove: () => handleToggleColor(id),
       })),
-      ...(priceMin > 0 ? [{ label: `از ${formatNumber(priceMin)}`, remove: () => handlePriceMin(0) }] : []),
-      ...(priceMax < MAX_PRICE ? [{ label: `تا ${formatNumber(priceMax)}`, remove: () => handlePriceMax(MAX_PRICE) }] : []),
+      ...(priceMin > 0
+        ? [{ label: `از ${formatNumber(priceMin)}`, remove: () => handlePriceMin(0) }]
+        : []),
+      ...(priceMax < MAX_PRICE
+        ? [{ label: `تا ${formatNumber(priceMax)}`, remove: () => handlePriceMax(MAX_PRICE) }]
+        : []),
       ...(inStockOnly ? [{ label: 'فقط موجود', remove: () => handleInStock(false) }] : []),
     ]
-  }, [selectedColorIds, availableColors, priceMin, priceMax, inStockOnly, handleToggleColor, handlePriceMin, handlePriceMax, handleInStock])
+  }, [
+    selectedColorIds,
+    availableColors,
+    priceMin,
+    priceMax,
+    inStockOnly,
+    handleToggleColor,
+    handlePriceMin,
+    handlePriceMax,
+    handleInStock,
+  ])
 
   const activeColors = selectedColorIds.length ? selectedColorIds : undefined
   const handleRefresh = useCallback(async () => {
-    if (id === 'new') { await fetchProducts(undefined, apiSort, activeColors); return }
+    if (id === 'new') {
+      await fetchProducts(undefined, apiSort, activeColors)
+      return
+    }
     const cats = await listCategories().catch(() => [] as ApiCategory[])
     const local = CATEGORIES.find((c) => c.id === id)
     const match = cats.find((c) => c.name === local?.fa)
@@ -282,7 +368,9 @@ const CategoryPage: FC = () => {
     return (
       <div>
         <p>دسته‌بندی یافت نشد.</p>
-        <Link to="/" className="text-plum underline underline-offset-2 mt-4 inline-block">بازگشت به خانه</Link>
+        <Link to="/" className="text-plum underline underline-offset-2 mt-4 inline-block">
+          بازگشت به خانه
+        </Link>
       </div>
     )
   }
@@ -300,16 +388,16 @@ const CategoryPage: FC = () => {
       </div>
 
       <section className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
-
         {/* ── Toolbar ─────────────────────────────────────────────── */}
         <div className="mt-7 mb-[18px] bg-surface rounded-[var(--radius)] border border-rule">
-
           {/* Main row */}
           <div className="flex items-center gap-[18px] px-[22px] py-[18px] max-sm:px-4 max-sm:py-3 max-sm:gap-3">
             {/* Product count */}
             <h2 className="font-heading text-base font-semibold flex items-center gap-2 m-0">
               <span>نمایش</span>
-              <span className="font-mono text-copper">{loading ? '…' : toFa(paginated.length)}</span>
+              <span className="font-mono text-copper">
+                {loading ? '…' : toFa(paginated.length)}
+              </span>
               <span>از</span>
               <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
               <span>{category.fa}</span>
@@ -361,14 +449,26 @@ const CategoryPage: FC = () => {
           {appliedChips.length > 0 && (
             <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap border-t border-rule px-[22px] pb-3 pt-2.5 max-sm:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {appliedChips.map((chip, i) => (
-                <span key={i} className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2 shrink-0">
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2 shrink-0"
+                >
                   {chip.label}
-                  <button onClick={chip.remove} aria-label="حذف فیلتر" className="w-[18px] h-[18px] rounded-full grid place-items-center bg-transparent text-muted shrink-0 cursor-pointer hover:bg-ink hover:text-bg">
+                  <button
+                    onClick={chip.remove}
+                    aria-label="حذف فیلتر"
+                    className="w-[18px] h-[18px] rounded-full grid place-items-center bg-transparent text-muted shrink-0 cursor-pointer hover:bg-ink hover:text-bg"
+                  >
                     <Icon name="x" size={9} />
                   </button>
                 </span>
               ))}
-              <button className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer shrink-0" onClick={resetFilters}>پاک کردن</button>
+              <button
+                className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer shrink-0"
+                onClick={resetFilters}
+              >
+                پاک کردن
+              </button>
             </div>
           )}
         </div>
@@ -395,9 +495,13 @@ const CategoryPage: FC = () => {
           />
 
           <section>
-            {loading ? PRODUCT_SKELETON : paginated.length > 0 ? (
+            {loading ? (
+              PRODUCT_SKELETON
+            ) : paginated.length > 0 ? (
               <div className={`products-grid${viewMode ? ` ${viewMode}` : ''}`}>
-                {paginated.map((p, i) => <ProductCard key={p.id} product={p} onAdd={addItem} priority={i < 4} />)}
+                {paginated.map((p, i) => (
+                  <ProductCard key={p.id} product={p} onAdd={addItem} priority={i < 4} />
+                ))}
               </div>
             ) : (
               <div className="mt-12 p-8 bg-surface rounded-[var(--radius)] grid grid-cols-[auto_1fr_auto] gap-6 items-center border border-rule max-sm:grid-cols-1 max-sm:text-center max-sm:p-6">
@@ -405,8 +509,12 @@ const CategoryPage: FC = () => {
                   <Icon name="search" size={30} strokeWidth={1.4} />
                 </span>
                 <div>
-                  <h2 className="font-heading text-[18px] font-semibold m-0 mb-1">محصولی با این فیلترها یافت نشد</h2>
-                  <p className="m-0 text-muted text-[13px]">فیلترها را آزادتر کنید یا همه را پاک کنید.</p>
+                  <h2 className="font-heading text-[18px] font-semibold m-0 mb-1">
+                    محصولی با این فیلترها یافت نشد
+                  </h2>
+                  <p className="m-0 text-muted text-[13px]">
+                    فیلترها را آزادتر کنید یا همه را پاک کنید.
+                  </p>
                 </div>
                 <button className={BTN_CLS} onClick={resetFilters} style={{ padding: '11px 18px' }}>
                   پاک کردن فیلترها
@@ -475,7 +583,9 @@ const CategoryPage: FC = () => {
               <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <button
                   className={BTN_GHOST_CLS}
-                  onClick={() => fetchProducts(resolvedCatId ?? undefined, apiSort, activeColors, nextCursor)}
+                  onClick={() =>
+                    fetchProducts(resolvedCatId ?? undefined, apiSort, activeColors, nextCursor)
+                  }
                 >
                   بارگذاری بیشتر
                 </button>
@@ -511,7 +621,11 @@ const CategoryPage: FC = () => {
           >
             <span className="text-muted text-[11px]">ترتیب:</span>
             <span>{currentSortLabel}</span>
-            <Icon name="chevron-down" size={12} className={`transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`} />
+            <Icon
+              name="chevron-down"
+              size={12}
+              className={`transition-transform duration-200 ${sortOpen ? 'rotate-180' : ''}`}
+            />
           </button>
           {sortOpen && (
             <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[12px] overflow-hidden shadow-[0_-8px_28px_rgba(26,15,29,0.12)] z-20">

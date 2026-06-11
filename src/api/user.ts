@@ -70,13 +70,10 @@ export async function verifyOTP(
   phone: string,
   otp: string,
 ): Promise<{ token: string; isNew: boolean }> {
-  const res = await apiFetch<{ token: string; is_new: boolean }>(
-    `${BASE}/auth/otp/verify`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ phone: toE164(phone), otp }),
-    },
-  )
+  const res = await apiFetch<{ token: string; is_new: boolean }>(`${BASE}/auth/otp/verify`, {
+    method: 'POST',
+    body: JSON.stringify({ phone: toE164(phone), otp }),
+  })
   return { token: res.token, isNew: res.is_new }
 }
 
@@ -122,10 +119,7 @@ export async function createAddress(data: ApiAddressInput): Promise<ApiAddress> 
   })
 }
 
-export async function updateAddress(
-  id: string,
-  data: ApiAddressInput,
-): Promise<ApiAddress> {
+export async function updateAddress(id: string, data: ApiAddressInput): Promise<ApiAddress> {
   return apiFetch<ApiAddress>(`${BASE}/addresses/${id}`, {
     method: 'PUT',
     body: JSON.stringify(data),

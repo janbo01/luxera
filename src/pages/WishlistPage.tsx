@@ -49,7 +49,9 @@ const WishlistPage: FC = () => {
           </div>
           <h2 className="font-body font-light text-[28px] m-0 mb-3">لیست شما خالی است</h2>
           <p className="text-muted text-sm leading-[1.85] max-w-[36ch] m-0 mb-9">
-            روی قلب هر محصول بزنید تا اینجا ذخیره شود.<br />آن‌هایی را که دوست دارید کنار هم نگه دارید.
+            روی قلب هر محصول بزنید تا اینجا ذخیره شود.
+            <br />
+            آن‌هایی را که دوست دارید کنار هم نگه دارید.
           </p>
           <Link to="/category/new" className={BTN_CLS}>
             مشاهده جدیدترین‌ها
@@ -72,30 +74,53 @@ const WishlistPage: FC = () => {
           {/* Grid */}
           <div className="grid grid-cols-4 max-[1100px]:grid-cols-3 max-[760px]:grid-cols-2 gap-5 max-[760px]:gap-x-3 max-[760px]:gap-y-5">
             {items.map((product) => (
-              <div key={product.id} className="group flex flex-col bg-surface border border-rule transition-[box-shadow,border-color] duration-300 hover:border-plum hover:[box-shadow:0_8px_32px_rgba(74,34,64,0.08)]">
-                <Link to={`/product/${product.slug ?? product.id}`} className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline">
+              <div
+                key={product.id}
+                className="group flex flex-col bg-surface border border-rule transition-[box-shadow,border-color] duration-300 hover:border-plum hover:[box-shadow:0_8px_32px_rgba(74,34,64,0.08)]"
+              >
+                <Link
+                  to={`/product/${product.slug ?? product.id}`}
+                  className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline"
+                >
                   <Badge label={product.badge} kind={product.badgeKind} />
                   <button
                     className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-muted opacity-0 scale-[0.8] transition-[opacity,transform,color,background] duration-[250ms] z-[4] backdrop-blur-sm group-hover:opacity-100 group-hover:scale-100 hover:text-sale hover:bg-[#fff5f5]"
                     aria-label="حذف از علاقه‌مندی"
-                    onClick={(e) => { e.preventDefault(); remove(product.id) }}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      remove(product.id)
+                    }}
                   >
                     <Icon name="close" size={12} />
                   </button>
                   <div className="w-[72%] h-auto flex items-center justify-center transition-transform duration-[600ms] text-ink group-hover:scale-[1.04]">
-                    {product.imageUrl
-                      ? <img src={product.imageUrl} alt={product.fa} className="w-full h-full object-cover" />
-                      : <Illustration name={product.illus} />}
+                    {product.imageUrl ? (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.fa}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Illustration name={product.illus} />
+                    )}
                   </div>
                 </Link>
 
                 <div className="flex flex-col flex-1 p-4 gap-3">
                   <div className="flex-1">
-                    <Link to={`/product/${product.slug ?? product.id}`} className="no-underline text-inherit">
+                    <Link
+                      to={`/product/${product.slug ?? product.id}`}
+                      className="no-underline text-inherit"
+                    >
                       <div className="text-sm font-normal text-ink mb-0.5">{product.fa}</div>
-                      <span className="font-display italic text-[11px] text-muted block mb-2">{product.en}</span>
+                      <span className="font-display italic text-[11px] text-muted block mb-2">
+                        {product.en}
+                      </span>
                     </Link>
-                    <ProductMeta items={product.meta} className="font-mono text-[10px] tracking-[0.1em] text-muted flex flex-wrap gap-2" />
+                    <ProductMeta
+                      items={product.meta}
+                      className="font-mono text-[10px] tracking-[0.1em] text-muted flex flex-wrap gap-2"
+                    />
                   </div>
 
                   <div className="flex items-center justify-between gap-2 border-t border-rule pt-3">

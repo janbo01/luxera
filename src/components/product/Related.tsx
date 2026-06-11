@@ -19,9 +19,7 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
   useEffect(() => {
     listProducts({ categoryId, limit: 5 })
       .then(({ items }) => {
-        const filtered = excludeId
-          ? items.filter((p) => p.id !== excludeId)
-          : items
+        const filtered = excludeId ? items.filter((p) => p.id !== excludeId) : items
         setProducts(filtered.slice(0, 4).map((p) => adaptProduct(p)))
       })
       .catch(() => {
@@ -38,7 +36,9 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
     <section className="py-[80px] px-[var(--pad)]">
       <div className="flex items-end justify-between gap-8 mb-8">
         <div className="flex flex-col gap-2">
-          <span className="font-display italic text-[18px] text-copper-dark tracking-[0.04em]">VOUS AIMEREZ AUSSI</span>
+          <span className="font-display italic text-[18px] text-copper-dark tracking-[0.04em]">
+            VOUS AIMEREZ AUSSI
+          </span>
           <h2 className="font-heading font-bold leading-[1.1] m-0 text-[clamp(38px,3.4vw,52px)] text-ink">
             شاید <em className="font-body italic font-normal text-copper-dark">دوست داشته باشید</em>
           </h2>

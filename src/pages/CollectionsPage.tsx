@@ -34,7 +34,10 @@ const CollectionsPage: FC = () => {
   const seededRef = useRef(!!initial)
 
   useEffect(() => {
-    if (seededRef.current) { seededRef.current = false; return }
+    if (seededRef.current) {
+      seededRef.current = false
+      return
+    }
     listCollections()
       .then(setCollections)
       .catch(() => {})
@@ -43,13 +46,9 @@ const CollectionsPage: FC = () => {
 
   return (
     <>
-      <Breadcrumb items={[
-        { label: 'خانه', to: '/' },
-        { label: 'کالکشن‌ها' },
-      ]} />
+      <Breadcrumb items={[{ label: 'خانه', to: '/' }, { label: 'کالکشن‌ها' }]} />
 
       <section className="py-[88px] px-[clamp(20px,4vw,56px)] max-w-[1480px] mx-auto">
-
         {/* ── Section header ── */}
         <header className="relative mb-14">
           {/* Ghost numeral watermark */}
@@ -67,7 +66,10 @@ const CollectionsPage: FC = () => {
               <span className="font-mono text-[10px] tracking-[0.22em] text-muted uppercase mb-4 block">
                 COLLECTIONS · لوکسرا
               </span>
-              <h1 className="font-heading font-bold leading-[1.05] tracking-[-0.01em] m-0 text-ink" style={{ fontSize: 'clamp(36px,4.5vw,60px)' }}>
+              <h1
+                className="font-heading font-bold leading-[1.05] tracking-[-0.01em] m-0 text-ink"
+                style={{ fontSize: 'clamp(36px,4.5vw,60px)' }}
+              >
                 کالکشن‌های{' '}
                 <em className="text-plum font-normal not-italic font-display italic">منتخب</em>
               </h1>
@@ -114,11 +116,13 @@ const CollectionsPage: FC = () => {
                     colSpan,
                     toneClass(col.tone, 'coll-card'),
                   ].join(' ')}
-                  style={{
-                    ...toneStyle(col.tone),
-                    aspectRatio: ratio,
-                    animationDelay: `${i * 90}ms`,
-                  } as React.CSSProperties}
+                  style={
+                    {
+                      ...toneStyle(col.tone),
+                      aspectRatio: ratio,
+                      animationDelay: `${i * 90}ms`,
+                    } as React.CSSProperties
+                  }
                   aria-label={`مشاهده کالکشن ${col.name_fa}، ${toFa(col.product_count)} محصول`}
                 >
                   {/* Background: cover image or decorative letter */}
@@ -154,9 +158,7 @@ const CollectionsPage: FC = () => {
                     {/* Description — slides up on hover */}
                     {col.description && (
                       <div className="overflow-hidden px-5">
-                        <p
-                          className="text-[12px] leading-relaxed pb-1 translate-y-full opacity-0 transition-all duration-[380ms] ease-out group-hover:translate-y-0 group-hover:opacity-80"
-                        >
+                        <p className="text-[12px] leading-relaxed pb-1 translate-y-full opacity-0 transition-all duration-[380ms] ease-out group-hover:translate-y-0 group-hover:opacity-80">
                           {col.description}
                         </p>
                       </div>
@@ -178,8 +180,19 @@ const CollectionsPage: FC = () => {
                         aria-hidden
                       >
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M7 2.5L3.5 6L7 9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                          <path d="M3.5 6H10.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                          <path
+                            d="M7 2.5L3.5 6L7 9.5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M3.5 6H10.5"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                          />
                         </svg>
                       </span>
                     </div>

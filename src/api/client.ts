@@ -24,10 +24,7 @@ export class HttpError extends Error {
   }
 }
 
-export async function apiFetch<T = unknown>(
-  url: string,
-  options: RequestInit = {},
-): Promise<T> {
+export async function apiFetch<T = unknown>(url: string, options: RequestInit = {}): Promise<T> {
   const token = getToken()
   const headers: Record<string, string> = {
     ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),

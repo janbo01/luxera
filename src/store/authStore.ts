@@ -109,7 +109,11 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         const { token } = get()
         if (token) {
-          try { await userApi.signout(token) } catch { /* ignore */ }
+          try {
+            await userApi.signout(token)
+          } catch {
+            /* ignore */
+          }
         }
         set({ isLoggedIn: false, token: null, profile: null, addresses: [], orders: [] })
       },
@@ -191,9 +195,7 @@ export const useAuthStore = create<AuthState>()(
           recipient_phone: userApi.toE164(merged.phone),
         })
         set((state) => ({
-          addresses: state.addresses.map((a) =>
-            a.id === id ? adaptAddress(updated) : a
-          ),
+          addresses: state.addresses.map((a) => (a.id === id ? adaptAddress(updated) : a)),
         }))
       },
 
@@ -225,6 +227,6 @@ export const useAuthStore = create<AuthState>()(
         token: state.token,
         profile: state.profile,
       }),
-    }
-  )
+    },
+  ),
 )

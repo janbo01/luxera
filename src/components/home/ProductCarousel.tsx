@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, useCallback, memo, type FC, type ReactNode } from 'react'
+import { useEffect, useState, memo, type FC, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../product/ProductCard'
 import SectionHeader from '../shared/SectionHeader'
+import CarouselArrows from '../shared/CarouselArrows'
 import { useCartStore } from '../../store/cartStore'
 import { listProducts, listCategories, adaptProduct } from '../../api/product'
+import { useCarousel } from '../../hooks'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 import { CATEGORIES } from '../../data/categories'
@@ -47,9 +49,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
   const addItem = useCartStore((s) => s.addItem)
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [canPrev, setCanPrev] = useState(false)
-  const [canNext, setCanNext] = useState(false)
-  const trackRef = useRef<HTMLDivElement>(null)
+  const { trackRef, canPrev, canNext, scroll } = useCarousel(products.length)
 
   useEffect(() => {
     const load = async () => {
@@ -67,35 +67,6 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
     void load()
   }, [catSlug])
 
-  const syncArrows = useCallback(() => {
-    const el = trackRef.current
-    if (!el) return
-    setCanPrev(el.scrollLeft < -2)
-    setCanNext(el.scrollLeft > -(el.scrollWidth - el.clientWidth - 2))
-  }, [])
-
-  useEffect(() => {
-    const el = trackRef.current
-    if (!el) return
-    syncArrows()
-    el.addEventListener('scroll', syncArrows, { passive: true })
-    const ro = new ResizeObserver(syncArrows)
-    ro.observe(el)
-    return () => {
-      el.removeEventListener('scroll', syncArrows)
-      ro.disconnect()
-    }
-  }, [products, syncArrows])
-
-  const scroll = (dir: 'prev' | 'next') => {
-    const el = trackRef.current
-    if (!el) return
-    const cardW = el.querySelector('[data-card]')?.getBoundingClientRect().width ?? 260
-    const gap = 20
-    const step = (cardW + gap) * Math.max(1, Math.floor(el.clientWidth / (cardW + gap)))
-    el.scrollBy({ left: dir === 'prev' ? step : -step, behavior: 'smooth' })
-  }
-
   return (
     <section className="page-section" id={sectionId}>
       <SectionHeader
@@ -103,25 +74,18 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
         title={title}
         aside={
           <div className="flex items-center gap-3 self-start sm:self-end">
-            <button
-              onClick={() => scroll('prev')}
-              disabled={!canPrev}
-              aria-label="محصول قبلی"
-              className="w-10 h-10 flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
-            >
-              <Icon name="chevron-right" size={16} />
-            </button>
-            <button
-              onClick={() => scroll('next')}
-              disabled={!canNext}
-              aria-label="محصول بعدی"
-              className="w-10 h-10 flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
-            >
-              <Icon name="chevron-left" size={16} />
-            </button>
+            <CarouselArrows
+              canPrev={canPrev}
+              canNext={canNext}
+              onScroll={scroll}
+              prevLabel="محصول قبلی"
+              nextLabel="محصول بعدی"
+            />
             <Link to={link} className={BTN_GHOST_CLS}>
               مشاهده‌ی همه
-              <span className="arr"><Icon name="arrow-left" size={16} /></span>
+              <span className="arr">
+                <Icon name="arrow-left" size={16} />
+              </span>
             </Link>
           </div>
         }
@@ -129,21 +93,14 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
       <div
         ref={trackRef}
         className="flex gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 [direction:rtl]"
-        style={{ scrollbarWidth: 'none' }}
       >
         {loading
           ? SKELETONS
           : products.map((product, i) => (
-              <div
-                key={product.id}
-                data-card
-                className="snap-start [direction:ltr] flex-shrink-0"
-                style={{ width: CARD_W }}
-              >
+              <div key={product.id} className="snap-start flex-shrink-0" style={{ width: CARD_W }}>
                 <ProductCard product={product} onAdd={addItem} priority={i < 2} />
               </div>
-            ))
-        }
+            ))}
       </div>
     </section>
   )

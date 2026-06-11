@@ -60,27 +60,38 @@ const SearchResultsPage: FC = () => {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <Breadcrumb items={[
-        { label: 'خانه', to: '/' },
-        { label: 'نتایج جستجو' },
-      ]} />
+      <Breadcrumb items={[{ label: 'خانه', to: '/' }, { label: 'نتایج جستجو' }]} />
 
       <section className="py-[88px] px-[clamp(20px,4vw,56px)]">
         {/* Header */}
         <div className="flex items-center justify-between mb-12 gap-6">
           <h1 className="font-heading font-bold text-[clamp(24px,3vw,36px)] m-0 text-ink [&_em]:font-heading [&_em]:not-italic [&_em]:text-plum [&_em]:font-normal">
-            {loading
-              ? <>در حال جستجو برای <em>«{q}»</em>…</>
-              : products.length > 0
-              ? <>{toFa(products.length)} نتیجه برای <em>«{q}»</em></>
-              : <>جستجو: <em>«{q}»</em></>}
+            {loading ? (
+              <>
+                در حال جستجو برای <em>«{q}»</em>…
+              </>
+            ) : products.length > 0 ? (
+              <>
+                {toFa(products.length)} نتیجه برای <em>«{q}»</em>
+              </>
+            ) : (
+              <>
+                جستجو: <em>«{q}»</em>
+              </>
+            )}
           </h1>
         </div>
 
         {loading ? (
-          <div className="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]" style={{ opacity: 0.5 }}>
+          <div
+            className="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]"
+            style={{ opacity: 0.5 }}
+          >
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }} />
+              <div
+                key={i}
+                style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }}
+              />
             ))}
           </div>
         ) : products.length > 0 ? (

@@ -19,7 +19,8 @@ interface OrderSuccessProps {
   giftWrapPrice: number
 }
 
-const ROW = 'flex justify-between items-center px-5 py-[13px] border-b border-rule text-[13px] last:border-b-0'
+const ROW =
+  'flex justify-between items-center px-5 py-[13px] border-b border-rule text-[13px] last:border-b-0'
 const ROW_LABEL = 'font-mono text-[10px] tracking-[.12em] uppercase text-muted'
 
 const OrderSuccess: FC<OrderSuccessProps> = ({
@@ -33,18 +34,22 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
   couponDiscount,
   giftWrapPrice,
 }) => {
-  const eta = confirmedShipping?.id === 'snapp_box'
-    ? `${confirmedSnappDate}، ${confirmedSnappTime}`
-    : confirmedShipping?.etaLabel ?? '—'
+  const eta =
+    confirmedShipping?.id === 'snapp_box'
+      ? `${confirmedSnappDate}، ${confirmedSnappTime}`
+      : (confirmedShipping?.etaLabel ?? '—')
 
   const confirmedTotal =
-    confirmedItems.reduce((s, it) => s + it.price * it.qty, 0)
-    + (confirmedShipping?.price ?? 0)
-    + (giftWrap ? giftWrapPrice : 0)
-    - couponDiscount
+    confirmedItems.reduce((s, it) => s + it.price * it.qty, 0) +
+    (confirmedShipping?.price ?? 0) +
+    (giftWrap ? giftWrapPrice : 0) -
+    couponDiscount
 
   return (
-    <div className="flex flex-col items-center text-center py-24 px-[var(--pad)] max-w-[520px] mx-auto" role="main">
+    <div
+      className="flex flex-col items-center text-center py-24 px-[var(--pad)] max-w-[520px] mx-auto"
+      role="main"
+    >
       <div aria-live="polite" className="sr-only">
         سفارش با شماره {orderNum} ثبت شد
       </div>
@@ -53,18 +58,23 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
         <Icon name="check" size={28} />
       </div>
 
-      <h2 className="font-heading font-bold text-[clamp(28px,4vw,40px)] leading-[1.2] m-0 mb-3.5 text-ink animate-rise [animation-delay:80ms]" tabIndex={-1}>
+      <h2
+        className="font-heading font-bold text-[clamp(28px,4vw,40px)] leading-[1.2] m-0 mb-3.5 text-ink animate-rise [animation-delay:80ms]"
+        tabIndex={-1}
+      >
         سفارش شما ثبت شد
       </h2>
       <p className="text-muted text-sm leading-[1.85] max-w-[38ch] mx-auto mb-7 animate-rise [animation-delay:80ms]">
-        <em className="font-heading not-italic text-plum">Thank you</em> — سپاسگزاریم از خرید شما از لوکسرا.
-        پس از تأیید پرداخت، جزئیات ارسال از طریق پیامک برایتان ارسال می‌شود.
+        <em className="font-heading not-italic text-plum">Thank you</em> — سپاسگزاریم از خرید شما از
+        لوکسرا. پس از تأیید پرداخت، جزئیات ارسال از طریق پیامک برایتان ارسال می‌شود.
       </p>
 
       <div className="w-full border border-rule bg-surface my-7 animate-rise [animation-delay:160ms]">
         <div className={ROW}>
           <span className={ROW_LABEL}>شماره سفارش</span>
-          <strong className="font-mono text-[15px] tracking-[.16em] text-plum font-normal">{orderNum}</strong>
+          <strong className="font-mono text-[15px] tracking-[.16em] text-plum font-normal">
+            {orderNum}
+          </strong>
         </div>
         <div className={ROW}>
           <span className={ROW_LABEL}>روش ارسال</span>
@@ -79,7 +89,9 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
         </div>
         <div className={ROW}>
           <span className={ROW_LABEL}>مبلغ پرداختی</span>
-          <span className="text-[15px] font-medium text-ink [font-feature-settings:'tnum']">{formatToman(confirmedTotal)}</span>
+          <span className="text-[15px] font-medium text-ink [font-feature-settings:'tnum']">
+            {formatToman(confirmedTotal)}
+          </span>
         </div>
       </div>
 
@@ -88,7 +100,10 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
           محصولات سفارش
         </div>
         {confirmedItems.map((item) => (
-          <div key={item.id} className="grid grid-cols-[44px_1fr_auto] items-center gap-3 px-5 py-3 border-b border-rule last:border-b-0">
+          <div
+            key={item.id}
+            className="grid grid-cols-[44px_1fr_auto] items-center gap-3 px-5 py-3 border-b border-rule last:border-b-0"
+          >
             <div className="bg-plate aspect-square flex items-center justify-center text-ink">
               <Illustration name={item.illus} />
             </div>
@@ -110,7 +125,8 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
               <div className="text-[12px] font-normal text-ink leading-[1.4]">بسته‌بندی هدیه</div>
               {giftNote && (
                 <div className="font-mono text-[10px] text-muted mt-[3px] italic text-ink-2">
-                  «{giftNote.slice(0, 60)}{giftNote.length > 60 ? '…' : ''}»
+                  «{giftNote.slice(0, 60)}
+                  {giftNote.length > 60 ? '…' : ''}»
                 </div>
               )}
             </div>
@@ -122,7 +138,10 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
       </div>
 
       <div className="flex flex-col max-[860px]:flex-col sm:flex-row gap-3 w-full justify-center animate-rise [animation-delay:380ms]">
-        <Link to="/account" className={`${BTN_GHOST_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
+        <Link
+          to="/account"
+          className={`${BTN_GHOST_CLS} max-[860px]:w-full max-[860px]:justify-center`}
+        >
           پیگیری سفارش
         </Link>
         <Link to="/" className={`${BTN_CLS} max-[860px]:w-full max-[860px]:justify-center`}>

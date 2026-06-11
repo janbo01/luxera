@@ -11,11 +11,13 @@ import { InitialDataContext } from './context/initialData'
 hydrateRoot(
   document.getElementById('root')!,
   <StrictMode>
-    <InitialDataContext.Provider value={{
-      banners: window.__BANNERS_INITIAL__,
-      footerCategories: window.__FOOTER_INITIAL__?.categories,
-      footerCollections: window.__FOOTER_INITIAL__?.collections,
-    }}>
+    <InitialDataContext.Provider
+      value={{
+        banners: window.__BANNERS_INITIAL__,
+        footerCategories: window.__FOOTER_INITIAL__?.categories,
+        footerCollections: window.__FOOTER_INITIAL__?.collections,
+      }}
+    >
       <BrowserRouter>
         <App />
       </BrowserRouter>

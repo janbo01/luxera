@@ -1,1006 +1,1362 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luxera — Image Prompts</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxera — Image Prompts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-  :root {
-    --bg:        #F6FFFE;
-    --bg-2:      #E8FFFE;
-    --surface:   #FAFFFF;
-    --plate:     #E0F9F6;
-    --ink:       #0A1A18;
-    --ink-2:     #1A3530;
-    --muted:     #4A7A70;
-    --rule:      rgba(10,26,24,.10);
-    --plum:      #002A22;
-    --plum-2:    #001A16;
-    --copper:    #D42A50;
-    --copper-2:  #B31E43;
-    --gold:      #00C9A7;
-    --dust-rose: #FFB3C6;
-  }
+      :root {
+        --bg: #f6fffe;
+        --bg-2: #e8fffe;
+        --surface: #faffff;
+        --plate: #e0f9f6;
+        --ink: #0a1a18;
+        --ink-2: #1a3530;
+        --muted: #4a7a70;
+        --rule: rgba(10, 26, 24, 0.1);
+        --plum: #002a22;
+        --plum-2: #001a16;
+        --copper: #d42a50;
+        --copper-2: #b31e43;
+        --gold: #00c9a7;
+        --dust-rose: #ffb3c6;
+      }
 
-  html { font-size: 16px; }
-  body {
-    font-family: 'DM Mono', monospace;
-    background: var(--bg);
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 3rem 2rem 6rem;
-  }
+      html {
+        font-size: 16px;
+      }
+      body {
+        font-family: 'DM Mono', monospace;
+        background: var(--bg);
+        color: var(--ink);
+        min-height: 100vh;
+        padding: 3rem 2rem 6rem;
+      }
 
-  /* ─── Header ─── */
-  header {
-    max-width: 900px;
-    margin: 0 auto 4rem;
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-  }
-  .brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.4rem;
-    font-weight: 300;
-    letter-spacing: .25em;
-    color: var(--plum);
-    text-transform: uppercase;
-  }
-  .subtitle {
-    font-size: .65rem;
-    letter-spacing: .2em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-  .palette-row {
-    display: flex;
-    gap: .5rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .swatch {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    font-size: .6rem;
-    letter-spacing: .08em;
-    color: var(--muted);
-  }
-  .swatch-dot {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1.5px solid rgba(10,26,24,.12);
-    flex-shrink: 0;
-  }
-  .sep {
-    width: 1px;
-    height: 24px;
-    background: var(--rule);
-    margin: 0 .25rem;
-  }
+      /* ─── Header ─── */
+      header {
+        max-width: 900px;
+        margin: 0 auto 4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .brand {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 2.4rem;
+        font-weight: 300;
+        letter-spacing: 0.25em;
+        color: var(--plum);
+        text-transform: uppercase;
+      }
+      .subtitle {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .palette-row {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .swatch {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+      .swatch-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(10, 26, 24, 0.12);
+        flex-shrink: 0;
+      }
+      .sep {
+        width: 1px;
+        height: 24px;
+        background: var(--rule);
+        margin: 0 0.25rem;
+      }
 
-  /* ─── Section ─── */
-  .section {
-    max-width: 900px;
-    margin: 0 auto 3.5rem;
-  }
-  .section-label {
-    font-size: .6rem;
-    letter-spacing: .25em;
-    text-transform: uppercase;
-    color: var(--copper);
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
-  }
+      /* ─── Section ─── */
+      .section {
+        max-width: 900px;
+        margin: 0 auto 3.5rem;
+      }
+      .section-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--copper);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--rule);
+      }
 
-  /* ─── Style sub-group label ─── */
-  .style-group {
-    margin-bottom: 2rem;
-  }
-  .style-group-label {
-    font-size: .58rem;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: .85rem;
-    padding-left: .25rem;
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-  }
-  .style-group-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--rule);
-    opacity: .5;
-  }
+      /* ─── Style sub-group label ─── */
+      .style-group {
+        margin-bottom: 2rem;
+      }
+      .style-group-label {
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.85rem;
+        padding-left: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .style-group-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--rule);
+        opacity: 0.5;
+      }
 
-  /* ─── Prompt Card ─── */
-  .prompt-card {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 1.25rem;
-    position: relative;
-    transition: border-color .2s;
-  }
-  .prompt-card:hover { border-color: var(--gold); }
+      /* ─── Prompt Card ─── */
+      .prompt-card {
+        background: var(--surface);
+        border: 1px solid var(--rule);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 1.25rem;
+        position: relative;
+        transition: border-color 0.2s;
+      }
+      .prompt-card:hover {
+        border-color: var(--gold);
+      }
 
-  .card-header {
-    padding: .85rem 1.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--rule);
-    background: var(--bg-2);
-  }
-  .card-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: var(--ink-2);
-    letter-spacing: .06em;
-  }
-  .card-meta {
-    display: flex;
-    gap: .75rem;
-    align-items: center;
-  }
-  .size-tag {
-    font-size: .58rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: .25rem .6rem;
-    background: var(--plate);
-    color: var(--plum);
-    border-radius: 1px;
-    border: 1px solid rgba(0,42,34,.15);
-  }
-  .type-tag {
-    font-size: .58rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: .25rem .6rem;
-    border-radius: 1px;
-  }
-  .type-banner { background: rgba(212,42,80,.08); color: var(--copper); border: 1px solid rgba(212,42,80,.2); }
-  .type-cat    { background: rgba(0,201,167,.08); color: #008a74; border: 1px solid rgba(0,201,167,.25); }
-  .type-thumb  { background: rgba(10,26,24,.06); color: var(--ink-2); border: 1px solid rgba(10,26,24,.18); }
-  .type-model  { background: rgba(180,120,60,.08); color: #7a4a10; border: 1px solid rgba(180,120,60,.25); }
+      .card-header {
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--rule);
+        background: var(--bg-2);
+      }
+      .card-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.05rem;
+        font-weight: 400;
+        color: var(--ink-2);
+        letter-spacing: 0.06em;
+      }
+      .card-meta {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .size-tag {
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.25rem 0.6rem;
+        background: var(--plate);
+        color: var(--plum);
+        border-radius: 1px;
+        border: 1px solid rgba(0, 42, 34, 0.15);
+      }
+      .type-tag {
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.25rem 0.6rem;
+        border-radius: 1px;
+      }
+      .type-banner {
+        background: rgba(212, 42, 80, 0.08);
+        color: var(--copper);
+        border: 1px solid rgba(212, 42, 80, 0.2);
+      }
+      .type-cat {
+        background: rgba(0, 201, 167, 0.08);
+        color: #008a74;
+        border: 1px solid rgba(0, 201, 167, 0.25);
+      }
+      .type-thumb {
+        background: rgba(10, 26, 24, 0.06);
+        color: var(--ink-2);
+        border: 1px solid rgba(10, 26, 24, 0.18);
+      }
+      .type-model {
+        background: rgba(180, 120, 60, 0.08);
+        color: #7a4a10;
+        border: 1px solid rgba(180, 120, 60, 0.25);
+      }
 
-  .style-tag {
-    font-size: .56rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    padding: .2rem .55rem;
-    border-radius: 1px;
-  }
-  .style-classy { background: rgba(0,42,34,.07); color: var(--plum); border: 1px solid rgba(0,42,34,.18); }
-  .style-fun    { background: rgba(212,42,80,.07); color: var(--copper-2); border: 1px solid rgba(212,42,80,.2); }
-  .style-beachy { background: rgba(0,140,120,.07); color: #006b58; border: 1px solid rgba(0,140,120,.22); }
+      .style-tag {
+        font-size: 0.56rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        border-radius: 1px;
+      }
+      .style-classy {
+        background: rgba(0, 42, 34, 0.07);
+        color: var(--plum);
+        border: 1px solid rgba(0, 42, 34, 0.18);
+      }
+      .style-fun {
+        background: rgba(212, 42, 80, 0.07);
+        color: var(--copper-2);
+        border: 1px solid rgba(212, 42, 80, 0.2);
+      }
+      .style-beachy {
+        background: rgba(0, 140, 120, 0.07);
+        color: #006b58;
+        border: 1px solid rgba(0, 140, 120, 0.22);
+      }
 
-  .card-body {
-    padding: 1.25rem;
-    position: relative;
-  }
-  .prompt-text {
-    font-family: 'DM Mono', monospace;
-    font-size: .72rem;
-    line-height: 1.75;
-    color: var(--ink);
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .highlight-gold   { color: #007a66; font-weight: 500; }
-  .highlight-copper { color: var(--copper-2); font-weight: 500; }
-  .highlight-plum   { color: var(--plum); font-weight: 500; }
-  .highlight-rose   { color: #b06070; font-weight: 500; }
+      .card-body {
+        padding: 1.25rem;
+        position: relative;
+      }
+      .prompt-text {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.72rem;
+        line-height: 1.75;
+        color: var(--ink);
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .highlight-gold {
+        color: #007a66;
+        font-weight: 500;
+      }
+      .highlight-copper {
+        color: var(--copper-2);
+        font-weight: 500;
+      }
+      .highlight-plum {
+        color: var(--plum);
+        font-weight: 500;
+      }
+      .highlight-rose {
+        color: #b06070;
+        font-weight: 500;
+      }
 
-  .copy-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 32px;
-    height: 32px;
-    background: var(--plate);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background .15s, border-color .15s;
-  }
-  .copy-btn:hover { background: var(--plum); border-color: var(--plum); }
-  .copy-btn:hover svg path { stroke: var(--bg); }
-  .copy-btn svg { width: 14px; height: 14px; }
-  .copy-btn svg path { stroke: var(--muted); stroke-width: 1.8; fill: none; transition: stroke .15s; }
-  .copy-btn.copied { background: var(--gold); border-color: var(--gold); }
-  .copy-btn.copied svg path { stroke: var(--plum); }
+      .copy-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 32px;
+        height: 32px;
+        background: var(--plate);
+        border: 1px solid var(--rule);
+        border-radius: 2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .copy-btn:hover {
+        background: var(--plum);
+        border-color: var(--plum);
+      }
+      .copy-btn:hover svg path {
+        stroke: var(--bg);
+      }
+      .copy-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+      .copy-btn svg path {
+        stroke: var(--muted);
+        stroke-width: 1.8;
+        fill: none;
+        transition: stroke 0.15s;
+      }
+      .copy-btn.copied {
+        background: var(--gold);
+        border-color: var(--gold);
+      }
+      .copy-btn.copied svg path {
+        stroke: var(--plum);
+      }
 
-  /* ─── Note ─── */
-  .note {
-    max-width: 900px;
-    margin: 0 auto;
-    font-size: .62rem;
-    line-height: 1.7;
-    color: var(--muted);
-    padding: 1rem 1.25rem;
-    border-left: 2px solid var(--gold);
-    background: rgba(0,201,167,.05);
-  }
-  .note strong { color: var(--ink-2); }
-  .note + .note { margin-top: 1rem; }
-</style>
-</head>
-<body>
+      /* ─── Note ─── */
+      .note {
+        max-width: 900px;
+        margin: 0 auto;
+        font-size: 0.62rem;
+        line-height: 1.7;
+        color: var(--muted);
+        padding: 1rem 1.25rem;
+        border-left: 2px solid var(--gold);
+        background: rgba(0, 201, 167, 0.05);
+      }
+      .note strong {
+        color: var(--ink-2);
+      }
+      .note + .note {
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">Luxera</div>
+      <div class="subtitle">AI Image Generation Prompts — Theme-Neutral Edition</div>
+      <div class="palette-row">
+        <div class="swatch">
+          <div class="swatch-dot" style="background: #002a22"></div>
+          #002A22 Plum
+        </div>
+        <div class="sep"></div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background: #d42a50"></div>
+          #D42A50 Copper
+        </div>
+        <div class="sep"></div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background: #00c9a7"></div>
+          #00C9A7 Gold
+        </div>
+        <div class="sep"></div>
+        <div class="swatch">
+          <div
+            class="swatch-dot"
+            style="background: #f6fffe; border-color: rgba(10, 26, 24, 0.2)"
+          ></div>
+          #F6FFFE Mist
+        </div>
+        <div class="sep"></div>
+        <div class="swatch">
+          <div class="swatch-dot" style="background: #ffb3c6"></div>
+          #FFB3C6 Dust Rose
+        </div>
+      </div>
+    </header>
 
-<header>
-  <div class="brand">Luxera</div>
-  <div class="subtitle">AI Image Generation Prompts — Theme-Neutral Edition</div>
-  <div class="palette-row">
-    <div class="swatch"><div class="swatch-dot" style="background:#002A22"></div>#002A22 Plum</div>
-    <div class="sep"></div>
-    <div class="swatch"><div class="swatch-dot" style="background:#D42A50"></div>#D42A50 Copper</div>
-    <div class="sep"></div>
-    <div class="swatch"><div class="swatch-dot" style="background:#00C9A7"></div>#00C9A7 Gold</div>
-    <div class="sep"></div>
-    <div class="swatch"><div class="swatch-dot" style="background:#F6FFFE;border-color:rgba(10,26,24,.2)"></div>#F6FFFE Mist</div>
-    <div class="sep"></div>
-    <div class="swatch"><div class="swatch-dot" style="background:#FFB3C6"></div>#FFB3C6 Dust Rose</div>
-  </div>
-</header>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      BANNERS
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Banners — 2 prompts — exact product placed in scene</div>
+    <div class="section">
+      <div class="section-label">Banners — 2 prompts — exact product placed in scene</div>
 
-  <div class="prompt-card" id="b1">
-    <div class="card-header">
-      <span class="card-title">Banner 01 — Dark & Dramatic</span>
-      <div class="card-meta">
-        <span class="size-tag">900 × 720 px</span>
-        <span class="type-tag type-banner">Banner</span>
+      <div class="prompt-card" id="b1">
+        <div class="card-header">
+          <span class="card-title">Banner 01 — Dark & Dramatic</span>
+          <div class="card-meta">
+            <span class="size-tag">900 × 720 px</span>
+            <span class="type-tag type-banner">Banner</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('b1-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="b1-text"
+          >Cinematic luxury jewelry editorial scene — <span class="highlight-plum">deep polished stone surface</span>, smooth and cool, lit by a single dramatic overhead spot that carves a tight circle of warm ivory light at the very center of the frame. The surrounding stone transitions naturally into deep shadow at the edges. <span class="highlight-copper">Three small dried botanical petals</span> are scattered near the lower-left corner, slightly out of focus. Upper-right edge shows the faintest hint of antique metallic architectural detail fading into darkness. <span class="highlight-gold">Subtle reflective highlights</span> play across the stone surface catching the overhead light. <span class="highlight-copper">The exact product from the reference image is placed at the center of the lit zone — do not alter the product's design, shape, materials, colors, or any detail in any way. The product is the clear hero, fully sharp and prominent, resting naturally on the stone surface with a soft natural shadow beneath it.</span> Aspect ratio 5:4 landscape. Shot style: Hasselblad H6D, 80mm, f/4, studio strobe top key — luxury brand campaign photography, 8K, no text, no watermark.</pre>
+        </div>
+      </div>
+
+      <div class="prompt-card" id="b2">
+        <div class="card-header">
+          <span class="card-title">Banner 02 — Light & Serene</span>
+          <div class="card-meta">
+            <span class="size-tag">900 × 720 px</span>
+            <span class="type-tag type-banner">Banner</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('b2-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="b2-text"
+          >Ethereal lifestyle product scene — <span class="highlight-gold">pale veined marble slab</span> with subtle grey veining, surface fills the bottom two-thirds of the frame. Soft north-facing natural window light from the upper-left creates a gentle luminous gradient. <span class="highlight-rose">A loose arrangement of soft botanical flowers and sprigs of eucalyptus</span> is placed in the lower-left corner, slightly overlapping the edge — soft focus, not competing. Upper-left drapes a sheer pale fabric that catches the light in gossamer folds. <span class="highlight-copper">The exact product from the reference image is placed in the center-right of the frame on the marble surface — do not alter the product's design, shape, materials, colors, or any detail in any way. The product is the clear hero, fully sharp and naturally lit, resting on the marble with a soft diffused shadow.</span> Background above the marble: <span class="highlight-gold">misty pale atmosphere</span>, almost like morning fog. Mood: refined and serene. Aspect ratio 5:4 landscape. Leica APO-Summicron 90mm, f/3.5, natural diffused light, 8K, no text, no watermark.</pre>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('b1-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="b1-text">Cinematic luxury jewelry editorial scene — <span class="highlight-plum">deep polished stone surface</span>, smooth and cool, lit by a single dramatic overhead spot that carves a tight circle of warm ivory light at the very center of the frame. The surrounding stone transitions naturally into deep shadow at the edges. <span class="highlight-copper">Three small dried botanical petals</span> are scattered near the lower-left corner, slightly out of focus. Upper-right edge shows the faintest hint of antique metallic architectural detail fading into darkness. <span class="highlight-gold">Subtle reflective highlights</span> play across the stone surface catching the overhead light. <span class="highlight-copper">The exact product from the reference image is placed at the center of the lit zone — do not alter the product's design, shape, materials, colors, or any detail in any way. The product is the clear hero, fully sharp and prominent, resting naturally on the stone surface with a soft natural shadow beneath it.</span> Aspect ratio 5:4 landscape. Shot style: Hasselblad H6D, 80mm, f/4, studio strobe top key — luxury brand campaign photography, 8K, no text, no watermark.</pre>
-    </div>
-  </div>
 
-  <div class="prompt-card" id="b2">
-    <div class="card-header">
-      <span class="card-title">Banner 02 — Light & Serene</span>
-      <div class="card-meta">
-        <span class="size-tag">900 × 720 px</span>
-        <span class="type-tag type-banner">Banner</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('b2-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="b2-text">Ethereal lifestyle product scene — <span class="highlight-gold">pale veined marble slab</span> with subtle grey veining, surface fills the bottom two-thirds of the frame. Soft north-facing natural window light from the upper-left creates a gentle luminous gradient. <span class="highlight-rose">A loose arrangement of soft botanical flowers and sprigs of eucalyptus</span> is placed in the lower-left corner, slightly overlapping the edge — soft focus, not competing. Upper-left drapes a sheer pale fabric that catches the light in gossamer folds. <span class="highlight-copper">The exact product from the reference image is placed in the center-right of the frame on the marble surface — do not alter the product's design, shape, materials, colors, or any detail in any way. The product is the clear hero, fully sharp and naturally lit, resting on the marble with a soft diffused shadow.</span> Background above the marble: <span class="highlight-gold">misty pale atmosphere</span>, almost like morning fog. Mood: refined and serene. Aspect ratio 5:4 landscape. Leica APO-Summicron 90mm, f/3.5, natural diffused light, 8K, no text, no watermark.</pre>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      CATEGORY IMAGES
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Category Cards — 5 prompts — jewelry invented by AI</div>
+    <div class="section">
+      <div class="section-label">Category Cards — 5 prompts — jewelry invented by AI</div>
 
-  <div class="prompt-card" id="c1">
-    <div class="card-header">
-      <span class="card-title">Category 01 — Necklace</span>
-      <div class="card-meta">
-        <span class="size-tag">900 × 600 px</span>
-        <span class="type-tag type-cat">Category</span>
+      <div class="prompt-card" id="c1">
+        <div class="card-header">
+          <span class="card-title">Category 01 — Necklace</span>
+          <div class="card-meta">
+            <span class="size-tag">900 × 600 px</span>
+            <span class="type-tag type-cat">Category</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('c1-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="c1-text"
+          >Editorial jewelry product photograph — a <span class="highlight-gold">delicate fine-chain necklace with a small pendant</span> arranged in a wide deliberate organic curve across a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds and subtle woven texture</span>. The chain sweeps naturally across the center of the frame, pendant resting face-up and catching soft directional light. <span class="highlight-rose">A few tiny dried baby's breath sprigs</span> are scattered near one corner — the only prop. <span class="highlight-plum">Background is the same warm textile, fading softly out of focus toward the edges.</span> Soft natural window light from upper-left, warm and diffused, no harsh shadows, gentle reflection along the chain. Mood: refined, editorial, quietly luxurious — warm and airy. No body parts, no hands, no human elements. Canon EOS R5 + 100mm Macro, f/4, full chain sharp. <span class="highlight-copper">3:2 landscape.</span> No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <div class="prompt-card" id="c2">
+        <div class="card-header">
+          <span class="card-title">Category 02 — Earrings</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 800 px</span>
+            <span class="type-tag type-cat">Category</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('c2-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="c2-text"
+          >Editorial flat-lay close-up — a <span class="highlight-gold">pair of long elegant drop earrings</span> arranged vertically side by side on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds</span>. The earrings are displayed face-up, their full length filling the frame from top to bottom with generous spacing between them. <span class="highlight-rose">A small dried botanical sprig</span> rests near the base — the only prop. <span class="highlight-plum">Background is the same warm textile, fading to a soft warm blur at the edges.</span> Soft natural window light from upper-left, warm and airy — clean even illumination across the metal and any stones, each detail sharp and luminous. Mood: elegant, editorial, minimal and warm. No body parts, no human elements. Hasselblad + 90mm, f/5.6, both earrings tack-sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <div class="prompt-card" id="c3">
+        <div class="card-header">
+          <span class="card-title">Category 03 — Rings</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 800 px</span>
+            <span class="type-tag type-cat">Category</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('c3-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="c3-text"
+          >Macro editorial product shot — a <span class="highlight-gold">polished ring with a smooth oval stone</span> standing upright on its band on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural texture</span>, positioned slightly off-center. The ring faces the camera — stone visible, catching a soft directional highlight that reveals its depth. A second ring of a slightly different style leans softly beside it, slightly out of focus. <span class="highlight-plum">Background is the same warm textile fading to a soft warm blur.</span> Light is soft and natural from upper-left — no harsh reflections, just luminous warm detail on the metal and stone. The rings are the clear hero. Mood: luxurious, precise, editorial, warm. No body parts, no hands, no human elements. Canon R5 + 100mm Macro, f/3.5, front ring tack-sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <div class="prompt-card" id="c4">
+        <div class="card-header">
+          <span class="card-title">Category 04 — Bracelet</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 800 px</span>
+            <span class="type-tag type-cat">Category</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('c4-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="c4-text"
+          >Styled editorial product shot — a <span class="highlight-gold">polished cuff bracelet or elegant chain bracelet</span> arranged in a natural elliptical form on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds</span>. The bracelet opening faces the camera, showing both the interior and the exterior curve. Soft natural window light from slightly above-left traces a continuous highlight along the arc of the metal, revealing any detail. <span class="highlight-plum">Background is the same warm textile receding to a soft warm blur.</span> <span class="highlight-rose">A single dried floral stem</span> sits in the far background — barely visible. The bracelet fills the lower two-thirds of the vertical frame, generous negative space above. Mood: refined, warm, wearable luxury. No body parts, no wrist, no human elements. Hasselblad + 90mm, f/4, full bracelet sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <div class="prompt-card" id="c5">
+        <div class="card-header">
+          <span class="card-title">Category 05 — Sets</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 800 px</span>
+            <span class="type-tag type-cat">Category</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('c5-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="c5-text"
+          >Clean overhead flat-lay on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds and woven texture</span> — a matching jewelry set of four pieces arranged naturally with breathing room: a <span class="highlight-gold">thin chain necklace</span> laid in a loose organic curve across the upper portion, a pair of <span class="highlight-gold">small drop earrings</span> placed side by side near the top, a <span class="highlight-gold">simple cuff bracelet</span> laid flat to the left, and a <span class="highlight-gold">ring with a small stone</span> placed lower right. All pieces cohesive in material and tone. <span class="highlight-rose">Two small dried baby's breath sprigs</span> rest casually near the necklace — the only prop. <span class="highlight-plum">Generous negative space at center</span>, nothing crowded. Soft even natural window light from slightly above, warm and diffused, no harsh shadows, gentle textile texture visible beneath the pieces. Top-down 90° view. Mood: editorial, warm and airy, expensive simplicity. Hasselblad + 55mm, f/8, full frame sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('c1-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="c1-text">Editorial jewelry product photograph — a <span class="highlight-gold">delicate fine-chain necklace with a small pendant</span> arranged in a wide deliberate organic curve across a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds and subtle woven texture</span>. The chain sweeps naturally across the center of the frame, pendant resting face-up and catching soft directional light. <span class="highlight-rose">A few tiny dried baby's breath sprigs</span> are scattered near one corner — the only prop. <span class="highlight-plum">Background is the same warm textile, fading softly out of focus toward the edges.</span> Soft natural window light from upper-left, warm and diffused, no harsh shadows, gentle reflection along the chain. Mood: refined, editorial, quietly luxurious — warm and airy. No body parts, no hands, no human elements. Canon EOS R5 + 100mm Macro, f/4, full chain sharp. <span class="highlight-copper">3:2 landscape.</span> No text, no watermark.</pre>
-    </div>
-  </div>
 
-  <div class="prompt-card" id="c2">
-    <div class="card-header">
-      <span class="card-title">Category 02 — Earrings</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 800 px</span>
-        <span class="type-tag type-cat">Category</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('c2-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="c2-text">Editorial flat-lay close-up — a <span class="highlight-gold">pair of long elegant drop earrings</span> arranged vertically side by side on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds</span>. The earrings are displayed face-up, their full length filling the frame from top to bottom with generous spacing between them. <span class="highlight-rose">A small dried botanical sprig</span> rests near the base — the only prop. <span class="highlight-plum">Background is the same warm textile, fading to a soft warm blur at the edges.</span> Soft natural window light from upper-left, warm and airy — clean even illumination across the metal and any stones, each detail sharp and luminous. Mood: elegant, editorial, minimal and warm. No body parts, no human elements. Hasselblad + 90mm, f/5.6, both earrings tack-sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <div class="prompt-card" id="c3">
-    <div class="card-header">
-      <span class="card-title">Category 03 — Rings</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 800 px</span>
-        <span class="type-tag type-cat">Category</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('c3-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="c3-text">Macro editorial product shot — a <span class="highlight-gold">polished ring with a smooth oval stone</span> standing upright on its band on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural texture</span>, positioned slightly off-center. The ring faces the camera — stone visible, catching a soft directional highlight that reveals its depth. A second ring of a slightly different style leans softly beside it, slightly out of focus. <span class="highlight-plum">Background is the same warm textile fading to a soft warm blur.</span> Light is soft and natural from upper-left — no harsh reflections, just luminous warm detail on the metal and stone. The rings are the clear hero. Mood: luxurious, precise, editorial, warm. No body parts, no hands, no human elements. Canon R5 + 100mm Macro, f/3.5, front ring tack-sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <div class="prompt-card" id="c4">
-    <div class="card-header">
-      <span class="card-title">Category 04 — Bracelet</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 800 px</span>
-        <span class="type-tag type-cat">Category</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('c4-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="c4-text">Styled editorial product shot — a <span class="highlight-gold">polished cuff bracelet or elegant chain bracelet</span> arranged in a natural elliptical form on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds</span>. The bracelet opening faces the camera, showing both the interior and the exterior curve. Soft natural window light from slightly above-left traces a continuous highlight along the arc of the metal, revealing any detail. <span class="highlight-plum">Background is the same warm textile receding to a soft warm blur.</span> <span class="highlight-rose">A single dried floral stem</span> sits in the far background — barely visible. The bracelet fills the lower two-thirds of the vertical frame, generous negative space above. Mood: refined, warm, wearable luxury. No body parts, no wrist, no human elements. Hasselblad + 90mm, f/4, full bracelet sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <div class="prompt-card" id="c5">
-    <div class="card-header">
-      <span class="card-title">Category 05 — Sets</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 800 px</span>
-        <span class="type-tag type-cat">Category</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('c5-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="c5-text">Clean overhead flat-lay on a <span class="highlight-gold">warm cream or ivory fabric surface — soft draped linen or satin textile with gentle natural folds and woven texture</span> — a matching jewelry set of four pieces arranged naturally with breathing room: a <span class="highlight-gold">thin chain necklace</span> laid in a loose organic curve across the upper portion, a pair of <span class="highlight-gold">small drop earrings</span> placed side by side near the top, a <span class="highlight-gold">simple cuff bracelet</span> laid flat to the left, and a <span class="highlight-gold">ring with a small stone</span> placed lower right. All pieces cohesive in material and tone. <span class="highlight-rose">Two small dried baby's breath sprigs</span> rest casually near the necklace — the only prop. <span class="highlight-plum">Generous negative space at center</span>, nothing crowded. Soft even natural window light from slightly above, warm and diffused, no harsh shadows, gentle textile texture visible beneath the pieces. Top-down 90° view. Mood: editorial, warm and airy, expensive simplicity. Hasselblad + 55mm, f/8, full frame sharp. <span class="highlight-copper">3:4 portrait.</span> No text, no watermark.</pre>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      PRODUCT THUMBNAILS
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Product Thumbnails — 5 prompts — one per jewelry type, theme-adaptable background, no model</div>
+    <div class="section">
+      <div class="section-label">
+        Product Thumbnails — 5 prompts — one per jewelry type, theme-adaptable background, no model
+      </div>
 
-  <!-- Thumbnail 01: Necklace -->
-  <div class="prompt-card" id="pt1">
-    <div class="card-header">
-      <span class="card-title">Thumbnail 01 — Necklace V-Shape</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 600 px</span>
-        <span class="type-tag type-thumb">Thumbnail</span>
+      <!-- Thumbnail 01: Necklace -->
+      <div class="prompt-card" id="pt1">
+        <div class="card-header">
+          <span class="card-title">Thumbnail 01 — Necklace V-Shape</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 600 px</span>
+            <span class="type-tag type-thumb">Thumbnail</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('pt1-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="pt1-text"
+          >Professional jewelry product photography of this exact necklace laid flat on a smooth clean surface, <span class="highlight-gold">arranged in a perfectly symmetrical deep V-shape composition</span> — clasp and chain ends positioned outside the frame and not visible. The necklace tapers naturally downward toward the center pendant, <span class="highlight-plum">pendant perfectly centered at the bottom point of the V</span>. Shot from directly above (top-down 90°), balanced spacing on both sides, consistent and even necklace curvature throughout. <span class="highlight-copper">Maintain exact original necklace proportions, pendant design, bead arrangement, chain thickness, materials and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on all jewelry details, premium e-commerce aesthetic, minimal clean luxury styling. Square format 1:1. No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <!-- Thumbnail 02: Earrings -->
+      <div class="prompt-card" id="pt2">
+        <div class="card-header">
+          <span class="card-title">Thumbnail 02 — Earrings Pair Flat-Lay</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 600 px</span>
+            <span class="type-tag type-thumb">Thumbnail</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('pt2-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="pt2-text"
+          >Professional jewelry product photography of this exact pair of earrings laid flat face-up on a smooth clean surface, <span class="highlight-gold">arranged symmetrically side by side with equal spacing between them</span> — both pieces mirror-positioned, their full design visible from post or hook to the very end of the drop. Shot from directly above (top-down 90°), <span class="highlight-plum">perfectly centered in the frame with balanced negative space on all sides</span>. <span class="highlight-copper">Maintain exact original earring proportions, stone placement, metal finish, color, charm details, and all product specifics without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on both earrings, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <!-- Thumbnail 03: Ring -->
+      <div class="prompt-card" id="pt3">
+        <div class="card-header">
+          <span class="card-title">Thumbnail 03 — Ring Upright</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 600 px</span>
+            <span class="type-tag type-thumb">Thumbnail</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('pt3-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="pt3-text"
+          >Professional jewelry product photography of this exact ring <span class="highlight-gold">standing upright on its band on a smooth clean surface, face fully visible to the camera — stone centered and prominent</span>. The ring is placed at a very slight angle (10–15°) so both the front face and the gentle curve of the band are simultaneously visible. <span class="highlight-plum">Perfectly centered in the square frame, generous negative space on all sides</span>. Camera positioned at a low, close angle to capture the ring's full height and presence. <span class="highlight-copper">Maintain exact original ring proportions, stone size and cut, band width, metal finish, engravings, color, and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from upper-left, gentle shadow at the base grounding the ring — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on the ring face and stone, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <!-- Thumbnail 04: Bracelet -->
+      <div class="prompt-card" id="pt4">
+        <div class="card-header">
+          <span class="card-title">Thumbnail 04 — Bracelet Circle Form</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 600 px</span>
+            <span class="type-tag type-thumb">Thumbnail</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('pt4-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="pt4-text"
+          >Professional jewelry product photography of this exact bracelet laid flat in a <span class="highlight-gold">natural circular or oval form on a smooth clean surface — clasp or closure positioned at the top-center so the bracelet design flows symmetrically left and right</span>. The full bracelet is visible within the frame. Shot from directly above (top-down 90°), <span class="highlight-plum">perfectly centered in the square frame with balanced negative space on all sides</span>. <span class="highlight-copper">Maintain exact original bracelet proportions, link design, bead or charm placement, clasp style, metal finish, color, and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections tracing the curve of the metal only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on all bracelet details, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
+        </div>
+      </div>
+
+      <!-- Thumbnail 05: Sets -->
+      <div class="prompt-card" id="pt5">
+        <div class="card-header">
+          <span class="card-title">Thumbnail 05 — Sets Multi-Piece Flat-Lay</span>
+          <div class="card-meta">
+            <span class="size-tag">600 × 600 px</span>
+            <span class="type-tag type-thumb">Thumbnail</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <button class="copy-btn" onclick="copyPrompt('pt5-text', this)" title="Copy prompt">
+            <svg viewBox="0 0 16 16">
+              <path
+                d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+              />
+            </svg>
+          </button>
+          <pre
+            class="prompt-text"
+            id="pt5-text"
+          >Professional jewelry product photography of this exact matching set laid flat as a clean editorial flat-lay on a smooth surface. <span class="highlight-gold">Pieces arranged in a deliberate, balanced composition with generous even spacing</span> — necklace laid in a soft V-curve at the top of the frame, the pair of earrings placed symmetrically in the middle, ring positioned lower-left, bracelet in its natural circular form lower-right. All pieces visible in full. Shot from directly above (top-down 90°), <span class="highlight-plum">the entire composition centered within the square frame</span>. <span class="highlight-copper">Maintain exact original proportions, materials, finish, color, and all product details of every single piece without alteration — pay close attention to materials so everything looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left, uniform across all pieces — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus throughout, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
+        </div>
       </div>
     </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('pt1-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="pt1-text">Professional jewelry product photography of this exact necklace laid flat on a smooth clean surface, <span class="highlight-gold">arranged in a perfectly symmetrical deep V-shape composition</span> — clasp and chain ends positioned outside the frame and not visible. The necklace tapers naturally downward toward the center pendant, <span class="highlight-plum">pendant perfectly centered at the bottom point of the V</span>. Shot from directly above (top-down 90°), balanced spacing on both sides, consistent and even necklace curvature throughout. <span class="highlight-copper">Maintain exact original necklace proportions, pendant design, bead arrangement, chain thickness, materials and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on all jewelry details, premium e-commerce aesthetic, minimal clean luxury styling. Square format 1:1. No text, no watermark.</pre>
-    </div>
-  </div>
 
-  <!-- Thumbnail 02: Earrings -->
-  <div class="prompt-card" id="pt2">
-    <div class="card-header">
-      <span class="card-title">Thumbnail 02 — Earrings Pair Flat-Lay</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 600 px</span>
-        <span class="type-tag type-thumb">Thumbnail</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('pt2-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="pt2-text">Professional jewelry product photography of this exact pair of earrings laid flat face-up on a smooth clean surface, <span class="highlight-gold">arranged symmetrically side by side with equal spacing between them</span> — both pieces mirror-positioned, their full design visible from post or hook to the very end of the drop. Shot from directly above (top-down 90°), <span class="highlight-plum">perfectly centered in the frame with balanced negative space on all sides</span>. <span class="highlight-copper">Maintain exact original earring proportions, stone placement, metal finish, color, charm details, and all product specifics without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on both earrings, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <!-- Thumbnail 03: Ring -->
-  <div class="prompt-card" id="pt3">
-    <div class="card-header">
-      <span class="card-title">Thumbnail 03 — Ring Upright</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 600 px</span>
-        <span class="type-tag type-thumb">Thumbnail</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('pt3-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="pt3-text">Professional jewelry product photography of this exact ring <span class="highlight-gold">standing upright on its band on a smooth clean surface, face fully visible to the camera — stone centered and prominent</span>. The ring is placed at a very slight angle (10–15°) so both the front face and the gentle curve of the band are simultaneously visible. <span class="highlight-plum">Perfectly centered in the square frame, generous negative space on all sides</span>. Camera positioned at a low, close angle to capture the ring's full height and presence. <span class="highlight-copper">Maintain exact original ring proportions, stone size and cut, band width, metal finish, engravings, color, and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from upper-left, gentle shadow at the base grounding the ring — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on the ring face and stone, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <!-- Thumbnail 04: Bracelet -->
-  <div class="prompt-card" id="pt4">
-    <div class="card-header">
-      <span class="card-title">Thumbnail 04 — Bracelet Circle Form</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 600 px</span>
-        <span class="type-tag type-thumb">Thumbnail</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('pt4-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="pt4-text">Professional jewelry product photography of this exact bracelet laid flat in a <span class="highlight-gold">natural circular or oval form on a smooth clean surface — clasp or closure positioned at the top-center so the bracelet design flows symmetrically left and right</span>. The full bracelet is visible within the frame. Shot from directly above (top-down 90°), <span class="highlight-plum">perfectly centered in the square frame with balanced negative space on all sides</span>. <span class="highlight-copper">Maintain exact original bracelet proportions, link design, bead or charm placement, clasp style, metal finish, color, and all product details without alteration — pay close attention to material so it looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left with subtle natural shadowing and gentle reflections tracing the curve of the metal only — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus on all bracelet details, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
-    </div>
-  </div>
-
-  <!-- Thumbnail 05: Sets -->
-  <div class="prompt-card" id="pt5">
-    <div class="card-header">
-      <span class="card-title">Thumbnail 05 — Sets Multi-Piece Flat-Lay</span>
-      <div class="card-meta">
-        <span class="size-tag">600 × 600 px</span>
-        <span class="type-tag type-thumb">Thumbnail</span>
-      </div>
-    </div>
-    <div class="card-body">
-      <button class="copy-btn" onclick="copyPrompt('pt5-text', this)" title="Copy prompt">
-        <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-      </button>
-      <pre class="prompt-text" id="pt5-text">Professional jewelry product photography of this exact matching set laid flat as a clean editorial flat-lay on a smooth surface. <span class="highlight-gold">Pieces arranged in a deliberate, balanced composition with generous even spacing</span> — necklace laid in a soft V-curve at the top of the frame, the pair of earrings placed symmetrically in the middle, ring positioned lower-left, bracelet in its natural circular form lower-right. All pieces visible in full. Shot from directly above (top-down 90°), <span class="highlight-plum">the entire composition centered within the square frame</span>. <span class="highlight-copper">Maintain exact original proportions, materials, finish, color, and all product details of every single piece without alteration — pay close attention to materials so everything looks exactly like the source.</span> <span class="highlight-gold">Background is a seamless smooth surface — soft luxury off-white or warm light grey, no specific color locked, adaptable to any brand palette</span>. Soft diffused studio lighting from above-left, uniform across all pieces — no harsh shadows, no props, no model, no extra elements. Ultra-sharp focus throughout, premium e-commerce aesthetic. Square format 1:1. No text, no watermark.</pre>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      PRODUCT WITH MODEL — EARRINGS
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Product with Model — Earrings — 6 prompts</div>
+    <div class="section">
+      <div class="section-label">Product with Model — Earrings — 6 prompts</div>
 
-  <div class="style-group">
-    <div class="style-group-label">Classy</div>
+      <div class="style-group">
+        <div class="style-group-label">Classy</div>
 
-    <div class="prompt-card" id="me-c1">
-      <div class="card-header">
-        <span class="card-title">Earrings — Classy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
+        <div class="prompt-card" id="me-c1">
+          <div class="card-header">
+            <span class="card-title">Earrings — Classy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-c1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-c1-text"
+            >Editorial close-up — a woman's ear in soft three-quarter profile, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her hair is swept up in a refined updo, revealing the full length of the earring. The piece catches soft, directional studio light — a key light from slightly above combined with a gentle fill from the opposite side, creating dimension without drama. Skin is flawless and natural. <span class="highlight-plum">Background is deeply blurred and tonally dark, rich and neutral</span> — not identifiably a specific color, suggesting a sophisticated interior. Frame is intimate: from crown of ear to collarbone. Mood: couture, refined, editorial. No face shown. Hasselblad H6D + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="me-c2">
+          <div class="card-header">
+            <span class="card-title">Earrings — Classy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-c2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-c2-text"
+            >Luxury editorial portrait — a woman's profile, ear and neck visible, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her posture is graceful, shoulder elegantly positioned. Soft studio lighting from the left creates a beautiful gradient across the skin. The earrings are the hero — every detail of the metal and stone is sharp and luminous. <span class="highlight-plum">Background is soft, neutral, and deeply out of focus</span> — tonally dark but not identifiably colored, suggesting a refined interior space. No face shown. Mood: Vogue, high fashion, timeless. Sony A7R V + 85mm GM, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
         </div>
       </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-c1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-c1-text">Editorial close-up — a woman's ear in soft three-quarter profile, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her hair is swept up in a refined updo, revealing the full length of the earring. The piece catches soft, directional studio light — a key light from slightly above combined with a gentle fill from the opposite side, creating dimension without drama. Skin is flawless and natural. <span class="highlight-plum">Background is deeply blurred and tonally dark, rich and neutral</span> — not identifiably a specific color, suggesting a sophisticated interior. Frame is intimate: from crown of ear to collarbone. Mood: couture, refined, editorial. No face shown. Hasselblad H6D + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
+
+      <div class="style-group">
+        <div class="style-group-label">Fun</div>
+
+        <div class="prompt-card" id="me-f1">
+          <div class="card-header">
+            <span class="card-title">Earrings — Fun 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-f1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-f1-text"
+            >Bright and playful lifestyle shot — a woman's ear, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. She is mid-laugh or mid-movement, hair flowing loosely. <span class="highlight-gold">Background suggests a bright airy outdoor or summery setting — blurred soft tones, light and open</span>. The earrings are the focal point: full of personality. Skin is warm and sun-kissed. Frame from hairline to shoulder, no full face. Light is natural, warm and golden. Mood: joyful, youthful, vibrant. Canon EOS R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="me-f2">
+          <div class="card-header">
+            <span class="card-title">Earrings — Fun 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-f2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-f2-text"
+            >Energetic lifestyle close-up — a woman's ear and cheek, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. She is looking away or slightly down, caught in motion. Hair is loose and casual. <span class="highlight-gold">Background is soft and bright — light-toned and airy, perhaps a blurred outdoor setting</span>. The earrings are vibrant and cheerful. Light is even and flattering, slightly warm. Mood: fun, social, wearable every day. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-group">
+        <div class="style-group-label">Beachy</div>
+
+        <div class="prompt-card" id="me-b1">
+          <div class="card-header">
+            <span class="card-title">Earrings — Beachy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-b1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-b1-text"
+            >Natural coastal lifestyle shot — a woman's ear and neck, sun-kissed skin slightly bronzed, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her hair is loosely pulled back or casually swept, perhaps with a few natural strands framing the ear. <span class="highlight-gold">Background is softly blurred warm outdoor tones — coastal sky light or open-air warmth</span>. The earring catches soft natural light beautifully. No face shown. Mood: effortless, sun-kissed, coastal. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="me-b2">
+          <div class="card-header">
+            <span class="card-title">Earrings — Beachy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('me-b2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="me-b2-text"
+            >Warm outdoor editorial — a woman's neck and ear, skin glowing from sun, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm, blurred outdoor tones — golden afternoon light through foliage or open beach air</span>. Light is golden and diffused. No face shown. Mood: free-spirited, natural, effortlessly beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="prompt-card" id="me-c2">
-      <div class="card-header">
-        <span class="card-title">Earrings — Classy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-c2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-c2-text">Luxury editorial portrait — a woman's profile, ear and neck visible, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her posture is graceful, shoulder elegantly positioned. Soft studio lighting from the left creates a beautiful gradient across the skin. The earrings are the hero — every detail of the metal and stone is sharp and luminous. <span class="highlight-plum">Background is soft, neutral, and deeply out of focus</span> — tonally dark but not identifiably colored, suggesting a refined interior space. No face shown. Mood: Vogue, high fashion, timeless. Sony A7R V + 85mm GM, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Fun</div>
-
-    <div class="prompt-card" id="me-f1">
-      <div class="card-header">
-        <span class="card-title">Earrings — Fun 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-f1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-f1-text">Bright and playful lifestyle shot — a woman's ear, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. She is mid-laugh or mid-movement, hair flowing loosely. <span class="highlight-gold">Background suggests a bright airy outdoor or summery setting — blurred soft tones, light and open</span>. The earrings are the focal point: full of personality. Skin is warm and sun-kissed. Frame from hairline to shoulder, no full face. Light is natural, warm and golden. Mood: joyful, youthful, vibrant. Canon EOS R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="me-f2">
-      <div class="card-header">
-        <span class="card-title">Earrings — Fun 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-f2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-f2-text">Energetic lifestyle close-up — a woman's ear and cheek, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. She is looking away or slightly down, caught in motion. Hair is loose and casual. <span class="highlight-gold">Background is soft and bright — light-toned and airy, perhaps a blurred outdoor setting</span>. The earrings are vibrant and cheerful. Light is even and flattering, slightly warm. Mood: fun, social, wearable every day. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Beachy</div>
-
-    <div class="prompt-card" id="me-b1">
-      <div class="card-header">
-        <span class="card-title">Earrings — Beachy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-b1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-b1-text">Natural coastal lifestyle shot — a woman's ear and neck, sun-kissed skin slightly bronzed, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. Her hair is loosely pulled back or casually swept, perhaps with a few natural strands framing the ear. <span class="highlight-gold">Background is softly blurred warm outdoor tones — coastal sky light or open-air warmth</span>. The earring catches soft natural light beautifully. No face shown. Mood: effortless, sun-kissed, coastal. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="me-b2">
-      <div class="card-header">
-        <span class="card-title">Earrings — Beachy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('me-b2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="me-b2-text">Warm outdoor editorial — a woman's neck and ear, skin glowing from sun, <span class="highlight-copper">wearing the exact earrings from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm, blurred outdoor tones — golden afternoon light through foliage or open beach air</span>. Light is golden and diffused. No face shown. Mood: free-spirited, natural, effortlessly beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      PRODUCT WITH MODEL — NECKLACE
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Product with Model — Necklace — 6 prompts</div>
+    <div class="section">
+      <div class="section-label">Product with Model — Necklace — 6 prompts</div>
 
-  <div class="style-group">
-    <div class="style-group-label">Classy</div>
+      <div class="style-group">
+        <div class="style-group-label">Classy</div>
 
-    <div class="prompt-card" id="mn-c1">
-      <div class="card-header">
-        <span class="card-title">Necklace — Classy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
+        <div class="prompt-card" id="mn-c1">
+          <div class="card-header">
+            <span class="card-title">Necklace — Classy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-c1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-c1-text"
+            >Elegant editorial portrait — a woman's bare décolletage and collarbone, skin luminous and smooth, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Her shoulders are squared and relaxed, posture graceful. Soft directional studio light from slightly above-left creates beautiful depth on the collarbone and makes the necklace shimmer. <span class="highlight-plum">Background is blurred and neutral in a deep, elegant tone — not identifiable as a specific color</span>. No face visible — cropped chin to mid-chest. Mood: editorial, sophisticated, quiet luxury. Hasselblad + 110mm f/3.5. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mn-c2">
+          <div class="card-header">
+            <span class="card-title">Necklace — Classy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-c2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-c2-text"
+            >Luxury close-up — a woman's neck and collarbone in three-quarter profile, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Skin is soft and natural, the necklace sits perfectly. Studio lighting — a clean key light from above creating a glowing highlight along the collarbone. <span class="highlight-plum">Background is completely blurred, deep neutral tones suggesting a refined interior</span>. No face. Mood: high fashion, editorial, commanding. Sony A7R V + 90mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
         </div>
       </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-c1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-c1-text">Elegant editorial portrait — a woman's bare décolletage and collarbone, skin luminous and smooth, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Her shoulders are squared and relaxed, posture graceful. Soft directional studio light from slightly above-left creates beautiful depth on the collarbone and makes the necklace shimmer. <span class="highlight-plum">Background is blurred and neutral in a deep, elegant tone — not identifiable as a specific color</span>. No face visible — cropped chin to mid-chest. Mood: editorial, sophisticated, quiet luxury. Hasselblad + 110mm f/3.5. 1:1 square. No text, no watermark.</pre>
+
+      <div class="style-group">
+        <div class="style-group-label">Fun</div>
+
+        <div class="prompt-card" id="mn-f1">
+          <div class="card-header">
+            <span class="card-title">Necklace — Fun 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-f1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-f1-text"
+            >Playful lifestyle portrait — a woman's neck and shoulder visible, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. She is in motion — energy joyful and relaxed. <span class="highlight-gold">Background is bright and airy — soft blurred outdoor tones, warm and sunny</span>. The necklace catches the light with personality. Skin is warm and healthy. No face. Mood: carefree, playful, individual. Canon R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mn-f2">
+          <div class="card-header">
+            <span class="card-title">Necklace — Fun 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-f2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-f2-text"
+            >Energetic close-up — a woman's neck and chest, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is soft and bright, slightly out of focus — warm and cheerful, light-toned</span>. Light is natural and flattering. No face. Mood: vibrant, self-expressive, fun. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-group">
+        <div class="style-group-label">Beachy</div>
+
+        <div class="prompt-card" id="mn-b1">
+          <div class="card-header">
+            <span class="card-title">Necklace — Beachy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-b1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-b1-text"
+            >Coastal lifestyle photo — a woman's neck and upper chest, skin warm and tanned, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is soft outdoor warmth — blurred coastal sky or golden foliage in natural light</span>. Light is natural, warm-hour. No face. Mood: sun-warmed, coastal living, effortless. Canon EOS + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mn-b2">
+          <div class="card-header">
+            <span class="card-title">Necklace — Beachy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mn-b2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mn-b2-text"
+            >Sun-drenched editorial — a woman's collarbone and throat visible, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Her skin has a natural sun-kissed look. <span class="highlight-gold">Background is warm outdoor blur — sandy or warm natural tones, diffused afternoon light</span>. Mood: resort, carefree, naturally beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark. No face.</pre>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="prompt-card" id="mn-c2">
-      <div class="card-header">
-        <span class="card-title">Necklace — Classy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-c2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-c2-text">Luxury close-up — a woman's neck and collarbone in three-quarter profile, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Skin is soft and natural, the necklace sits perfectly. Studio lighting — a clean key light from above creating a glowing highlight along the collarbone. <span class="highlight-plum">Background is completely blurred, deep neutral tones suggesting a refined interior</span>. No face. Mood: high fashion, editorial, commanding. Sony A7R V + 90mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Fun</div>
-
-    <div class="prompt-card" id="mn-f1">
-      <div class="card-header">
-        <span class="card-title">Necklace — Fun 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-f1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-f1-text">Playful lifestyle portrait — a woman's neck and shoulder visible, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. She is in motion — energy joyful and relaxed. <span class="highlight-gold">Background is bright and airy — soft blurred outdoor tones, warm and sunny</span>. The necklace catches the light with personality. Skin is warm and healthy. No face. Mood: carefree, playful, individual. Canon R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="mn-f2">
-      <div class="card-header">
-        <span class="card-title">Necklace — Fun 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-f2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-f2-text">Energetic close-up — a woman's neck and chest, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is soft and bright, slightly out of focus — warm and cheerful, light-toned</span>. Light is natural and flattering. No face. Mood: vibrant, self-expressive, fun. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Beachy</div>
-
-    <div class="prompt-card" id="mn-b1">
-      <div class="card-header">
-        <span class="card-title">Necklace — Beachy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-b1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-b1-text">Coastal lifestyle photo — a woman's neck and upper chest, skin warm and tanned, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is soft outdoor warmth — blurred coastal sky or golden foliage in natural light</span>. Light is natural, warm-hour. No face. Mood: sun-warmed, coastal living, effortless. Canon EOS + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="mn-b2">
-      <div class="card-header">
-        <span class="card-title">Necklace — Beachy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mn-b2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mn-b2-text">Sun-drenched editorial — a woman's collarbone and throat visible, <span class="highlight-copper">wearing the exact necklace from the reference image — do not alter the jewelry design, materials, colors, or any detail in any way</span>. Her skin has a natural sun-kissed look. <span class="highlight-gold">Background is warm outdoor blur — sandy or warm natural tones, diffused afternoon light</span>. Mood: resort, carefree, naturally beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark. No face.</pre>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      PRODUCT WITH MODEL — RINGS
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Product with Model — Rings — 6 prompts</div>
+    <div class="section">
+      <div class="section-label">Product with Model — Rings — 6 prompts</div>
 
-  <div class="style-group">
-    <div class="style-group-label">Classy</div>
+      <div class="style-group">
+        <div class="style-group-label">Classy</div>
 
-    <div class="prompt-card" id="mr-c1">
-      <div class="card-header">
-        <span class="card-title">Rings — Classy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
+        <div class="prompt-card" id="mr-c1">
+          <div class="card-header">
+            <span class="card-title">Rings — Classy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-c1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-c1-text"
+            >Refined macro shot — a woman's hand, perfectly still, fingers slightly extended and elegant, wearing a sophisticated ring — a solitaire or a clean bezel-set stone on a polished band. The hand rests on a <span class="highlight-gold">smooth pale stone or marble surface</span>. Skin is flawless and natural, nails clean and bare. Directional studio light from upper-left creates a beautiful highlight on the ring and a soft shadow. The ring is the hero — every detail in perfect focus. <span class="highlight-plum">Background surface fades to soft neutral blur</span>. Mood: timeless, elegant, luxury. Canon R5 + 100mm Macro, f/2.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mr-c2">
+          <div class="card-header">
+            <span class="card-title">Rings — Classy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-c2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-c2-text"
+            >Elegant lifestyle close-up — a woman's hand holding a subtle pose — perhaps fingers gently resting together or lightly touching a surface — wearing a refined stacking ring set or a single statement band. Soft directional light creates beautiful shadows that define the fingers. <span class="highlight-plum">Background is blurred and neutral — dark and sophisticated without a specific color</span>. The ring catches the light with quiet confidence. Mood: sophisticated, modern luxury. Hasselblad + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
+          </div>
         </div>
       </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-c1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-c1-text">Refined macro shot — a woman's hand, perfectly still, fingers slightly extended and elegant, wearing a sophisticated ring — a solitaire or a clean bezel-set stone on a polished band. The hand rests on a <span class="highlight-gold">smooth pale stone or marble surface</span>. Skin is flawless and natural, nails clean and bare. Directional studio light from upper-left creates a beautiful highlight on the ring and a soft shadow. The ring is the hero — every detail in perfect focus. <span class="highlight-plum">Background surface fades to soft neutral blur</span>. Mood: timeless, elegant, luxury. Canon R5 + 100mm Macro, f/2.8. 1:1 square. No text, no watermark.</pre>
+
+      <div class="style-group">
+        <div class="style-group-label">Fun</div>
+
+        <div class="prompt-card" id="mr-f1">
+          <div class="card-header">
+            <span class="card-title">Rings — Fun 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-f1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-f1-text"
+            >Playful lifestyle shot — a woman's hand, nails expressive, wearing a fun character ring: a tiny sculpted shape, a bold oversized colorful stone, or a novelty design with personality (a mushroom, a tiny star, a smiling shape). The hand is in motion — reaching or gesturing naturally. <span class="highlight-gold">Background is bright and airy, slightly blurred — warm light, cheerful setting</span>. The ring catches the eye immediately. Mood: youthful, playful, confident. Canon R5 + 85mm f/1.4, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mr-f2">
+          <div class="card-header">
+            <span class="card-title">Rings — Fun 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-f2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-f2-text"
+            >Close-up hand shot — a woman's fingers relaxed, wearing multiple fun rings at once — a stack of playful pieces in different styles, mixed colors and shapes. Some rings are thin and dainty, one is bold and sculptural, creating a maximalist and expressive look. <span class="highlight-gold">Light is natural and warm. Background is soft, blurred, and light-toned — airy and cheerful</span>. Mood: expressive, carefree, maximalist fun. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-group">
+        <div class="style-group-label">Beachy</div>
+
+        <div class="prompt-card" id="mr-b1">
+          <div class="card-header">
+            <span class="card-title">Rings — Beachy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-b1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-b1-text"
+            >Sun-kissed hand macro — a woman's tanned hand, fingers relaxed, wearing a ring with an organic natural form — a smooth sea glass stone in an open bezel, a rough-cut natural mineral, or a twisted organic band. The hand rests on a <span class="highlight-gold">natural surface — smooth driftwood, a soft sandy texture, or a warm flat stone</span>. Light is warm outdoor natural light. Background is blurred natural textures — sandy or warm earth tones. Mood: coastal, organic, effortlessly styled. Sony A7IV + 90mm Macro, f/2.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mr-b2">
+          <div class="card-header">
+            <span class="card-title">Rings — Beachy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mr-b2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mr-b2-text"
+            >Coastal lifestyle ring shot — a woman's hand, skin warm from the sun, wearing a delicate ring with a small shell motif or a fine band with a natural stone in an organic setting. The hand is gently cupped around something natural — a small shell or a smooth pebble — showcasing the ring. <span class="highlight-gold">Background is soft warm outdoor blur — golden afternoon natural light</span>. Mood: beach life, natural beauty, relaxed luxury. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="prompt-card" id="mr-c2">
-      <div class="card-header">
-        <span class="card-title">Rings — Classy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-c2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-c2-text">Elegant lifestyle close-up — a woman's hand holding a subtle pose — perhaps fingers gently resting together or lightly touching a surface — wearing a refined stacking ring set or a single statement band. Soft directional light creates beautiful shadows that define the fingers. <span class="highlight-plum">Background is blurred and neutral — dark and sophisticated without a specific color</span>. The ring catches the light with quiet confidence. Mood: sophisticated, modern luxury. Hasselblad + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Fun</div>
-
-    <div class="prompt-card" id="mr-f1">
-      <div class="card-header">
-        <span class="card-title">Rings — Fun 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-f1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-f1-text">Playful lifestyle shot — a woman's hand, nails expressive, wearing a fun character ring: a tiny sculpted shape, a bold oversized colorful stone, or a novelty design with personality (a mushroom, a tiny star, a smiling shape). The hand is in motion — reaching or gesturing naturally. <span class="highlight-gold">Background is bright and airy, slightly blurred — warm light, cheerful setting</span>. The ring catches the eye immediately. Mood: youthful, playful, confident. Canon R5 + 85mm f/1.4, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="mr-f2">
-      <div class="card-header">
-        <span class="card-title">Rings — Fun 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-f2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-f2-text">Close-up hand shot — a woman's fingers relaxed, wearing multiple fun rings at once — a stack of playful pieces in different styles, mixed colors and shapes. Some rings are thin and dainty, one is bold and sculptural, creating a maximalist and expressive look. <span class="highlight-gold">Light is natural and warm. Background is soft, blurred, and light-toned — airy and cheerful</span>. Mood: expressive, carefree, maximalist fun. Nikon Z8 + 85mm f/1.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Beachy</div>
-
-    <div class="prompt-card" id="mr-b1">
-      <div class="card-header">
-        <span class="card-title">Rings — Beachy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-b1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-b1-text">Sun-kissed hand macro — a woman's tanned hand, fingers relaxed, wearing a ring with an organic natural form — a smooth sea glass stone in an open bezel, a rough-cut natural mineral, or a twisted organic band. The hand rests on a <span class="highlight-gold">natural surface — smooth driftwood, a soft sandy texture, or a warm flat stone</span>. Light is warm outdoor natural light. Background is blurred natural textures — sandy or warm earth tones. Mood: coastal, organic, effortlessly styled. Sony A7IV + 90mm Macro, f/2.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="mr-b2">
-      <div class="card-header">
-        <span class="card-title">Rings — Beachy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mr-b2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mr-b2-text">Coastal lifestyle ring shot — a woman's hand, skin warm from the sun, wearing a delicate ring with a small shell motif or a fine band with a natural stone in an organic setting. The hand is gently cupped around something natural — a small shell or a smooth pebble — showcasing the ring. <span class="highlight-gold">Background is soft warm outdoor blur — golden afternoon natural light</span>. Mood: beach life, natural beauty, relaxed luxury. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
      PRODUCT WITH MODEL — BRACELET
 ════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-label">Product with Model — Bracelet — 6 prompts</div>
+    <div class="section">
+      <div class="section-label">Product with Model — Bracelet — 6 prompts</div>
 
-  <div class="style-group">
-    <div class="style-group-label">Classy</div>
+      <div class="style-group">
+        <div class="style-group-label">Classy</div>
 
-    <div class="prompt-card" id="mb-c1">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Classy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
+        <div class="prompt-card" id="mb-c1">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Classy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-c1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-c1-text"
+            >Editorial wrist shot — a woman's forearm and wrist, skin smooth and luminous, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The wrist is gently raised and slightly turned to display the piece. Soft studio lighting from slightly above creates a beautiful highlight along the metal. <span class="highlight-plum">Background is blurred and neutral — deep and sophisticated without a specific color</span>. Mood: polished, editorial, quiet luxury. Hasselblad + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mb-c2">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Classy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-classy">Classy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-c2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-c2-text"
+            >Luxury close-up — a woman's wrist, skin luminous, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The bracelet is the hero — every engraved detail or link sharp and luminous. Light is directional studio, creating shadows that reveal the form and craft of the piece. <span class="highlight-plum">Background is soft neutral blur — refined and dark, suggesting an elegant interior</span>. Mood: high fashion, timeless, commanding. Sony A7R V + 90mm Macro, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
         </div>
       </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-c1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-c1-text">Editorial wrist shot — a woman's forearm and wrist, skin smooth and luminous, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The wrist is gently raised and slightly turned to display the piece. Soft studio lighting from slightly above creates a beautiful highlight along the metal. <span class="highlight-plum">Background is blurred and neutral — deep and sophisticated without a specific color</span>. Mood: polished, editorial, quiet luxury. Hasselblad + 110mm, f/3.5. 1:1 square. No text, no watermark.</pre>
+
+      <div class="style-group">
+        <div class="style-group-label">Fun</div>
+
+        <div class="prompt-card" id="mb-f1">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Fun 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-f1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-f1-text"
+            >Playful lifestyle close-up — a woman's wrist and hand, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The wrist is in motion — reaching or gesturing — showing the piece with energy. <span class="highlight-gold">Background is bright and airy, warm light, slightly blurred — cheerful and light-toned</span>. Mood: joyful, playful, personality-driven. Canon R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mb-f2">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Fun 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-fun">Fun</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-f2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-f2-text"
+            >Energetic wrist shot — a woman's arm extended playfully, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The piece is expressive, full of life. <span class="highlight-gold">Background is soft bright outdoor or indoor natural light, slightly blurred, light-toned and airy</span>. Skin is warm. Mood: carefree, vibrant, everyday fun. Nikon Z8 + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="style-group">
+        <div class="style-group-label">Beachy</div>
+
+        <div class="prompt-card" id="mb-b1">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Beachy 01</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-b1-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-b1-text"
+            >Coastal lifestyle shot — a woman's wrist and forearm, skin slightly tanned and sun-kissed, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm outdoor blur — beach light or open-air golden setting</span>. Light is golden natural, warm and soft. Mood: seaside living, natural, effortlessly beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
+
+        <div class="prompt-card" id="mb-b2">
+          <div class="card-header">
+            <span class="card-title">Bracelet — Beachy 02</span>
+            <div class="card-meta">
+              <span class="size-tag">600 × 600 px</span>
+              <span class="style-tag style-beachy">Beachy</span>
+              <span class="type-tag type-model">Model</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <button class="copy-btn" onclick="copyPrompt('mb-b2-text', this)" title="Copy prompt">
+              <svg viewBox="0 0 16 16">
+                <path
+                  d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"
+                />
+              </svg>
+            </button>
+            <pre
+              class="prompt-text"
+              id="mb-b2-text"
+            >Sun-warmed editorial — a woman's wrist, skin bronzed, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm blurred natural tones — sandy or golden afternoon light</span>. Mood: resort, free spirit, effortless layering. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="prompt-card" id="mb-c2">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Classy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-classy">Classy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-c2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-c2-text">Luxury close-up — a woman's wrist, skin luminous, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The bracelet is the hero — every engraved detail or link sharp and luminous. Light is directional studio, creating shadows that reveal the form and craft of the piece. <span class="highlight-plum">Background is soft neutral blur — refined and dark, suggesting an elegant interior</span>. Mood: high fashion, timeless, commanding. Sony A7R V + 90mm Macro, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
+    <div class="note" style="max-width: 900px; margin: 0 auto">
+      <strong>Banner note:</strong> Both banner prompts place the exact product from the reference
+      image directly into the scene — supply your product photo as the reference image when
+      generating. Backgrounds are described in neutral material terms so they harmonize with any
+      brand palette. The hero panel renders at a fixed 560 px tall and ~690–775 px wide depending on
+      screen size (ratio ≈ 5:4). For Midjourney append
+      <code>--ar 5:4 --style raw --stylize 200</code>.
     </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Fun</div>
-
-    <div class="prompt-card" id="mb-f1">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Fun 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-f1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-f1-text">Playful lifestyle close-up — a woman's wrist and hand, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The wrist is in motion — reaching or gesturing — showing the piece with energy. <span class="highlight-gold">Background is bright and airy, warm light, slightly blurred — cheerful and light-toned</span>. Mood: joyful, playful, personality-driven. Canon R5 + 85mm f/1.4. 1:1 square. No text, no watermark.</pre>
-      </div>
+    <div class="note" style="max-width: 900px; margin: 0 auto; margin-top: 1rem">
+      <strong>Category note:</strong> All five category images feature fictional jewelry invented by
+      the AI. The necklace (featured card, col-span-2) uses
+      <strong>900 × 600 px landscape (3:2)</strong>; all other categories use
+      <strong>600 × 800 px portrait (3:4)</strong>. Backgrounds are described as warm cream/ivory
+      fabric so the style matches the current site imagery. For Midjourney: necklace append
+      <code>--ar 3:2 --style raw --stylize 200</code>, others append
+      <code>--ar 3:4 --style raw --stylize 200</code>.
+    </div>
+    <div class="note" style="max-width: 900px; margin: 0 auto; margin-top: 1rem">
+      <strong>Thumbnail note:</strong> All three thumbnail prompts use an undefined solid background
+      — the actual color should be set to match the active theme palette in post, or by adding a
+      background color instruction when generating (e.g. "background color: [theme primary]").
+    </div>
+    <div class="note" style="max-width: 900px; margin: 0 auto; margin-top: 1rem">
+      <strong>Model shot note:</strong> 24 prompts across Earrings, Necklace, Rings, and Bracelet —
+      each type has 3 moods (Classy, Fun, Beachy) × 2 variations. No brand hex values appear in any
+      prompt; environments are described by tone and material so they adapt to light, dark, or
+      seasonal themes. For Midjourney append <code>--ar 1:1 --style raw --stylize 180</code>.
     </div>
 
-    <div class="prompt-card" id="mb-f2">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Fun 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-fun">Fun</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-f2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-f2-text">Energetic wrist shot — a woman's arm extended playfully, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. The piece is expressive, full of life. <span class="highlight-gold">Background is soft bright outdoor or indoor natural light, slightly blurred, light-toned and airy</span>. Skin is warm. Mood: carefree, vibrant, everyday fun. Nikon Z8 + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-
-  <div class="style-group">
-    <div class="style-group-label">Beachy</div>
-
-    <div class="prompt-card" id="mb-b1">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Beachy 01</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-b1-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-b1-text">Coastal lifestyle shot — a woman's wrist and forearm, skin slightly tanned and sun-kissed, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm outdoor blur — beach light or open-air golden setting</span>. Light is golden natural, warm and soft. Mood: seaside living, natural, effortlessly beautiful. Sony A7IV + 85mm GM, f/1.8. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-
-    <div class="prompt-card" id="mb-b2">
-      <div class="card-header">
-        <span class="card-title">Bracelet — Beachy 02</span>
-        <div class="card-meta">
-          <span class="size-tag">600 × 600 px</span>
-          <span class="style-tag style-beachy">Beachy</span>
-          <span class="type-tag type-model">Model</span>
-        </div>
-      </div>
-      <div class="card-body">
-        <button class="copy-btn" onclick="copyPrompt('mb-b2-text', this)" title="Copy prompt">
-          <svg viewBox="0 0 16 16"><path d="M5 4V2.5A1.5 1.5 0 016.5 1h7A1.5 1.5 0 0115 2.5v9A1.5 1.5 0 0113.5 13H12M1 6.5A1.5 1.5 0 012.5 5h7A1.5 1.5 0 0111 6.5v7A1.5 1.5 0 019.5 15h-7A1.5 1.5 0 011 13.5v-7z"/></svg>
-        </button>
-        <pre class="prompt-text" id="mb-b2-text">Sun-warmed editorial — a woman's wrist, skin bronzed, <span class="highlight-copper">wearing the exact bracelet from the reference image — do not alter the jewelry design, shape, materials, colors, or any detail in any way</span>. <span class="highlight-gold">Background is warm blurred natural tones — sandy or golden afternoon light</span>. Mood: resort, free spirit, effortless layering. Canon EOS R + 85mm, f/2. 1:1 square. No text, no watermark.</pre>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="note" style="max-width:900px;margin:0 auto">
-  <strong>Banner note:</strong> Both banner prompts place the exact product from the reference image directly into the scene — supply your product photo as the reference image when generating. Backgrounds are described in neutral material terms so they harmonize with any brand palette. The hero panel renders at a fixed 560 px tall and ~690–775 px wide depending on screen size (ratio ≈ 5:4). For Midjourney append <code>--ar 5:4 --style raw --stylize 200</code>.
-</div>
-<div class="note" style="max-width:900px;margin:0 auto;margin-top:1rem">
-  <strong>Category note:</strong> All five category images feature fictional jewelry invented by the AI. The necklace (featured card, col-span-2) uses <strong>900 × 600 px landscape (3:2)</strong>; all other categories use <strong>600 × 800 px portrait (3:4)</strong>. Backgrounds are described as warm cream/ivory fabric so the style matches the current site imagery. For Midjourney: necklace append <code>--ar 3:2 --style raw --stylize 200</code>, others append <code>--ar 3:4 --style raw --stylize 200</code>.
-</div>
-<div class="note" style="max-width:900px;margin:0 auto;margin-top:1rem">
-  <strong>Thumbnail note:</strong> All three thumbnail prompts use an undefined solid background — the actual color should be set to match the active theme palette in post, or by adding a background color instruction when generating (e.g. "background color: [theme primary]").
-</div>
-<div class="note" style="max-width:900px;margin:0 auto;margin-top:1rem">
-  <strong>Model shot note:</strong> 24 prompts across Earrings, Necklace, Rings, and Bracelet — each type has 3 moods (Classy, Fun, Beachy) × 2 variations. No brand hex values appear in any prompt; environments are described by tone and material so they adapt to light, dark, or seasonal themes. For Midjourney append <code>--ar 1:1 --style raw --stylize 180</code>.
-</div>
-
-<script>
-function copyPrompt(id, btn) {
-  const el = document.getElementById(id);
-  const text = el.innerText || el.textContent;
-  navigator.clipboard.writeText(text.trim()).then(() => {
-    btn.classList.add('copied');
-    setTimeout(() => btn.classList.remove('copied'), 1800);
-  });
-}
-</script>
-</body>
+    <script>
+      function copyPrompt(id, btn) {
+        const el = document.getElementById(id)
+        const text = el.innerText || el.textContent
+        navigator.clipboard.writeText(text.trim()).then(() => {
+          btn.classList.add('copied')
+          setTimeout(() => btn.classList.remove('copied'), 1800)
+        })
+      }
+    </script>
+  </body>
 </html>

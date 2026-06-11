@@ -16,12 +16,12 @@ const FILTERS = ['همه', 'تأیید‌شده', 'پنج ستاره', 'انتق
 const AVATARS = ['plum', 'sage', 'saffron', 'teal', 'copper']
 
 const AVA_BG: Record<string, string> = {
-  plum:    'bg-[linear-gradient(135deg,var(--color-plum-dark),var(--color-plum))]',
-  sage:    'bg-[linear-gradient(135deg,#2E1F16,var(--color-ink))]',
+  plum: 'bg-[linear-gradient(135deg,var(--color-plum-dark),var(--color-plum))]',
+  sage: 'bg-[linear-gradient(135deg,#2E1F16,var(--color-ink))]',
   saffron: 'bg-[linear-gradient(135deg,var(--color-copper),#9B6B2E)]',
-  teal:    'bg-[linear-gradient(135deg,#24303e,#1B2630)]',
-  rose:    'bg-[linear-gradient(135deg,#a04860,#7A3F22)]',
-  copper:  'bg-[var(--color-bg-2)] text-ink',
+  teal: 'bg-[linear-gradient(135deg,#24303e,#1B2630)]',
+  rose: 'bg-[linear-gradient(135deg,#a04860,#7A3F22)]',
+  copper: 'bg-[var(--color-bg-2)] text-ink',
 }
 
 function apiCommentToReview(c: ApiCommentResponse, idx: number): Review & { id: string } {
@@ -110,15 +110,18 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
     <section className="py-16 px-[var(--pad)] bg-surface mt-12" id="reviews">
       <div className="max-w-[1480px] mx-auto">
         <div className="grid [grid-template-columns:320px_1fr] gap-12 items-start max-md:grid-cols-1 max-md:gap-8">
-
           {/* Summary column */}
           <div className="sticky top-24 max-md:relative max-md:top-0">
             <div className="flex flex-col gap-1.5 mb-6">
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-copper-dark">Customer reviews</span>
+              <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-copper-dark">
+                Customer reviews
+              </span>
               <h2 className="font-heading font-bold text-[clamp(32px,3.5vw,48px)] leading-[1.1] m-0 text-ink">
                 تجربه‌ی <em className="font-body italic font-normal text-copper-dark">مشتریان</em>
               </h2>
-              <span className="font-display italic text-[14px] text-muted">What our clients say.</span>
+              <span className="font-display italic text-[14px] text-muted">
+                What our clients say.
+              </span>
             </div>
 
             <div className="flex items-baseline gap-3.5 my-[18px] mb-2">
@@ -136,7 +139,10 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
             {!loading && reviews.length > 0 && (
               <div className="flex flex-col gap-2 mt-[18px]">
                 {breakdown.map((r) => (
-                  <div key={r.stars} className="grid [grid-template-columns:30px_1fr_36px] gap-2.5 items-center font-mono text-[11px] text-muted">
+                  <div
+                    key={r.stars}
+                    className="grid [grid-template-columns:30px_1fr_36px] gap-2.5 items-center font-mono text-[11px] text-muted"
+                  >
                     <span className="inline-flex items-center gap-1 text-ink-2">
                       {toFa(r.stars)} <Icon name="star" size={10} />
                     </span>
@@ -150,7 +156,10 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
             )}
 
             <div className="mt-6 p-[18px] bg-bg rounded-[12px] text-[13px] text-ink-2 leading-[1.7]">
-              <p className="m-0 mb-3">تجربه‌ی خود را با خریداران آینده در میان بگذارید. هر نظر تأیید‌شده با کدِ منحصر به مشتریِ خریدار همراه است.</p>
+              <p className="m-0 mb-3">
+                تجربه‌ی خود را با خریداران آینده در میان بگذارید. هر نظر تأیید‌شده با کدِ منحصر به
+                مشتریِ خریدار همراه است.
+              </p>
               {isLoggedIn ? (
                 <button
                   className="inline-flex items-center gap-2.5 px-5 py-2.5 text-[13px] font-medium bg-ink text-bg rounded-full border border-ink transition-all duration-200 hover:bg-plum hover:border-plum"
@@ -174,7 +183,12 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                       key={star}
                       type="button"
                       className="p-0.5 transition-colors duration-150"
-                      style={{ color: star <= (formHover || formRating) ? 'var(--color-copper)' : 'rgba(26,17,10,0.2)' }}
+                      style={{
+                        color:
+                          star <= (formHover || formRating)
+                            ? 'var(--color-copper)'
+                            : 'rgba(26,17,10,0.2)',
+                      }}
                       onClick={() => setFormRating(star)}
                       onMouseEnter={() => setFormHover(star)}
                       onMouseLeave={() => setFormHover(0)}
@@ -191,9 +205,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                   placeholder="نظر خود را بنویسید…"
                   rows={4}
                 />
-                {formError && (
-                  <span className="text-[13px] text-sale">{formError}</span>
-                )}
+                {formError && <span className="text-[13px] text-sale">{formError}</span>}
                 <button
                   className={`self-start inline-flex items-center gap-2.5 px-5 py-2.5 text-[13px] font-medium bg-ink text-bg rounded-full border border-ink transition-all duration-200 hover:bg-plum hover:border-plum ${submitting ? 'opacity-60' : ''}`}
                   onClick={handleSubmit}
@@ -208,7 +220,9 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
           {/* Reviews list column */}
           <div>
             <div className="flex items-center gap-2.5 flex-wrap mb-[22px]">
-              <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5">فیلتر</span>
+              <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5">
+                فیلتر
+              </span>
               {FILTERS.map((f) => (
                 <button
                   key={f}
@@ -231,34 +245,46 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                 </div>
               )}
               {!loading && filtered.length === 0 && (
-                <p className="col-span-2 text-[13px] text-muted py-6 text-center">هنوز نظری برای این فیلتر ثبت نشده.</p>
+                <p className="col-span-2 text-[13px] text-muted py-6 text-center">
+                  هنوز نظری برای این فیلتر ثبت نشده.
+                </p>
               )}
-              {!loading && filtered.map((review) => (
-                <article key={review.id} className="p-5 bg-bg rounded-[var(--radius)] border border-rule flex flex-col gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-9 h-9 rounded-full flex-shrink-0 grid place-items-center text-bg font-heading text-[14px] font-bold overflow-hidden ${AVA_BG[review.avatar] ?? 'bg-bg-2'}`}>
-                      {review.name.charAt(0)}
+              {!loading &&
+                filtered.map((review) => (
+                  <article
+                    key={review.id}
+                    className="p-5 bg-bg rounded-[var(--radius)] border border-rule flex flex-col gap-3"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`w-9 h-9 rounded-full flex-shrink-0 grid place-items-center text-bg font-heading text-[14px] font-bold overflow-hidden ${AVA_BG[review.avatar] ?? 'bg-bg-2'}`}
+                      >
+                        {review.name.charAt(0)}
+                      </div>
+                      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                        <span className="font-heading text-[14px] font-semibold flex items-center gap-2 flex-wrap">
+                          {review.name}
+                          {review.verified && (
+                            <span className="inline-flex items-center gap-1 font-mono text-[9px] text-ok bg-[rgba(31,138,91,.1)] px-[7px] py-0.5 rounded-full tracking-[0.04em]">
+                              <Icon name="check" size={9} strokeWidth={2.4} />
+                              تأیید‌شده
+                            </span>
+                          )}
+                        </span>
+                        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">
+                          {review.date}
+                        </span>
+                      </div>
+                      <Stars value={review.rating} size={11} />
                     </div>
-                    <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                      <span className="font-heading text-[14px] font-semibold flex items-center gap-2 flex-wrap">
-                        {review.name}
-                        {review.verified && (
-                          <span className="inline-flex items-center gap-1 font-mono text-[9px] text-ok bg-[rgba(31,138,91,.1)] px-[7px] py-0.5 rounded-full tracking-[0.04em]">
-                            <Icon name="check" size={9} strokeWidth={2.4} />
-                            تأیید‌شده
-                          </span>
-                        )}
-                      </span>
-                      <span className="font-mono text-[10px] text-muted tracking-[0.06em]">{review.date}</span>
-                    </div>
-                    <Stars value={review.rating} size={11} />
-                  </div>
-                  {review.title && (
-                    <h3 className="font-heading font-medium text-[16px] m-0 text-ink">{review.title}</h3>
-                  )}
-                  <p className="text-[14px] leading-[1.85] text-ink-2 m-0">{review.body}</p>
-                </article>
-              ))}
+                    {review.title && (
+                      <h3 className="font-heading font-medium text-[16px] m-0 text-ink">
+                        {review.title}
+                      </h3>
+                    )}
+                    <p className="text-[14px] leading-[1.85] text-ink-2 m-0">{review.body}</p>
+                  </article>
+                ))}
             </div>
 
             {!loading && total > reviews.length && (
@@ -269,7 +295,6 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </section>

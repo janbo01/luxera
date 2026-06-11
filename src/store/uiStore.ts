@@ -37,6 +37,6 @@ export const useUIStore = create<UIState>()(
         density: state.density,
         heroVariant: state.heroVariant,
       }),
-    }
-  )
+    },
+  ),
 )

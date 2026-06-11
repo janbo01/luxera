@@ -5,7 +5,11 @@ const ProductsSection: FC = () => (
   <ProductCarousel
     sectionId="new"
     kicker="NEW ARRIVALS · تازه‌ترین‌ها"
-    title={<>جدیدترین <em>محصولات</em></>}
+    title={
+      <>
+        جدیدترین <em>محصولات</em>
+      </>
+    }
     link="/category/new"
   />
 )

@@ -108,10 +108,7 @@ export async function getCart(): Promise<ApiCart> {
   return apiFetch<ApiCart>(`${BASE}/cart`)
 }
 
-export async function setCartItem(
-  productId: string,
-  quantity: number,
-): Promise<void> {
+export async function setCartItem(productId: string, quantity: number): Promise<void> {
   await apiFetch(`${BASE}/cart/items`, {
     method: 'POST',
     body: JSON.stringify({ product_id: productId, quantity }),
@@ -149,10 +146,7 @@ export async function getCoupon(code: string): Promise<ApiCoupon> {
   return apiFetch<ApiCoupon>(`${BASE}/coupons/${code}`)
 }
 
-export async function applyCoupon(
-  code: string,
-  subtotal: string,
-): Promise<ApiApplyCouponResponse> {
+export async function applyCoupon(code: string, subtotal: string): Promise<ApiApplyCouponResponse> {
   return apiFetch<ApiApplyCouponResponse>(`${BASE}/coupons/apply`, {
     method: 'POST',
     body: JSON.stringify({ code, subtotal }),

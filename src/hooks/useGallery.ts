@@ -58,14 +58,17 @@ export function useGallery({ count }: UseGalleryOptions) {
     const g = gesture.current
     // Cache container size once per gesture — avoids layout reads during touchmove
     const el = mainRef.current
-    if (el) { g.containerW = el.clientWidth; g.containerH = el.clientHeight }
+    if (el) {
+      g.containerW = el.clientWidth
+      g.containerH = el.clientHeight
+    }
     if (e.touches.length === 2) {
-      g.startScale  = zoomRef.current.scale
+      g.startScale = zoomRef.current.scale
       g.startSpread = getSpread(e.touches)
-      g.startX      = zoomRef.current.x
-      g.startY      = zoomRef.current.y
+      g.startX = zoomRef.current.x
+      g.startY = zoomRef.current.y
     } else if (e.touches.length === 1) {
-      const t   = e.touches[0]
+      const t = e.touches[0]
       const now = Date.now()
       if (
         now - g.lastTapTime < 280 &&
@@ -77,12 +80,12 @@ export function useGallery({ count }: UseGalleryOptions) {
         return
       }
       g.lastTapTime = now
-      g.lastTapX    = t.clientX
-      g.lastTapY    = t.clientY
-      g.panStartX   = t.clientX
-      g.panStartY   = t.clientY
-      g.panStartTx  = zoomRef.current.x
-      g.panStartTy  = zoomRef.current.y
+      g.lastTapX = t.clientX
+      g.lastTapY = t.clientY
+      g.panStartX = t.clientX
+      g.panStartY = t.clientY
+      g.panStartTx = zoomRef.current.x
+      g.panStartTy = zoomRef.current.y
     }
   }
 
@@ -99,12 +102,12 @@ export function useGallery({ count }: UseGalleryOptions) {
       if (e.touches.length === 2) {
         e.preventDefault()
         const newSpread = getSpread(e.touches)
-        const newScale  = Math.min(3, Math.max(1, g.startScale * (newSpread / g.startSpread)))
-        const clamped   = clampPos(g.startX, g.startY, newScale)
+        const newScale = Math.min(3, Math.max(1, g.startScale * (newSpread / g.startSpread)))
+        const clamped = clampPos(g.startX, g.startY, newScale)
         applyZoom({ scale: newScale, ...clamped })
       } else if (e.touches.length === 1 && zoomRef.current.scale > 1) {
         e.preventDefault()
-        const t  = e.touches[0]
+        const t = e.touches[0]
         const dx = t.clientX - g.panStartX
         const dy = t.clientY - g.panStartY
         applyZoom({

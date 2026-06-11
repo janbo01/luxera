@@ -11,7 +11,9 @@ const NotFoundPage: FC = () => {
       <div className="opacity-25 mb-2">
         <Icon name="search" size={48} />
       </div>
-      <h1 className="font-display text-[clamp(64px,12vw,120px)] font-normal text-rule leading-none m-0">۴۰۴</h1>
+      <h1 className="font-display text-[clamp(64px,12vw,120px)] font-normal text-rule leading-none m-0">
+        ۴۰۴
+      </h1>
       <h2 className="font-body text-[clamp(18px,3vw,24px)] text-ink m-0">صفحه پیدا نشد</h2>
       <p className="text-sm text-muted max-w-[360px] leading-[1.7] m-0">
         صفحه‌ای که دنبالش می‌گردید وجود ندارد یا جابه‌جا شده است.

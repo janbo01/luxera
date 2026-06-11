@@ -31,9 +31,7 @@ export const useCartStore = create<CartState>()(
             const maxQty = existing.stockCount ?? Infinity
             if (existing.qty >= maxQty) return state
             return {
-              items: state.items.map((x) =>
-                x.id === product.id ? { ...x, qty: x.qty + 1 } : x
-              ),
+              items: state.items.map((x) => (x.id === product.id ? { ...x, qty: x.qty + 1 } : x)),
             }
           }
           if ((product.stockCount ?? 1) < 1) return state
@@ -52,13 +50,10 @@ export const useCartStore = create<CartState>()(
 
       decrement: (id) =>
         set((state) => ({
-          items: state.items.map((x) =>
-            x.id === id ? { ...x, qty: Math.max(1, x.qty - 1) } : x
-          ),
+          items: state.items.map((x) => (x.id === id ? { ...x, qty: Math.max(1, x.qty - 1) } : x)),
         })),
 
-      remove: (id) =>
-        set((state) => ({ items: state.items.filter((x) => x.id !== id) })),
+      remove: (id) => set((state) => ({ items: state.items.filter((x) => x.id !== id) })),
 
       clearCart: () => set({ items: [] }),
       openCart: () => set({ isOpen: true }),
@@ -67,9 +62,8 @@ export const useCartStore = create<CartState>()(
     {
       name: STORAGE_KEYS.cart,
       partialize: (state) => ({ items: state.items }),
-    }
-  )
+    },
+  ),
 )
 
-export const selectTotalQty = (state: CartState) =>
-  state.items.reduce((s, it) => s + it.qty, 0)
+export const selectTotalQty = (state: CartState) => state.items.reduce((s, it) => s + it.qty, 0)

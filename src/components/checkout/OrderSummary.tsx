@@ -37,7 +37,8 @@ interface OrderSummaryProps {
   onGoStep: (n: CheckoutStep) => void
 }
 
-const inputCls = 'flex-1 bg-bg border border-rule rounded-[10px] px-3.5 py-[11px] text-[13px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
+const inputCls =
+  'flex-1 bg-bg border border-rule rounded-[10px] px-3.5 py-[11px] text-[13px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
 
 const PERKS = [
   'ارسالِ بیمه‌شده · بیمه‌ی البرز',
@@ -46,20 +47,40 @@ const PERKS = [
 ]
 
 const OrderSummary: FC<OrderSummaryProps> = ({
-  items, step, subtotal, selectedShipping, snappDate, snappTime,
-  giftWrap, couponState, couponError, appliedCode, appliedCoupon, couponDiscount, coupon, total,
-  addrName, addrCity, addrProvince, addrStreet,
-  loyaltyBalance, loyaltyPointValue, loyaltyPointsToUse, loyaltyDiscount,
-  onLoyaltyPointsChange, onCouponChange, onApplyCoupon, onRemoveCoupon, onGoStep,
+  items,
+  step,
+  subtotal,
+  selectedShipping,
+  snappDate,
+  snappTime,
+  giftWrap,
+  couponState,
+  couponError,
+  appliedCode,
+  appliedCoupon,
+  couponDiscount,
+  coupon,
+  total,
+  addrName,
+  addrCity,
+  addrProvince,
+  addrStreet,
+  loyaltyBalance,
+  loyaltyPointValue,
+  loyaltyPointsToUse,
+  loyaltyDiscount,
+  onLoyaltyPointsChange,
+  onCouponChange,
+  onApplyCoupon,
+  onRemoveCoupon,
+  onGoStep,
 }) => (
   <aside className="sticky top-[98px] self-start flex flex-col gap-3.5 max-[1100px]:static max-[1100px]:top-0">
     <div className="bg-surface rounded-[var(--radius)] border border-rule overflow-hidden">
-
       {/* Gradient band */}
       <div className="h-[5px] bg-[linear-gradient(90deg,var(--copper)_0%,var(--copper)_40%,var(--gold)_100%)]" />
 
       <div className="px-6 pt-6 pb-[22px]">
-
         {/* Header */}
         <div className="flex items-center justify-between gap-2.5 mb-[18px] pb-4 border-b border-rule">
           <h3 className="font-heading text-[16px] font-semibold m-0 flex items-center gap-2.5">
@@ -68,7 +89,9 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               {toFa(items.length)} قلم
             </span>
           </h3>
-          <a className="text-[12px] text-copper underline-offset-[3px] hover:underline" href="#">ویرایش سبد</a>
+          <a className="text-[12px] text-copper underline-offset-[3px] hover:underline" href="#">
+            ویرایش سبد
+          </a>
         </div>
 
         {/* Line items */}
@@ -82,7 +105,9 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 <Illustration name={item.illus} />
               </div>
               <div>
-                <div className="font-heading text-[13px] font-semibold leading-[1.3]">{item.fa}</div>
+                <div className="font-heading text-[13px] font-semibold leading-[1.3]">
+                  {item.fa}
+                </div>
                 <div className="text-[11px] text-muted font-mono tracking-[.04em] mt-0.5 [direction:ltr]">
                   {formatToman(item.price).replace(' تومان', '')} ت
                 </div>
@@ -105,10 +130,11 @@ const OrderSummary: FC<OrderSummaryProps> = ({
             <div className="flex justify-between items-center text-[13px] text-ink-2">
               <span>هزینه‌ی ارسال</span>
               <span className="font-body text-ink">
-                {selectedShipping
-                  ? formatToman(selectedShipping.price)
-                  : <span className="italic text-muted">انتخاب نشده</span>
-                }
+                {selectedShipping ? (
+                  formatToman(selectedShipping.price)
+                ) : (
+                  <span className="italic text-muted">انتخاب نشده</span>
+                )}
               </span>
             </div>
           )}
@@ -139,7 +165,9 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               <Icon name="clock" size={14} strokeWidth={1.7} />
             </span>
             <div className="flex flex-col gap-[1px] flex-1">
-              <span className="font-mono text-[9px] tracking-[.14em] uppercase text-muted">تخمینِ تحویل</span>
+              <span className="font-mono text-[9px] tracking-[.14em] uppercase text-muted">
+                تخمینِ تحویل
+              </span>
               <span className="font-heading text-[13px] font-semibold">
                 {selectedShipping.id === 'snapp_box'
                   ? `${snappDate} · ${snappTime}`
@@ -162,14 +190,17 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               <Icon name="location" size={14} strokeWidth={1.8} />
             </span>
             <div className="flex-1 flex flex-col gap-[1px]">
-              <span className="font-mono text-[9px] tracking-[.14em] text-muted uppercase">آدرسِ تحویل</span>
+              <span className="font-mono text-[9px] tracking-[.14em] text-muted uppercase">
+                آدرسِ تحویل
+              </span>
               {addrName && (
                 <span className="text-ink-2">
                   <strong className="font-heading font-semibold text-ink">{addrName}</strong>
                 </span>
               )}
               <span className="text-[11px] text-muted">
-                {addrProvince}، {addrCity}{addrStreet ? `، ${addrStreet.slice(0, 40)}` : ''}
+                {addrProvince}، {addrCity}
+                {addrStreet ? `، ${addrStreet.slice(0, 40)}` : ''}
               </span>
               <button
                 className="text-[11px] text-copper self-start mt-0.5 cursor-pointer hover:underline"
@@ -242,7 +273,9 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 className={`${inputCls}${couponState === 'error' ? ' border-sale focus:border-sale' : ''}`}
                 value={coupon}
                 onChange={onCouponChange}
-                onKeyDown={(e) => { if (e.key === 'Enter') onApplyCoupon() }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') onApplyCoupon()
+                }}
                 placeholder="مثلاً LUXERA20"
                 maxLength={20}
                 disabled={couponState === 'loading'}
@@ -259,7 +292,10 @@ const OrderSummary: FC<OrderSummaryProps> = ({
           ) : (
             <div className="mt-2.5 px-3 py-[9px] bg-[rgba(31,138,91,.08)] border border-[rgba(31,138,91,.25)] rounded-[8px] flex items-center gap-2 text-[12px] text-ok">
               <Icon name="check" size={14} strokeWidth={2} />
-              کدِ <span className="font-mono font-semibold tracking-[.08em]">{appliedCode}</span> اعمال شد —{' '}
+              کدِ <span className="font-mono font-semibold tracking-[.08em]">
+                {appliedCode}
+              </span>{' '}
+              اعمال شد —{' '}
               {appliedCoupon?.discount_type === 'percentage'
                 ? `${toFa(appliedCoupon.discount_value)}٪ تخفیف`
                 : `${formatToman(Number(appliedCoupon?.discount_value ?? 0))} تخفیف`}
@@ -282,13 +318,15 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         {/* Perks */}
         <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[11px] text-muted">
           {PERKS.map((text) => (
-            <span key={text} className="inline-flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-ok [&_svg]:shrink-0">
+            <span
+              key={text}
+              className="inline-flex items-center gap-2 [&_svg]:w-[13px] [&_svg]:h-[13px] [&_svg]:text-ok [&_svg]:shrink-0"
+            >
               <Icon name="check" size={12} strokeWidth={2} />
               {text}
             </span>
           ))}
         </div>
-
       </div>
     </div>
   </aside>

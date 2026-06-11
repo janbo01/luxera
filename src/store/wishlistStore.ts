@@ -90,8 +90,8 @@ export const useWishlistStore = create<WishlistState>()(
         }
       },
     }),
-    { name: STORAGE_KEYS.wishlist }
-  )
+    { name: STORAGE_KEYS.wishlist },
+  ),
 )
 
 export const selectWishlistCount = (state: WishlistState) => state.items.length

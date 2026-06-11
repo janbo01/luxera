@@ -10,7 +10,10 @@ declare global {
   }
 }
 
-function getInitialPost(slug: string | undefined, serverPost: ApiBlogPost | undefined): ApiBlogPost | null {
+function getInitialPost(
+  slug: string | undefined,
+  serverPost: ApiBlogPost | undefined,
+): ApiBlogPost | null {
   if (!slug) return null
   if (serverPost?.slug === slug) return serverPost
   if (typeof window !== 'undefined' && window.__BLOG_POST_INITIAL__?.slug === slug) {
@@ -50,7 +53,11 @@ const BlogDetailPage: FC = () => {
   const date = useMemo(
     () =>
       post?.published_at
-        ? new Date(post.published_at).toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' })
+        ? new Date(post.published_at).toLocaleDateString('fa-IR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })
         : null,
     [post],
   )
@@ -110,7 +117,11 @@ const BlogDetailPage: FC = () => {
         <div className="h-4 bg-plate w-11/12 rounded mb-12" />
         <div className="aspect-[16/9] bg-plate mb-12" />
         {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="h-4 bg-plate rounded mb-3" style={{ width: i === 7 ? '55%' : '100%' }} />
+          <div
+            key={i}
+            className="h-4 bg-plate rounded mb-3"
+            style={{ width: i === 7 ? '55%' : '100%' }}
+          />
         ))}
       </div>
     )
@@ -121,13 +132,21 @@ const BlogDetailPage: FC = () => {
       <div className="max-w-[780px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px] pt-20 text-center">
         <p
           className="font-display font-bold leading-none mb-6 select-none"
-          style={{ fontSize: 'clamp(80px, 14vw, 140px)', color: 'var(--color-plum)', opacity: 0.12 }}
+          style={{
+            fontSize: 'clamp(80px, 14vw, 140px)',
+            color: 'var(--color-plum)',
+            opacity: 0.12,
+          }}
           aria-hidden="true"
         >
           404
         </p>
-        <h1 className="font-heading font-bold text-[clamp(22px,3vw,32px)] text-ink mb-4">مقاله یافت نشد</h1>
-        <p className="text-ink-2 mb-10 text-[15px] leading-[1.8]">مقاله‌ای با این آدرس منتشر نشده یا حذف شده است.</p>
+        <h1 className="font-heading font-bold text-[clamp(22px,3vw,32px)] text-ink mb-4">
+          مقاله یافت نشد
+        </h1>
+        <p className="text-ink-2 mb-10 text-[15px] leading-[1.8]">
+          مقاله‌ای با این آدرس منتشر نشده یا حذف شده است.
+        </p>
         <Link
           to="/blog"
           className="inline-flex items-center gap-2.5 text-sm text-plum border-b border-plum/25 hover:border-plum transition-colors pb-0.5"
@@ -150,13 +169,23 @@ const BlogDetailPage: FC = () => {
       />
 
       <div className="max-w-[780px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-
         {/* Breadcrumb */}
-        <nav className="py-6 flex items-center gap-2 text-[12px] text-muted" aria-label="مسیر ناوبری">
-          <Link to="/" className="hover:text-ink transition-colors">خانه</Link>
-          <span aria-hidden="true" className="opacity-35">/</span>
-          <Link to="/blog" className="hover:text-ink transition-colors">بلاگ</Link>
-          <span aria-hidden="true" className="opacity-35">/</span>
+        <nav
+          className="py-6 flex items-center gap-2 text-[12px] text-muted"
+          aria-label="مسیر ناوبری"
+        >
+          <Link to="/" className="hover:text-ink transition-colors">
+            خانه
+          </Link>
+          <span aria-hidden="true" className="opacity-35">
+            /
+          </span>
+          <Link to="/blog" className="hover:text-ink transition-colors">
+            بلاگ
+          </Link>
+          <span aria-hidden="true" className="opacity-35">
+            /
+          </span>
           <span className="text-ink-2 line-clamp-1 max-w-[28ch]">{post.title}</span>
         </nav>
 
@@ -180,7 +209,10 @@ const BlogDetailPage: FC = () => {
 
         {/* Featured image */}
         {post.featured_image_url && (
-          <figure className="mb-12 overflow-hidden" style={{ boxShadow: '0 24px 60px -20px rgba(27, 15, 29, 0.22)' }}>
+          <figure
+            className="mb-12 overflow-hidden"
+            style={{ boxShadow: '0 24px 60px -20px rgba(27, 15, 29, 0.22)' }}
+          >
             <img
               src={post.featured_image_url}
               alt={post.title}
@@ -191,10 +223,7 @@ const BlogDetailPage: FC = () => {
         )}
 
         {/* Article body */}
-        <article
-          className="prose-blog"
-          dangerouslySetInnerHTML={{ __html: post.body }}
-        />
+        <article className="prose-blog" dangerouslySetInnerHTML={{ __html: post.body }} />
 
         {/* Back to blog */}
         <div className="mt-16 pt-8 border-t border-rule">

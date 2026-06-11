@@ -12,8 +12,8 @@ export default function EnamadLogo() {
         alt="نماد اعتماد الکترونیکی"
         width={55}
         height={55}
-        style={{ cursor: "pointer" }}
-        {...{ code: "qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg" }}
+        style={{ cursor: 'pointer' }}
+        {...{ code: 'qPT6vUeIooyka6VFFwT1vC3rfeuN0RHg' }}
       />
     </a>
   )

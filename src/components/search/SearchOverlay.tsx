@@ -11,8 +11,15 @@ const SearchOverlay: FC = () => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const {
-    isOpen, query, results, recentSearches,
-    close, setQuery, commit, removeRecent, clearRecent,
+    isOpen,
+    query,
+    results,
+    recentSearches,
+    close,
+    setQuery,
+    commit,
+    removeRecent,
+    clearRecent,
   } = useSearchStore()
 
   useBodyLock(isOpen)
@@ -24,7 +31,9 @@ const SearchOverlay: FC = () => {
   }, [isOpen])
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') close() }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
   }, [close])
@@ -46,9 +55,13 @@ const SearchOverlay: FC = () => {
     if (!highlightRe) return text
     const parts = text.split(highlightRe)
     return parts.map((part, i) =>
-      highlightRe.test(part)
-        ? <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-[2px] px-0.5">{part}</mark>
-        : part
+      highlightRe.test(part) ? (
+        <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-[2px] px-0.5">
+          {part}
+        </mark>
+      ) : (
+        part
+      ),
     )
   }
 
@@ -58,10 +71,16 @@ const SearchOverlay: FC = () => {
   if (!isOpen) return null
 
   const rowHover = 'hover:bg-[var(--color-bg-2)]'
-  const iconBtn = 'flex items-center justify-center w-8 h-8 text-muted rounded-full transition-colors duration-200 hover:text-ink hover:bg-bg-2 flex-shrink-0'
+  const iconBtn =
+    'flex items-center justify-center w-8 h-8 text-muted rounded-full transition-colors duration-200 hover:text-ink hover:bg-bg-2 flex-shrink-0'
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center animate-[overlay-in_200ms_ease_both]" role="dialog" aria-label="جستجو" aria-modal>
+    <div
+      className="fixed inset-0 z-[100] flex flex-col items-center animate-[overlay-in_200ms_ease_both]"
+      role="dialog"
+      aria-label="جستجو"
+      aria-modal
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-[rgba(26,15,29,0.6)] backdrop-blur-[8px]"
@@ -119,9 +138,16 @@ const SearchOverlay: FC = () => {
                   >
                     <button
                       className="flex-1 flex items-center gap-2.5 text-[14px] text-ink-2 text-end"
-                      onClick={() => { setQuery(r); handleSubmit(r) }}
+                      onClick={() => {
+                        setQuery(r)
+                        handleSubmit(r)
+                      }}
                     >
-                      <Icon name="clock" size={14} className="text-muted opacity-70 flex-shrink-0" />
+                      <Icon
+                        name="clock"
+                        size={14}
+                        className="text-muted opacity-70 flex-shrink-0"
+                      />
                       <span>{r}</span>
                     </button>
                     <button
@@ -146,7 +172,11 @@ const SearchOverlay: FC = () => {
                       className={`flex items-center gap-3.5 w-full px-6 py-2 h-[58px] text-end border-b border-rule transition-colors duration-150 ${rowHover} last:border-b-0`}
                       role="option"
                       aria-selected="false"
-                      onClick={() => { commit(query); close(); navigate(`/product/${p.slug ?? p.id}`) }}
+                      onClick={() => {
+                        commit(query)
+                        close()
+                        navigate(`/product/${p.slug ?? p.id}`)
+                      }}
                     >
                       <div className="w-10 h-10 bg-bg-2 rounded-[4px] flex items-center justify-center flex-shrink-0 overflow-hidden text-ink [&>svg]:w-[80%] [&>svg]:h-auto">
                         <Illustration name={p.illus} />
@@ -171,7 +201,11 @@ const SearchOverlay: FC = () => {
                       className={`flex items-center gap-3 w-full px-6 h-[48px] text-end text-[13px] text-ink-2 border-b border-rule transition-colors duration-150 ${rowHover} hover:text-ink last:border-b-0`}
                       role="option"
                       aria-selected="false"
-                      onClick={() => { commit(query); close(); navigate(`/category/${c.id}`) }}
+                      onClick={() => {
+                        commit(query)
+                        close()
+                        navigate(`/category/${c.id}`)
+                      }}
                     >
                       <Icon name="folder" size={16} className="text-muted flex-shrink-0" />
                       <span className="flex-1">{highlight(c.fa)}</span>

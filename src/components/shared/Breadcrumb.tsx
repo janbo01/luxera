@@ -15,10 +15,13 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => (
     {items.map((item, i) => (
       <Fragment key={i}>
         {i > 0 && <span className="text-rule">/</span>}
-        {item.to
-          ? <Link to={item.to} className="hover:text-plum transition-colors">{item.label}</Link>
-          : <span className="text-ink">{item.label}</span>
-        }
+        {item.to ? (
+          <Link to={item.to} className="hover:text-plum transition-colors">
+            {item.label}
+          </Link>
+        ) : (
+          <span className="text-ink">{item.label}</span>
+        )}
       </Fragment>
     ))}
   </nav>

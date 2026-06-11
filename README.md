@@ -20,12 +20,12 @@ The app runs at `http://localhost:5173` by default.
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start development server |
-| `npm run build` | Type-check and build for production |
+| Command           | Description                          |
+| ----------------- | ------------------------------------ |
+| `npm run dev`     | Start development server             |
+| `npm run build`   | Type-check and build for production  |
 | `npm run preview` | Preview the production build locally |
-| `npm run lint` | Lint source files |
+| `npm run lint`    | Lint source files                    |
 
 ## Project Structure
 

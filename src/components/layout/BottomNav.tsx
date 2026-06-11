@@ -11,18 +11,18 @@ import { useCartStore, selectTotalQty } from '../../store/cartStore'
 const BottomNav: FC = () => {
   const { pathname } = useLocation()
   const navigate = useNavigate()
-  const wishCount  = useWishlistStore(selectWishlistCount)
-  const cartCount  = useCartStore(selectTotalQty)
-  const openCart   = useCartStore((s) => s.openCart)
+  const wishCount = useWishlistStore(selectWishlistCount)
+  const cartCount = useCartStore(selectTotalQty)
+  const openCart = useCartStore((s) => s.openCart)
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
   const openSearch = useSearchStore((s) => s.open)
-  const openLogin  = useUIStore((s) => s.openLogin)
+  const openLogin = useUIStore((s) => s.openLogin)
 
   if (pathname === '/checkout') return null
 
-  const homeActive    = pathname === '/'
-  const searchActive  = pathname === '/search'
-  const wishActive    = pathname === '/wishlist'
+  const homeActive = pathname === '/'
+  const searchActive = pathname === '/search'
+  const wishActive = pathname === '/wishlist'
   const accountActive = pathname === '/account'
 
   const handleAccount = () => {
@@ -39,7 +39,12 @@ const BottomNav: FC = () => {
       role="navigation"
       aria-label="ناوبری اصلی"
     >
-      <Link to="/" className={tab(homeActive)} aria-current={homeActive ? 'page' : undefined} aria-label="خانه">
+      <Link
+        to="/"
+        className={tab(homeActive)}
+        aria-current={homeActive ? 'page' : undefined}
+        aria-label="خانه"
+      >
         <Icon name="home" size={22} />
         <span>خانه</span>
       </Link>
@@ -61,7 +66,12 @@ const BottomNav: FC = () => {
         <span>سبد</span>
       </button>
 
-      <Link to="/wishlist" className={tab(wishActive)} aria-current={wishActive ? 'page' : undefined} aria-label="علاقه‌مندی‌ها">
+      <Link
+        to="/wishlist"
+        className={tab(wishActive)}
+        aria-current={wishActive ? 'page' : undefined}
+        aria-label="علاقه‌مندی‌ها"
+      >
         <span className="relative flex items-center justify-center">
           <Icon name={wishActive ? 'heart-filled' : 'heart'} size={22} />
           {wishCount > 0 && (

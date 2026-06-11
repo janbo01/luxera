@@ -34,7 +34,11 @@ export function flyToCart(fromRect: DOMRect): void {
   ).onfinish = () => el.remove()
 
   target.animate(
-    [{ transform: 'scale(1)' }, { transform: 'scale(1.18)', offset: 0.6 }, { transform: 'scale(1)' }],
+    [
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.18)', offset: 0.6 },
+      { transform: 'scale(1)' },
+    ],
     { duration: 500, delay: 700, easing: 'cubic-bezier(.2,.7,.2,1)' },
   )
 }

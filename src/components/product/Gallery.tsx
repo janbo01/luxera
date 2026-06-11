@@ -12,14 +12,15 @@ interface GalleryProps {
 }
 
 const TONE_BG: Record<string, string> = {
-  plum:   'bg-[linear-gradient(160deg,var(--color-plum-dark),var(--color-plum))] text-bg/90',
+  plum: 'bg-[linear-gradient(160deg,var(--color-plum-dark),var(--color-plum))] text-bg/90',
   copper: 'bg-[linear-gradient(160deg,var(--color-copper),var(--color-copper-dark))] text-bg/90',
-  sand:   'bg-bg/[6%]',
+  sand: 'bg-bg/[6%]',
 }
 
 const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const galleryImages = images
-  const count = galleryImages && galleryImages.length > 0 ? galleryImages.length : PRODUCT_GALLERY.length
+  const count =
+    galleryImages && galleryImages.length > 0 ? galleryImages.length : PRODUCT_GALLERY.length
 
   const { activeIdx, selectThumb } = useGallery({ count })
 
@@ -37,7 +38,13 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
-                <img src={img.url} alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+                <img
+                  src={img.url}
+                  alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
               </button>
             ))
           : PRODUCT_GALLERY.map((item, i) => (
