@@ -114,7 +114,7 @@ const BlogCarousel: FC = () => {
         kicker="BLOG · مقالات"
         title={<>آخرین <em>مقالات</em></>}
         aside={
-          <div className="flex items-center gap-3 self-end">
+          <div className="flex items-center gap-3 self-start sm:self-end">
             <button
               onClick={() => scroll('prev')}
               disabled={!canPrev}

@@ -110,17 +110,13 @@ const Header: FC = () => {
               <kbd className="ms-auto font-mono text-[10px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2">⌘K</kbd>
             </button>
 
-            {/* Search icon — mobile */}
-            <button className={`${ICON_BTN} hidden max-[720px]:grid`} onClick={openSearch} aria-label="جستجو">
-              <Icon name="search" size={18} strokeWidth={1.6} />
-            </button>
-
-            {/* Account — hidden on mobile to avoid crowding */}
+            {/* Account — hidden on mobile (in BottomNav) */}
             <button className={`${ICON_BTN} max-[720px]:hidden`} onClick={handleAccountClick} aria-label={isLoggedIn ? 'حساب من' : 'ورود'}>
               <Icon name="user" size={18} strokeWidth={1.6} />
             </button>
 
-            <Link to="/wishlist" className={ICON_BTN} aria-label="علاقه‌مندی‌ها">
+            {/* Wishlist — hidden on mobile (in BottomNav) */}
+            <Link to="/wishlist" className={`${ICON_BTN} max-[720px]:hidden`} aria-label="علاقه‌مندی‌ها">
               <Icon name="heart" size={18} strokeWidth={1.6} />
               {wishCount > 0 && (
                 <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">{toFa(wishCount)}</span>

@@ -102,7 +102,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
         kicker={kicker}
         title={title}
         aside={
-          <div className="flex items-center gap-3 self-end">
+          <div className="flex items-center gap-3 self-start sm:self-end">
             <button
               onClick={() => scroll('prev')}
               disabled={!canPrev}
