@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { type FC, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
@@ -64,20 +64,24 @@ const Footer: FC = () => {
         ? makeCatLinks(footerCategories)
         : STATIC_CAT_LINKS
 
-  const socialLinks = [
-    instagram_url && {
-      href: instagram_url,
-      icon: <IconInstagram size={14} />,
-      label: 'اینستاگرام',
-    },
-    whatsapp_number && {
-      href: `https://wa.me/${whatsapp_number.replace(/\D/g, '')}`,
-      icon: <IconWhatsApp size={14} />,
-      label: 'واتس‌اپ',
-    },
-    bale_link && { href: bale_link, icon: <IconBale size={14} />, label: 'بله' },
-    ita_link && { href: ita_link, icon: <IconIta size={14} />, label: 'ایتا' },
-  ].filter(Boolean) as { href: string; icon: React.ReactNode; label: string }[]
+  const socialLinks = useMemo(
+    () =>
+      [
+        instagram_url && {
+          href: instagram_url,
+          icon: <IconInstagram size={14} />,
+          label: 'اینستاگرام',
+        },
+        whatsapp_number && {
+          href: `https://wa.me/${whatsapp_number.replace(/\D/g, '')}`,
+          icon: <IconWhatsApp size={14} />,
+          label: 'واتس‌اپ',
+        },
+        bale_link && { href: bale_link, icon: <IconBale size={14} />, label: 'بله' },
+        ita_link && { href: ita_link, icon: <IconIta size={14} />, label: 'ایتا' },
+      ].filter(Boolean) as { href: string; icon: React.ReactNode; label: string }[],
+    [instagram_url, whatsapp_number, bale_link, ita_link],
+  )
 
   const col = 'flex flex-col gap-[11px]'
   const colLink = 'text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper'

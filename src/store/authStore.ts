@@ -1,49 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { STORAGE_KEYS } from '../utils/constants'
-import type { UserProfile, Address, Order, OrderStatus } from '../types'
+import type { UserProfile, Address, Order } from '../types'
 import * as userApi from '../api/user'
 import * as orderApi from '../api/order'
-
-function adaptAddress(a: userApi.ApiAddress): Address {
-  return {
-    id: a.id,
-    label: a.title,
-    fullName: a.recipient_name,
-    phone: userApi.fromE164(a.recipient_phone),
-    province: a.province,
-    city: a.city,
-    street: a.full_address,
-    postalCode: a.postal_code,
-    isDefault: a.is_default,
-  }
-}
-
-function adaptOrder(o: orderApi.ApiOrder): Order {
-  const statusMap: Record<string, OrderStatus> = {
-    pending: 'pending',
-    paid: 'processing',
-    processing: 'processing',
-    shipped: 'shipped',
-    delivered: 'delivered',
-    cancelled: 'cancelled',
-  }
-  return {
-    id: o.id,
-    date: new Date(o.created_at).toLocaleDateString('fa-IR'),
-    status: statusMap[o.status] ?? 'pending',
-    items: o.items.map((it) => ({
-      productId: it.product_id,
-      name: it.title,
-      qty: it.quantity,
-      price: parseFloat(it.price_at_purchase),
-      illus: '',
-    })),
-    total: parseFloat(o.total_amount),
-    address: o.shipping_address_id,
-    trackingCode: o.tracking_code ?? null,
-  }
-}
 
 interface AuthState {
   isLoggedIn: boolean
@@ -64,6 +24,20 @@ interface AuthState {
   setDefaultAddress: (id: string) => Promise<void>
   fetchOrders: () => Promise<void>
   clearSession: () => void
+}
+
+function adaptProfile(p: userApi.ApiProfile): UserProfile {
+  return {
+    name: p.full_name,
+    phone: userApi.fromE164(p.phone),
+    email: p.email,
+    createdAt: p.created_at,
+    updatedAt: p.updated_at,
+    birthDate: p.birth_date,
+    gender: p.gender,
+    nationalId: p.national_id,
+    avatarUrl: p.avatar_url,
+  }
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -88,19 +62,7 @@ export const useAuthStore = create<AuthState>()(
             get().fetchAddresses(),
             get().fetchOrders(),
           ])
-          set({
-            profile: {
-              name: profile.full_name,
-              phone: userApi.fromE164(profile.phone),
-              email: profile.email,
-              createdAt: profile.created_at,
-              updatedAt: profile.updated_at,
-              birthDate: profile.birth_date,
-              gender: profile.gender,
-              nationalId: profile.national_id,
-              avatarUrl: profile.avatar_url,
-            },
-          })
+          set({ profile: adaptProfile(profile) })
         } catch {
           // profile fetch errors are non-fatal
         }
@@ -115,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
             /* ignore */
           }
         }
-        set({ isLoggedIn: false, token: null, profile: null, addresses: [], orders: [] })
+        get().clearSession()
       },
 
       updateProfile: async (profile) => {
@@ -126,19 +88,7 @@ export const useAuthStore = create<AuthState>()(
           gender: profile.gender,
           nationalId: profile.nationalId,
         })
-        set({
-          profile: {
-            name: updated.full_name,
-            phone: userApi.fromE164(updated.phone),
-            email: updated.email,
-            createdAt: updated.created_at,
-            updatedAt: updated.updated_at,
-            birthDate: updated.birth_date,
-            gender: updated.gender,
-            nationalId: updated.national_id,
-            avatarUrl: updated.avatar_url,
-          },
-        })
+        set({ profile: adaptProfile(updated) })
       },
 
       uploadAvatar: async (file) => {
@@ -157,7 +107,7 @@ export const useAuthStore = create<AuthState>()(
 
       fetchAddresses: async () => {
         const raw = await userApi.listAddresses()
-        set({ addresses: raw.map(adaptAddress) })
+        set({ addresses: raw.map(userApi.adaptAddress) })
       },
 
       addAddress: async (data) => {
@@ -172,7 +122,7 @@ export const useAuthStore = create<AuthState>()(
           recipient_phone: userApi.toE164(data.phone),
         })
         set((state) => {
-          const adapted = adaptAddress(created)
+          const adapted = userApi.adaptAddress(created)
           const addresses = adapted.isDefault
             ? state.addresses.map((a) => ({ ...a, isDefault: false })).concat(adapted)
             : [...state.addresses, adapted]
@@ -195,7 +145,7 @@ export const useAuthStore = create<AuthState>()(
           recipient_phone: userApi.toE164(merged.phone),
         })
         set((state) => ({
-          addresses: state.addresses.map((a) => (a.id === id ? adaptAddress(updated) : a)),
+          addresses: state.addresses.map((a) => (a.id === id ? userApi.adaptAddress(updated) : a)),
         }))
       },
 
@@ -213,7 +163,7 @@ export const useAuthStore = create<AuthState>()(
 
       fetchOrders: async () => {
         const res = await orderApi.listOrders()
-        set({ orders: (res.orders ?? []).map(adaptOrder) })
+        set({ orders: (res.orders ?? []).map(orderApi.adaptOrder) })
       },
 
       clearSession: () => {

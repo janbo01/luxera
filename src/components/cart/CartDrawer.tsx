@@ -3,23 +3,16 @@ import { Link } from 'react-router-dom'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatToman, toFa } from '../../utils/format'
-import { useCartStore } from '../../store/cartStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
+import { useCart } from '../../hooks/useCart'
 import QuantityStepper from '../shared/QuantityStepper'
 import { calcSimpleShipping } from '../../data/shipping'
 
 const CartDrawer: FC = () => {
-  const items = useCartStore((s) => s.items)
-  const isOpen = useCartStore((s) => s.isOpen)
-  const closeCart = useCartStore((s) => s.closeCart)
-  const increment = useCartStore((s) => s.increment)
-  const decrement = useCartStore((s) => s.decrement)
-  const remove = useCartStore((s) => s.remove)
+  const { items, isOpen, subtotal, totalQty, increment, decrement, remove, closeCart } = useCart()
 
-  const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0)
   const shipping = calcSimpleShipping(subtotal)
   const total = subtotal + shipping
-  const totalQty = items.reduce((s, it) => s + it.qty, 0)
 
   const drawerRef = useRef<HTMLElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)

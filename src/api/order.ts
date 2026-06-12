@@ -1,4 +1,5 @@
 import { apiFetch } from './client'
+import type { Order, OrderStatus } from '../types'
 
 const BASE = import.meta.env.VITE_ORDER_API as string
 
@@ -156,4 +157,31 @@ export async function applyCoupon(code: string, subtotal: string): Promise<ApiAp
 export async function getDeliverySlots(): Promise<ApiDeliverySlot[]> {
   const res = await apiFetch<{ options: ApiDeliverySlot[] }>(`${BASE}/delivery/slots`)
   return res?.options ?? []
+}
+
+const ORDER_STATUS_MAP: Record<string, OrderStatus> = {
+  pending: 'pending',
+  paid: 'processing',
+  processing: 'processing',
+  shipped: 'shipped',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+}
+
+export function adaptOrder(o: ApiOrder): Order {
+  return {
+    id: o.id,
+    date: new Date(o.created_at).toLocaleDateString('fa-IR'),
+    status: ORDER_STATUS_MAP[o.status] ?? 'pending',
+    items: o.items.map((it) => ({
+      productId: it.product_id,
+      name: it.title,
+      qty: it.quantity,
+      price: parseFloat(it.price_at_purchase),
+      illus: '',
+    })),
+    total: parseFloat(o.total_amount),
+    address: o.shipping_address_id,
+    trackingCode: o.tracking_code ?? null,
+  }
 }

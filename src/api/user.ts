@@ -1,4 +1,5 @@
 import { apiFetch } from './client'
+import type { Address } from '../types'
 
 const BASE = import.meta.env.VITE_USER_API as string
 
@@ -166,4 +167,18 @@ export async function removeWishlistItem(productId: string): Promise<void> {
 export async function getLoyaltyBalance(): Promise<number> {
   const res = await apiFetch<{ balance: number }>(`${BASE}/profile/loyalty`)
   return res.balance ?? 0
+}
+
+export function adaptAddress(a: ApiAddress): Address {
+  return {
+    id: a.id,
+    label: a.title,
+    fullName: a.recipient_name,
+    phone: fromE164(a.recipient_phone),
+    province: a.province,
+    city: a.city,
+    street: a.full_address,
+    postalCode: a.postal_code,
+    isDefault: a.is_default,
+  }
 }

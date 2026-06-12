@@ -2,7 +2,6 @@ import { lazy, Suspense, type FC } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
 import Hero from '../components/home/Hero'
 import CategoriesSection from '../components/home/CategoriesSection'
-import ProductsSection from '../components/home/ProductsSection'
 import ProductCarousel from '../components/home/ProductCarousel'
 
 const Feature = lazy(() => import('../components/home/Feature'))
@@ -43,7 +42,16 @@ const HomePage: FC = () => {
     <>
       <Hero />
       <CategoriesSection />
-      <ProductsSection />
+      <ProductCarousel
+        sectionId="new"
+        kicker="NEW ARRIVALS · تازه‌ترین‌ها"
+        title={
+          <>
+            جدیدترین <em>محصولات</em>
+          </>
+        }
+        link="/category/new"
+      />
       <ProductCarousel
         sectionId="necklaces"
         kicker="NECKLACES · گردنبند"

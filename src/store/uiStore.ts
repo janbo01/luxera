@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { STORAGE_KEYS } from '../utils/constants'
+import { STORAGE_KEYS, UI_DEFAULTS } from '../utils/constants'
 import type { Palette, Density, HeroVariant } from '../types'
 
 interface UIState {
@@ -19,9 +19,9 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
-      palette: 'white',
-      density: 'balanced',
-      heroVariant: 'default',
+      palette: UI_DEFAULTS.palette,
+      density: UI_DEFAULTS.density,
+      heroVariant: UI_DEFAULTS.heroVariant,
       isLoginOpen: false,
       loginMessage: null,
       setPalette: (palette) => set({ palette }),

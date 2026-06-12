@@ -61,11 +61,10 @@ const CategoriesSection: FC = () => {
               to={`/category/${cat.id}`}
               className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 min-h-[480px] max-md:min-h-0 max-md:aspect-[16/10]' : 'aspect-[3/4]'}`}
             >
-              {/* Category image — decorative; the link already names the category */}
               {imgSrc ? (
                 <img
                   src={imgSrc}
-                  alt=""
+                  alt={cat.fa}
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
                   width={isFeatured ? 640 : 400}
                   height={isFeatured ? 400 : 533}

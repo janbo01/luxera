@@ -1,15 +1,14 @@
-import { useState, useRef, useMemo, useEffect, type FC } from 'react'
+import { useState, type FC } from 'react'
 import Icon from '../icons/Icon'
 import QuantityStepper from '../shared/QuantityStepper'
-import { IconTelegram, IconWhatsApp } from '../icons/BrandIcons'
 import Stars from './Stars'
-import { formatToman, formatNumber, toFa, normalizePhoneInput } from '../../utils/format'
-import { SIZE_OPTIONS, COLOR_OPTIONS } from '../../data/productDetail'
+import { formatToman, formatNumber, toFa } from '../../utils/format'
 import { useWishlist } from '../../hooks/useWishlist'
-import { subscribeStockNotification } from '../../api/product'
-import { toE164 } from '../../api/user'
+import { useVariantSelector } from '../../hooks/useVariantSelector'
 import { hexToSwatch } from '../../utils/colorSwatch'
-import type { Product, ProductDetail, ColorOption, SizeOption } from '../../types'
+import { StockNotifyForm } from './StockNotifyForm'
+import { ShareRow } from './ShareRow'
+import type { Product, ProductDetail } from '../../types'
 import type { ApiProductColor, ApiProductSize, ApiProductVariant } from '../../api/product'
 
 interface InfoPanelProps {
@@ -35,35 +34,11 @@ const PERKS = [
   { icon: 'globe', heading: 'بازگشتِ ۴ روزه', body: 'تا ۴ روز پس از دریافت، با بسته‌بندی اصلی' },
 ]
 
-const SHARE_TEXT = (name: string) =>
-  `${name} | لوکسرا\n${typeof window !== 'undefined' ? window.location.href : ''}`
-
-function apiColorsToOptions(apiColors: ApiProductColor[]): ColorOption[] {
-  const swatches = ['gold', 'rose', 'white'] as const
-  return apiColors.map((c, i) => ({
-    id: c.id,
-    fa: c.name,
-    swatch: swatches[i % swatches.length],
-    hex: c.hex_code,
-  }))
-}
-
-function apiSizesToOptions(apiSizes: ApiProductSize[]): SizeOption[] {
-  return apiSizes.map((s) => ({
-    id: s.id,
-    label: s.value,
-    disabled: false,
-  }))
-}
-
 const SWATCH_BG: Record<string, string> = {
   gold: 'bg-[linear-gradient(135deg,#E6C384,#B58A47)]',
   rose: 'bg-[linear-gradient(135deg,#EDC9B6,#C18876)]',
   white: 'bg-[linear-gradient(135deg,#DCDCDC,#A8A8AA)]',
 }
-
-const SHARE_BTN =
-  'w-8 h-8 rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink'
 
 const InfoPanel: FC<InfoPanelProps> = ({
   product: p,
@@ -73,163 +48,29 @@ const InfoPanel: FC<InfoPanelProps> = ({
   onAdd,
   onSizeGuide,
 }) => {
-  const hasVariants = apiVariants && apiVariants.length > 0
+  const {
+    color,
+    setColor,
+    colorOptions,
+    selectedColor,
+    setSize,
+    sizeOptions,
+    selectedSize,
+    effectiveSize,
+    variantQuantity,
+    outOfStock,
+  } = useVariantSelector(apiColors, apiSizes, apiVariants)
 
-  const allColorOptions: ColorOption[] = useMemo(
-    () => (apiColors && apiColors.length > 0 ? apiColorsToOptions(apiColors) : COLOR_OPTIONS),
-    [apiColors],
-  )
-
-  const allSizeOptions: SizeOption[] = useMemo(
-    () => (apiSizes && apiSizes.length > 0 ? apiSizesToOptions(apiSizes) : SIZE_OPTIONS),
-    [apiSizes],
-  )
-
-  const [color, setColor] = useState(allColorOptions[0]?.id ?? 'gold')
-  const [size, setSize] = useState(
-    allSizeOptions.find((s) => !s.disabled)?.id ?? allSizeOptions[0]?.id ?? '45',
-  )
+  const effectiveStock = variantQuantity ?? p.stockCount
   const [qty, setQty] = useState(1)
-
-  const colorOptions: ColorOption[] = useMemo(() => {
-    if (!hasVariants) return allColorOptions
-    const activeVariants = apiVariants!.filter((v) => v.quantity > 0)
-    const validColorIds = new Set(activeVariants.map((v) => v.color_id).filter(Boolean))
-    return allColorOptions.map((c) => ({
-      ...c,
-      disabled: !validColorIds.has(c.id),
-    }))
-  }, [hasVariants, apiVariants, allColorOptions])
-
-  const sizeOptions: SizeOption[] = useMemo(() => {
-    if (!hasVariants) return allSizeOptions
-    const relevantVariants = apiVariants!.filter(
-      (v) => v.quantity > 0 && (v.color_id === color || v.color_id === null),
-    )
-    const validSizeIds = new Set(relevantVariants.map((v) => v.size_id).filter(Boolean))
-    return allSizeOptions.map((s) => ({
-      ...s,
-      disabled: validSizeIds.size > 0 ? !validSizeIds.has(s.id) : s.disabled,
-    }))
-  }, [hasVariants, apiVariants, allSizeOptions, color])
-
-  const selectedSizeAvailable = sizeOptions.find((s) => s.id === size && !s.disabled)
-  const effectiveSize = selectedSizeAvailable
-    ? size
-    : (sizeOptions.find((s) => !s.disabled)?.id ?? size)
-
-  const selectedVariant = useMemo(() => {
-    if (!hasVariants) return null
-    return (
-      apiVariants!.find((v) => v.color_id === color && v.size_id === effectiveSize) ??
-      apiVariants!.find((v) => v.color_id === color && v.size_id === null) ??
-      apiVariants!.find((v) => v.color_id === null && v.size_id === effectiveSize) ??
-      null
-    )
-  }, [hasVariants, apiVariants, color, effectiveSize])
-
-  const variantStock = hasVariants ? (selectedVariant?.quantity ?? 0) : p.stockCount
-
-  const [notifyOpen, setNotifyOpen] = useState(false)
-  const [notifyPhone, setNotifyPhone] = useState('')
-  const [notifyError, setNotifyError] = useState('')
-  const [notifySubmitting, setNotifySubmitting] = useState(false)
-  const [notifyDone, setNotifyDone] = useState(false)
-  const phoneInputRef = useRef<HTMLInputElement>(null)
-
-  const [toastVisible, setToastVisible] = useState(false)
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(
-    () => () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current)
-    },
-    [],
-  )
-
   const { wishlisted, toggle } = useWishlist(p)
 
-  const selectedSize = sizeOptions.find((s) => s.id === effectiveSize)
-  const outOfStock = hasVariants ? variantStock === 0 : (selectedSize?.disabled ?? false)
-  const selectedColor = colorOptions.find((c) => c.id === color)
+  const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0
 
   const handleAdd = () => {
-    const safeQty = Math.min(qty, variantStock)
-    for (let i = 0; i < safeQty; i++) onAdd({ ...p, stockCount: variantStock })
+    const safeQty = Math.min(qty, effectiveStock)
+    for (let i = 0; i < safeQty; i++) onAdd({ ...p, stockCount: effectiveStock })
   }
-
-  const handleNotifySubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!/^9\d{9}$/.test(notifyPhone)) {
-      setNotifyError('شماره موبایل معتبر نیست')
-      return
-    }
-    setNotifyError('')
-    setNotifySubmitting(true)
-    try {
-      await subscribeStockNotification(p.id, toE164(notifyPhone))
-      setNotifyDone(true)
-    } catch {
-      setNotifyError('خطا در ثبت درخواست')
-    } finally {
-      setNotifySubmitting(false)
-    }
-  }
-
-  const openNotify = () => {
-    setNotifyOpen(true)
-    setTimeout(() => phoneInputRef.current?.focus(), 50)
-  }
-
-  const showToast = () => {
-    setToastVisible(true)
-    if (toastTimer.current) clearTimeout(toastTimer.current)
-    toastTimer.current = setTimeout(() => setToastVisible(false), 2500)
-  }
-
-  const handleNativeShare = async () => {
-    try {
-      await navigator.share({
-        title: `${p.fa} — Luxera`,
-        text: `${p.fa} را در لوکسرا ببینید`,
-        url: window.location.href,
-      })
-    } catch (err) {
-      if (err instanceof Error && err.name !== 'AbortError') handleCopyLink()
-    }
-  }
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href)
-    } catch {
-      const ta = document.createElement('textarea')
-      ta.value = window.location.href
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      document.body.removeChild(ta)
-    }
-    showToast()
-  }
-
-  const handleTelegram = () => {
-    window.open(
-      `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(p.fa + ' | لوکسرا')}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
-  }
-
-  const handleWhatsApp = () => {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(SHARE_TEXT(p.fa))}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
-  }
-
-  const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0
 
   return (
     <aside className="flex flex-col px-1.5 pt-2">
@@ -350,92 +191,29 @@ const InfoPanel: FC<InfoPanelProps> = ({
       </div>
 
       {/* Low stock indicator */}
-      {variantStock > 0 && variantStock <= 5 && !outOfStock && (
+      {effectiveStock > 0 && effectiveStock <= 5 && !outOfStock && (
         <p className="mt-3.5 text-[12px] text-sale flex items-center gap-2 m-0" role="status">
           <span
             className="w-[7px] h-[7px] rounded-full bg-sale flex-shrink-0 animate-[pdp-pulse_1.6s_infinite]"
             aria-hidden="true"
           />
-          تنها <b>{toFa(variantStock)} عدد</b> در انبار باقی مانده — احتمال اتمام به‌زودی
+          تنها <b>{toFa(effectiveStock)} عدد</b> در انبار باقی مانده — احتمال اتمام به‌زودی
         </p>
       )}
 
       {/* Cart / out-of-stock area */}
       {outOfStock ? (
         <div className="mb-3 mt-[22px]">
-          {notifyDone ? (
-            <p
-              className="text-center text-[14px] text-plum font-medium p-3.5 border border-rule animate-[luxera-rise_300ms_cubic-bezier(.2,.7,.2,1)_both] m-0"
-              role="status"
-            >
-              ✓ اطلاع خواهیم داد!
-            </p>
-          ) : notifyOpen ? (
-            <form
-              className="p-4 bg-surface border border-rule rounded-[10px] flex flex-col gap-2.5"
-              id="notify-form"
-              onSubmit={handleNotifySubmit}
-              noValidate
-            >
-              <p className="text-[13px] text-muted m-0">شماره موبایل را وارد کنید تا اطلاع دهیم</p>
-              <div className="flex gap-2 items-stretch">
-                <div className="flex-1 flex items-center border border-rule rounded-[8px] bg-surface overflow-hidden focus-within:border-ink transition-colors duration-200">
-                  <span className="px-3 text-[13px] font-mono text-muted border-e border-rule self-stretch flex items-center">
-                    +98
-                  </span>
-                  <input
-                    ref={phoneInputRef}
-                    type="tel"
-                    inputMode="numeric"
-                    placeholder="912 345 6789"
-                    value={notifyPhone}
-                    onChange={(e) => setNotifyPhone(normalizePhoneInput(e.target.value))}
-                    className="flex-1 px-3 py-2.5 font-body text-[14px] text-ink bg-transparent outline-none placeholder:text-muted"
-                    aria-label="شماره موبایل"
-                    aria-invalid={!!notifyError}
-                    maxLength={10}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 px-[18px] py-2.5 text-xs font-medium tracking-[0.01em] border border-ink bg-ink text-bg rounded-full transition-all duration-200 hover:bg-plum hover:border-plum"
-                  disabled={notifySubmitting}
-                >
-                  {notifySubmitting ? '...' : 'ثبت'}
-                </button>
-              </div>
-              {notifyError && <p className="text-[12px] text-sale m-0">{notifyError}</p>}
-              <button
-                type="button"
-                className="text-[12px] text-muted self-start hover:text-ink transition-colors duration-200"
-                onClick={() => {
-                  setNotifyOpen(false)
-                  setNotifyError('')
-                }}
-              >
-                × انصراف
-              </button>
-            </form>
-          ) : (
-            <button
-              className="w-full flex items-center justify-center gap-2 border border-rule rounded-[10px] py-3.5 text-[14px] font-body text-muted cursor-pointer transition-all duration-200 hover:border-plum hover:text-plum"
-              onClick={openNotify}
-            >
-              <Icon name="bag" size={16} />
-              اطلاع‌رسانی وقتی موجود شد
-            </button>
-          )}
+          <StockNotifyForm productId={p.id} />
         </div>
       ) : (
         <div className="flex gap-2.5 mt-[22px] items-stretch">
-          {/* Qty stepper */}
           <QuantityStepper
             value={qty}
             onDecrement={() => setQty(Math.max(1, qty - 1))}
-            onIncrement={() => setQty(Math.min(variantStock, qty + 1))}
+            onIncrement={() => setQty(Math.min(effectiveStock, qty + 1))}
             className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-9 [&>button]:h-9 [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
           />
-          {/* Add button */}
           <button
             className="flex-1 bg-plum text-bg px-[26px] flex items-center justify-between rounded-full transition-colors duration-200 hover:bg-plum-2 min-h-[52px]"
             onClick={handleAdd}
@@ -460,26 +238,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
         {wishlisted ? 'در علاقه‌مندی‌ها ذخیره شد' : 'افزودن به علاقه‌مندی‌ها'}
       </button>
 
-      {/* Share row */}
-      <div className="mt-[22px] flex items-center gap-2.5 pt-[18px] border-t border-rule">
-        <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted me-auto">
-          اشتراک‌گذاری
-        </span>
-        {typeof navigator !== 'undefined' && !!navigator.share && (
-          <button className={SHARE_BTN} onClick={handleNativeShare} aria-label="اشتراک‌گذاری">
-            <Icon name="share" size={13} />
-          </button>
-        )}
-        <button className={SHARE_BTN} onClick={handleTelegram} aria-label="تلگرام">
-          <IconTelegram size={13} />
-        </button>
-        <button className={SHARE_BTN} onClick={handleWhatsApp} aria-label="واتساپ">
-          <IconWhatsApp size={13} />
-        </button>
-        <button className={SHARE_BTN} onClick={handleCopyLink} aria-label="کپی لینک">
-          <Icon name="link" size={13} />
-        </button>
-      </div>
+      <ShareRow productName={p.fa} />
 
       {/* Perks */}
       <div className="mt-[22px] flex flex-col gap-3">
@@ -500,17 +259,6 @@ const InfoPanel: FC<InfoPanelProps> = ({
           </div>
         ))}
       </div>
-
-      {/* Share toast */}
-      {toastVisible && (
-        <div
-          className="fixed bottom-7 left-1/2 -translate-x-1/2 bg-ink text-bg font-body text-[13px] px-[22px] py-2.5 z-[300] pointer-events-none animate-[luxera-rise_220ms_cubic-bezier(.2,.7,.2,1)_both] rounded-[4px]"
-          role="status"
-          aria-live="polite"
-        >
-          ✓ لینک کپی شد
-        </div>
-      )}
     </aside>
   )
 }

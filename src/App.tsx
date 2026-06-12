@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { useUIStore } from './store/uiStore'
 import { useAuthStore } from './store/authStore'
 import { useStoreTheme } from './hooks/useStoreTheme'
+import { UI_DEFAULTS } from './utils/constants'
 import ScrollToTop from './components/layout/ScrollToTop'
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
@@ -35,11 +36,11 @@ import {
 
 function applyBodyAttrs(palette: string, density: string, heroVariant: string) {
   const b = document.body
-  if (palette !== 'white') b.setAttribute('data-palette', palette)
+  if (palette !== UI_DEFAULTS.palette) b.setAttribute('data-palette', palette)
   else b.removeAttribute('data-palette')
-  if (density !== 'balanced') b.setAttribute('data-density', density)
+  if (density !== UI_DEFAULTS.density) b.setAttribute('data-density', density)
   else b.removeAttribute('data-density')
-  if (heroVariant !== 'default') b.setAttribute('data-hero', heroVariant)
+  if (heroVariant !== UI_DEFAULTS.heroVariant) b.setAttribute('data-hero', heroVariant)
   else b.removeAttribute('data-hero')
 }
 
@@ -80,41 +81,39 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <>
+      <div>
         <ScrollToTop />
-        <div>
-          <Header />
-          <main>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/category/:id" element={<CategoryPage />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/wishlist" element={<WishlistPage />} />
-                <Route path="/account" element={<AccountPage />} />
-                <Route path="/search" element={<SearchResultsPage />} />
-                <Route path="/collections" element={<CollectionsPage />} />
-                <Route path="/collections/:slug" element={<CollectionDetailPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/faq" element={<FaqPage />} />
-                <Route path="/shipping" element={<ShippingPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/blog" element={<BlogListPage />} />
-                <Route path="/blog/:slug" element={<BlogDetailPage />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </Suspense>
-          </main>
-          <Footer />
-          <CartDrawer />
-          <SearchOverlay />
-          <LoginModalContainer />
-          <BottomNav />
-        </div>
-      </>
+        <Header />
+        <main>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/category/:id" element={<CategoryPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/wishlist" element={<WishlistPage />} />
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/search" element={<SearchResultsPage />} />
+              <Route path="/collections" element={<CollectionsPage />} />
+              <Route path="/collections/:slug" element={<CollectionDetailPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/shipping" element={<ShippingPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/blog" element={<BlogListPage />} />
+              <Route path="/blog/:slug" element={<BlogDetailPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </main>
+        <Footer />
+        <CartDrawer />
+        <SearchOverlay />
+        <LoginModalContainer />
+        <BottomNav />
+      </div>
     </ErrorBoundary>
   )
 }
