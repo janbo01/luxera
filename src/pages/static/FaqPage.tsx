@@ -169,9 +169,9 @@ const FaqPage: FC = () => {
 
       {/* CTA band */}
       <div className="text-center bg-plate py-14 px-[clamp(20px,4vw,56px)] -mx-[clamp(20px,4vw,56px)] -mb-[100px] mt-16 max-[640px]:py-11">
-        <h2 className="font-heading font-bold text-[clamp(28px,3vw,44px)] m-0 mb-3 text-ink">
+        <p className="font-heading font-bold text-[clamp(28px,3vw,44px)] m-0 mb-3 text-ink">
           جواب سوالتان را پیدا نکردید؟
-        </h2>
+        </p>
         <p className="text-muted text-sm m-0 mb-7">تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.</p>
         <Link to="/contact" className={BTN_CLS}>
           تماس با ما <span className="arr">←</span>
