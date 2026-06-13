@@ -267,8 +267,12 @@ const ProductPage: FC = () => {
         </div>
       </section>
       <Tabs product={product} />
-      <Reviews productId={id!} rating={product.rating} reviewCount={product.reviewCount} />
-      <Related categoryId={product.catId} excludeId={id} />
+      <Reviews
+        productId={apiDetail?.id ?? id!}
+        rating={product.rating}
+        reviewCount={product.reviewCount}
+      />
+      <Related categoryId={product.catId} excludeId={apiDetail?.id ?? id} />
       <SizeGuideModal open={sizeGuideOpen} onClose={handleCloseSizeGuide} />
     </>
   )
