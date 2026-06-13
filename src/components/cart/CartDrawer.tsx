@@ -19,6 +19,7 @@ const CartDrawer: FC = () => {
   const touchStartX = useRef(0)
   const touchStartMs = useRef(0)
   const dragX = useRef(0)
+  const drawerW = useRef(0)
 
   useBodyLock(isOpen)
 
@@ -37,6 +38,8 @@ const CartDrawer: FC = () => {
     touchStartX.current = e.touches[0].clientX
     touchStartMs.current = e.timeStamp
     dragX.current = 0
+    // Cache drawer width once — avoids reading window.innerWidth after style writes (forced reflow)
+    drawerW.current = Math.min(320, window.innerWidth * 0.88)
   }
 
   const onTouchMove = (e: React.TouchEvent) => {
@@ -49,8 +52,7 @@ const CartDrawer: FC = () => {
     el.style.transition = 'none'
     el.style.transform = `translateX(${dx}px)`
     if (ov) {
-      const w = Math.min(320, window.innerWidth * 0.88)
-      const opacity = Math.max(0, (1 - dx / w) * 0.45)
+      const opacity = Math.max(0, (1 - dx / drawerW.current) * 0.45)
       ov.style.transition = 'none'
       ov.style.opacity = String(opacity)
     }
@@ -60,7 +62,7 @@ const CartDrawer: FC = () => {
     const dx = dragX.current
     const dt = e.timeStamp - touchStartMs.current
     const velocity = dt > 0 ? dx / dt : 0
-    const w = Math.min(320, window.innerWidth * 0.88)
+    const w = drawerW.current
     const el = drawerRef.current
     const ov = overlayRef.current
     if (!el) return

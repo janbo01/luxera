@@ -56,7 +56,7 @@ const Story: FC = () => (
             <div className="flex items-center gap-2.5 mb-5">
               <span className="font-mono text-[11px] text-copper tracking-[0.16em]">{num}</span>
               <span className="text-[rgba(255,251,240,0.3)] select-none">·</span>
-              <span className="font-mono text-[10px] text-[rgba(245,237,224,0.45)] tracking-[0.12em]">
+              <span className="font-mono text-[10px] text-[rgba(245,237,224,0.65)] tracking-[0.12em]">
                 {title}
               </span>
             </div>
