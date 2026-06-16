@@ -1,5 +1,5 @@
 import { useState, memo, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
@@ -115,16 +115,16 @@ const Hero: FC = () => {
           </p>
 
           <div className="flex gap-2.5 flex-wrap mb-auto animate-rise [animation-delay:380ms]">
-            <Link to="/category/new" className={BTN_CLS}>
+            <a href="/category/new" className={BTN_CLS}>
               مشاهده‌ی محصولات
               <span className="arr">
                 <Icon name="arrow-left" size={16} />
               </span>
-            </Link>
-            <Link to="/about" className={BTN_GHOST_CLS}>
+            </a>
+            <a href="/about" className={BTN_GHOST_CLS}>
               بیشتر بدانید
               <span className="sr-only"> درباره‌ی لوکسرا</span>
-            </Link>
+            </a>
           </div>
 
           <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">

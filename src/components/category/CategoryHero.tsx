@@ -1,5 +1,5 @@
 import { Fragment, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import { CATEGORIES } from '../../data/categories'
 import { toFa } from '../../utils/format'
 import type { Category } from '../../types'
@@ -118,15 +118,15 @@ const CategoryHero: FC<CategoryHeroProps> = ({
     <>
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 font-mono text-[12px] tracking-[0.06em] text-muted pt-[18px]">
-        <Link to="/" className="hover:text-plum transition-colors">
+        <a href="/" className="hover:text-plum transition-colors">
           خانه
-        </Link>
+        </a>
         <span className="opacity-50 inline-flex">
           <Icon name="chevron-left" size={10} />
         </span>
-        <Link to="/" className="hover:text-plum transition-colors">
+        <a href="/" className="hover:text-plum transition-colors">
           فروشگاه
-        </Link>
+        </a>
         <span className="opacity-50 inline-flex">
           <Icon name="chevron-left" size={10} />
         </span>
@@ -202,16 +202,16 @@ const CategoryHero: FC<CategoryHeroProps> = ({
           سایر دسته‌بندی‌ها
         </span>
         {MAIN_CATS.map((cat) => (
-          <Link
+          <a
             key={cat.id}
-            to={`/category/${cat.id}`}
+            href={`/category/${cat.id}`}
             className={`inline-flex items-center gap-2 px-4 py-[9px] rounded-full text-[13px] border transition-all duration-200 shrink-0 ${cat.id === catId ? 'bg-ink text-bg border-ink' : 'border-rule hover:border-ink'}`}
           >
             {cat.fa}
             <span className="font-mono text-[11px] opacity-60">
               {toFa(catProductCounts[cat.id] ?? 0)}
             </span>
-          </Link>
+          </a>
         ))}
       </div>
     </>

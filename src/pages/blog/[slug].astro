@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import BlogDetailPage from '../../views/BlogDetailPage'
+import { fetchBlogPostData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+
+const { slug } = Astro.params
+const BASE_TITLE = 'Luxera · لوکسرا'
+
+const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchBlogPostData(slug!),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+
+const post = (initialData as { blogPost?: Record<string, unknown> }).blogPost
+const title = post
+  ? `${(post.seo_title ?? post.title ?? 'مقاله') as string} | ${BASE_TITLE}`
+  : `مقاله | ${BASE_TITLE}`
+const description = (post?.seo_description ?? post?.excerpt ?? '') as string
+const ogImage = (post?.featured_image_url ?? '') as string
+---
+
+<BaseLayout
+  title={title}
+  description={description || undefined}
+  canonical={`/blog/${slug}`}
+  ogImage={ogImage || undefined}
+  themeStyle={themeStyle}
+  lcpPreload={lcpPreload}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <BlogDetailPage client:only="react" slug={slug!} initialData={initialData} />
+</BaseLayout>

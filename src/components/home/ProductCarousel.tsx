@@ -1,5 +1,5 @@
 import { useEffect, useState, memo, type FC, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+
 import ProductCard from '../product/ProductCard'
 import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
@@ -81,12 +81,12 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
               prevLabel="محصول قبلی"
               nextLabel="محصول بعدی"
             />
-            <Link to={link} className={BTN_GHOST_CLS}>
+            <a href={link} className={BTN_GHOST_CLS}>
               مشاهده‌ی همه
               <span className="arr">
                 <Icon name="arrow-left" size={16} />
               </span>
-            </Link>
+            </a>
           </div>
         }
       />

@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import CollectionsPage from '../../views/CollectionsPage'
+import { fetchCollectionsListData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+
+const BASE_TITLE = 'Luxera · لوکسرا'
+
+const [{ initialData, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchCollectionsListData(),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+---
+
+<BaseLayout
+  title={`مجموعه‌های اختصاصی جواهرات لوکسرا | ${BASE_TITLE}`}
+  description="مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت."
+  canonical="/collections"
+  themeStyle={themeStyle}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <CollectionsPage client:only="react" initialData={initialData} />
+</BaseLayout>

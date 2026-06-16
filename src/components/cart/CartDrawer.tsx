@@ -1,5 +1,5 @@
 import { useEffect, useRef, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatToman, toFa } from '../../utils/format'
@@ -199,13 +199,13 @@ const CartDrawer: FC = () => {
                 <span>{formatToman(total)}</span>
               </div>
             </div>
-            <Link
-              to="/checkout"
+            <a
+              href="/checkout"
               className="block w-full text-center bg-plum text-bg py-4 text-sm font-body tracking-[0.04em] border border-plum rounded-full transition-all duration-200 hover:bg-transparent hover:text-plum"
               onClick={closeCart}
             >
               تکمیل سفارش — {formatToman(total)}
-            </Link>
+            </a>
             <button
               className="block text-center w-full mt-3 text-xs text-muted underline underline-offset-4"
               onClick={closeCart}

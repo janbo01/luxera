@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import CollectionDetailPage from '../../views/CollectionDetailPage'
+import { fetchCollectionData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+
+const { slug } = Astro.params
+const BASE_TITLE = 'Luxera · لوکسرا'
+
+const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchCollectionData(slug!),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+
+const col = (initialData as { collection?: Record<string, unknown> }).collection
+const title = col
+  ? `${(col.name_fa ?? 'مجموعه') as string} | ${BASE_TITLE}`
+  : `مجموعه | ${BASE_TITLE}`
+const description = (col?.description ?? '') as string
+---
+
+<BaseLayout
+  title={title}
+  description={description || undefined}
+  canonical={`/collections/${slug}`}
+  themeStyle={themeStyle}
+  lcpPreload={lcpPreload}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <CollectionDetailPage client:only="react" slug={slug!} initialData={initialData} />
+</BaseLayout>

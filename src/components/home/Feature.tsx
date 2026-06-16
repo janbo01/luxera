@@ -1,5 +1,5 @@
 import { memo, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import whyLuxera from '../../assets/images/why-luxera.webp'
 import { BTN_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
@@ -44,18 +44,18 @@ const Feature: FC = () => (
           ))}
         </div>
         <div className="flex gap-2.5 mt-2">
-          <Link to="/about" className={BTN_CLS}>
+          <a href="/about" className={BTN_CLS}>
             داستانِ ما را بخوانید
             <span className="arr">
               <Icon name="arrow-left" size={16} />
             </span>
-          </Link>
+          </a>
         </div>
       </div>
 
       <div className="relative min-h-[420px] max-md:min-h-[240px] bg-gradient-to-br from-bg-2 to-[#D5BFA6]">
         <img
-          src={whyLuxera}
+          src={typeof whyLuxera === 'string' ? whyLuxera : whyLuxera.src}
           alt="Fashion jewelry flat lay"
           className="absolute inset-0 w-full h-full object-cover"
           loading="lazy"

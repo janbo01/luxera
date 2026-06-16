@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import Icon from '../icons/Icon'
 import { useCartStore } from '../../store/cartStore'
 import { listProducts, adaptProduct } from '../../api/product'
@@ -43,13 +43,13 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
             شاید <em className="font-body italic font-normal text-copper-dark">دوست داشته باشید</em>
           </h2>
         </div>
-        <Link
-          to="/"
+        <a
+          href="/"
           className="inline-flex items-center gap-2 text-[13px] px-[18px] py-[11px] rounded-full border border-rule text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink flex-shrink-0"
         >
           بازگشت به فروشگاه
           <Icon name="arrow-left" size={13} />
-        </Link>
+        </a>
       </div>
       <div className="grid grid-cols-4 gap-[18px] max-md:grid-cols-2">
         {products.map((product) => (

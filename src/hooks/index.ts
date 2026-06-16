@@ -1,4 +1,6 @@
 export { useBodyLock } from './useBodyLock'
+export { usePathname } from './usePathname'
+export { useNavigate } from './useNavigate'
 export { useStoreTheme } from './useStoreTheme'
 export { useClickOutside } from './useClickOutside'
 export { useToggle } from './useToggle'

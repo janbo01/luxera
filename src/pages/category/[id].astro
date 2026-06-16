@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import CategoryPage from '../../views/CategoryPage'
+import { fetchCategoryData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { CATEGORIES } from '../../data/categories'
+
+const { id } = Astro.params
+
+const CATEGORY_SEO_TITLES: Record<string, string> = {
+  necklaces: 'خرید گردنبند فانتزی زنانه',
+  bracelets: 'خرید دستبند فانتزی زنانه',
+  rings: 'خرید انگشتر فانتزی زنانه',
+  earrings: 'خرید گوشواره فانتزی دخترانه',
+  sets: 'خرید ست جواهرات فانتزی زنانه',
+  new: 'جدیدترین محصولات جواهرات فانتزی',
+  bridal: 'خرید جواهرات عروس و نامزدی فانتزی',
+  mens: 'خرید جواهرات مردانه فانتزی',
+}
+
+const CATEGORY_DESCRIPTIONS: Record<string, string> = {
+  necklaces: 'گردنبندهای فانتزی لوکسرا — گردنبندهای ظریف و شیک با روکش ماندگار، بدون نیکل، مناسب برای هر مناسبت. ارسال یک‌روزه در تهران.',
+  bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
+  rings: 'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
+  earrings: 'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
+  sets: 'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
+  new: 'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  bridal: 'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
+  mens: 'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
+}
+
+const cat = CATEGORIES.find((c) => c.id === id)
+const seoTitle = (id && CATEGORY_SEO_TITLES[id]) || cat?.fa || 'دسته‌بندی'
+const BASE_TITLE = 'Luxera · لوکسرا'
+
+const [{ initialData, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchCategoryData(id!),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+---
+
+<BaseLayout
+  title={`${seoTitle} | ${BASE_TITLE}`}
+  description={id ? CATEGORY_DESCRIPTIONS[id] : undefined}
+  canonical={`/category/${id}`}
+  themeStyle={themeStyle}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <CategoryPage client:only="react" id={id!} initialData={initialData} />
+</BaseLayout>

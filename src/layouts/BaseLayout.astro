@@ -1,0 +1,87 @@
+---
+import { ClientRouter } from 'astro:transitions'
+import AppShell from '../components/layout/AppShell'
+import Header from '../components/layout/Header'
+import Footer from '../components/layout/Footer'
+import '../index.css'
+
+interface Props {
+  title: string
+  description?: string
+  canonical?: string
+  ogImage?: string
+  ogType?: string
+  jsonLd?: string
+  themeStyle?: string
+  lcpPreload?: string
+}
+
+const {
+  title,
+  description = 'لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.',
+  canonical,
+  ogImage = 'https://luxera.ir/og-image.webp',
+  ogType = 'website',
+  jsonLd,
+  themeStyle,
+  lcpPreload,
+} = Astro.props
+
+const SITE_URL = 'https://luxera.ir'
+const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
+---
+
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="index, follow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Preload LCP image (injected per-page) -->
+    {lcpPreload && <Fragment set:html={lcpPreload} />}
+
+    <!-- Theme CSS (injected from store API) -->
+    {themeStyle && <Fragment set:html={themeStyle} />}
+
+    <!-- JSON-LD structured data (injected per-page) -->
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+
+    <!-- Astro ClientRouter for SPA-like navigation -->
+    <ClientRouter />
+  </head>
+  <body>
+    <!--
+      AppShell: CartDrawer, SearchOverlay, LoginModal, BottomNav, ScrollToTop.
+      transition:persist keeps it mounted across navigations so Zustand stores
+      and subscriptions survive page transitions without teardown/recreate.
+    -->
+    <AppShell client:only="react" transition:persist="app-shell" />
+
+    <!-- Header persists independently so it can update active state via usePathname -->
+    <Header client:load transition:persist="header" />
+
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer persists so dynamic links (categories/collections from API) don't refetch -->
+    <Footer client:load transition:persist="footer" />
+  </body>
+</html>

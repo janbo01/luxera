@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import TermsPage from '../views/static/TermsPage'
+import { fetchThemeStyleTag } from '../lib/ssr'
+
+const themeStyle = await fetchThemeStyleTag()
+const BASE_TITLE = 'Luxera · لوکسرا'
+---
+
+<BaseLayout
+  title={`شرایط استفاده | قوانین خرید از لوکسرا | ${BASE_TITLE}`}
+  description="شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها."
+  canonical="/terms"
+  themeStyle={themeStyle}
+>
+  <TermsPage client:only="react" />
+</BaseLayout>

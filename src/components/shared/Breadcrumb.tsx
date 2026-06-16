@@ -1,5 +1,4 @@
 import { Fragment, type FC } from 'react'
-import { Link } from 'react-router-dom'
 
 interface CrumbItem {
   label: string
@@ -16,9 +15,9 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ items }) => (
       <Fragment key={i}>
         {i > 0 && <span className="text-rule">/</span>}
         {item.to ? (
-          <Link to={item.to} className="hover:text-plum transition-colors">
+          <a href={item.to} className="hover:text-plum transition-colors">
             {item.label}
-          </Link>
+          </a>
         ) : (
           <span className="text-ink">{item.label}</span>
         )}

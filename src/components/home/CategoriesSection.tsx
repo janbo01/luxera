@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, memo, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import { CATEGORIES } from '../../data/categories'
 import SectionHeader from '../shared/SectionHeader'
 import { listCategories, type ApiCategory } from '../../api/product'
@@ -39,12 +39,12 @@ const CategoriesSection: FC = () => {
           </>
         }
         aside={
-          <Link to="/collections" className={`${BTN_GHOST_CLS} self-end`}>
+          <a href="/collections" className={`${BTN_GHOST_CLS} self-end`}>
             همه‌ی دسته‌بندی‌ها
             <span className="arr">
               <Icon name="arrow-left" size={16} />
             </span>
-          </Link>
+          </a>
         }
       />
 
@@ -56,9 +56,9 @@ const CategoriesSection: FC = () => {
           const isFeatured = index === 0
 
           return (
-            <Link
+            <a
               key={cat.id}
-              to={`/category/${cat.id}`}
+              href={`/category/${cat.id}`}
               className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 min-h-[480px] max-md:min-h-0 max-md:aspect-[16/10]' : 'aspect-[3/4]'}`}
             >
               {imgSrc ? (
@@ -95,7 +95,7 @@ const CategoriesSection: FC = () => {
                   <Icon name="arrow-left" size={13} />
                 </span>
               </div>
-            </Link>
+            </a>
           )
         })}
       </div>

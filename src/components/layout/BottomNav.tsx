@@ -1,5 +1,6 @@
 import { type FC } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { usePathname } from '../../hooks/usePathname'
+import { useNavigate } from '../../hooks/useNavigate'
 import Icon from '../icons/Icon'
 import { toFa } from '../../utils/format'
 import { useWishlistStore, selectWishlistCount } from '../../store/wishlistStore'
@@ -9,7 +10,7 @@ import { useUIStore } from '../../store/uiStore'
 import { useCartStore, selectTotalQty } from '../../store/cartStore'
 
 const BottomNav: FC = () => {
-  const { pathname } = useLocation()
+  const pathname = usePathname()
   const navigate = useNavigate()
   const wishCount = useWishlistStore(selectWishlistCount)
   const cartCount = useCartStore(selectTotalQty)
@@ -39,15 +40,15 @@ const BottomNav: FC = () => {
       role="navigation"
       aria-label="ناوبری اصلی"
     >
-      <Link
-        to="/"
+      <a
+        href="/"
         className={tab(homeActive)}
         aria-current={homeActive ? 'page' : undefined}
         aria-label="خانه"
       >
         <Icon name="home" size={22} />
         <span>خانه</span>
-      </Link>
+      </a>
 
       <button className={tab(searchActive)} onClick={openSearch} aria-label="جستجو">
         <Icon name="search" size={22} />
@@ -66,8 +67,8 @@ const BottomNav: FC = () => {
         <span>سبد</span>
       </button>
 
-      <Link
-        to="/wishlist"
+      <a
+        href="/wishlist"
         className={tab(wishActive)}
         aria-current={wishActive ? 'page' : undefined}
         aria-label="علاقه‌مندی‌ها"
@@ -81,7 +82,7 @@ const BottomNav: FC = () => {
           )}
         </span>
         <span>علاقه‌مندی</span>
-      </Link>
+      </a>
 
       <button className={tab(accountActive)} onClick={handleAccount} aria-label="حساب کاربری">
         <Icon name="user" size={22} />

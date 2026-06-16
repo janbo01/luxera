@@ -1,5 +1,5 @@
 import { type FC, useState, useEffect, useRef, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from '../../hooks/useNavigate'
 import Icon from '../icons/Icon'
 import { toFa } from '../../utils/format'
 import { useCartStore, selectTotalQty } from '../../store/cartStore'
@@ -51,11 +51,7 @@ function NavLinkItem({
     : accent
       ? 'text-copper-dark font-medium relative after:absolute after:content-[""] after:-end-3.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-1 after:rounded-full after:bg-copper'
       : 'relative py-1.5 text-ink transition-colors duration-200 hover:text-copper'
-  return to.startsWith('/') ? (
-    <Link key={to} to={to} className={cls} onClick={onClick}>
-      {label}
-    </Link>
-  ) : (
+  return (
     <a key={to} href={to} className={cls} onClick={onClick}>
       {label}
     </a>
@@ -100,8 +96,8 @@ const Header: FC = () => {
           dir="ltr"
         >
           {/* Logo — left */}
-          <Link
-            to="/"
+          <a
+            href="/"
             className="flex items-center gap-2.5 shrink-0"
             onClick={closeMenu}
             aria-label="Luxera"
@@ -122,7 +118,7 @@ const Header: FC = () => {
                 Fine Jewelry
               </span>
             </div>
-          </Link>
+          </a>
 
           {/* Desktop nav — centered, RTL for Persian text */}
           <nav
@@ -160,8 +156,8 @@ const Header: FC = () => {
             </button>
 
             {/* Wishlist — hidden on mobile (in BottomNav) */}
-            <Link
-              to="/wishlist"
+            <a
+              href="/wishlist"
               className={`${ICON_BTN} max-[720px]:hidden`}
               aria-label="علاقه‌مندی‌ها"
             >
@@ -171,7 +167,7 @@ const Header: FC = () => {
                   {toFa(wishCount)}
                 </span>
               )}
-            </Link>
+            </a>
 
             <button className={ICON_BTN} onClick={openCart} aria-label="سبد خرید">
               <Icon name="bag" size={18} strokeWidth={1.6} />
@@ -216,7 +212,7 @@ const Header: FC = () => {
           className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule"
           dir="ltr"
         >
-          <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
+          <a href="/" className="flex items-center gap-2" onClick={closeMenu}>
             <img
               src="/logo-crystal.svg"
               alt="Luxera"
@@ -226,7 +222,7 @@ const Header: FC = () => {
               className="h-8 w-auto"
             />
             <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
-          </Link>
+          </a>
           <button
             className="flex items-center justify-center w-9 h-9 text-ink-2"
             onClick={closeMenu}

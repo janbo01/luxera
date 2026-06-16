@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ProductPage from '../../views/ProductPage'
+import { fetchProductData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+
+const { id } = Astro.params
+
+const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchProductData(id!),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+
+const product = (initialData as { product?: Record<string, unknown> }).product
+const BASE_TITLE = 'Luxera · لوکسرا'
+const title = product
+  ? `${(product.seo_title ?? product.title_fa ?? product.title ?? 'محصول') as string} | ${BASE_TITLE}`
+  : `محصول | ${BASE_TITLE}`
+const description = product
+  ? ((product.seo_description ?? product.short_description ?? '') as string)
+  : undefined
+const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.url
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`/product/${id}`}
+  ogType="product"
+  themeStyle={themeStyle}
+  lcpPreload={lcpPreload}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <ProductPage client:only="react" id={id!} initialData={initialData} {ogImage} />
+</BaseLayout>

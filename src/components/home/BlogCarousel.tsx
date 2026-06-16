@@ -1,5 +1,5 @@
 import { useEffect, useState, memo, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import { getBlogPosts, type ApiBlogPost } from '../../api/blog'
 import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
@@ -19,8 +19,8 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
     : null
 
   return (
-    <Link
-      to={`/blog/${post.slug}`}
+    <a
+      href={`/blog/${post.slug}`}
       className="group flex-shrink-0 w-[clamp(260px,30vw,360px)] flex flex-col border border-rule hover:border-plum rounded-[var(--radius)] overflow-hidden card-lift animate-rise bg-surface"
     >
       <div className="aspect-[3/2] overflow-hidden bg-plate flex-shrink-0">
@@ -57,7 +57,7 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
           </span>
         </span>
       </div>
-    </Link>
+    </a>
   )
 })
 
@@ -108,12 +108,12 @@ const BlogCarousel: FC = () => {
               prevLabel="مقاله قبلی"
               nextLabel="مقاله بعدی"
             />
-            <Link to="/blog" className={BTN_GHOST_CLS}>
+            <a href="/blog" className={BTN_GHOST_CLS}>
               همه مقالات
               <span className="arr">
                 <Icon name="arrow-left" size={16} />
               </span>
-            </Link>
+            </a>
           </div>
         }
       />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo, type FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '../../hooks/useNavigate'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { useSearchStore } from '../../store/searchStore'

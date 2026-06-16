@@ -1,5 +1,5 @@
 import { type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import Icon from '../icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
 import { Illustration } from '../../illustrations'
@@ -138,16 +138,16 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
       </div>
 
       <div className="flex flex-col max-[860px]:flex-col sm:flex-row gap-3 w-full justify-center animate-rise [animation-delay:380ms]">
-        <Link
-          to="/account"
+        <a
+          href="/account"
           className={`${BTN_GHOST_CLS} max-[860px]:w-full max-[860px]:justify-center`}
         >
           پیگیری سفارش
-        </Link>
-        <Link to="/" className={`${BTN_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
+        </a>
+        <a href="/" className={`${BTN_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
           ادامه خرید
           <span className="arr">←</span>
-        </Link>
+        </a>
       </div>
     </div>
   )

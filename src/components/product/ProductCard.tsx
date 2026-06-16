@@ -1,5 +1,5 @@
 import { useRef, memo, useCallback, type FC } from 'react'
-import { Link } from 'react-router-dom'
+
 import { Illustration } from '../../illustrations'
 import { flyToCart } from '../../utils/flyToCart'
 import { useWishlist } from '../../hooks/useWishlist'
@@ -49,10 +49,10 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
   const badgeLabel = product.badge
 
   return (
-    <Link
+    <a
       className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col relative cursor-pointer min-w-0 card-lift group"
       ref={cardRef}
-      to={`/product/${product.slug ?? product.id}`}
+      href={`/product/${product.slug ?? product.id}`}
       onMouseEnter={handleMouseEnter}
     >
       {/* Media */}
@@ -124,7 +124,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           <Icon name="bag" size={15} strokeWidth={1.6} />
         </button>
       </div>
-    </Link>
+    </a>
   )
 }
 

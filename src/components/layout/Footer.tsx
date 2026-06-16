@@ -1,5 +1,4 @@
 import { type FC, useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
 import { useInitialData } from '../../context/initialData'
@@ -132,9 +131,9 @@ const Footer: FC = () => {
           <ul className={`list-none p-0 m-0 ${col}`}>
             {categoryLinks.map(({ label, to }) => (
               <li key={to}>
-                <Link to={to} className={colLink}>
+                <a href={to} className={colLink}>
                   {label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
@@ -146,9 +145,9 @@ const Footer: FC = () => {
             <ul className={`list-none p-0 m-0 ${col}`}>
               {links.map(({ label, to }) => (
                 <li key={label}>
-                  <Link to={to} className={colLink}>
+                  <a href={to} className={colLink}>
                     {label}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>

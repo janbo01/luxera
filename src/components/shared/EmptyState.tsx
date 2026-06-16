@@ -1,5 +1,4 @@
 import type { FC, ReactNode } from 'react'
-import { Link } from 'react-router-dom'
 import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 
@@ -40,9 +39,9 @@ const EmptyState: FC<EmptyStateProps> = ({
     {body && <p className="text-sm leading-[1.7] text-muted m-0 max-w-[340px]">{body}</p>}
     {action &&
       (action.to ? (
-        <Link to={action.to} className={action.ghost ? BTN_GHOST_CLS : BTN_CLS}>
+        <a href={action.to} className={action.ghost ? BTN_GHOST_CLS : BTN_CLS}>
           {action.label}
-        </Link>
+        </a>
       ) : (
         <button className={action.ghost ? BTN_GHOST_CLS : BTN_CLS} onClick={action.onClick}>
           {action.label}

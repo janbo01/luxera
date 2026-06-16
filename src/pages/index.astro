@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import HomePage from '../views/HomePage'
+import { fetchHomeData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../lib/ssr'
+
+const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+  fetchHomeData(),
+  fetchFooterData(),
+  fetchThemeStyleTag(),
+])
+
+const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
+  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
+  : ''
+
+const BASE_TITLE = 'Luxera · لوکسرا'
+---
+
+<BaseLayout
+  title={`فروشگاه جواهرات فانتزی دست‌ساز | ${BASE_TITLE}`}
+  description="لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران."
+  canonical="/"
+  themeStyle={themeStyle}
+  lcpPreload={lcpPreload}
+>
+  <Fragment set:html={initialScript + footerScript} />
+  <HomePage client:only="react" />
+</BaseLayout>

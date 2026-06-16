@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ContactPage from '../views/static/ContactPage'
+import { fetchThemeStyleTag } from '../lib/ssr'
+
+const themeStyle = await fetchThemeStyleTag()
+const BASE_TITLE = 'Luxera · لوکسرا'
+---
+
+<BaseLayout
+  title={`تماس با لوکسرا و پشتیبانی فروشگاه | ${BASE_TITLE}`}
+  description="با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید."
+  canonical="/contact"
+  themeStyle={themeStyle}
+>
+  <ContactPage client:only="react" />
+</BaseLayout>

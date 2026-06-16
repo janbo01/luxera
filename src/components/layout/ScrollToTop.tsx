@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 
 export default function ScrollToTop() {
-  const { pathname } = useLocation()
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
+    const onLoad = () => window.scrollTo(0, 0)
+    document.addEventListener('astro:page-load', onLoad)
+    return () => document.removeEventListener('astro:page-load', onLoad)
+  }, [])
   return null
 }
