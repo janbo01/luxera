@@ -1,6 +1,6 @@
 import { apiFetch } from './client'
 
-const BASE = import.meta.env.VITE_PAYMENT_API as string
+const BASE = import.meta.env.PUBLIC_PAYMENT_API as string
 
 export interface ApiInitiatePaymentInput {
   order_id: string

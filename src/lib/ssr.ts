@@ -7,8 +7,17 @@ import { CATEGORIES } from '../data/categories'
 
 const SITE_URL = 'https://luxera.ir'
 
-const storeApiBase = import.meta.env.VITE_STORE_API ?? ''
-const productApiBase = import.meta.env.VITE_PRODUCT_API ?? ''
+// Use process.env so the Docker-internal hostnames (http://store:8084) are
+// read at request time from the container's runtime environment, not baked
+// into the bundle. Falls back to the public URL if unset (e.g. local dev).
+const storeApiBase =
+  (typeof process !== 'undefined' && process.env.STORE_API) ||
+  import.meta.env.PUBLIC_STORE_API ||
+  ''
+const productApiBase =
+  (typeof process !== 'undefined' && process.env.PRODUCT_API) ||
+  import.meta.env.PUBLIC_PRODUCT_API ||
+  ''
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

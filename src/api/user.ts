@@ -1,7 +1,7 @@
 import { apiFetch } from './client'
 import type { Address } from '../types'
 
-const BASE = import.meta.env.VITE_USER_API as string
+const BASE = import.meta.env.PUBLIC_USER_API as string
 
 export function toE164(phone: string): string {
   const digits = phone.replace(/\D/g, '')

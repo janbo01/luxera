@@ -1,6 +1,6 @@
 import { apiFetch } from './client'
 
-const BASE = import.meta.env.VITE_STORE_API as string
+const BASE = import.meta.env.PUBLIC_STORE_API as string
 
 export interface ApiBlogPost {
   id: string

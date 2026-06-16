@@ -10,7 +10,7 @@ const TTL = {
   products: 3 * 60 * 1000,
 }
 
-const BASE = import.meta.env.VITE_PRODUCT_API as string
+const BASE = import.meta.env.PUBLIC_PRODUCT_API as string
 
 export interface ApiProduct {
   id: string

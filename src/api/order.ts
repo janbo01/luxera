@@ -1,7 +1,7 @@
 import { apiFetch } from './client'
 import type { Order, OrderStatus } from '../types'
 
-const BASE = import.meta.env.VITE_ORDER_API as string
+const BASE = import.meta.env.PUBLIC_ORDER_API as string
 
 export interface ApiCartProduct {
   title: string
