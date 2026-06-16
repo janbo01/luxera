@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import HomePage from '../views/HomePage'
 import { fetchHomeData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../lib/ssr'
 
-const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
   fetchHomeData(),
   fetchFooterData(),
   fetchThemeStyleTag(),

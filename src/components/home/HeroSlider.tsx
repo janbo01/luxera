@@ -4,7 +4,6 @@ import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
-import { useInitialData } from '../../context/initialData'
 
 interface Slide {
   key: string
@@ -66,22 +65,20 @@ declare global {
   }
 }
 
-function getInitialSlides(ssrBanners?: ApiBanner[]): Slide[] {
+function getInitialSlides(): Slide[] {
   if (typeof window !== 'undefined' && window.__BANNERS_INITIAL__?.length) {
     return window.__BANNERS_INITIAL__.map(bannerToSlide)
   }
-  if (ssrBanners?.length) return ssrBanners.map(bannerToSlide)
   return FALLBACK_SLIDES
 }
 
-export function getFirstSlideInfo(ssrBanners?: ApiBanner[]): SlideInfo {
-  const first = getInitialSlides(ssrBanners)[0]
+export function getFirstSlideInfo(): SlideInfo {
+  const first = getInitialSlides()[0]
   return { name: first?.caption ?? '', price: first?.price, oldPrice: first?.oldPrice }
 }
 
 const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) => {
-  const { banners: ssrBanners } = useInitialData()
-  const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides(ssrBanners))
+  const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides())
   const [idx, setIdx] = useState(0)
   const onSlideRef = useRef(onSlide)
   useLayoutEffect(() => {

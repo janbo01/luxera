@@ -119,22 +119,21 @@ export async function fetchFooterData(): Promise<FooterData> {
 // ── Page-specific data fetchers ───────────────────────────────────────────────
 
 export async function fetchHomeData() {
-  if (!storeApiBase) return { initialData: {}, lcpPreload: '', initialScript: '' }
+  if (!storeApiBase) return { lcpPreload: '', initialScript: '' }
   try {
     const r = await fetch(`${storeApiBase}/store/banners`)
-    if (!r.ok) return { initialData: {}, lcpPreload: '', initialScript: '' }
+    if (!r.ok) return { lcpPreload: '', initialScript: '' }
     const data = unwrap(await r.json())
     const banners = Array.isArray(data) ? data : []
     const firstImg: string | undefined = banners[0]?.image_url || banners[0]?.product?.image_url
     return {
-      initialData: { banners },
       initialScript: `<script>window.__BANNERS_INITIAL__=${safeJson(banners)}</script>`,
       lcpPreload: firstImg
         ? `<link rel="preload" as="image" href="${firstImg}" fetchpriority="high">`
         : '',
     }
   } catch {
-    return { initialData: {}, lcpPreload: '', initialScript: '' }
+    return { lcpPreload: '', initialScript: '' }
   }
 }
 

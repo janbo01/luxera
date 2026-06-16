@@ -1,7 +1,6 @@
 import { type FC, useMemo } from 'react'
 import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
-import { useInitialData } from '../../context/initialData'
 import { useSettingsStore } from '../../store/settingsStore'
 import { CATEGORIES } from '../../data/categories'
 
@@ -49,7 +48,6 @@ const STATIC_COLS = [
 ]
 
 const Footer: FC = () => {
-  const { footerCategories } = useInitialData()
   const instagram_url = useSettingsStore((s) => s.instagram_url)
   const whatsapp_number = useSettingsStore((s) => s.whatsapp_number)
   const bale_link = useSettingsStore((s) => s.bale_link)
@@ -59,9 +57,7 @@ const Footer: FC = () => {
   const categoryLinks: NavLink[] =
     typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length
       ? makeCatLinks(window.__FOOTER_INITIAL__.categories)
-      : footerCategories?.length
-        ? makeCatLinks(footerCategories)
-        : STATIC_CAT_LINKS
+      : STATIC_CAT_LINKS
 
   const socialLinks = useMemo(
     () =>

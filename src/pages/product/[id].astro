@@ -35,5 +35,5 @@ const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.ur
   lcpPreload={lcpPreload}
 >
   <Fragment set:html={initialScript + footerScript} />
-  <ProductPage client:only="react" id={id!} initialData={initialData} {ogImage} />
+  <ProductPage client:only="react" id={id!} initialData={initialData} />
 </BaseLayout>
