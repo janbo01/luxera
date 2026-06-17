@@ -2,11 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import WishlistPage from '../views/WishlistPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+const wishlistJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `علاقه‌مندی‌ها | ${BASE_TITLE}`,
+  url: 'https://luxera.ir/wishlist',
+  description: 'لیست علاقه‌مندی‌های شما در فروشگاه جواهرات فانتزی لوکسرا',
+})
 ---
 
 <BaseLayout
   title={`علاقه‌مندی‌ها | ${BASE_TITLE}`}
   canonical="/wishlist"
+  jsonLd={wishlistJsonLd}
 >
+  <h1 class="sr-only">علاقه‌مندی‌های شما</h1>
   <WishlistPage client:only="react" />
 </BaseLayout>

@@ -40,13 +40,34 @@ const [{ initialData, initialScript }, footerData] = await Promise.all([
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
   ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
   : ''
+
+const categoryJsonLd = safeJson({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: seoTitle,
+      description: id ? CATEGORY_DESCRIPTIONS[id] : undefined,
+      url: `https://luxera.ir/category/${id}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
+        { '@type': 'ListItem', position: 2, name: seoTitle, item: `https://luxera.ir/category/${id}` },
+      ],
+    },
+  ],
+})
 ---
 
 <BaseLayout
   title={`${seoTitle} | ${BASE_TITLE}`}
   description={id ? CATEGORY_DESCRIPTIONS[id] : undefined}
   canonical={`/category/${id}`}
+  jsonLd={categoryJsonLd}
 >
+  <h1 class="sr-only">{seoTitle}</h1>
   <Fragment set:html={initialScript + footerScript} />
   <CategoryPage client:only="react" id={id!} initialData={initialData} />
 </BaseLayout>

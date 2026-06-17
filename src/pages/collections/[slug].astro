@@ -16,10 +16,31 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   : ''
 
 const col = (initialData as { collection?: Record<string, unknown> }).collection
+const colName = (col?.name_fa ?? 'مجموعه') as string
 const title = col
-  ? `${(col.name_fa ?? 'مجموعه') as string} | ${BASE_TITLE}`
+  ? `${colName} | ${BASE_TITLE}`
   : `مجموعه | ${BASE_TITLE}`
 const description = (col?.description ?? '') as string
+
+const collectionJsonLd = col ? safeJson({
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      name: colName,
+      description: description || undefined,
+      url: `https://luxera.ir/collections/${slug}`,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
+        { '@type': 'ListItem', position: 2, name: 'مجموعه‌ها', item: 'https://luxera.ir/collections' },
+        { '@type': 'ListItem', position: 3, name: colName, item: `https://luxera.ir/collections/${slug}` },
+      ],
+    },
+  ],
+}) : undefined
 ---
 
 <BaseLayout
@@ -27,7 +48,9 @@ const description = (col?.description ?? '') as string
   description={description || undefined}
   canonical={`/collections/${slug}`}
   lcpPreload={lcpPreload}
+  jsonLd={collectionJsonLd}
 >
+  <h1 class="sr-only">{colName}</h1>
   <Fragment set:html={initialScript + footerScript} />
   <CollectionDetailPage client:only="react" slug={slug!} initialData={initialData} />
 </BaseLayout>

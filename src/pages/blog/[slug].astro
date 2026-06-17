@@ -16,11 +16,28 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   : ''
 
 const post = (initialData as { blogPost?: Record<string, unknown> }).blogPost
+const h1Title = (post?.title ?? 'مقاله') as string
 const title = post
-  ? `${(post.seo_title ?? post.title ?? 'مقاله') as string} | ${BASE_TITLE}`
+  ? `${(post.seo_title ?? h1Title) as string} | ${BASE_TITLE}`
   : `مقاله | ${BASE_TITLE}`
 const description = (post?.seo_description ?? post?.excerpt ?? '') as string
 const ogImage = (post?.featured_image_url ?? '') as string
+
+const blogJsonLd = post ? safeJson({
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: (post.seo_title ?? post.title) as string,
+  description: (post.seo_description ?? post.excerpt ?? '') as string || undefined,
+  image: post.featured_image_url ?? undefined,
+  datePublished: post.published_at ?? post.created_at,
+  dateModified: post.updated_at,
+  author: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
+  publisher: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': `https://luxera.ir/blog/${slug}`,
+  },
+}) : undefined
 ---
 
 <BaseLayout
@@ -29,7 +46,9 @@ const ogImage = (post?.featured_image_url ?? '') as string
   canonical={`/blog/${slug}`}
   ogImage={ogImage || undefined}
   lcpPreload={lcpPreload}
+  jsonLd={blogJsonLd}
 >
+  <h1 class="sr-only">{h1Title}</h1>
   <Fragment set:html={initialScript + footerScript} />
   <BlogDetailPage client:only="react" slug={slug!} initialData={initialData} />
 </BaseLayout>

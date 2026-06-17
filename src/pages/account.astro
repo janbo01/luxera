@@ -2,11 +2,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import AccountPage from '../views/AccountPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+const accountJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}`,
+  url: 'https://luxera.ir/account',
+  description: 'ورود به حساب کاربری، پیگیری سفارش‌ها و مدیریت پروفایل در فروشگاه جواهرات لوکسرا',
+})
 ---
 
 <BaseLayout
   title={`ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}`}
   canonical="/account"
+  jsonLd={accountJsonLd}
 >
+  <h1 class="sr-only">حساب کاربری و پیگیری سفارش</h1>
   <AccountPage client:only="react" />
 </BaseLayout>

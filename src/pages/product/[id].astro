@@ -16,13 +16,34 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
 
 const product = (initialData as { product?: Record<string, unknown> }).product
 const BASE_TITLE = 'Luxera · لوکسرا'
+const h1Title = (product?.seo_title ?? product?.title_fa ?? product?.title ?? 'محصول') as string
 const title = product
-  ? `${(product.seo_title ?? product.title_fa ?? product.title ?? 'محصول') as string} | ${BASE_TITLE}`
+  ? `${h1Title} | ${BASE_TITLE}`
   : `محصول | ${BASE_TITLE}`
 const description = product
   ? ((product.seo_description ?? product.short_description ?? '') as string)
   : undefined
 const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.url
+
+const productSlug = (product?.slug ?? id) as string
+const productUrl = `https://luxera.ir/product/${productSlug}`
+const productJsonLd = product ? safeJson({
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: h1Title,
+  description: ((product.seo_description ?? product.short_description ?? '') as string) || undefined,
+  image: (product.images as Array<{ url: string }> | undefined)?.map((img) => img.url) ?? [],
+  url: productUrl,
+  sku: productSlug,
+  brand: { '@type': 'Brand', name: 'لوکسرا' },
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'IRR',
+    price: String(product.price ?? ''),
+    availability: 'https://schema.org/InStock',
+    url: productUrl,
+  },
+}) : undefined
 ---
 
 <BaseLayout
@@ -31,7 +52,9 @@ const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.ur
   canonical={`/product/${id}`}
   ogType="product"
   lcpPreload={lcpPreload}
+  jsonLd={productJsonLd}
 >
+  <h1 class="sr-only">{h1Title}</h1>
   <Fragment set:html={initialScript + footerScript} />
   <ProductPage client:only="react" id={id!} initialData={initialData} />
 </BaseLayout>
