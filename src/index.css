@@ -583,7 +583,8 @@
 }
 
 .story-section--dark {
-  --color-copper: #c27200; /* brighter copper for dark bg — contrast ≥ 4.5:1 on bg-ink */
+  --lx-copper: #c27200; /* brighter copper for dark bg — contrast ≥ 4.5:1 on bg-ink */
+  --color-copper: #c27200;
 }
 
 .story-section--dark .story-card::after {
