@@ -1,16 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import CheckoutPage from '../views/CheckoutPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
 <BaseLayout
   title={`پرداخت و تکمیل سفارش | ${BASE_TITLE}`}
   canonical="/checkout"
-  themeStyle={themeStyle}
 >
   <CheckoutPage client:only="react" />
 </BaseLayout>

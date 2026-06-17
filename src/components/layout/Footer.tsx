@@ -3,6 +3,14 @@ import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIc
 import EnamadLogo from '../shared/EnamadLogo'
 import { useSettingsStore } from '../../store/settingsStore'
 import { CATEGORIES } from '../../data/categories'
+interface SocialSettings {
+  instagram_url: string
+  whatsapp_number: string
+  bale_link: string
+  ita_link: string
+  support_phone: string
+  support_landline: string
+}
 
 declare global {
   interface Window {
@@ -47,11 +55,22 @@ const STATIC_COLS = [
   },
 ]
 
-const Footer: FC = () => {
-  const instagram_url = useSettingsStore((s) => s.instagram_url)
-  const whatsapp_number = useSettingsStore((s) => s.whatsapp_number)
-  const bale_link = useSettingsStore((s) => s.bale_link)
-  const ita_link = useSettingsStore((s) => s.ita_link)
+interface FooterProps {
+  initialSettings?: SocialSettings
+}
+
+const Footer: FC<FooterProps> = ({ initialSettings }) => {
+  // Store values take over after useStoreTheme populates them; SSR prop provides the
+  // same data for the initial render so there is no hydration mismatch or CLS.
+  const storeInstagram = useSettingsStore((s) => s.instagram_url)
+  const storeWhatsapp = useSettingsStore((s) => s.whatsapp_number)
+  const storeBale = useSettingsStore((s) => s.bale_link)
+  const storeIta = useSettingsStore((s) => s.ita_link)
+
+  const instagram_url = storeInstagram || initialSettings?.instagram_url || ''
+  const whatsapp_number = storeWhatsapp || initialSettings?.whatsapp_number || ''
+  const bale_link = storeBale || initialSettings?.bale_link || ''
+  const ita_link = storeIta || initialSettings?.ita_link || ''
 
   // Derived once — no setState, no post-paint update, no CLS.
   const categoryLinks: NavLink[] =

@@ -1,16 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import WishlistPage from '../views/WishlistPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
 <BaseLayout
   title={`علاقه‌مندی‌ها | ${BASE_TITLE}`}
   canonical="/wishlist"
-  themeStyle={themeStyle}
 >
   <WishlistPage client:only="react" />
 </BaseLayout>

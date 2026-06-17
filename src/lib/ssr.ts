@@ -33,29 +33,74 @@ export function safeJson(val: unknown): string {
   return JSON.stringify(val).replace(/<\/script>/gi, '<\\/script>')
 }
 
-// ── Theme ─────────────────────────────────────────────────────────────────────
+// ── Theme & Settings ──────────────────────────────────────────────────────────
 
+export interface SocialSettings {
+  instagram_url: string
+  whatsapp_number: string
+  bale_link: string
+  ita_link: string
+  support_phone: string
+  support_landline: string
+}
+
+interface RawSettings {
+  theme_bg?: string
+  theme_brand?: string
+  theme_accent?: string
+  theme_light?: string
+  theme_text?: string
+  instagram_url?: string
+  whatsapp_number?: string
+  bale_link?: string
+  ita_link?: string
+  support_phone?: string
+  support_landline?: string
+  [key: string]: string | undefined
+}
+
+let _rawSettingsCache: RawSettings | null = null
 let _themeCache = ''
 let _themeExpiry = 0
 
-export async function fetchThemeStyleTag(): Promise<string> {
-  if (_themeCache && Date.now() < _themeExpiry) return _themeCache
-  if (!storeApiBase) return ''
+async function fetchRawSettings(): Promise<RawSettings> {
+  if (_rawSettingsCache && Date.now() < _themeExpiry) return _rawSettingsCache
+  if (!storeApiBase) return {}
   try {
     const r = await fetch(`${storeApiBase}/store/settings`)
-    if (!r.ok) return ''
-    const raw = unwrap(await r.json()) as Record<string, string>
-    const bg = raw.theme_bg || '#FDF8F0'
-    const brand = raw.theme_brand || '#C4873A'
-    const accent = raw.theme_accent || '#3D2B20'
-    const light = raw.theme_light || '#F5EDE0'
-    const text = raw.theme_text || '#1A1008'
-    _themeCache = `<style id="lx-theme">${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
+    if (!r.ok) return {}
+    const raw = unwrap(await r.json()) as RawSettings
+    _rawSettingsCache = raw
     _themeExpiry = Date.now() + 5 * 60 * 1000
+    return raw
   } catch {
-    return ''
+    return {}
   }
+}
+
+export async function fetchThemeStyleTag(): Promise<string> {
+  if (_themeCache && Date.now() < _themeExpiry) return _themeCache
+  const raw = await fetchRawSettings()
+  if (!raw || Object.keys(raw).length === 0) return ''
+  const bg = raw.theme_bg || '#FDF8F0'
+  const brand = raw.theme_brand || '#C4873A'
+  const accent = raw.theme_accent || '#3D2B20'
+  const light = raw.theme_light || '#F5EDE0'
+  const text = raw.theme_text || '#1A1008'
+  _themeCache = `<style id="lx-theme">${deriveThemeCSS(bg, brand, accent, light, text)}</style>`
   return _themeCache
+}
+
+export async function fetchSocialSettings(): Promise<SocialSettings> {
+  const raw = await fetchRawSettings()
+  return {
+    instagram_url: raw.instagram_url || '',
+    whatsapp_number: raw.whatsapp_number || '',
+    bale_link: raw.bale_link || '',
+    ita_link: raw.ita_link || '',
+    support_phone: raw.support_phone || '',
+    support_landline: raw.support_landline || '',
+  }
 }
 
 // ── Footer data (categories + collections) ────────────────────────────────────

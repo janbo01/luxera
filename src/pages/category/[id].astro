@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import CategoryPage from '../../views/CategoryPage'
-import { fetchCategoryData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { fetchCategoryData, fetchFooterData, safeJson } from '../../lib/ssr'
 import { CATEGORIES } from '../../data/categories'
 
 const { id } = Astro.params
@@ -32,10 +32,9 @@ const cat = CATEGORIES.find((c) => c.id === id)
 const seoTitle = (id && CATEGORY_SEO_TITLES[id]) || cat?.fa || 'دسته‌بندی'
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ initialData, initialScript }, footerData] = await Promise.all([
   fetchCategoryData(id!),
   fetchFooterData(),
-  fetchThemeStyleTag(),
 ])
 
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
@@ -47,7 +46,6 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   title={`${seoTitle} | ${BASE_TITLE}`}
   description={id ? CATEGORY_DESCRIPTIONS[id] : undefined}
   canonical={`/category/${id}`}
-  themeStyle={themeStyle}
 >
   <Fragment set:html={initialScript + footerScript} />
   <CategoryPage client:only="react" id={id!} initialData={initialData} />

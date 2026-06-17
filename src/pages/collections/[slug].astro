@@ -1,15 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import CollectionDetailPage from '../../views/CollectionDetailPage'
-import { fetchCollectionData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { fetchCollectionData, fetchFooterData, safeJson } from '../../lib/ssr'
 
 const { slug } = Astro.params
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchCollectionData(slug!),
   fetchFooterData(),
-  fetchThemeStyleTag(),
 ])
 
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
@@ -27,7 +26,6 @@ const description = (col?.description ?? '') as string
   title={title}
   description={description || undefined}
   canonical={`/collections/${slug}`}
-  themeStyle={themeStyle}
   lcpPreload={lcpPreload}
 >
   <Fragment set:html={initialScript + footerScript} />

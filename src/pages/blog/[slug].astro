@@ -1,15 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogDetailPage from '../../views/BlogDetailPage'
-import { fetchBlogPostData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { fetchBlogPostData, fetchFooterData, safeJson } from '../../lib/ssr'
 
 const { slug } = Astro.params
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchBlogPostData(slug!),
   fetchFooterData(),
-  fetchThemeStyleTag(),
 ])
 
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
@@ -29,7 +28,6 @@ const ogImage = (post?.featured_image_url ?? '') as string
   description={description || undefined}
   canonical={`/blog/${slug}`}
   ogImage={ogImage || undefined}
-  themeStyle={themeStyle}
   lcpPreload={lcpPreload}
 >
   <Fragment set:html={initialScript + footerScript} />

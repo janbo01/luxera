@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions'
 import AppShell from '../components/layout/AppShell'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
+import { fetchThemeStyleTag, fetchSocialSettings } from '../lib/ssr'
 import '../index.css'
 
 interface Props {
@@ -12,7 +13,6 @@ interface Props {
   ogImage?: string
   ogType?: string
   jsonLd?: string
-  themeStyle?: string
   lcpPreload?: string
 }
 
@@ -23,9 +23,13 @@ const {
   ogImage = 'https://luxera.ir/og-image.webp',
   ogType = 'website',
   jsonLd,
-  themeStyle,
   lcpPreload,
 } = Astro.props
+
+const [themeStyle, socialSettings] = await Promise.all([
+  fetchThemeStyleTag(),
+  fetchSocialSettings(),
+])
 
 const SITE_URL = 'https://luxera.ir'
 const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
@@ -40,6 +44,17 @@ const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Preconnect to external origins for faster image CDN and API loading -->
+    <link rel="preconnect" href="https://image.luxera.ir" />
+    <link rel="dns-prefetch" href="https://image.luxera.ir" />
+    <link rel="preconnect" href="https://api.luxera.ir" />
+    <link rel="dns-prefetch" href="https://api.luxera.ir" />
+
+    <!-- Preload critical Persian fonts to reduce FOUT and font-swap CLS -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Morabba-Bold.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Regular.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Bold.woff2" crossorigin />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -81,7 +96,7 @@ const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro
       <slot />
     </main>
 
-    <!-- Footer persists so dynamic links (categories/collections from API) don't refetch -->
-    <Footer client:load transition:persist="footer" />
+    <!-- Footer: initialSettings pre-populates social links from SSR to avoid CLS on hydration -->
+    <Footer client:load transition:persist="footer" initialSettings={socialSettings} />
   </body>
 </html>

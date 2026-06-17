@@ -1,16 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import AccountPage from '../views/AccountPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
 <BaseLayout
   title={`ورود به حساب کاربری و پیگیری سفارش | ${BASE_TITLE}`}
   canonical="/account"
-  themeStyle={themeStyle}
 >
   <AccountPage client:only="react" />
 </BaseLayout>

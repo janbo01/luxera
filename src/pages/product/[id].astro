@@ -1,14 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import ProductPage from '../../views/ProductPage'
-import { fetchProductData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { fetchProductData, fetchFooterData, safeJson } from '../../lib/ssr'
 
 const { id } = Astro.params
 
-const [{ initialData, lcpPreload, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchProductData(id!),
   fetchFooterData(),
-  fetchThemeStyleTag(),
 ])
 
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
@@ -31,7 +30,6 @@ const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.ur
   description={description}
   canonical={`/product/${id}`}
   ogType="product"
-  themeStyle={themeStyle}
   lcpPreload={lcpPreload}
 >
   <Fragment set:html={initialScript + footerScript} />

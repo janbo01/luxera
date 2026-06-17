@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ShippingPage from '../views/static/ShippingPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
@@ -11,7 +8,6 @@ const BASE_TITLE = 'Luxera · لوکسرا'
   title={`ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`}
   description="جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار."
   canonical="/shipping"
-  themeStyle={themeStyle}
 >
   <ShippingPage client:only="react" />
 </BaseLayout>

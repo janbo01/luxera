@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import SearchResultsPage from '../views/SearchResultsPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const q = Astro.url.searchParams.get('q') ?? ''
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
@@ -11,7 +8,6 @@ const BASE_TITLE = 'Luxera · لوکسرا'
 <BaseLayout
   title={`جستجو | ${BASE_TITLE}`}
   canonical="/search"
-  themeStyle={themeStyle}
 >
   <SearchResultsPage client:only="react" q={q} />
 </BaseLayout>

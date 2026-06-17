@@ -18,6 +18,6 @@ export default ts.config(
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', 'project/**'],
+    ignores: ['dist/**', 'node_modules/**', 'project/**', '.astro/**'],
   },
 )

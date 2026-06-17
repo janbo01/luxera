@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import AboutPage from '../views/static/AboutPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
@@ -11,7 +8,6 @@ const BASE_TITLE = 'Luxera · لوکسرا'
   title={`درباره لوکسرا؛ فروشگاه جواهرات فانتزی | ${BASE_TITLE}`}
   description="داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع."
   canonical="/about"
-  themeStyle={themeStyle}
 >
   <AboutPage client:only="react" />
 </BaseLayout>

@@ -1,14 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogListPage from '../../views/BlogListPage'
-import { fetchBlogListData, fetchFooterData, fetchThemeStyleTag, safeJson } from '../../lib/ssr'
+import { fetchBlogListData, fetchFooterData, safeJson } from '../../lib/ssr'
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript }, footerData, themeStyle] = await Promise.all([
+const [{ initialData, initialScript }, footerData] = await Promise.all([
   fetchBlogListData(),
   fetchFooterData(),
-  fetchThemeStyleTag(),
 ])
 
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
@@ -20,7 +19,6 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   title={`بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`}
   description="مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد."
   canonical="/blog"
-  themeStyle={themeStyle}
 >
   <Fragment set:html={initialScript + footerScript} />
   <BlogListPage client:only="react" initialData={initialData} />

@@ -1,16 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import NotFoundPage from '../views/NotFoundPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 Astro.response.status = 404
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
 <BaseLayout
   title={`صفحه یافت نشد | ${BASE_TITLE}`}
-  themeStyle={themeStyle}
 >
   <NotFoundPage client:only="react" />
 </BaseLayout>

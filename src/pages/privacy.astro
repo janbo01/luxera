@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import PrivacyPage from '../views/static/PrivacyPage'
-import { fetchThemeStyleTag } from '../lib/ssr'
-
-const themeStyle = await fetchThemeStyleTag()
 const BASE_TITLE = 'Luxera · لوکسرا'
 ---
 
@@ -11,7 +8,6 @@ const BASE_TITLE = 'Luxera · لوکسرا'
   title={`حریم خصوصی و سیاست داده‌های لوکسرا | ${BASE_TITLE}`}
   description="سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما."
   canonical="/privacy"
-  themeStyle={themeStyle}
 >
   <PrivacyPage client:only="react" />
 </BaseLayout>
