@@ -96,10 +96,11 @@ const CartDrawer: FC = () => {
       />
 
       {/* Drawer */}
-      <aside
+      <div
         ref={drawerRef}
         className={`fixed top-0 bottom-0 right-0 w-[min(440px,100vw)] bg-surface z-[130] flex flex-col shadow-[-6px_0_40px_rgba(0,0,0,0.08)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         role="dialog"
+        aria-modal="true"
         aria-label="سبد خرید"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
@@ -214,7 +215,7 @@ const CartDrawer: FC = () => {
             </button>
           </div>
         )}
-      </aside>
+      </div>
     </>
   )
 }

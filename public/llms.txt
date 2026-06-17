@@ -1,0 +1,27 @@
+# Luxera — فروشگاه جواهرات فانتزی
+
+> لوکسرا یک فروشگاه اینترنتی جواهرات فانتزی دست‌ساز ایرانی است. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران.
+
+## صفحات اصلی
+
+- [خانه](https://luxera.ir): صفحه اصلی فروشگاه
+- [گردنبند](https://luxera.ir/category/necklaces): خرید گردنبند فانتزی زنانه
+- [دستبند](https://luxera.ir/category/bracelets): خرید دستبند فانتزی زنانه
+- [انگشتر](https://luxera.ir/category/rings): خرید انگشتر فانتزی زنانه
+- [گوشواره](https://luxera.ir/category/earrings): خرید گوشواره فانتزی دخترانه
+- [ست جواهرات](https://luxera.ir/category/sets): خرید ست جواهرات فانتزی زنانه
+- [جدیدترین‌ها](https://luxera.ir/category/new): آخرین محصولات
+- [کالکشن‌ها](https://luxera.ir/collections): مجموعه‌های ویژه
+
+## بلاگ
+
+- [بلاگ](https://luxera.ir/blog): مقالات و راهنمای خرید جواهرات
+
+## اطلاعات فروشگاه
+
+- [درباره ما](https://luxera.ir/about)
+- [تماس با ما](https://luxera.ir/contact)
+- [سوالات متداول](https://luxera.ir/faq)
+- [شرایط ارسال و بازگشت](https://luxera.ir/shipping)
+- [حریم خصوصی](https://luxera.ir/privacy)
+- [شرایط استفاده](https://luxera.ir/terms)

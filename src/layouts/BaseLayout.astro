@@ -32,7 +32,8 @@ const [themeStyle, socialSettings] = await Promise.all([
 ])
 
 const SITE_URL = 'https://luxera.ir'
-const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
+const rawCanonical = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
+const canonicalUrl = rawCanonical.replace(/\/$/, '') || SITE_URL
 ---
 
 <!doctype html>
@@ -41,6 +42,7 @@ const canonicalUrl = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="index, follow" />
+    <meta name="author" content="لوکسرا" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
