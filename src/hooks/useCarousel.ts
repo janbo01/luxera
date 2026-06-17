@@ -21,11 +21,12 @@ export function useCarousel(itemCount: number) {
   useEffect(() => {
     const el = trackRef.current
     if (!el) return
-    syncArrows()
+    const rafId = requestAnimationFrame(syncArrows)
     el.addEventListener('scroll', syncArrows, { passive: true })
     const ro = new ResizeObserver(syncArrows)
     ro.observe(el)
     return () => {
+      cancelAnimationFrame(rafId)
       el.removeEventListener('scroll', syncArrows)
       ro.disconnect()
     }

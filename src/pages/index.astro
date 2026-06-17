@@ -22,5 +22,5 @@ const BASE_TITLE = 'Luxera · لوکسرا'
   lcpPreload={lcpPreload}
 >
   <Fragment set:html={initialScript + footerScript} />
-  <HomePage client:only="react" />
+  <HomePage client:load />
 </BaseLayout>
