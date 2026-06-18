@@ -26,14 +26,14 @@ interface FilterPanelProps {
 }
 
 const SectionLabel: FC<{ children: React.ReactNode; count?: number }> = ({ children, count }) => (
-  <div className="flex items-center justify-between mb-4">
+  <span className="flex items-center justify-between mb-4 w-full">
     <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted select-none">
       {children}
     </span>
     {count !== undefined && (
       <span className="text-[10px] font-mono text-muted/60">{toFa(count)}</span>
     )}
-  </div>
+  </span>
 )
 
 const FilterPanel: FC<FilterPanelProps> = ({
@@ -86,7 +86,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
         className={[
           // Desktop: sticky card
           'sticky top-24 self-start max-h-[calc(100vh-110px)] overflow-y-auto',
-          'bg-surface border border-rule rounded-[18px]',
+          'bg-surface border border-rule rounded-[var(--radius-lg)]',
           'px-5 pt-5 pb-5',
           // Mobile: fixed bottom-sheet
           'max-[1100px]:fixed max-[1100px]:bottom-0 max-[1100px]:inset-x-0 max-[1100px]:top-auto',
@@ -104,14 +104,13 @@ const FilterPanel: FC<FilterPanelProps> = ({
         ].join(' ')}
       >
         {/* Drag handle — mobile only */}
-        <div
-          className="hidden max-[1100px]:flex justify-center mb-4 mt-1 cursor-pointer shrink-0"
+        <button
+          className="hidden max-[1100px]:flex justify-center mb-4 mt-1 cursor-pointer shrink-0 border-none bg-transparent w-full"
           onClick={onClose}
-          role="button"
           aria-label="بستن فیلترها"
         >
           <div className="w-8 h-[3px] rounded-full bg-rule" />
-        </div>
+        </button>
 
         {/* Mobile header */}
         <div className="hidden max-[1100px]:flex items-center justify-between mb-5 pb-4 border-b border-rule">
@@ -126,7 +125,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
         </div>
 
         {/* Desktop panel title */}
-        <div className="hidden max-[1100px]:hidden [display:flex] items-center justify-between mb-5 pb-4 border-b border-rule">
+        <div className="flex max-[1100px]:hidden items-center justify-between mb-5 pb-4 border-b border-rule">
           <span className="font-heading text-[13px] font-semibold text-ink">فیلترها</span>
           <button
             onClick={onReset}

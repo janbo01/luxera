@@ -10,7 +10,7 @@ interface CarouselArrowsProps {
 }
 
 const ARROW_CLS =
-  'w-10 h-10 flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed'
+  'w-10 h-10 rounded-full flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed'
 
 const CarouselArrows: FC<CarouselArrowsProps> = ({
   canPrev,

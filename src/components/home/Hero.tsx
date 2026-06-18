@@ -133,7 +133,7 @@ const Hero: FC = () => {
 
       {/* ── Ticker ── */}
       <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3.5 border-t border-b border-rule py-3.5 overflow-hidden">
-        <div className="flex w-max font-mono text-[11px] tracking-[0.22em] uppercase text-ink-2 animate-[hero-ticker_38s_linear_infinite]">
+        <div className="flex w-max font-mono text-[11px] tracking-[0.22em] uppercase text-ink-2 animate-ticker">
           {/* Two identical halves, each padded by one gap, so the 50% keyframe
             shift loops seamlessly; the copy is hidden from screen readers. */}
           <div className="flex gap-[54px] pe-[54px]">{TICKER_ROW}</div>

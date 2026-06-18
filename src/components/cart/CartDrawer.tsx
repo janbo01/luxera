@@ -2,6 +2,7 @@ import { useEffect, useRef, type FC } from 'react'
 
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
+import { BTN_GHOST_CLS } from '../ui/Button'
 import { formatToman, toFa } from '../../utils/format'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { useCart } from '../../hooks/useCart'
@@ -136,10 +137,7 @@ const CartDrawer: FC = () => {
               <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">
                 قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.
               </p>
-              <button
-                className="inline-flex items-center gap-2.5 px-[18px] py-2.5 text-xs font-medium tracking-[0.01em] border border-ink bg-transparent text-ink rounded-full transition-all duration-200 hover:bg-ink hover:text-bg hover:-translate-y-px"
-                onClick={closeCart}
-              >
+              <button className={BTN_GHOST_CLS} onClick={closeCart}>
                 بازگشت به فروشگاه
               </button>
             </div>
