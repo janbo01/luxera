@@ -2,12 +2,23 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import TermsPage from '../views/static/TermsPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const termsJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'شرایط و ضوابط — لوکسرا',
+  description: 'شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها.',
+  url: 'https://luxera.ir/terms',
+  isPartOf: { '@type': 'WebSite', name: 'لوکسرا', url: 'https://luxera.ir' },
+})
 ---
 
 <BaseLayout
   title={`شرایط استفاده | قوانین خرید از لوکسرا | ${BASE_TITLE}`}
   description="شرایط و ضوابط استفاده از فروشگاه لوکسرا — قوانین خرید، بازگشت کالا و مسئولیت‌ها."
   canonical="/terms"
+  jsonLd={termsJsonLd}
 >
+  <h1 class="sr-only">شرایط و ضوابط</h1>
   <TermsPage client:only="react" />
 </BaseLayout>

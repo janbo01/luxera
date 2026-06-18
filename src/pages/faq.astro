@@ -2,12 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import FaqPage from '../views/static/FaqPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'آیا محصولات لوکسرا اصل هستند؟', acceptedAnswer: { '@type': 'Answer', text: 'بله. تمام محصولات از برندهای اصلی تأمین می‌شوند. لوکسرا یک فروشگاه معتبر است که مستقیماً با تأمین‌کنندگان برندهای معتبر جواهرات فانتزی کار می‌کند.' } },
+    { '@type': 'Question', name: 'جنس محصولات از چیست؟', acceptedAnswer: { '@type': 'Answer', text: 'تمام محصولات لوکسرا جواهرات فانتزی (Fashion Jewelry) هستند — آلیاژ بدون نیکل با روکش رنگی با کیفیت.' } },
+    { '@type': 'Question', name: 'هزینه‌ی ارسال چقدر است؟', acceptedAnswer: { '@type': 'Answer', text: 'ارسال برای سفارش‌های بالای ۲٫۵ میلیون تومان رایگان است. برای سفارش‌های کمتر، هزینه‌ی ارسال جداگانه محاسبه می‌شود.' } },
+    { '@type': 'Question', name: 'چقدر طول می‌کشد تا سفارشم برسد؟', acceptedAnswer: { '@type': 'Answer', text: 'تهران: ۲۴ ساعت با پیک ویژه‌ی لوکسرا. کلان‌شهرها: ۲ روز کاری. سراسر ایران: ۲ تا ۴ روز با پست پیشتاز.' } },
+    { '@type': 'Question', name: 'ضمانت کیفیت به چه معناست؟', acceptedAnswer: { '@type': 'Answer', text: 'اگر رنگ قطعه در سال اول تغییر کرد یا افت کیفیت محسوسی داشت، بدون سوال و بدون هزینه قطعه را تعویض می‌کنیم.' } },
+    { '@type': 'Question', name: 'آیا می‌توانم محصول را برگردانم؟', acceptedAnswer: { '@type': 'Answer', text: 'بله. تا ۴ روز پس از دریافت، اگر قطعه سالم باشد، پلاک داشته باشد و در بسته‌بندی اصلی باشد، می‌توانید آن را برگردانید.' } },
+    { '@type': 'Question', name: 'آیا محصولات برای پوست حساس مناسبند؟', acceptedAnswer: { '@type': 'Answer', text: 'بله. تمام محصولات از آلیاژ بدون نیکل ساخته شده‌اند. نیکل شایع‌ترین عامل حساسیت پوستی در جواهرات است.' } },
+  ],
+})
 ---
 
 <BaseLayout
   title={`پرسش‌های متداول | راهنمای خرید از لوکسرا | ${BASE_TITLE}`}
   description="پاسخ سوالات رایج درباره خرید، ارسال، کیفیت محصولات و شرایط بازگشت در فروشگاه لوکسرا."
   canonical="/faq"
+  jsonLd={faqJsonLd}
 >
+  <h1 class="sr-only">سوالات متداول لوکسرا</h1>
   <FaqPage client:only="react" />
 </BaseLayout>

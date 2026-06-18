@@ -30,7 +30,7 @@ function buildJsonLd(post: ApiBlogPost): Record<string, unknown> {
     image: post.featured_image_url ?? undefined,
     datePublished: post.published_at ?? post.created_at,
     dateModified: post.updated_at,
-    author: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
+    author: { '@type': 'Person', name: 'تیم لوکسرا', url: 'https://luxera.ir/about' },
     publisher: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
     mainEntityOfPage: {
       '@type': 'WebPage',

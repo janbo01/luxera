@@ -2,12 +2,28 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ContactPage from '../views/static/ContactPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const contactJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'تماس با لوکسرا',
+  description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.',
+  url: 'https://luxera.ir/contact',
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'لوکسرا',
+    url: 'https://luxera.ir',
+    contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: 'Persian' },
+  },
+})
 ---
 
 <BaseLayout
   title={`تماس با لوکسرا و پشتیبانی فروشگاه | ${BASE_TITLE}`}
   description="با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید."
   canonical="/contact"
+  jsonLd={contactJsonLd}
 >
+  <h1 class="sr-only">تماس با لوکسرا</h1>
   <ContactPage client:only="react" />
 </BaseLayout>

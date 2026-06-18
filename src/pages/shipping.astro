@@ -2,12 +2,23 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ShippingPage from '../views/static/ShippingPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const shippingJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'ارسال و بازگشت — لوکسرا',
+  description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.',
+  url: 'https://luxera.ir/shipping',
+  isPartOf: { '@type': 'WebSite', name: 'لوکسرا', url: 'https://luxera.ir' },
+})
 ---
 
 <BaseLayout
   title={`ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`}
   description="جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار."
   canonical="/shipping"
+  jsonLd={shippingJsonLd}
 >
+  <h1 class="sr-only">ارسال و بازگشت</h1>
   <ShippingPage client:only="react" />
 </BaseLayout>

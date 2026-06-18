@@ -2,12 +2,29 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import AboutPage from '../views/static/AboutPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const aboutJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'درباره لوکسرا',
+  description: 'داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع.',
+  url: 'https://luxera.ir/about',
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'لوکسرا',
+    url: 'https://luxera.ir',
+    logo: 'https://luxera.ir/favicon.svg',
+    description: 'فروشگاه اینترنتی جواهرات فانتزی دست‌ساز — گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل.',
+  },
+})
 ---
 
 <BaseLayout
   title={`درباره لوکسرا؛ فروشگاه جواهرات فانتزی | ${BASE_TITLE}`}
   description="داستان لوکسرا — فروشگاه تخصصی جواهرات فانتزی ایران با تمرکز بر کیفیت، طراحی اصیل و ارسال سریع."
   canonical="/about"
+  jsonLd={aboutJsonLd}
 >
+  <h1 class="sr-only">درباره‌ی لوکسرا</h1>
   <AboutPage client:only="react" />
 </BaseLayout>

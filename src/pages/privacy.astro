@@ -2,12 +2,23 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import PrivacyPage from '../views/static/PrivacyPage'
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const privacyJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'سیاست حریم خصوصی — لوکسرا',
+  description: 'سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما.',
+  url: 'https://luxera.ir/privacy',
+  isPartOf: { '@type': 'WebSite', name: 'لوکسرا', url: 'https://luxera.ir' },
+})
 ---
 
 <BaseLayout
   title={`حریم خصوصی و سیاست داده‌های لوکسرا | ${BASE_TITLE}`}
   description="سیاست حفظ حریم خصوصی لوکسرا — نحوه جمع‌آوری، استفاده و حفاظت از اطلاعات شما."
   canonical="/privacy"
+  jsonLd={privacyJsonLd}
 >
+  <h1 class="sr-only">سیاست حریم خصوصی</h1>
   <PrivacyPage client:only="react" />
 </BaseLayout>

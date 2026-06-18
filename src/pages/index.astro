@@ -13,6 +13,30 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   : ''
 
 const BASE_TITLE = 'Luxera · لوکسرا'
+
+const homeJsonLd = JSON.stringify([
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'لوکسرا',
+    url: 'https://luxera.ir',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: { '@type': 'EntryPoint', urlTemplate: 'https://luxera.ir/search?q={search_term_string}' },
+      'query-input': 'required name=search_term_string',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'لوکسرا',
+    url: 'https://luxera.ir',
+    logo: 'https://luxera.ir/favicon.svg',
+    description: 'فروشگاه اینترنتی جواهرات فانتزی دست‌ساز — گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل.',
+    contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: 'Persian' },
+    sameAs: ['https://instagram.com/luxera.ir'],
+  },
+])
 ---
 
 <BaseLayout
@@ -20,7 +44,9 @@ const BASE_TITLE = 'Luxera · لوکسرا'
   description="لوکسرا — فروشگاه اینترنتی جواهرات فانتزی دست‌ساز. گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل، با ارسال یک‌روزه در تهران."
   canonical="/"
   lcpPreload={lcpPreload}
+  jsonLd={homeJsonLd}
 >
+  <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
   <Fragment set:html={initialScript + footerScript} />
   <HomePage client:load />
 </BaseLayout>

@@ -13,13 +13,24 @@ const [{ initialData, initialScript }, footerData] = await Promise.all([
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
   ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
   : ''
+
+const blogJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'بلاگ لوکسرا',
+  description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.',
+  url: 'https://luxera.ir/blog',
+  publisher: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
+})
 ---
 
 <BaseLayout
   title={`بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`}
   description="مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد."
   canonical="/blog"
+  jsonLd={blogJsonLd}
 >
+  <h1 class="sr-only">مقالات لوکسرا</h1>
   <Fragment set:html={initialScript + footerScript} />
   <BlogListPage client:only="react" initialData={initialData} />
 </BaseLayout>
