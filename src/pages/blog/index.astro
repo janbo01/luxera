@@ -14,11 +14,15 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
   : ''
 
+type BlogPostLink = { slug: string; title: string }
+const blogPosts: BlogPostLink[] =
+  (initialData as { blogList?: { posts?: BlogPostLink[] } })?.blogList?.posts ?? []
+
 const blogJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'Blog',
   name: 'بلاگ لوکسرا',
-  description: 'مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد.',
+  description: 'مقالات تخصصی و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات، راهنمای انتخاب هوشمند و آخرین ترندهای مد و زیورآلات.',
   url: 'https://luxera.ir/blog',
   publisher: { '@type': 'Organization', name: 'لوکسرا', url: 'https://luxera.ir' },
 })
@@ -26,11 +30,16 @@ const blogJsonLd = JSON.stringify({
 
 <BaseLayout
   title={`بلاگ جواهرات فانتزی و راهنمای مد | ${BASE_TITLE}`}
-  description="مقالات و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات و ترندهای مد."
+  description="مقالات تخصصی و راهنماهای لوکسرا درباره جواهرات فانتزی، مراقبت از زیورآلات، راهنمای انتخاب هوشمند و آخرین ترندهای مد و زیورآلات."
   canonical="/blog"
   jsonLd={blogJsonLd}
 >
   <h1 class="sr-only">مقالات لوکسرا</h1>
   <Fragment set:html={initialScript + footerScript} />
+  {blogPosts.length > 0 && (
+    <nav aria-hidden="true" class="sr-only">
+      {blogPosts.map(post => <a href={`/blog/${post.slug}`}>{post.title}</a>)}
+    </nav>
+  )}
   <BlogListPage client:only="react" initialData={initialData} />
 </BaseLayout>

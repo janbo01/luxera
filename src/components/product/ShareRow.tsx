@@ -62,7 +62,7 @@ export function ShareRow({ productName }: ShareRowProps) {
 
   const handleWhatsApp = () => {
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(productName + ' | لوکسرا\n' + window.location.href)}`,
+      `https://api.whatsapp.com/send/?text=${encodeURIComponent(productName + ' | لوکسرا\n' + window.location.href)}`,
       '_blank',
       'noopener,noreferrer',
     )

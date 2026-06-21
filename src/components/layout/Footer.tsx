@@ -87,7 +87,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
           label: 'اینستاگرام',
         },
         whatsapp_number && {
-          href: `https://wa.me/${whatsapp_number.replace(/\D/g, '')}`,
+          href: `https://api.whatsapp.com/send/?phone=${whatsapp_number.replace(/\D/g, '')}&text&type=phone_number&app_absent=0`,
           icon: <IconWhatsApp size={14} />,
           label: 'واتس‌اپ',
         },

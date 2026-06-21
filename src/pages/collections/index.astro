@@ -14,11 +14,15 @@ const footerScript = footerData.categories.length > 0 || footerData.collections.
   ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
   : ''
 
+type CollectionLink = { slug: string; name_fa: string }
+const collectionItems: CollectionLink[] =
+  (initialData as { collections?: CollectionLink[] })?.collections ?? []
+
 const collectionsJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: 'مجموعه‌های اختصاصی جواهرات لوکسرا',
-  description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت.',
+  description: 'مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت. از مجموعه‌های رمانتیک تا مدرن، با روکش ماندگار و بدون نیکل.',
   url: 'https://luxera.ir/collections',
   isPartOf: { '@type': 'WebSite', name: 'لوکسرا', url: 'https://luxera.ir' },
 })
@@ -26,11 +30,16 @@ const collectionsJsonLd = JSON.stringify({
 
 <BaseLayout
   title={`مجموعه‌های اختصاصی جواهرات لوکسرا | ${BASE_TITLE}`}
-  description="مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت."
+  description="مجموعه‌های اختصاصی جواهرات فانتزی لوکسرا — ست‌های طراحی‌شده برای هر سبک و مناسبت. از مجموعه‌های رمانتیک تا مدرن، با روکش ماندگار و بدون نیکل."
   canonical="/collections"
   jsonLd={collectionsJsonLd}
 >
   <h1 class="sr-only">مجموعه‌های اختصاصی جواهرات لوکسرا</h1>
   <Fragment set:html={initialScript + footerScript} />
+  {collectionItems.length > 0 && (
+    <nav aria-hidden="true" class="sr-only">
+      {collectionItems.map(col => <a href={`/collections/${col.slug}`}>{col.name_fa}</a>)}
+    </nav>
+  )}
   <CollectionsPage client:only="react" initialData={initialData} />
 </BaseLayout>

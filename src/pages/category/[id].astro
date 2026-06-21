@@ -22,8 +22,8 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   bracelets: 'دستبندهای فانتزی لوکسرا — دستبندهای زیبا با روکش طلا و نقره، سایزبندی دقیق، بدون نیکل. ارسال سراسر ایران.',
   rings: 'انگشترهای فانتزی لوکسرا — انگشترهای شیک با طرح‌های متنوع، آلیاژ بدون نیکل، مناسب برای پوست حساس. ارسال یک‌روزه در تهران.',
   earrings: 'گوشواره‌های فانتزی لوکسرا — گوشواره‌های ظریف تا جسور با روکش ماندگار، بدون نیکل. ارسال یک‌روزه در تهران.',
-  sets: 'ست‌های جواهرات لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار. ارسال سراسر ایران.',
-  new: 'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره. بروزرسانی روزانه.',
+  sets: 'ست‌های جواهرات فانتزی لوکسرا — ست‌های هماهنگ گردنبند، دستبند و گوشواره با روکش ماندگار و بدون نیکل. گزینه‌ای عالی برای هدیه، ارسال سراسر ایران.',
+  new: 'جدیدترین جواهرات فانتزی لوکسرا — آخرین طرح‌های گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار و بدون نیکل. بروزرسانی روزانه، ارسال سریع.',
   bridal: 'جواهرات عروس لوکسرا — ست‌های جواهرات عروسی و نامزدی با طراحی خاص و روکش ماندگار.',
   mens: 'جواهرات مردانه لوکسرا — دستبند، انگشتر و گردنبند مردانه با طراحی مدرن و آلیاژ بادوام.',
 }
@@ -40,6 +40,10 @@ const [{ initialData, initialScript }, footerData] = await Promise.all([
 const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
   ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
   : ''
+
+type ProductLink = { id: string; slug?: string; title_fa?: string; title: string }
+const productItems: ProductLink[] =
+  (initialData as { categoryProducts?: { items?: ProductLink[] } })?.categoryProducts?.items ?? []
 
 const categoryJsonLd = safeJson({
   '@context': 'https://schema.org',
@@ -69,5 +73,10 @@ const categoryJsonLd = safeJson({
 >
   <h1 class="sr-only">{seoTitle}</h1>
   <Fragment set:html={initialScript + footerScript} />
+  {productItems.length > 0 && (
+    <nav aria-hidden="true" class="sr-only">
+      {productItems.map(p => <a href={`/product/${p.slug ?? p.id}`}>{p.title_fa ?? p.title}</a>)}
+    </nav>
+  )}
   <CategoryPage client:only="react" id={id!} initialData={initialData} />
 </BaseLayout>
