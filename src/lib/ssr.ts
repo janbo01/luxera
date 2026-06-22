@@ -62,12 +62,40 @@ interface RawSettings {
 let _rawSettingsCache: RawSettings | null = null
 let _themeCache = ''
 let _themeExpiry = 0
+let _settingsRefreshInflight: Promise<void> | null = null
 
 async function fetchRawSettings(): Promise<RawSettings> {
-  if (_rawSettingsCache && Date.now() < _themeExpiry) return _rawSettingsCache
-  if (!storeApiBase) return {}
+  const now = Date.now()
+  if (_rawSettingsCache && now < _themeExpiry) return _rawSettingsCache
+
+  if (!storeApiBase) return _rawSettingsCache ?? {}
+
+  // Stale-while-revalidate: serve cached data immediately and refresh in the background
+  if (_rawSettingsCache) {
+    _themeExpiry = now + 5 * 60 * 1000
+    if (!_settingsRefreshInflight) {
+      _settingsRefreshInflight = fetch(`${storeApiBase}/store/settings`, {
+        signal: AbortSignal.timeout(5000),
+      })
+        .then(async (r) => {
+          if (!r.ok) return
+          const raw = unwrap(await r.json()) as RawSettings
+          _rawSettingsCache = raw
+          _themeCache = ''
+          _themeExpiry = Date.now() + 5 * 60 * 1000
+        })
+        .catch(() => {})
+        .finally(() => {
+          _settingsRefreshInflight = null
+        })
+    }
+    return _rawSettingsCache
+  }
+
   try {
-    const r = await fetch(`${storeApiBase}/store/settings`)
+    const r = await fetch(`${storeApiBase}/store/settings`, {
+      signal: AbortSignal.timeout(5000),
+    })
     if (!r.ok) return {}
     const raw = unwrap(await r.json()) as RawSettings
     _rawSettingsCache = raw
@@ -273,12 +301,54 @@ export async function fetchBlogPostData(slug: string) {
   }
 }
 
+let _blogListCache: unknown = null
+let _blogListExpiry = 0
+let _blogListRefreshInflight: Promise<void> | null = null
+
 export async function fetchBlogListData(page = 1) {
   if (!storeApiBase) return { initialData: {}, initialScript: '' }
+
+  const now = Date.now()
+  if (page === 1 && _blogListCache && now < _blogListExpiry) {
+    return {
+      initialData: { blogList: _blogListCache },
+      initialScript: `<script>window.__BLOG_LIST_INITIAL__=${safeJson(_blogListCache)}</script>`,
+    }
+  }
+
+  // Stale-while-revalidate for page 1
+  if (page === 1 && _blogListCache) {
+    _blogListExpiry = now + 2 * 60 * 1000
+    if (!_blogListRefreshInflight) {
+      _blogListRefreshInflight = fetch(`${storeApiBase}/store/blog?page=1&page_size=12`, {
+        signal: AbortSignal.timeout(8000),
+      })
+        .then(async (r) => {
+          if (!r.ok) return
+          _blogListCache = unwrap(await r.json())
+          _blogListExpiry = Date.now() + 2 * 60 * 1000
+        })
+        .catch(() => {})
+        .finally(() => {
+          _blogListRefreshInflight = null
+        })
+    }
+    return {
+      initialData: { blogList: _blogListCache },
+      initialScript: `<script>window.__BLOG_LIST_INITIAL__=${safeJson(_blogListCache)}</script>`,
+    }
+  }
+
   try {
-    const r = await fetch(`${storeApiBase}/store/blog?page=${page}&page_size=12`)
+    const r = await fetch(`${storeApiBase}/store/blog?page=${page}&page_size=12`, {
+      signal: AbortSignal.timeout(8000),
+    })
     if (!r.ok) return { initialData: {}, initialScript: '' }
     const data = unwrap(await r.json())
+    if (page === 1) {
+      _blogListCache = data
+      _blogListExpiry = Date.now() + 2 * 60 * 1000
+    }
     return {
       initialData: { blogList: data },
       initialScript: `<script>window.__BLOG_LIST_INITIAL__=${safeJson(data)}</script>`,

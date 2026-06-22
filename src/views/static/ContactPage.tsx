@@ -1,6 +1,7 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import { useState, type FC, type FormEvent } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
+import { useSettingsStore } from '../../store/settingsStore'
 
 const SUBJECTS = [
   'سوال درباره‌ی محصول',
@@ -37,6 +38,19 @@ const ContactPage: FC = () => {
     description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.',
     jsonLd: CONTACT_JSON_LD,
   })
+
+  const instagramUrl = useSettingsStore((s) => s.instagram_url)
+  const whatsappRaw = useSettingsStore((s) => s.whatsapp_number)
+  const baleLink = useSettingsStore((s) => s.bale_link)
+
+  const whatsappUrl = whatsappRaw ? `https://wa.me/${whatsappRaw.replace(/\D/g, '')}` : ''
+
+  const socialLinks = [
+    { label: 'Instagram', href: instagramUrl },
+    { label: 'WhatsApp', href: whatsappUrl },
+    { label: 'Bale', href: baleLink },
+  ].filter((s) => s.href)
+
   const [form, setForm] = useState({ name: '', phone: '', subject: SUBJECTS[0], message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -59,7 +73,7 @@ const ContactPage: FC = () => {
       {/* Hero */}
       <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
         <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          CONTACT US
+          CONTACT · تماس با لوکسرا
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
           تماس با
@@ -91,18 +105,22 @@ const ContactPage: FC = () => {
             <p className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">
               شبکه‌های اجتماعی
             </p>
-            <div className="flex gap-4 flex-wrap mt-2">
-              {['Instagram', 'Telegram', 'WhatsApp'].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  aria-label={`${s} لوکسرا`}
-                  className="font-mono text-[11px] tracking-[.1em] text-muted border-b border-rule pb-0.5 transition-[color,border-color] hover:text-plum hover:border-plum"
-                >
-                  {s}
-                </a>
-              ))}
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex gap-4 flex-wrap mt-2">
+                {socialLinks.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${s.label} لوکسرا`}
+                    className="font-mono text-[11px] tracking-[.1em] text-muted border-b border-rule pb-0.5 transition-[color,border-color] hover:text-plum hover:border-plum"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </aside>
 

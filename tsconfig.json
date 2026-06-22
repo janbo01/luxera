@@ -5,7 +5,8 @@
     "jsxImportSource": "react",
     "baseUrl": ".",
     "ignoreDeprecations": "6.0",
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["node"]
   },
   "include": ["src", "astro.config.mjs"]
 }

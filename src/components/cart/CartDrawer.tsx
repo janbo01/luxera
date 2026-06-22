@@ -15,7 +15,7 @@ const CartDrawer: FC = () => {
   const shipping = calcSimpleShipping(subtotal)
   const total = subtotal + shipping
 
-  const drawerRef = useRef<HTMLElement>(null)
+  const drawerRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef(0)
   const touchStartMs = useRef(0)

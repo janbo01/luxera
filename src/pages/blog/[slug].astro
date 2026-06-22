@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogDetailPage from '../../views/BlogDetailPage'
 import { fetchBlogPostData, fetchFooterData, safeJson } from '../../lib/ssr'
+import type { ServerInitialData } from '../../context/initialData'
 
 const { slug } = Astro.params
 const BASE_TITLE = 'Luxera · لوکسرا'
@@ -50,5 +51,5 @@ const blogJsonLd = post ? safeJson({
 >
   <h1 class="sr-only">{h1Title}</h1>
   <Fragment set:html={initialScript + footerScript} />
-  <BlogDetailPage client:only="react" slug={slug!} initialData={initialData} />
+  <BlogDetailPage client:only="react" slug={slug!} initialData={initialData as ServerInitialData} />
 </BaseLayout>

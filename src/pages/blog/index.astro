@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogListPage from '../../views/BlogListPage'
 import { fetchBlogListData, fetchFooterData, safeJson } from '../../lib/ssr'
+import type { ServerInitialData } from '../../context/initialData'
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
@@ -34,12 +35,26 @@ const blogJsonLd = JSON.stringify({
   canonical="/blog"
   jsonLd={blogJsonLd}
 >
-  <h1 class="sr-only">مقالات لوکسرا</h1>
+  <h1 class="sr-only">بلاگ تخصصی جواهرات فانتزی لوکسرا</h1>
+  <p class="sr-only">
+    بلاگ لوکسرا منبعی تخصصی برای علاقه‌مندان به جواهرات فانتزی است. در اینجا مقالات آموزشی درباره
+    نگهداری از زیورآلات، راهنمای انتخاب هوشمند بر اساس فرم صورت و رنگ پوست، بررسی ترندهای مد جهانی،
+    و نکات خرید زیورآلات فانتزی منتشر می‌شود. اگر نمی‌دانید چه گردنبندی با گردن کوتاه یا بلند مناسب
+    است، چطور از رنگ نگرفتن دستبند جلوگیری کنید، یا چه طرحی برای هدیه دادن انتخاب کنید، پاسخ
+    سوال‌هایتان در مقالات بلاگ لوکسرا است. محتوای بلاگ توسط تیم متخصص لوکسرا نوشته می‌شود که
+    تجربه چند ساله در حوزه جواهرات فانتزی دارند. مقالات به زبان فارسی و متناسب با سلیقه و فرهنگ
+    بانوان ایرانی منتشر می‌شوند. موضوعات بلاگ شامل راهنمای ست کردن جواهرات با لباس، تفاوت روکش
+    طلا و نقره، مراقبت از زیورآلات فانتزی در فصل گرما، انتخاب جواهرات برای مناسبت‌های مختلف، و
+    معرفی ترندهای فصل می‌شود. برای دریافت آخرین مطالب و راهنمایی‌های تخصصی، صفحه بلاگ لوکسرا را
+    به طور منظم دنبال کنید. همچنین می‌توانید راهنمای نگهداری از انواع روکش‌های طلا، رزگلد و نقره
+    را بیابید و با انواع آلیاژهای مورد استفاده در جواهرات فانتزی آشنا شوید تا با اطمینان بیشتری
+    خرید کنید.
+  </p>
   <Fragment set:html={initialScript + footerScript} />
   {blogPosts.length > 0 && (
     <nav aria-hidden="true" class="sr-only">
       {blogPosts.map(post => <a href={`/blog/${post.slug}`}>{post.title}</a>)}
     </nav>
   )}
-  <BlogListPage client:only="react" initialData={initialData} />
+  <BlogListPage client:only="react" initialData={initialData as ServerInitialData} />
 </BaseLayout>

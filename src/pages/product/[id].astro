@@ -26,6 +26,15 @@ const description = product
 const ogImage = (product?.images as Array<{ url: string }> | undefined)?.[0]?.url
 
 const productSlug = (product?.slug ?? id) as string
+const productBodyText = product
+  ? [
+      product.seo_description as string | undefined,
+      product.short_description as string | undefined,
+      product.description as string | undefined,
+    ]
+      .filter(Boolean)
+      .join(' ')
+  : ''
 const productUrl = `https://luxera.ir/product/${productSlug}`
 const productJsonLd = product ? safeJson({
   '@context': 'https://schema.org',
@@ -55,6 +64,12 @@ const productJsonLd = product ? safeJson({
   jsonLd={productJsonLd}
 >
   <h1 class="sr-only">{h1Title}</h1>
+  {productBodyText && <p class="sr-only">{productBodyText}</p>}
+  <p class="sr-only">
+    خرید آنلاین از لوکسرا — فروشگاه تخصصی جواهرات فانتزی با آلیاژ بدون نیکل و روکش ماندگار.
+    ضمانت کیفیت یک‌ساله، بسته‌بندی هدیه‌ای استاندارد، ارسال یک‌روزه در تهران و ۲ تا ۴ روز در سراسر ایران.
+    بازگشت رایگان تا ۴ روز پس از دریافت.
+  </p>
   <Fragment set:html={initialScript + footerScript} />
   <ProductPage client:only="react" id={id!} initialData={initialData} />
 </BaseLayout>

@@ -88,7 +88,7 @@ const Hero: FC = () => {
             aria-hidden="true"
             className="absolute bottom-0 start-0 font-display italic font-semibold text-[clamp(72px,8.5vw,128px)] leading-none text-ink/[0.038] pointer-events-none select-none translate-y-[30%] whitespace-nowrap ps-2"
           >
-            Fine Jewelry
+            جواهرات فانتزی
           </div>
 
           <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">

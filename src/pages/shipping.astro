@@ -7,7 +7,7 @@ const shippingJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: 'ارسال و بازگشت — لوکسرا',
-  description: 'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.',
+  description: 'جزئیات ارسال و بازگشت لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران. همه سفارش‌ها بیمه‌دار و با کد رهگیری. بازگشت تا ۴ روز.',
   url: 'https://luxera.ir/shipping',
   isPartOf: { '@type': 'WebSite', name: 'لوکسرا', url: 'https://luxera.ir' },
 })
@@ -15,10 +15,10 @@ const shippingJsonLd = JSON.stringify({
 
 <BaseLayout
   title={`ارسال و تحویل | شرایط و هزینه پست لوکسرا | ${BASE_TITLE}`}
-  description="جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار."
+  description="جزئیات ارسال و بازگشت لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران. همه سفارش‌ها بیمه‌دار و با کد رهگیری. بازگشت تا ۴ روز."
   canonical="/shipping"
   jsonLd={shippingJsonLd}
 >
   <h1 class="sr-only">ارسال و بازگشت</h1>
-  <ShippingPage client:only="react" />
+  <ShippingPage client:load />
 </BaseLayout>

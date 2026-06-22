@@ -188,8 +188,8 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
       {/* ── Page header ── */}
-      <div className="pt-[72px] pb-14 mb-14 relative max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="label-mono mb-4 block">BLOG</span>
+      <div className="pt-[72px] pb-14 border-b border-rule mb-14 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
+        <span className="label-mono mb-4 block">BLOG · مقالات لوکسرا</span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
           مقالات
           <em className="font-heading not-italic text-plum font-normal"> لوکسرا</em>
@@ -197,9 +197,6 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
         <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85]">
           راهنماها، نکات مراقبتی و ترندهای جواهرات فانتزی
         </p>
-        {/* Decorative rule with plum accent */}
-        <div className="absolute bottom-0 inset-x-0 h-px bg-rule" />
-        <div className="absolute bottom-[-2px] right-0 w-20 h-[3px] bg-plum" />
       </div>
 
       {/* ── Loading skeleton ── */}
