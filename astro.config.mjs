@@ -8,8 +8,9 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   output: 'server',
   build: {
-    // Inline all CSS into <style> tags — eliminates the render-blocking external CSS request.
-    inlineStylesheets: 'always',
+    // 'never' extracts CSS to an external hashed file — browsers cache it across pages.
+    // 'always' was inlining 126 KB of Tailwind CSS into every HTML response.
+    inlineStylesheets: 'never',
   },
   vite: {
     plugins: [tailwindcss()],
