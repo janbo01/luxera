@@ -99,7 +99,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
         <span className="w-[3px] h-[3px] rounded-full bg-rule flex-shrink-0" />
         <a
           href="#reviews"
-          className="text-muted font-mono tracking-[0.04em] text-[12px] hover:text-ink transition-colors duration-200"
+          className="inline-flex items-center gap-1 min-h-[48px] text-muted font-mono tracking-[0.04em] text-[12px] hover:text-ink transition-colors duration-200"
         >
           <b className="text-ink font-semibold">{toFa(p.reviewCount)}</b> نظر
         </a>
@@ -143,7 +143,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             {colorOptions.map((c) => (
               <button
                 key={c.id}
-                className={`w-[38px] h-[38px] rounded-full cursor-pointer border-2 relative grid place-items-center transition-transform duration-150 hover:scale-[1.06] p-0 bg-transparent flex-shrink-0 ${c.id === color ? 'border-ink' : 'border-transparent'} ${c.disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`w-[48px] h-[48px] rounded-full cursor-pointer border-2 relative grid place-items-center transition-transform duration-150 hover:scale-[1.06] p-0 bg-transparent flex-shrink-0 ${c.id === color ? 'border-ink' : 'border-transparent'} ${c.disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
                 style={
                   c.hex ? ({ '--swatch': hexToSwatch(c.hex) } as React.CSSProperties) : undefined
                 }
@@ -170,7 +170,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             </span>
           </span>
           <button
-            className="text-[11px] text-muted underline underline-offset-[3px] font-body tracking-[0.04em] cursor-pointer transition-colors duration-200 hover:text-copper"
+            className="inline-flex items-center min-h-[48px] text-[11px] text-muted underline underline-offset-[3px] font-body tracking-[0.04em] cursor-pointer transition-colors duration-200 hover:text-copper"
             onClick={onSizeGuide}
           >
             راهنمای سایز
@@ -180,7 +180,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
           {sizeOptions.map((s) => (
             <button
               key={s.id}
-              className={`min-w-[54px] px-3.5 py-[11px] border rounded-[10px] font-body text-[13px] transition-all duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.35] cursor-not-allowed line-through' : 'cursor-pointer'}`}
+              className={`min-w-[54px] min-h-[48px] px-3.5 inline-flex items-center justify-center border rounded-[10px] font-body text-[13px] transition-all duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.35] cursor-not-allowed line-through' : 'cursor-pointer'}`}
               disabled={s.disabled}
               onClick={() => !s.disabled && setSize(s.id)}
             >
@@ -212,7 +212,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             value={qty}
             onDecrement={() => setQty(Math.max(1, qty - 1))}
             onIncrement={() => setQty(Math.min(effectiveStock, qty + 1))}
-            className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-9 [&>button]:h-9 [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
+            className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-[48px] [&>button]:h-[48px] [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
           />
           <button
             className="flex-1 bg-plum text-bg px-[26px] flex items-center justify-between rounded-full transition-colors duration-200 hover:bg-plum-2 min-h-[52px]"

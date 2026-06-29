@@ -97,14 +97,14 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
             <button
               onClick={() => selectThumb(Math.max(0, activeIdx - 1))}
               aria-label="تصویر قبلی"
-              className="w-8 h-8 rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%]"
+              className="w-[48px] h-[48px] rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%]"
             >
               <Icon name="arrow-right" size={13} />
             </button>
             <button
               onClick={() => selectThumb(Math.min(count - 1, activeIdx + 1))}
               aria-label="تصویر بعدی"
-              className="w-8 h-8 rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%] rotate-180"
+              className="w-[48px] h-[48px] rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%] rotate-180"
             >
               <Icon name="arrow-right" size={13} />
             </button>

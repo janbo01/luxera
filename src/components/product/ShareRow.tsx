@@ -7,7 +7,7 @@ interface ShareRowProps {
 }
 
 const SHARE_BTN =
-  'w-8 h-8 rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink'
+  'w-[48px] h-[48px] rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink'
 
 export function ShareRow({ productName }: ShareRowProps) {
   const [toastVisible, setToastVisible] = useState(false)

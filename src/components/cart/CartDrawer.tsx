@@ -116,7 +116,7 @@ const CartDrawer: FC = () => {
             </small>
           </div>
           <button
-            className="w-9 h-9 flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
+            className="w-[48px] h-[48px] flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
             onClick={closeCart}
             aria-label="بستن"
           >

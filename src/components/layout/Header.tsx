@@ -58,7 +58,7 @@ function NavLinkItem({
 }
 
 const ICON_BTN =
-  'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
+  'w-[48px] h-[48px] rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
 
 const Header: FC = () => {
   const hydrated = useHydrated()
@@ -98,7 +98,7 @@ const Header: FC = () => {
           {/* Logo — left */}
           <a
             href="/"
-            className="flex items-center gap-2.5 shrink-0"
+            className="flex items-center gap-2.5 shrink-0 min-h-[48px]"
             onClick={closeMenu}
             aria-label="Luxera"
           >
@@ -180,7 +180,7 @@ const Header: FC = () => {
 
             {/* Hamburger — mobile only, right side */}
             <button
-              className="flex min-[1100px]:hidden items-center justify-center w-10 h-10 text-ink -me-1"
+              className="flex min-[1100px]:hidden items-center justify-center w-[48px] h-[48px] text-ink -me-1"
               onClick={() => setMenuOpen(true)}
               aria-label="منو"
               aria-expanded={menuOpen}
@@ -203,7 +203,7 @@ const Header: FC = () => {
       <div
         ref={drawerRef}
         id="mobile-drawer"
-        className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-transform duration-[350ms] cubic-bezier(0.25,0.7,0.25,1) ${menuOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 start-0 w-[min(320px,88vw)] h-dvh bg-bg z-[201] flex flex-col shadow-[-6px_0_32px_color-mix(in_srgb,var(--color-plum)_12%,transparent)] transition-[transform,visibility] duration-[350ms] ease-[cubic-bezier(0.25,0.7,0.25,1)] ${menuOpen ? 'translate-x-0 visible' : 'translate-x-full invisible [transition-delay:0ms,350ms]'}`}
         role="dialog"
         aria-label="منوی ناوبری"
         aria-modal="true"

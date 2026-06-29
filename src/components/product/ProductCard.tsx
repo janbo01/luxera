@@ -67,11 +67,15 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         {/* Quick actions (wishlist) */}
         <div className="absolute top-3 start-3 flex flex-col gap-1.5 z-[3] opacity-0 -translate-x-[6px] transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0 max-[720px]:opacity-100 max-[720px]:translate-x-0">
           <button
-            className={`w-[34px] h-[34px] rounded-full bg-[rgba(251,246,238,0.92)] backdrop-blur-[8px] grid place-items-center transition-colors duration-200 border-none cursor-pointer [&>svg]:w-3.5 [&>svg]:h-3.5 ${wishlisted ? 'bg-white text-sale' : 'text-ink hover:bg-white hover:text-sale'}`}
+            className="w-[48px] h-[48px] grid place-items-center bg-transparent border-none cursor-pointer p-0 -m-[7px]"
             aria-label={wishlisted ? 'حذف از علاقه‌مندی' : 'افزودن به علاقه‌مندی'}
             onClick={handleWish}
           >
-            <Icon name={wishlisted ? 'heart-filled' : 'heart'} size={16} strokeWidth={1.6} />
+            <span
+              className={`w-[34px] h-[34px] rounded-full bg-[rgba(251,246,238,0.92)] backdrop-blur-[8px] grid place-items-center transition-colors duration-200 [&>svg]:w-3.5 [&>svg]:h-3.5 ${wishlisted ? 'bg-white text-sale' : 'text-ink hover:bg-white hover:text-sale'}`}
+            >
+              <Icon name={wishlisted ? 'heart-filled' : 'heart'} size={16} strokeWidth={1.6} />
+            </span>
           </button>
         </div>
 
@@ -116,7 +120,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
 
         {/* Add to cart — expands on hover/focus/touch */}
         <button
-          className="product-quick flex justify-between items-center w-full bg-ink text-bg rounded-full text-[12px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-4 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[40px] group-hover:opacity-100 group-hover:py-2.5 group-focus-within:max-h-[40px] group-focus-within:opacity-100 group-focus-within:py-2.5 max-[720px]:max-h-[40px] max-[720px]:opacity-100 max-[720px]:py-2.5 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
+          className="product-quick flex justify-between items-center w-full bg-ink text-bg rounded-full text-[12px] font-medium font-[inherit] border-none cursor-pointer max-h-0 overflow-hidden opacity-0 px-4 py-0 mt-0 transition-[max-height,opacity,padding,margin] duration-[250ms] ease-in-out group-hover:max-h-[52px] group-hover:opacity-100 group-hover:py-4 group-focus-within:max-h-[52px] group-focus-within:opacity-100 group-focus-within:py-4 max-[720px]:max-h-[52px] max-[720px]:opacity-100 max-[720px]:py-4 hover:bg-plum [&>svg]:w-3.5 [&>svg]:h-3.5"
           onClick={handleAdd}
           aria-label="افزودن به سبد"
         >

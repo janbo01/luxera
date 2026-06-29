@@ -9,7 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const BASE =
-  'inline-flex items-center gap-2.5 font-medium tracking-[0.01em] border rounded-full transition-all duration-200 cursor-pointer [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0 [&_.arr]:inline-block [&_.arr]:w-4 [&_.arr]:h-4 [&_.arr]:transition-transform [&:hover_.arr]:-translate-x-[3px] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none'
+  'inline-flex items-center gap-2.5 min-h-[48px] font-medium tracking-[0.01em] border rounded-full transition-all duration-200 cursor-pointer [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0 [&_.arr]:inline-block [&_.arr]:w-4 [&_.arr]:h-4 [&_.arr]:transition-transform [&:hover_.arr]:-translate-x-[3px] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none'
 
 export const BTN_CLS = `${BASE} px-6 py-3.5 text-sm border-ink bg-ink text-bg hover:bg-plum hover:border-plum hover:-translate-y-px`
 export const BTN_GHOST_CLS = `${BASE} px-6 py-3.5 text-sm border-ink bg-transparent text-ink hover:bg-ink hover:text-bg hover:-translate-y-px`

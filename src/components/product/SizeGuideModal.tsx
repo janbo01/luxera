@@ -83,7 +83,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
           </h2>
           <button
             ref={closeBtnRef}
-            className="w-9 h-9 flex items-center justify-center text-muted hover:text-ink transition-colors duration-200 flex-shrink-0"
+            className="w-[48px] h-[48px] flex items-center justify-center text-muted hover:text-ink transition-colors duration-200 flex-shrink-0"
             onClick={onClose}
             aria-label="بستن راهنمای سایز"
             type="button"

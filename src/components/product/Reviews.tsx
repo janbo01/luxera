@@ -226,7 +226,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
               {FILTERS.map((f) => (
                 <button
                   key={f}
-                  className={`px-3.5 py-1.5 rounded-full text-[12px] border font-body transition-all duration-150 ${f === activeFilter ? 'bg-ink text-bg border-ink' : 'border-rule text-ink-2 hover:border-ink-2'}`}
+                  className={`inline-flex items-center min-h-[48px] px-4 rounded-full text-[12px] border font-body transition-all duration-150 ${f === activeFilter ? 'bg-ink text-bg border-ink' : 'border-rule text-ink-2 hover:border-ink-2'}`}
                   onClick={() => setActiveFilter(f)}
                 >
                   {f}

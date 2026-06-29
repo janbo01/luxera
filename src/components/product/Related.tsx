@@ -45,7 +45,7 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
         </div>
         <a
           href="/"
-          className="inline-flex items-center gap-2 text-[13px] px-[18px] py-[11px] rounded-full border border-rule text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink flex-shrink-0"
+          className="inline-flex items-center gap-2 text-[13px] px-[18px] min-h-[50px] rounded-full border border-rule text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink flex-shrink-0"
         >
           بازگشت به فروشگاه
           <Icon name="arrow-left" size={13} />

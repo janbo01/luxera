@@ -103,8 +103,10 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
     [instagram_url, whatsapp_number, bale_link, ita_link],
   )
 
-  const col = 'flex flex-col gap-[11px]'
-  const colLink = 'text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper'
+  const col = 'flex flex-col gap-[11px] max-md:gap-1'
+  // On touch (mobile) each link gets a 48px tap target; desktop keeps its compact look.
+  const colLink =
+    'inline-flex items-center text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper max-md:min-h-[48px]'
 
   return (
     <footer className="pt-[72px] pb-6 max-[720px]:pb-[calc(56px+env(safe-area-inset-bottom)+16px)] px-[var(--pad)] text-ink-2">
@@ -124,7 +126,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg [&>svg]:w-3.5 [&>svg]:h-3.5"
+                  className="w-[48px] h-[48px] rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg [&>svg]:w-3.5 [&>svg]:h-3.5"
                 >
                   {icon}
                 </a>
