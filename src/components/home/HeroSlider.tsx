@@ -1,7 +1,8 @@
-import { useState, useEffect, useLayoutEffect, useCallback, useRef, type FC } from 'react'
+import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef, type FC } from 'react'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
+import { useHydrated } from '../../hooks/useHydrated'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
 
@@ -65,10 +66,11 @@ declare global {
   }
 }
 
+// Always FALLBACK_SLIDES for the initial render so SSR (which has no window) and the
+// client's first render produce identical markup. Reading window.__BANNERS_INITIAL__
+// here would diverge from SSR and crash hydration (React #418). The injected banners
+// are applied after mount in an effect (see below).
 function getInitialSlides(): Slide[] {
-  if (typeof window !== 'undefined' && window.__BANNERS_INITIAL__?.length) {
-    return window.__BANNERS_INITIAL__.map(bannerToSlide)
-  }
   return FALLBACK_SLIDES
 }
 
@@ -78,18 +80,31 @@ export function getFirstSlideInfo(): SlideInfo {
 }
 
 const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) => {
-  const [slides, setSlides] = useState<Slide[]>(() => getInitialSlides())
+  const hydrated = useHydrated()
+  // Banners fetched on the client when none were injected at SSR time.
+  const [fetchedSlides, setFetchedSlides] = useState<Slide[] | null>(null)
   const [idx, setIdx] = useState(0)
   const onSlideRef = useRef(onSlide)
   useLayoutEffect(() => {
     onSlideRef.current = onSlide
   })
 
+  // First render (SSR + pre-hydration client) uses FALLBACK_SLIDES so the markup matches
+  // and hydration doesn't crash (React #418). After mount we swap in the SSR-injected
+  // banners (window.__BANNERS_INITIAL__), or the client-fetched ones as a fallback.
+  const slides = useMemo<Slide[]>(() => {
+    if (fetchedSlides) return fetchedSlides
+    if (hydrated && typeof window !== 'undefined' && window.__BANNERS_INITIAL__?.length) {
+      return window.__BANNERS_INITIAL__.map(bannerToSlide)
+    }
+    return FALLBACK_SLIDES
+  }, [hydrated, fetchedSlides])
+
   useEffect(() => {
     if (window.__BANNERS_INITIAL__?.length) return
     listBanners()
       .then((banners) => {
-        if (banners.length > 0) setSlides(banners.map(bannerToSlide))
+        if (banners.length > 0) setFetchedSlides(banners.map(bannerToSlide))
       })
       .catch(() => {})
   }, [])
