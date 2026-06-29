@@ -36,23 +36,82 @@ const productBodyText = product
       .join(' ')
   : ''
 const productUrl = `https://luxera.ir/product/${productSlug}`
-const productJsonLd = product ? safeJson({
-  '@context': 'https://schema.org',
+
+// Reviews/rating for structured data — mirrors the client JSON-LD in ProductPage so the
+// SSR markup Google crawls already carries aggregateRating + review (fixes GSC "Missing
+// field review"). Built from real, on-page customer comments; only emitted when they exist.
+const productComments = ((initialData as { productComments?: Array<Record<string, unknown>> })
+  .productComments ?? [])
+const reviewCount = typeof product?.review_count === 'number' ? (product.review_count as number) : 0
+const ratingValue = typeof product?.rating === 'number' ? (product.rating as number) : 0
+
+const productNode: Record<string, unknown> = {
   '@type': 'Product',
   name: h1Title,
-  description: ((product.seo_description ?? product.short_description ?? '') as string) || undefined,
-  image: (product.images as Array<{ url: string }> | undefined)?.map((img) => img.url) ?? [],
+  description: ((product?.seo_description ?? product?.short_description ?? '') as string) || undefined,
+  image: (product?.images as Array<{ url: string }> | undefined)?.map((img) => img.url) ?? [],
   url: productUrl,
   sku: productSlug,
   brand: { '@type': 'Brand', name: 'لوکسرا' },
   offers: {
     '@type': 'Offer',
     priceCurrency: 'IRR',
-    price: String(product.price ?? ''),
+    price: String(product?.price ?? ''),
     availability: 'https://schema.org/InStock',
     url: productUrl,
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: 'IR',
+      returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+      merchantReturnDays: 4,
+      returnMethod: 'https://schema.org/ReturnByMail',
+      returnFees: 'https://schema.org/FreeReturn',
+      returnPolicyLink: 'https://luxera.ir/shipping',
+    },
+    shippingDetails: {
+      '@type': 'OfferShippingDetails',
+      shippingRate: { '@type': 'MonetaryAmount', value: '180000', currency: 'IRR' },
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IR' },
+      deliveryTime: {
+        '@type': 'ShippingDeliveryTime',
+        handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+        transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 5, unitCode: 'DAY' },
+      },
+    },
   },
-}) : undefined
+}
+
+if (reviewCount > 0) {
+  productNode.aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: String(Math.max(ratingValue, 1)),
+    reviewCount: String(reviewCount),
+    bestRating: '5',
+    worstRating: '1',
+  }
+}
+
+if (productComments.length > 0) {
+  productNode.review = productComments.slice(0, 5).map((c, i) => ({
+    '@type': 'Review',
+    author: {
+      '@type': 'Person',
+      name: `کاربر ${(c.user_id as string | undefined)?.slice(0, 4) || String(i + 1)}`,
+    },
+    datePublished: (c.created_at as string | undefined)?.slice(0, 10),
+    reviewBody: c.content,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: String((c.rating as number | undefined) || 5),
+      bestRating: '5',
+      worstRating: '1',
+    },
+  }))
+}
+
+const productJsonLd = product
+  ? safeJson({ '@context': 'https://schema.org', ...productNode })
+  : undefined
 ---
 
 <BaseLayout
@@ -67,7 +126,7 @@ const productJsonLd = product ? safeJson({
   {productBodyText && <p class="sr-only">{productBodyText}</p>}
   <p class="sr-only">
     خرید آنلاین از لوکسرا — فروشگاه تخصصی جواهرات فانتزی با آلیاژ بدون نیکل و روکش ماندگار.
-    ضمانت کیفیت یک‌ساله، بسته‌بندی هدیه‌ای استاندارد، ارسال یک‌روزه در تهران و ۲ تا ۴ روز در سراسر ایران.
+    بسته‌بندی هدیه‌ای استاندارد، ارسال یک‌روزه در تهران و ۲ تا ۴ روز در سراسر ایران.
     بازگشت رایگان تا ۴ روز پس از دریافت.
   </p>
   <Fragment set:html={initialScript + footerScript} />

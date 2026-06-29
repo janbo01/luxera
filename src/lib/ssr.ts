@@ -259,18 +259,26 @@ export async function fetchHomeData() {
 export async function fetchProductData(idOrSlug: string) {
   if (!productApiBase) return { initialData: {}, lcpPreload: '', initialScript: '' }
   try {
-    const [productRes, commentsRes] = await Promise.allSettled([
-      fetch(`${productApiBase}/products/${idOrSlug}`),
-      fetch(`${productApiBase}/products/${idOrSlug}/comments?limit=5`),
-    ])
-    if (productRes.status !== 'fulfilled' || !productRes.value.ok) {
+    const productRes = await fetch(`${productApiBase}/products/${idOrSlug}`)
+    if (!productRes.ok) {
       return { initialData: {}, lcpPreload: '', initialScript: '' }
     }
-    const product = unwrap(await productRes.value.json()) as Record<string, unknown>
+    const product = unwrap(await productRes.json()) as Record<string, unknown>
+    // The comments endpoint only accepts the product UUID (a slug returns 400), so it must
+    // be fetched after we've resolved the product — pages are reached by slug. Seeding these
+    // server-side lets the SSR JSON-LD include `review` for Google.
     let productComments: unknown[] = []
-    if (commentsRes.status === 'fulfilled' && commentsRes.value.ok) {
-      const raw = unwrap(await commentsRes.value.json()) as { items?: unknown[] }
-      productComments = raw?.items ?? []
+    const productId = product?.id as string | undefined
+    if (productId) {
+      try {
+        const commentsRes = await fetch(`${productApiBase}/products/${productId}/comments?limit=5`)
+        if (commentsRes.ok) {
+          const raw = unwrap(await commentsRes.json()) as { items?: unknown[] }
+          productComments = raw?.items ?? []
+        }
+      } catch {
+        // Comments are non-critical for the page; ignore fetch failures.
+      }
     }
     const imgs = product?.images as Array<{ url: string }> | undefined
     // The gallery renders images[0] as the main image (loading=eager, fetchpriority=high),

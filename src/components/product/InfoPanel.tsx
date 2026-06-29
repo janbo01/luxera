@@ -23,8 +23,8 @@ interface InfoPanelProps {
 const PERKS = [
   {
     icon: 'spark',
-    heading: 'ضمانت کیفیت یک‌ساله',
-    body: 'تعویض رایگان در صورت بروز خدشه و فرسایش',
+    heading: 'اصالت و کیفیت',
+    body: 'آلیاژ بدون نیکل با روکش ماندگار، ایمن برای پوست حساس',
   },
   {
     icon: 'bag',
