@@ -72,7 +72,7 @@
 /* ── Morabba (Persian Heading) ─────────────────────────────── */
 @font-face {
   font-family: 'Morabba';
-  src: url('./assets/fonts/Morabba-Bold.woff2') format('woff2');
+  src: url('/fonts/Morabba-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -80,7 +80,7 @@
 
 @font-face {
   font-family: 'Morabba';
-  src: url('./assets/fonts/Morabba-Regular.woff2') format('woff2');
+  src: url('/fonts/Morabba-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -89,7 +89,7 @@
 /* ── Yekan Bakh (Persian Body) ─────────────────────────────── */
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Light.woff2') format('woff2');
+  src: url('/fonts/yekanbakh-Light.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -97,7 +97,7 @@
 
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Regular.woff2') format('woff2');
+  src: url('/fonts/yekanbakh-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -105,7 +105,7 @@
 
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Medium.woff2') format('woff2');
+  src: url('/fonts/yekanbakh-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -113,7 +113,7 @@
 
 @font-face {
   font-family: 'Yekan Bakh';
-  src: url('./assets/fonts/yekanbakh-Bold.woff2') format('woff2');
+  src: url('/fonts/yekanbakh-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -122,7 +122,7 @@
 /* ── JetBrains Mono (Monospace labels) ──────────────────────── */
 @font-face {
   font-family: 'JetBrains Mono';
-  src: url('./assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: optional;
@@ -134,7 +134,7 @@
 /* ── Cormorant Garamond (Latin Display) ─────────────────────── */
 @font-face {
   font-family: 'Cormorant Garamond';
-  src: url('./assets/fonts/CormorantGaramond-VariableFont_wght.woff2') format('woff2');
+  src: url('/fonts/CormorantGaramond-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 900;
   font-style: normal;
   font-display: optional;
@@ -145,7 +145,7 @@
 
 @font-face {
   font-family: 'Cormorant Garamond';
-  src: url('./assets/fonts/CormorantGaramond-Italic-VariableFont_wght.woff2') format('woff2');
+  src: url('/fonts/CormorantGaramond-Italic-VariableFont_wght.woff2') format('woff2');
   font-weight: 100 900;
   font-style: italic;
   font-display: optional;
@@ -306,7 +306,7 @@
     --lx-petal: #f4e8d9;
     --lx-overlay: rgba(192, 41, 106, 0.5);
     --lx-sale: #a96000;
-    --lx-ok: #00b896;
+    --lx-ok: #16744a;
   }
 }
 

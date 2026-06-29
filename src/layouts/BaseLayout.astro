@@ -61,10 +61,13 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     <link rel="preconnect" href="https://api.luxera.ir" />
     <link rel="dns-prefetch" href="https://api.luxera.ir" />
 
-    <!-- Preload critical Persian fonts to reduce FOUT and font-swap CLS -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/Morabba-Bold.woff2" crossorigin />
+    <!-- Preload critical Persian fonts to reduce FOUT and font-swap CLS.
+         Light (300) is the body default and Regular (400) the next most common —
+         these reflow the most when they swap, so they're preloaded; Morabba-Bold
+         covers headings. URLs must match the @font-face src in index.css exactly. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Light.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Regular.woff2" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Bold.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Morabba-Bold.woff2" crossorigin />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />

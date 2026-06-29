@@ -222,7 +222,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
               <Icon name="bag" size={16} />
               افزودن به سبد
             </span>
-            <span className="font-body text-[13px] opacity-70">
+            <span className="font-body text-[13px] opacity-90">
               {formatNumber(p.price * qty)} ت
             </span>
           </button>

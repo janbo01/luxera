@@ -72,7 +72,8 @@ export function deriveThemeCSS(
     ['--lx-petal', lighten(brand, 0.85)],
     ['--lx-overlay', `rgba(${ar},${ag},${ab},0.50)`],
     ['--lx-sale', darken(brand, 0.08)],
-    ['--lx-ok', '#00B896'],
+    // Deep emerald on light themes for AA-readable success text; bright teal on dark themes.
+    ['--lx-ok', lightBg ? '#16744a' : '#00B896'],
   ]
 
   const body = tokens.map(([k, v]) => `${k}:${v}`).join(';')

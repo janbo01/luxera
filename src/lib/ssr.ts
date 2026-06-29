@@ -273,7 +273,9 @@ export async function fetchProductData(idOrSlug: string) {
       productComments = raw?.items ?? []
     }
     const imgs = product?.images as Array<{ url: string }> | undefined
-    const lcpUrl = imgs && imgs.length > 1 ? imgs[1].url : imgs?.[0]?.url
+    // The gallery renders images[0] as the main image (loading=eager, fetchpriority=high),
+    // so that's the LCP element — preload exactly that URL, not images[1].
+    const lcpUrl = imgs?.[0]?.url
     return {
       initialData: { product, productComments },
       initialScript: `<script>window.__PRODUCT_INITIAL__=${safeJson(product)}</script>`,
