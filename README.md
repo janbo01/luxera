@@ -48,4 +48,4 @@ project/            # Original HTML/CSS design prototypes
 
 ## Design Prototypes
 
-The `project/` directory contains the original HTML prototype files exported from Claude Design. These served as the visual reference for the React implementation and are kept for reference.
+The `project/` directory contains the original HTML prototype files exported from Claude Design. These served as the visual reference for the React implementation and are kept for reference
