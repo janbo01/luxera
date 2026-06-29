@@ -200,20 +200,57 @@ export async function fetchFooterData(): Promise<FooterData> {
 
 // ── Page-specific data fetchers ───────────────────────────────────────────────
 
+let _homeCache: { lcpPreload: string; initialScript: string } | null = null
+let _homeExpiry = 0
+let _homeRefreshInflight: Promise<void> | null = null
+
+function buildHomeData(banners: unknown[]): { lcpPreload: string; initialScript: string } {
+  const first = banners[0] as { image_url?: string; product?: { image_url?: string } } | undefined
+  const firstImg = first?.image_url || first?.product?.image_url
+  return {
+    initialScript: `<script>window.__BANNERS_INITIAL__=${safeJson(banners)}</script>`,
+    lcpPreload: firstImg
+      ? `<link rel="preload" as="image" href="${firstImg}" fetchpriority="high">`
+      : '',
+  }
+}
+
 export async function fetchHomeData() {
   if (!storeApiBase) return { lcpPreload: '', initialScript: '' }
+
+  const now = Date.now()
+  if (_homeCache && now < _homeExpiry) return _homeCache
+
+  // Stale-while-revalidate: serve cached banners immediately, refresh in background.
+  // The home banner request was previously uncached and untimed — a slow/cold
+  // banners API blocked the entire SSR render (the cause of the ~5.7s home response).
+  if (_homeCache) {
+    _homeExpiry = now + 5 * 60 * 1000
+    if (!_homeRefreshInflight) {
+      _homeRefreshInflight = fetch(`${storeApiBase}/store/banners`, {
+        signal: AbortSignal.timeout(5000),
+      })
+        .then(async (r) => {
+          if (!r.ok) return
+          const data = unwrap(await r.json())
+          _homeCache = buildHomeData(Array.isArray(data) ? data : [])
+          _homeExpiry = Date.now() + 5 * 60 * 1000
+        })
+        .catch(() => {})
+        .finally(() => {
+          _homeRefreshInflight = null
+        })
+    }
+    return _homeCache
+  }
+
   try {
-    const r = await fetch(`${storeApiBase}/store/banners`)
+    const r = await fetch(`${storeApiBase}/store/banners`, { signal: AbortSignal.timeout(5000) })
     if (!r.ok) return { lcpPreload: '', initialScript: '' }
     const data = unwrap(await r.json())
-    const banners = Array.isArray(data) ? data : []
-    const firstImg: string | undefined = banners[0]?.image_url || banners[0]?.product?.image_url
-    return {
-      initialScript: `<script>window.__BANNERS_INITIAL__=${safeJson(banners)}</script>`,
-      lcpPreload: firstImg
-        ? `<link rel="preload" as="image" href="${firstImg}" fetchpriority="high">`
-        : '',
-    }
+    _homeCache = buildHomeData(Array.isArray(data) ? data : [])
+    _homeExpiry = Date.now() + 5 * 60 * 1000
+    return _homeCache
   } catch {
     return { lcpPreload: '', initialScript: '' }
   }

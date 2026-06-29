@@ -108,11 +108,18 @@ const AccordionItem = memo<{ q: string; a: string }>(({ q, a }) => {
           {open ? '−' : '+'}
         </span>
       </button>
-      {open && (
-        <div className="text-sm leading-[1.9] text-ink-2 pb-5 animate-[luxera-rise_250ms_cubic-bezier(.2,.7,.2,1)_both]">
-          {a}
+      {/*
+        Answer stays in the DOM always (collapsed via grid-rows) so it is present
+        in the server-rendered HTML for crawlers and screen readers, not mounted
+        only on click.
+      */}
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+      >
+        <div className="overflow-hidden">
+          <div className="text-sm leading-[1.9] text-ink-2 pb-5">{a}</div>
         </div>
-      )}
+      </div>
     </div>
   )
 })

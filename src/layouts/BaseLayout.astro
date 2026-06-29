@@ -14,6 +14,7 @@ interface Props {
   ogType?: string
   jsonLd?: string
   lcpPreload?: string
+  noIndex?: boolean
 }
 
 const {
@@ -24,6 +25,7 @@ const {
   ogType = 'website',
   jsonLd,
   lcpPreload,
+  noIndex = false,
 } = Astro.props
 
 const [themeStyle, socialSettings] = await Promise.all([
@@ -33,8 +35,10 @@ const [themeStyle, socialSettings] = await Promise.all([
 
 const SITE_URL = 'https://luxera.ir'
 const rawCanonical = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
-const canonicalUrl =
-  rawCanonical === `${SITE_URL}/` ? rawCanonical : rawCanonical.replace(/\/$/, '') || SITE_URL
+// Always normalise to the no-trailing-slash form (incl. the home page) so the
+// canonical matches the URL crawlers actually request (https://luxera.ir, not
+// https://luxera.ir/). This collapses the "/" vs "" duplicate into one canonical.
+const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
 ---
 
 <!doctype html>
@@ -44,7 +48,7 @@ const canonicalUrl =
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noIndex ? 'noindex, follow' : 'index, follow'} />
     <meta name="author" content="لوکسرا" />
     <title>{title}</title>
     <meta name="description" content={description} />
