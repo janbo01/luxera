@@ -1,9 +1,9 @@
-import { memo, type FC, type FormEvent } from 'react'
+import { memo, type FC, type SyntheticEvent } from 'react'
 import Icon from '../icons/Icon'
 
 const PERKS = ['۱۰٪ تخفیفِ خرید نخست', 'دسترسی زودهنگام', 'بدون اسپم']
 
-function handleSubmit(e: FormEvent) {
+function handleSubmit(e: SyntheticEvent) {
   e.preventDefault()
 }
 

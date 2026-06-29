@@ -89,7 +89,7 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     {themeStyle && <Fragment set:html={themeStyle} />}
 
     <!-- JSON-LD structured data (injected per-page) -->
-    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
 
     <!-- Astro ClientRouter for SPA-like navigation -->
     <ClientRouter />

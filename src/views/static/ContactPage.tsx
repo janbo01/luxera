@@ -1,5 +1,5 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
-import { useState, type FC, type FormEvent } from 'react'
+import { useState, type FC, type SyntheticEvent } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
 import { useSettingsStore } from '../../store/settingsStore'
 
@@ -55,7 +55,7 @@ const ContactPage: FC = () => {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     setSubmitting(true)
     await new Promise((r) => setTimeout(r, 900))

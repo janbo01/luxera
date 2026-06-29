@@ -18,8 +18,9 @@ export default defineConfig({
       rollupOptions: {
         output: {
           // Give fonts stable (non-hashed) paths so <link rel="preload"> tags can reference them.
-          assetFileNames: ({ name }) => {
-            if (name && /\.(woff2|woff|ttf|eot)$/i.test(name)) {
+          assetFileNames: (assetInfo) => {
+            const name = assetInfo.names?.[0] ?? ''
+            if (/\.(woff2|woff|ttf|eot)$/i.test(name)) {
               return 'fonts/[name][extname]'
             }
             return '_astro/[name].[hash][extname]'

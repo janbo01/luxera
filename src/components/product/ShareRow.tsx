@@ -29,15 +29,10 @@ export function ShareRow({ productName }: ShareRowProps) {
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href)
+      showToast()
     } catch {
-      const ta = document.createElement('textarea')
-      ta.value = window.location.href
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      document.body.removeChild(ta)
+      // Clipboard API is unavailable (e.g. an insecure context); don't claim success.
     }
-    showToast()
   }
 
   const handleNativeShare = async () => {

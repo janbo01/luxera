@@ -21,7 +21,7 @@ export function StockNotifyForm({ productId }: StockNotifyFormProps) {
     setTimeout(() => phoneRef.current?.focus(), 50)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!/^9\d{9}$/.test(phone)) {
       setError('شماره موبایل معتبر نیست')
