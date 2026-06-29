@@ -2,6 +2,7 @@ import { type FC, useMemo } from 'react'
 import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
 import { useSettingsStore } from '../../store/settingsStore'
+import { useHydrated } from '../../hooks/useHydrated'
 import { CATEGORIES } from '../../data/categories'
 interface SocialSettings {
   instagram_url: string
@@ -72,9 +73,14 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
   const bale_link = storeBale || initialSettings?.bale_link || ''
   const ita_link = storeIta || initialSettings?.ita_link || ''
 
-  // Derived once — no setState, no post-paint update, no CLS.
+  // The server can't read window.__FOOTER_INITIAL__, so SSR renders STATIC_CAT_LINKS.
+  // Gate the window read on hydration so the first client render also uses the static
+  // list (matching SSR), then swaps to the injected categories after mount. Reading the
+  // window value during the first client render would mismatch SSR and crash hydration
+  // (React #418). STATIC_CAT_LINKS has the same length, so there's no layout shift.
+  const hydrated = useHydrated()
   const categoryLinks: NavLink[] =
-    typeof window !== 'undefined' && window.__FOOTER_INITIAL__?.categories?.length
+    hydrated && window.__FOOTER_INITIAL__?.categories?.length
       ? makeCatLinks(window.__FOOTER_INITIAL__.categories)
       : STATIC_CAT_LINKS
 
