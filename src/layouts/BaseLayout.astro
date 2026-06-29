@@ -105,7 +105,12 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     <!-- Header persists independently so it can update active state via usePathname -->
     <Header client:load transition:persist="header" />
 
-    <main>
+    <!-- Reserve a viewport of height so client:only views (e.g. ProductPage) don't
+         leave <main> empty at first paint — which would place the footer right under
+         the header and then shove it down a full page when React renders, causing a
+         large layout shift. With this reserve the footer stays below the fold until
+         content fills in, so its push-down happens off-screen and doesn't count toward CLS. -->
+    <main class="min-h-screen">
       <slot />
     </main>
 
