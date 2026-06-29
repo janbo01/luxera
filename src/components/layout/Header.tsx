@@ -9,6 +9,7 @@ import { useSearchStore } from '../../store/searchStore'
 import { useUIStore } from '../../store/uiStore'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
+import { useHydrated } from '../../hooks/useHydrated'
 import { NAV_LINKS, type NavLink } from '../../data/navigation'
 
 function AnnouncementBar() {
@@ -16,9 +17,7 @@ function AnnouncementBar() {
   return (
     <div className="bg-plum-2 text-[var(--color-petal)] text-xs tracking-[0.02em] max-[720px]:hidden">
       <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
-        <div className="opacity-70 text-[11px]">
-          {supportPhone ? `تماس: ${supportPhone}` : null}
-        </div>
+        <div className="text-[11px]">{supportPhone ? `تماس: ${supportPhone}` : null}</div>
         <div className="flex items-center gap-[18px] flex-wrap">
           <span className="inline-flex items-center gap-2">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13">
@@ -31,7 +30,7 @@ function AnnouncementBar() {
           <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
           <span>گارانتی کیفیت محصول</span>
         </div>
-        <div className="opacity-70 text-[11px]">فارسی · تومان</div>
+        <div className="text-[11px]">فارسی · تومان</div>
       </div>
     </div>
   )
@@ -62,6 +61,7 @@ const ICON_BTN =
   'w-10 h-10 rounded-full grid place-items-center text-ink transition-colors duration-200 hover:bg-bg-2 relative border-none bg-transparent cursor-pointer [&>svg]:w-[18px] [&>svg]:h-[18px]'
 
 const Header: FC = () => {
+  const hydrated = useHydrated()
   const cartCount = useCartStore(selectTotalQty)
   const openCart = useCartStore((s) => s.openCart)
   const wishCount = useWishlistStore(selectWishlistCount)
@@ -150,7 +150,7 @@ const Header: FC = () => {
             <button
               className={`${ICON_BTN} max-[720px]:hidden`}
               onClick={handleAccountClick}
-              aria-label={isLoggedIn ? 'حساب من' : 'ورود'}
+              aria-label={hydrated && isLoggedIn ? 'حساب من' : 'ورود'}
             >
               <Icon name="user" size={18} strokeWidth={1.6} />
             </button>
@@ -162,7 +162,7 @@ const Header: FC = () => {
               aria-label="علاقه‌مندی‌ها"
             >
               <Icon name="heart" size={18} strokeWidth={1.6} />
-              {wishCount > 0 && (
+              {hydrated && wishCount > 0 && (
                 <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">
                   {toFa(wishCount)}
                 </span>
@@ -171,7 +171,7 @@ const Header: FC = () => {
 
             <button className={ICON_BTN} onClick={openCart} aria-label="سبد خرید">
               <Icon name="bag" size={18} strokeWidth={1.6} />
-              {cartCount > 0 && (
+              {hydrated && cartCount > 0 && (
                 <span className="absolute top-1.5 end-1.5 min-w-4 h-4 px-1 bg-copper text-white rounded-full text-[10px] font-semibold grid place-items-center font-mono">
                   {toFa(cartCount)}
                 </span>
