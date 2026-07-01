@@ -150,7 +150,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   onKeyDown={(e) => e.key === 'Enter' && handlePhoneSubmit()}
                   maxLength={10}
                   autoFocus
-                  className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
+                  className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[16px] sm:text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
                 />
               </div>
               {error && <span className="text-[12px] text-sale text-center mt-0.5">{error}</span>}
