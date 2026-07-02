@@ -3,7 +3,7 @@ import { ClientRouter } from 'astro:transitions'
 import AppShell from '../components/layout/AppShell'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
-import { fetchThemeStyleTag, fetchSocialSettings } from '../lib/ssr'
+import { fetchThemeStyleTag, fetchSocialSettings, fetchSettingsScript } from '../lib/ssr'
 import '../index.css'
 
 interface Props {
@@ -28,9 +28,10 @@ const {
   noIndex = false,
 } = Astro.props
 
-const [themeStyle, socialSettings] = await Promise.all([
+const [themeStyle, socialSettings, settingsScript] = await Promise.all([
   fetchThemeStyleTag(),
   fetchSocialSettings(),
+  fetchSettingsScript(),
 ])
 
 const SITE_URL = 'https://luxera.ir'
@@ -58,7 +59,7 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     <!-- Preconnect to external origins for faster image CDN and API loading -->
     <link rel="preconnect" href="https://image.luxera.ir" />
     <link rel="dns-prefetch" href="https://image.luxera.ir" />
-    <link rel="preconnect" href="https://api.luxera.ir" />
+    <link rel="preconnect" href="https://api.luxera.ir" crossorigin />
     <link rel="dns-prefetch" href="https://api.luxera.ir" />
 
     <!-- Preload critical Persian fonts to reduce FOUT and font-swap CLS.
@@ -87,6 +88,9 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
 
     <!-- Theme CSS (injected from store API) -->
     {themeStyle && <Fragment set:html={themeStyle} />}
+
+    <!-- Settings (injected from store API, so client hooks don't re-fetch on mount) -->
+    {settingsScript && <Fragment set:html={settingsScript} />}
 
     <!-- JSON-LD structured data (injected per-page) -->
     {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}

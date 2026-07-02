@@ -1,11 +1,13 @@
-import { useEffect, useState, memo, type FC } from 'react'
+import { useEffect, useState, useMemo, memo, type FC } from 'react'
 
 import { getBlogPosts, type ApiBlogPost } from '../../api/blog'
 import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
 import { useCarousel } from '../../hooks'
+import { useHydrated } from '../../hooks/useHydrated'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
+import { readHomeInitial } from './homeInitial'
 
 const VISIBLE = 3
 
@@ -76,15 +78,30 @@ const SkeletonCard = () => (
 const SKELETONS = Array.from({ length: VISIBLE }, (_, i) => <SkeletonCard key={i} />)
 
 const BlogCarousel: FC = () => {
-  const [posts, setPosts] = useState<ApiBlogPost[]>([])
-  const [loading, setLoading] = useState(true)
+  const hydrated = useHydrated()
+  // Client-fetched fallback, used only when SSR didn't inject blog posts.
+  const [fetchedPosts, setFetchedPosts] = useState<ApiBlogPost[] | null>(null)
+  const [fetching, setFetching] = useState(true)
+
+  // Gated on `hydrated` so the first client render matches SSR (no window there),
+  // avoiding a hydration mismatch (React #418).
+  const injected = hydrated ? readHomeInitial()?.blog : undefined
+
+  const posts = useMemo<ApiBlogPost[]>(() => {
+    if (fetchedPosts) return fetchedPosts
+    if (injected?.posts?.length) return injected.posts as ApiBlogPost[]
+    return []
+  }, [fetchedPosts, injected])
+
+  const loading = !hydrated || (!injected?.posts?.length && fetching)
   const { trackRef, canPrev, canNext, scroll } = useCarousel(posts.length)
 
   useEffect(() => {
+    if (readHomeInitial()?.blog?.posts?.length) return
     getBlogPosts(1, 8)
-      .then((res) => setPosts(res.posts))
+      .then((res) => setFetchedPosts(res.posts))
       .catch(() => {})
-      .finally(() => setLoading(false))
+      .finally(() => setFetching(false))
   }, [])
 
   const showSkeletons = loading

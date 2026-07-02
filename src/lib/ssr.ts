@@ -131,20 +131,50 @@ export async function fetchSocialSettings(): Promise<SocialSettings> {
   }
 }
 
+// Whitelisted (not raw) so we never leak a future non-public settings field into every page.
+const SETTINGS_INJECT_KEYS = [
+  'store_name',
+  'tagline',
+  'instagram_url',
+  'whatsapp_number',
+  'bale_link',
+  'ita_link',
+  'support_phone',
+  'support_landline',
+  'theme_bg',
+  'theme_brand',
+  'theme_accent',
+  'theme_light',
+  'theme_text',
+] as const
+
+export async function fetchSettingsScript(): Promise<string> {
+  const raw = await fetchRawSettings()
+  if (!raw || Object.keys(raw).length === 0) return ''
+  const slim: Record<string, string> = {}
+  for (const key of SETTINGS_INJECT_KEYS) {
+    slim[key] = raw[key] ?? ''
+  }
+  return `<script>window.__SETTINGS_INITIAL__=${safeJson(slim)}</script>`
+}
+
 // ── Footer data (categories + collections) ────────────────────────────────────
 
-let _catCache: Array<{ id: string; name: string }> = []
+let _catCache: Array<{ id: string; name: string; image_url?: string }> = []
 let _catExpiry = 0
-let _catInflight: Promise<Array<{ id: string; name: string }>> | null = null
+let _catInflight: Promise<Array<{ id: string; name: string; image_url?: string }>> | null = null
 
-export async function fetchCategories(): Promise<Array<{ id: string; name: string }>> {
+export async function fetchCategories(): Promise<
+  Array<{ id: string; name: string; image_url?: string }>
+> {
   if (_catCache.length && Date.now() < _catExpiry) return _catCache
   if (_catInflight) return _catInflight
   if (!productApiBase) return []
   _catInflight = fetch(`${productApiBase}/categories`)
     .then(async (r) => {
       if (!r.ok) return []
-      const data = (unwrap(await r.json()) as Array<{ id: string; name: string }>) ?? []
+      const data =
+        (unwrap(await r.json()) as Array<{ id: string; name: string; image_url?: string }>) ?? []
       _catCache = data
       _catExpiry = Date.now() + 15 * 60 * 1000
       return data
@@ -253,6 +283,170 @@ export async function fetchHomeData() {
     return _homeCache
   } catch {
     return { lcpPreload: '', initialScript: '' }
+  }
+}
+
+// ── Homepage carousels + categories + blog (client-side previously, moved to SSR
+//    to remove them from the post-hydration critical request chain) ─────────────
+
+const HOME_CAROUSEL_SLUGS = ['new', 'necklaces', 'rings', 'earrings', 'bracelets']
+
+interface SlimProduct {
+  id: string
+  slug?: string
+  title: string
+  title_fa?: string
+  title_en?: string
+  price: string
+  old_price?: string
+  is_new: boolean
+  is_sale: boolean
+  category_id: string
+  image_url?: string
+}
+
+function slimProduct(p: Record<string, unknown>): SlimProduct {
+  return {
+    id: p.id as string,
+    slug: p.slug as string | undefined,
+    title: p.title as string,
+    title_fa: p.title_fa as string | undefined,
+    title_en: p.title_en as string | undefined,
+    price: p.price as string,
+    old_price: p.old_price as string | undefined,
+    is_new: !!p.is_new,
+    is_sale: !!p.is_sale,
+    category_id: p.category_id as string,
+    image_url: p.image_url as string | undefined,
+  }
+}
+
+async function loadHomeLists(): Promise<string> {
+  if (!productApiBase && !storeApiBase) return ''
+
+  const cats = await fetchCategories()
+  const slugToId = new Map<string, string>()
+  for (const slug of HOME_CAROUSEL_SLUGS) {
+    if (slug === 'new') continue
+    const local = CATEGORIES.find((c) => c.id === slug)
+    const apiId = cats.find((c) => c.name === local?.fa)?.id
+    if (apiId) slugToId.set(slug, apiId)
+  }
+
+  const carouselFetches = productApiBase
+    ? HOME_CAROUSEL_SLUGS.filter((slug) => slug === 'new' || slugToId.has(slug)).map(
+        async (slug) => {
+          const qs = new URLSearchParams({ limit: '10' })
+          if (slug !== 'new') qs.set('category_id', slugToId.get(slug)!)
+          const r = await fetch(`${productApiBase}/products?${qs}`, {
+            signal: AbortSignal.timeout(5000),
+          })
+          if (!r.ok) return [slug, [] as SlimProduct[]] as const
+          const data = unwrap(await r.json()) as { items?: Array<Record<string, unknown>> }
+          return [slug, (data.items ?? []).map(slimProduct)] as const
+        },
+      )
+    : []
+
+  const blogFetch = storeApiBase
+    ? fetch(`${storeApiBase}/store/blog?page=1&page_size=8`, {
+        signal: AbortSignal.timeout(5000),
+      })
+        .then(async (r) => {
+          if (!r.ok) return null
+          const data = unwrap(await r.json()) as {
+            posts?: Array<Record<string, unknown>>
+            total?: number
+            page?: number
+            page_size?: number
+          }
+          const posts = (data.posts ?? []).map((p) => ({
+            id: p.id,
+            title: p.title,
+            slug: p.slug,
+            excerpt: p.excerpt,
+            featured_image_url: p.featured_image_url,
+            published_at: p.published_at,
+          }))
+          if (!posts.length) return null
+          return {
+            posts,
+            total: data.total ?? posts.length,
+            page: data.page ?? 1,
+            page_size: data.page_size ?? 8,
+          }
+        })
+        .catch(() => null)
+    : Promise.resolve(null)
+
+  const [carouselResults, blog] = await Promise.all([
+    Promise.allSettled(carouselFetches),
+    blogFetch,
+  ])
+
+  const carousels: Record<string, SlimProduct[]> = {}
+  for (const result of carouselResults) {
+    if (result.status === 'fulfilled') {
+      const [slug, items] = result.value
+      if (items.length) carousels[slug] = items
+    }
+  }
+
+  const categories = cats.length
+    ? cats.map((c) => ({ id: c.id, name: c.name, image_url: c.image_url }))
+    : undefined
+
+  const hasAny = Object.keys(carousels).length > 0 || !!blog || !!categories
+  if (!hasAny) return ''
+
+  const data = {
+    categories,
+    carousels: Object.keys(carousels).length ? carousels : undefined,
+    blog: blog ?? undefined,
+  }
+  return `<script>window.__HOME_INITIAL__=${safeJson(data)}</script>`
+}
+
+let _homeListsCache: string | null = null
+let _homeListsExpiry = 0
+let _homeListsRefreshInflight: Promise<void> | null = null
+
+export async function fetchHomeListsData(): Promise<{ initialScript: string }> {
+  const now = Date.now()
+  if (_homeListsCache !== null && now < _homeListsExpiry) {
+    return { initialScript: _homeListsCache }
+  }
+
+  // Stale-while-revalidate, same posture as fetchHomeData: serve the cached script
+  // immediately and refresh in the background so a slow API never blocks SSR.
+  if (_homeListsCache !== null) {
+    _homeListsExpiry = now + 5 * 60 * 1000
+    if (!_homeListsRefreshInflight) {
+      _homeListsRefreshInflight = loadHomeLists()
+        .then((script) => {
+          _homeListsCache = script || '<script>window.__HOME_INITIAL__=null</script>'
+          _homeListsExpiry = Date.now() + 5 * 60 * 1000
+        })
+        .catch(() => {})
+        .finally(() => {
+          _homeListsRefreshInflight = null
+        })
+    }
+    return { initialScript: _homeListsCache }
+  }
+
+  try {
+    const script = await loadHomeLists()
+    if (!script) {
+      // Nothing succeeded — signal explicit null and leave uncached so the next
+      // request retries instead of freezing on an empty result.
+      return { initialScript: '<script>window.__HOME_INITIAL__=null</script>' }
+    }
+    _homeListsCache = script
+    _homeListsExpiry = Date.now() + 5 * 60 * 1000
+    return { initialScript: script }
+  } catch {
+    return { initialScript: '<script>window.__HOME_INITIAL__=null</script>' }
   }
 }
 

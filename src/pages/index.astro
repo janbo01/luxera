@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import HomePage from '../views/HomePage'
-import { fetchHomeData, fetchFooterData, safeJson } from '../lib/ssr'
+import { fetchHomeData, fetchHomeListsData, fetchFooterData, safeJson } from '../lib/ssr'
 
-const [{ lcpPreload, initialScript }, footerData] = await Promise.all([
+const [{ lcpPreload, initialScript }, homeLists, footerData] = await Promise.all([
   fetchHomeData(),
+  fetchHomeListsData(),
   fetchFooterData(),
 ])
 
@@ -47,6 +48,6 @@ const homeJsonLd = JSON.stringify([
   jsonLd={homeJsonLd}
 >
   <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
-  <Fragment set:html={initialScript + footerScript} />
+  <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
   <HomePage client:load />
 </BaseLayout>

@@ -3,8 +3,10 @@ import { useEffect, useState, useMemo, memo, type FC } from 'react'
 import { CATEGORIES } from '../../data/categories'
 import SectionHeader from '../shared/SectionHeader'
 import { listCategories, type ApiCategory } from '../../api/product'
+import { useHydrated } from '../../hooks/useHydrated'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
+import { readHomeInitial } from './homeInitial'
 
 const CAT_BG: Record<string, string> = {
   necklaces: 'bg-[linear-gradient(155deg,#a06828_0%,#6b3e10_100%)]',
@@ -17,11 +19,23 @@ const CAT_BG: Record<string, string> = {
 const VISIBLE_CATS = CATEGORIES.filter((c) => !['bridal', 'new', 'mens'].includes(c.id))
 
 const CategoriesSection: FC = () => {
-  const [apiCats, setApiCats] = useState<ApiCategory[]>([])
+  const hydrated = useHydrated()
+  const [fetchedCats, setFetchedCats] = useState<ApiCategory[] | null>(null)
+
+  // Gated on `hydrated` so the first client render matches SSR (no window there),
+  // avoiding a hydration mismatch (React #418).
+  const injected = hydrated ? readHomeInitial()?.categories : undefined
+
+  const apiCats = useMemo<ApiCategory[]>(() => {
+    if (fetchedCats) return fetchedCats
+    if (injected?.length) return injected as ApiCategory[]
+    return []
+  }, [fetchedCats, injected])
 
   useEffect(() => {
+    if (readHomeInitial()?.categories?.length) return
     listCategories()
-      .then(setApiCats)
+      .then(setFetchedCats)
       .catch(() => {})
   }, [])
 

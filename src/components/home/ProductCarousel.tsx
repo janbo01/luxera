@@ -1,14 +1,16 @@
-import { useEffect, useState, memo, type FC, type ReactNode } from 'react'
+import { useEffect, useState, useMemo, memo, type FC, type ReactNode } from 'react'
 
 import ProductCard from '../product/ProductCard'
 import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
 import { useCartStore } from '../../store/cartStore'
-import { listProducts, listCategories, adaptProduct } from '../../api/product'
+import { listProducts, listCategories, adaptProduct, type ApiProduct } from '../../api/product'
 import { useCarousel } from '../../hooks/useCarousel'
+import { useHydrated } from '../../hooks/useHydrated'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 import { CATEGORIES } from '../../data/categories'
+import { readHomeInitial } from './homeInitial'
 import type { Product } from '../../types'
 
 interface ProductCarouselProps {
@@ -47,25 +49,44 @@ async function resolveCategoryId(slug: string): Promise<string | undefined> {
 
 const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectionId, catSlug }) => {
   const addItem = useCartStore((s) => s.addItem)
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
+  const hydrated = useHydrated()
+  // Client-fetched fallback, used only when SSR didn't inject this carousel's products.
+  const [fetchedProducts, setFetchedProducts] = useState<Product[] | null>(null)
+  const [fetching, setFetching] = useState(true)
+
+  // Reading window.__HOME_INITIAL__ only after `hydrated` flips keeps the first client
+  // render identical to SSR (no window there), avoiding a hydration mismatch (React #418).
+  const injected = hydrated ? readHomeInitial()?.carousels?.[sectionId] : undefined
+
+  const products = useMemo<Product[]>(() => {
+    if (fetchedProducts) return fetchedProducts
+    if (injected?.length) return injected.map((p) => adaptProduct(p as ApiProduct))
+    return []
+  }, [fetchedProducts, injected])
+
+  const loading = !hydrated || (!injected?.length && fetching)
+
   const { trackRef, canPrev, canNext, scroll } = useCarousel(products.length)
 
   useEffect(() => {
+    if (readHomeInitial()?.carousels?.[sectionId]?.length) return
+    let cancelled = false
     const load = async () => {
-      setLoading(true)
       try {
         const categoryId = catSlug ? await resolveCategoryId(catSlug) : undefined
         const { items } = await listProducts({ categoryId, limit: 10 })
-        setProducts(items.map((p) => adaptProduct(p)))
+        if (!cancelled) setFetchedProducts(items.map((p) => adaptProduct(p)))
       } catch {
-        setProducts([])
+        if (!cancelled) setFetchedProducts([])
       } finally {
-        setLoading(false)
+        if (!cancelled) setFetching(false)
       }
     }
     void load()
-  }, [catSlug])
+    return () => {
+      cancelled = true
+    }
+  }, [sectionId, catSlug])
 
   return (
     <section className="page-section" id={sectionId}>
