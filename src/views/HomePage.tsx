@@ -1,12 +1,8 @@
-import { lazy, Suspense, type FC } from 'react'
+import { type FC } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
 import Hero from '../components/home/Hero'
 import CategoriesSection from '../components/home/CategoriesSection'
 import ProductCarousel from '../components/home/ProductCarousel'
-
-const Feature = lazy(() => import('../components/home/Feature'))
-const Story = lazy(() => import('../components/home/Story'))
-const BlogCarousel = lazy(() => import('../components/home/BlogCarousel'))
 
 const HOME_JSON_LD = {
   '@context': 'https://schema.org',
@@ -96,15 +92,6 @@ const HomePage: FC = () => {
         link="/category/bracelets"
         catSlug="bracelets"
       />
-      <Suspense>
-        <Feature />
-      </Suspense>
-      <Suspense>
-        <Story />
-      </Suspense>
-      <Suspense>
-        <BlogCarousel />
-      </Suspense>
     </>
   )
 }

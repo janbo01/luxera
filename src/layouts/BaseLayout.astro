@@ -119,6 +119,6 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     </main>
 
     <!-- Footer: initialSettings pre-populates social links from SSR to avoid CLS on hydration -->
-    <Footer client:load transition:persist="footer" initialSettings={socialSettings} />
+    <Footer client:idle transition:persist="footer" initialSettings={socialSettings} />
   </body>
 </html>

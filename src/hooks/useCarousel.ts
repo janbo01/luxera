@@ -21,12 +21,13 @@ export function useCarousel(itemCount: number) {
   useEffect(() => {
     const el = trackRef.current
     if (!el) return
-    const rafId = requestAnimationFrame(syncArrows)
     el.addEventListener('scroll', syncArrows, { passive: true })
+    // ResizeObserver's initial callback fires with the current size shortly
+    // after observe(), so it covers the mount-time sync without an extra
+    // forced-layout read from a redundant requestAnimationFrame call.
     const ro = new ResizeObserver(syncArrows)
     ro.observe(el)
     return () => {
-      cancelAnimationFrame(rafId)
       el.removeEventListener('scroll', syncArrows)
       ro.disconnect()
     }

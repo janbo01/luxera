@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import HomePage from '../views/HomePage'
+import Feature from '../components/home/Feature'
+import Story from '../components/home/Story'
+import BlogCarousel from '../components/home/BlogCarousel'
 import { fetchHomeData, fetchHomeListsData, fetchFooterData, safeJson } from '../lib/ssr'
 
 const [{ lcpPreload, initialScript }, homeLists, footerData] = await Promise.all([
@@ -50,4 +53,7 @@ const homeJsonLd = JSON.stringify([
   <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
   <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
   <HomePage client:load />
+  <Feature />
+  <Story />
+  <BlogCarousel client:visible />
 </BaseLayout>
