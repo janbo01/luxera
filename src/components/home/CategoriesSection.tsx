@@ -7,6 +7,7 @@ import { useHydrated } from '../../hooks/useHydrated'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 import { readHomeInitial } from './homeInitial'
+import { imgSet } from '../../utils/cdnImage'
 
 const CAT_BG: Record<string, string> = {
   necklaces: 'bg-[linear-gradient(155deg,#a06828_0%,#6b3e10_100%)]',
@@ -77,8 +78,16 @@ const CategoriesSection: FC = () => {
             >
               {imgSrc ? (
                 <img
-                  src={imgSrc}
+                  {...imgSet(imgSrc, {
+                    widths: isFeatured ? [640, 960, 1280] : [320, 480, 640],
+                    ratio: isFeatured ? 16 / 10 : 3 / 4,
+                    sizes: isFeatured
+                      ? '(max-width: 768px) 100vw, 66vw'
+                      : '(max-width: 768px) 50vw, 33vw',
+                  })}
                   alt={cat.fa}
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
                   width={isFeatured ? 640 : 400}
                   height={isFeatured ? 400 : 533}

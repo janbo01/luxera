@@ -8,6 +8,7 @@ import { useBodyLock } from '../../hooks/useBodyLock'
 import { useCart } from '../../hooks/useCart'
 import QuantityStepper from '../shared/QuantityStepper'
 import { calcSimpleShipping } from '../../data/shipping'
+import { imgUrl } from '../../utils/cdnImage'
 
 const CartDrawer: FC = () => {
   const { items, isOpen, subtotal, totalQty, increment, decrement, remove, closeCart } = useCart()
@@ -149,7 +150,15 @@ const CartDrawer: FC = () => {
               >
                 <div className="bg-plate aspect-square flex items-center justify-center text-ink rounded-[var(--radius)] overflow-hidden [&>svg]:w-[70%] [&>svg]:h-auto">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.fa} className="w-full h-full object-cover" />
+                    <img
+                      src={imgUrl(item.imageUrl, 160, 160)}
+                      alt={item.fa}
+                      width={80}
+                      height={80}
+                      loading="lazy"
+                      decoding="async"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <Illustration name={item.illus} />
                   )}

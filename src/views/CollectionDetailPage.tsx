@@ -6,6 +6,7 @@ import { toFa } from '../utils/format'
 import { useCartStore } from '../store/cartStore'
 import { getCollectionBySlug, adaptProduct, type ApiCollectionDetail } from '../api/product'
 import { toneStyle, toneClass } from '../utils/toneStyle'
+import { imgSet } from '../utils/cdnImage'
 import type { ServerInitialData } from '../context/initialData'
 import type { Product } from '../types'
 
@@ -142,8 +143,13 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
         {/* Cover image (if present) — full bleed behind content */}
         {col.cover_image_url && (
           <img
-            src={col.cover_image_url}
+            {...imgSet(col.cover_image_url, {
+              widths: [768, 1280, 1920],
+              sizes: '100vw',
+            })}
             alt={col.name_fa}
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
             aria-hidden
           />

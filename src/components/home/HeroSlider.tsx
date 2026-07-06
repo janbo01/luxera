@@ -3,6 +3,7 @@ import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
 import { useHydrated } from '../../hooks/useHydrated'
+import { imgSet } from '../../utils/cdnImage'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
 
@@ -137,7 +138,10 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
             <div className={slide.imageUrl ? 'has-image' : ''}>
               {slide.imageUrl ? (
                 <img
-                  src={slide.imageUrl}
+                  {...imgSet(slide.imageUrl, {
+                    widths: [480, 640, 960, 1280],
+                    sizes: '(max-width: 768px) 100vw, 45vw',
+                  })}
                   alt={slide.caption}
                   className="w-full h-full object-cover"
                   loading={i === 0 ? 'eager' : 'lazy'}

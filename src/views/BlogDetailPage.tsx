@@ -2,6 +2,7 @@ import { useState, useEffect, useTransition, useMemo, useRef, type FC } from 're
 import { usePageMeta } from '../hooks/usePageMeta'
 import type { ServerInitialData } from '../context/initialData'
 import { getBlogPostBySlug, type ApiBlogPost } from '../api/blog'
+import { imgSet } from '../utils/cdnImage'
 
 declare global {
   interface Window {
@@ -217,10 +218,14 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
             style={{ boxShadow: '0 24px 60px -20px rgba(27, 15, 29, 0.22)' }}
           >
             <img
-              src={post.featured_image_url}
+              {...imgSet(post.featured_image_url, {
+                widths: [640, 960, 1280],
+                sizes: '(max-width: 900px) 100vw, 820px',
+              })}
               alt={post.title}
               className="w-full object-cover"
               fetchPriority="high"
+              decoding="async"
             />
           </figure>
         )}

@@ -9,6 +9,7 @@ import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
 import Badge from '../components/shared/Badge'
 import PriceDisplay from '../components/shared/PriceDisplay'
 import ProductMeta from '../components/shared/ProductMeta'
+import { imgSet } from '../utils/cdnImage'
 
 const WishlistPage: FC = () => {
   usePageMeta({ title: 'علاقه‌مندی‌ها' })
@@ -95,8 +96,15 @@ const WishlistPage: FC = () => {
                   <div className="w-[72%] h-auto flex items-center justify-center transition-transform duration-[600ms] text-ink group-hover:scale-[1.04]">
                     {product.imageUrl ? (
                       <img
-                        src={product.imageUrl}
+                        {...imgSet(product.imageUrl, {
+                          widths: [320, 480, 640],
+                          sizes: '(max-width: 760px) 40vw, (max-width: 1100px) 25vw, 260px',
+                        })}
                         alt={product.fa}
+                        width={480}
+                        height={480}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover"
                       />
                     ) : (

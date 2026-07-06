@@ -4,6 +4,7 @@ import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
 import { PRODUCT_GALLERY } from '../../data/productDetail'
 import { useGallery } from '../../hooks/useGallery'
+import { imgSet, imgUrl } from '../../utils/cdnImage'
 import type { ApiProductImage } from '../../api/product'
 
 interface GalleryProps {
@@ -39,8 +40,10 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
                 <img
-                  src={img.url}
+                  src={imgUrl(img.url, 200, 200)}
                   alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`}
+                  width={100}
+                  height={100}
                   loading="lazy"
                   decoding="async"
                   className="w-full h-full object-cover"
@@ -69,8 +72,13 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
               >
                 <span className="absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_40%,color-mix(in_srgb,var(--color-copper)_8%,transparent),transparent_70%)] pointer-events-none" />
                 <img
-                  src={img.url}
+                  {...imgSet(img.url, {
+                    widths: [480, 640, 960, 1280],
+                    sizes: '(max-width: 1024px) 100vw, 45vw',
+                  })}
                   alt={`${productName} - تصویر ${i + 1}`}
+                  width={960}
+                  height={960}
                   className="w-full h-full object-cover"
                   loading={i === 0 ? 'eager' : 'lazy'}
                   fetchPriority={i === 0 ? 'high' : 'auto'}

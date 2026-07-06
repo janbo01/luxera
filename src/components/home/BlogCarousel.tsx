@@ -8,6 +8,7 @@ import { useHydrated } from '../../hooks/useHydrated'
 import { BTN_GHOST_CLS } from '../ui/Button'
 import Icon from '../icons/Icon'
 import { readHomeInitial } from './homeInitial'
+import { imgSet } from '../../utils/cdnImage'
 
 const VISIBLE = 3
 
@@ -28,10 +29,17 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
       <div className="aspect-[3/2] overflow-hidden bg-plate flex-shrink-0">
         {post.featured_image_url ? (
           <img
-            src={post.featured_image_url}
+            {...imgSet(post.featured_image_url, {
+              widths: [320, 480, 640],
+              ratio: 3 / 2,
+              sizes: '(max-width: 720px) 80vw, 360px',
+            })}
             alt={post.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            width={360}
+            height={240}
             loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
         ) : (
           <div className="w-full h-full blog-placeholder-art" />

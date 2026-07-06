@@ -4,6 +4,7 @@ import Breadcrumb from '../components/shared/Breadcrumb'
 import { toFa } from '../utils/format'
 import { listCollections, type ApiCollection } from '../api/product'
 import { toneStyle, toneClass } from '../utils/toneStyle'
+import { imgSet } from '../utils/cdnImage'
 import type { ServerInitialData } from '../context/initialData'
 
 declare global {
@@ -131,8 +132,15 @@ const CollectionsPage: FC<CollectionsPageProps> = ({ initialData }) => {
                   {/* Background: cover image or decorative letter */}
                   {col.cover_image_url ? (
                     <img
-                      src={col.cover_image_url}
+                      {...imgSet(col.cover_image_url, {
+                        widths: isWide ? [640, 960, 1280] : [320, 480, 640],
+                        sizes: isWide
+                          ? '(max-width: 1024px) 100vw, 66vw'
+                          : '(max-width: 1024px) 50vw, 33vw',
+                      })}
                       alt={col.name_fa}
+                      loading={i < 3 ? 'eager' : 'lazy'}
+                      decoding="async"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
                       aria-hidden
                     />

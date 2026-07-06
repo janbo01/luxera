@@ -4,6 +4,7 @@ import { Illustration } from '../../illustrations'
 import { flyToCart } from '../../utils/flyToCart'
 import { useWishlist } from '../../hooks/useWishlist'
 import { formatNumber } from '../../utils/format'
+import { imgSet, imgUrl } from '../../utils/cdnImage'
 import Icon from '../icons/Icon'
 import Badge from '../shared/Badge'
 import type { Product } from '../../types'
@@ -21,7 +22,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
   const handleMouseEnter = useCallback(() => {
     if (product.imageUrlAlt) {
       const img = new Image()
-      img.src = product.imageUrlAlt
+      img.src = imgUrl(product.imageUrlAlt, 640, 640)
     }
   }, [product.imageUrlAlt])
 
@@ -84,8 +85,14 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           <div className="absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-opacity duration-500">
             {product.imageUrl ? (
               <img
-                src={product.imageUrl}
+                {...imgSet(product.imageUrl, {
+                  widths: [320, 480, 640],
+                  ratio: 1,
+                  sizes: '(max-width: 720px) 50vw, (max-width: 1100px) 33vw, 370px',
+                })}
                 alt={product.fa}
+                width={640}
+                height={640}
                 loading={priority ? 'eager' : 'lazy'}
                 fetchPriority={priority ? 'high' : 'auto'}
                 decoding="async"

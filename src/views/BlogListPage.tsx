@@ -2,6 +2,7 @@ import { useState, useEffect, useTransition, useRef, memo, type FC } from 'react
 import { usePageMeta } from '../hooks/usePageMeta'
 import type { ServerInitialData } from '../context/initialData'
 import { getBlogPosts, type ApiBlogPost, type ApiBlogPostList } from '../api/blog'
+import { imgSet } from '../utils/cdnImage'
 
 declare global {
   interface Window {
@@ -72,8 +73,16 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
       <div className="aspect-[4/3] overflow-hidden bg-plate flex-shrink-0">
         {post.featured_image_url ? (
           <img
-            src={post.featured_image_url}
+            {...imgSet(post.featured_image_url, {
+              widths: [480, 640, 960],
+              ratio: 4 / 3,
+              sizes: '(max-width: 768px) 100vw, 50vw',
+            })}
             alt={post.title}
+            width={960}
+            height={720}
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
         ) : (
@@ -103,10 +112,17 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
       <div className="aspect-[3/2] overflow-hidden bg-plate flex-shrink-0">
         {post.featured_image_url ? (
           <img
-            src={post.featured_image_url}
+            {...imgSet(post.featured_image_url, {
+              widths: [320, 480, 640],
+              ratio: 3 / 2,
+              sizes: '(max-width: 720px) 100vw, 33vw',
+            })}
             alt={post.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            width={640}
+            height={427}
             loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
           />
         ) : (
           <div className="w-full h-full blog-placeholder-art" />
