@@ -25,7 +25,7 @@ const STORY_COLS = [
 ]
 
 const Story: FC = () => (
-  <section className="mt-20 max-md:mt-12 bg-ink story-section--dark">
+  <section className="mt-20 max-md:mt-12 bg-ink story-section--dark cv-auto">
     <div className="max-w-[var(--maxw)] mx-auto">
       {/* Section kicker */}
       <div className="flex items-center gap-5 px-[var(--pad)] pt-10 pb-0">

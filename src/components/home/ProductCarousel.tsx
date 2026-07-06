@@ -89,7 +89,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
   }, [sectionId, catSlug])
 
   return (
-    <section className="page-section" id={sectionId}>
+    <section className="page-section cv-auto" id={sectionId}>
       <SectionHeader
         kicker={kicker}
         title={title}

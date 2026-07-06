@@ -43,7 +43,7 @@ const CategoriesSection: FC = () => {
   const apiByName = useMemo(() => new Map(apiCats.map((c) => [c.name, c])), [apiCats])
 
   return (
-    <section className="page-section">
+    <section className="page-section cv-auto">
       <SectionHeader
         kicker="Browse by category"
         title={

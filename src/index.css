@@ -421,6 +421,16 @@
     color: var(--color-muted);
   }
 
+  /* Below-the-fold sections: lets the browser skip layout/paint while
+     off-screen, so scripts that force layout (e.g. ClientRouter's scroll
+     restoration) only pay for the visible viewport. The intrinsic size
+     reserves approximate scroll height until first render ("auto" then
+     remembers the real size). */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
+  }
+
   /* Common card hover lift */
   .card-lift {
     transition:

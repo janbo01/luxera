@@ -116,7 +116,7 @@ const BlogCarousel: FC = () => {
   const showEmpty = !loading && posts.length === 0
 
   return (
-    <section className="page-section" id="blog">
+    <section className="page-section cv-auto" id="blog">
       <SectionHeader
         kicker="BLOG · مقالات"
         title={
