@@ -3,7 +3,7 @@ import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
 import { useHydrated } from '../../hooks/useHydrated'
-import { imgSet } from '../../utils/cdnImage'
+import { imgSet, HERO_LCP } from '../../utils/cdnImage'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
 
@@ -139,8 +139,8 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
               {slide.imageUrl ? (
                 <img
                   {...imgSet(slide.imageUrl, {
-                    widths: [480, 720, 960, 1280],
-                    sizes: '(max-width: 767px) calc(100vw - 40px), 45vw',
+                    widths: [...HERO_LCP.widths],
+                    sizes: HERO_LCP.sizes,
                   })}
                   alt={slide.caption}
                   className="w-full h-full object-cover"

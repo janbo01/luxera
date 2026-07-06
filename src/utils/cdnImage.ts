@@ -39,6 +39,14 @@ export function imgUrl(url: string, w: number, h = 0): string {
   return `${PROXY_BASE}/insecure/rs:fill:${w}:${h}/${base64Url(url)}.webp`
 }
 
+// Hero LCP image config, shared between HeroSlider (the <img>) and the SSR
+// preload hint (src/lib/ssr.ts) so the preload scanner selects the exact same
+// resized candidate the <img> will request. Keep the two in sync.
+export const HERO_LCP = {
+  widths: [480, 720, 960, 1280],
+  sizes: '(max-width: 767px) calc(100vw - 40px), 45vw',
+} as const
+
 export interface ImgSetOptions {
   /** Candidate widths in device pixels, ascending. */
   widths: number[]

@@ -4,6 +4,7 @@
  */
 import { deriveThemeCSS } from '../utils/themeTokens'
 import { CATEGORIES } from '../data/categories'
+import { imgSet, HERO_LCP } from '../utils/cdnImage'
 
 const SITE_URL = 'https://luxera.ir'
 
@@ -237,11 +238,25 @@ let _homeRefreshInflight: Promise<void> | null = null
 function buildHomeData(banners: unknown[]): { lcpPreload: string; initialScript: string } {
   const first = banners[0] as { image_url?: string; product?: { image_url?: string } } | undefined
   const firstImg = first?.image_url || first?.product?.image_url
+
+  // Preload the exact resized candidate the hero <img> will fetch. HeroSlider
+  // renders after hydration, so without this the preload scanner never sees the
+  // LCP image. imagesrcset/imagesizes mirror the <img> so the scanner selects
+  // the same imgproxy URL (falls back to a plain href when the CDN is off).
+  let lcpPreload = ''
+  if (firstImg) {
+    const { src, srcSet, sizes } = imgSet(firstImg, {
+      widths: [...HERO_LCP.widths],
+      sizes: HERO_LCP.sizes,
+    })
+    lcpPreload = srcSet
+      ? `<link rel="preload" as="image" imagesrcset="${srcSet}" imagesizes="${sizes}" fetchpriority="high">`
+      : `<link rel="preload" as="image" href="${src}" fetchpriority="high">`
+  }
+
   return {
     initialScript: `<script>window.__BANNERS_INITIAL__=${safeJson(banners)}</script>`,
-    lcpPreload: firstImg
-      ? `<link rel="preload" as="image" href="${firstImg}" fetchpriority="high">`
-      : '',
+    lcpPreload,
   }
 }
 
