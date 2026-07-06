@@ -37,12 +37,17 @@ export default defineConfig({
     port: 3000,
   },
   security: {
-    // Renders a per-request <meta http-equiv="content-security-policy"> tag.
-    // script-src/style-src get 'self' + auto-generated hashes for every script/style
-    // Astro compiles at build time; per-request dynamic scripts (hydration data, JSON-LD,
-    // the theme <style>) register their own hash at render time via Astro.csp.insertScriptHash
-    // / insertStyleHash in src/lib/ssr.ts + the pages that call it — see cspHash() there.
-    // frame-ancestors/report-uri/sandbox are omitted: browsers ignore them in a <meta> CSP.
+    // Delivered as a real Content-Security-Policy response header (Astro's default for
+    // on-demand/server routes — stronger than a <meta> tag). script-src/style-src get
+    // 'self' + auto-generated hashes for every script/style Astro compiles at build time.
+    // Two things aren't build-time-known and register their own hash at render time via
+    // Astro.csp.insertScriptHash/insertStyleHash (see cspHash() in src/lib/ssr.ts):
+    // the theme <style> tag (per-request, from store settings) and HydrateReader.astro's
+    // script (marked is:inline for reasons documented there, which opts it out of
+    // Astro's own hash tracking). Hydration *data* itself (product/category/etc.) is
+    // never an executable script — see jsonIsland() in ssr.ts — so it needs no hash and
+    // survives Astro ClientRouter's client-side page swaps.
+    // style-src's hashes are stripped back out in src/middleware.ts (see there for why).
     csp: {
       directives: [
         "default-src 'self'",

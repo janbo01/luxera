@@ -37,19 +37,25 @@ export function safeJson(val: unknown): string {
 }
 
 // ── CSP hashing ────────────────────────────────────────────────────────────────
-// Per-request inline <script>/<style> content can't be covered by Astro's build-time
-// CSP hashing (astro.config.mjs `security.csp`), since it's only known at request time.
-// These hash it the same way Astro does (sha256 of the element's text content, base64,
-// `sha256-` prefix) so callers can register it via Astro.csp.insertScriptHash/insertStyleHash.
+// Hashes inline <script>/<style> content the same way Astro does (sha256 of the
+// element's exact text, base64, `sha256-` prefix), for content Astro's own build-time
+// CSP hashing (astro.config.mjs `security.csp`) can't see: the theme <style> tag (its
+// content is per-request, from store settings) and <HydrateReader />'s script (marked
+// is:inline so it stays a classic, always-re-executing script — see HydrateReader.astro).
 
-function cspHash(content: string): CspHash {
+export function cspHash(content: string): CspHash {
   return `sha256-${createHash('sha256').update(content, 'utf8').digest('base64')}`
 }
 
-/** A `<script>window.<varName>=<data></script>` tag plus the CSP hash of its content. */
-export function scriptTag(varName: string, data: unknown): { html: string; hash: CspHash | '' } {
-  const inner = `window.${varName}=${safeJson(data)}`
-  return { html: `<script>${inner}</script>`, hash: cspHash(inner) }
+/**
+ * A `<script type="application/json" data-hydrate="varName">` block holding `data`, read
+ * by <HydrateReader /> into `window.<varName>`. Inert to the browser (not a JS mimetype),
+ * so — unlike an executable <script> — it needs no CSP hash and survives Astro
+ * ClientRouter's client-side page swaps, where the browser still enforces the
+ * *originating* page's CSP against newly inserted content.
+ */
+export function jsonIsland(varName: string, data: unknown): string {
+  return `<script type="application/json" data-hydrate="${varName}">${safeJson(data)}</script>`
 }
 
 // ── Theme & Settings ──────────────────────────────────────────────────────────
@@ -168,14 +174,14 @@ const SETTINGS_INJECT_KEYS = [
   'theme_text',
 ] as const
 
-export async function fetchSettingsScript(): Promise<{ html: string; hash: CspHash | '' }> {
+export async function fetchSettingsScript(): Promise<string> {
   const raw = await fetchRawSettings()
-  if (!raw || Object.keys(raw).length === 0) return { html: '', hash: '' }
+  if (!raw || Object.keys(raw).length === 0) return ''
   const slim: Record<string, string> = {}
   for (const key of SETTINGS_INJECT_KEYS) {
     slim[key] = raw[key] ?? ''
   }
-  return scriptTag('__SETTINGS_INITIAL__', slim)
+  return jsonIsland('__SETTINGS_INITIAL__', slim)
 }
 
 // ── Footer data (categories + collections) ────────────────────────────────────
@@ -248,28 +254,20 @@ export async function fetchFooterData(): Promise<FooterData> {
   return { categories, collections }
 }
 
-export function buildFooterScript(footerData: FooterData): { html: string; hash: CspHash | '' } {
+export function buildFooterScript(footerData: FooterData): string {
   if (footerData.categories.length === 0 && footerData.collections.length === 0) {
-    return { html: '', hash: '' }
+    return ''
   }
-  return scriptTag('__FOOTER_INITIAL__', footerData)
+  return jsonIsland('__FOOTER_INITIAL__', footerData)
 }
 
 // ── Page-specific data fetchers ───────────────────────────────────────────────
 
-let _homeCache: {
-  lcpPreload: string
-  initialScript: string
-  initialScriptHash: CspHash | ''
-} | null = null
+let _homeCache: { lcpPreload: string; initialScript: string } | null = null
 let _homeExpiry = 0
 let _homeRefreshInflight: Promise<void> | null = null
 
-function buildHomeData(banners: unknown[]): {
-  lcpPreload: string
-  initialScript: string
-  initialScriptHash: CspHash | ''
-} {
+function buildHomeData(banners: unknown[]): { lcpPreload: string; initialScript: string } {
   const first = banners[0] as { image_url?: string; product?: { image_url?: string } } | undefined
   const firstImg = first?.image_url || first?.product?.image_url
 
@@ -288,12 +286,11 @@ function buildHomeData(banners: unknown[]): {
       : `<link rel="preload" as="image" href="${src}" fetchpriority="high">`
   }
 
-  const { html: initialScript, hash: initialScriptHash } = scriptTag('__BANNERS_INITIAL__', banners)
-  return { initialScript, initialScriptHash, lcpPreload }
+  return { initialScript: jsonIsland('__BANNERS_INITIAL__', banners), lcpPreload }
 }
 
 export async function fetchHomeData() {
-  if (!storeApiBase) return { lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+  if (!storeApiBase) return { lcpPreload: '', initialScript: '' }
 
   const now = Date.now()
   if (_homeCache && now < _homeExpiry) return _homeCache
@@ -323,13 +320,13 @@ export async function fetchHomeData() {
 
   try {
     const r = await fetch(`${storeApiBase}/store/banners`, { signal: AbortSignal.timeout(5000) })
-    if (!r.ok) return { lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { lcpPreload: '', initialScript: '' }
     const data = unwrap(await r.json())
     _homeCache = buildHomeData(Array.isArray(data) ? data : [])
     _homeExpiry = Date.now() + 5 * 60 * 1000
     return _homeCache
   } catch {
-    return { lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    return { lcpPreload: '', initialScript: '' }
   }
 }
 
@@ -368,8 +365,8 @@ function slimProduct(p: Record<string, unknown>): SlimProduct {
   }
 }
 
-async function loadHomeLists(): Promise<{ html: string; hash: CspHash | '' }> {
-  if (!productApiBase && !storeApiBase) return { html: '', hash: '' }
+async function loadHomeLists(): Promise<string> {
+  if (!productApiBase && !storeApiBase) return ''
 
   const cats = await fetchCategories()
   const slugToId = new Map<string, string>()
@@ -444,29 +441,26 @@ async function loadHomeLists(): Promise<{ html: string; hash: CspHash | '' }> {
     : undefined
 
   const hasAny = Object.keys(carousels).length > 0 || !!blog || !!categories
-  if (!hasAny) return { html: '', hash: '' }
+  if (!hasAny) return ''
 
   const data = {
     categories,
     carousels: Object.keys(carousels).length ? carousels : undefined,
     blog: blog ?? undefined,
   }
-  return scriptTag('__HOME_INITIAL__', data)
+  return jsonIsland('__HOME_INITIAL__', data)
 }
 
-const HOME_INITIAL_NULL = scriptTag('__HOME_INITIAL__', null)
+const HOME_INITIAL_NULL = jsonIsland('__HOME_INITIAL__', null)
 
-let _homeListsCache: { html: string; hash: CspHash | '' } | null = null
+let _homeListsCache: string | null = null
 let _homeListsExpiry = 0
 let _homeListsRefreshInflight: Promise<void> | null = null
 
-export async function fetchHomeListsData(): Promise<{
-  initialScript: string
-  initialScriptHash: CspHash | ''
-}> {
+export async function fetchHomeListsData(): Promise<{ initialScript: string }> {
   const now = Date.now()
   if (_homeListsCache !== null && now < _homeListsExpiry) {
-    return { initialScript: _homeListsCache.html, initialScriptHash: _homeListsCache.hash }
+    return { initialScript: _homeListsCache }
   }
 
   // Stale-while-revalidate, same posture as fetchHomeData: serve the cached script
@@ -476,7 +470,7 @@ export async function fetchHomeListsData(): Promise<{
     if (!_homeListsRefreshInflight) {
       _homeListsRefreshInflight = loadHomeLists()
         .then((script) => {
-          _homeListsCache = script.html ? script : HOME_INITIAL_NULL
+          _homeListsCache = script || HOME_INITIAL_NULL
           _homeListsExpiry = Date.now() + 5 * 60 * 1000
         })
         .catch(() => {})
@@ -484,31 +478,30 @@ export async function fetchHomeListsData(): Promise<{
           _homeListsRefreshInflight = null
         })
     }
-    return { initialScript: _homeListsCache.html, initialScriptHash: _homeListsCache.hash }
+    return { initialScript: _homeListsCache }
   }
 
   try {
     const script = await loadHomeLists()
-    if (!script.html) {
+    if (!script) {
       // Nothing succeeded — signal explicit null and leave uncached so the next
       // request retries instead of freezing on an empty result.
-      return { initialScript: HOME_INITIAL_NULL.html, initialScriptHash: HOME_INITIAL_NULL.hash }
+      return { initialScript: HOME_INITIAL_NULL }
     }
     _homeListsCache = script
     _homeListsExpiry = Date.now() + 5 * 60 * 1000
-    return { initialScript: script.html, initialScriptHash: script.hash }
+    return { initialScript: script }
   } catch {
-    return { initialScript: HOME_INITIAL_NULL.html, initialScriptHash: HOME_INITIAL_NULL.hash }
+    return { initialScript: HOME_INITIAL_NULL }
   }
 }
 
 export async function fetchProductData(idOrSlug: string) {
-  if (!productApiBase)
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+  if (!productApiBase) return { initialData: {}, lcpPreload: '', initialScript: '' }
   try {
     const productRes = await fetch(`${productApiBase}/products/${idOrSlug}`)
     if (!productRes.ok) {
-      return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+      return { initialData: {}, lcpPreload: '', initialScript: '' }
     }
     const product = unwrap(await productRes.json()) as Record<string, unknown>
     // The comments endpoint only accepts the product UUID (a slug returns 400), so it must
@@ -531,64 +524,47 @@ export async function fetchProductData(idOrSlug: string) {
     // The gallery renders images[0] as the main image (loading=eager, fetchpriority=high),
     // so that's the LCP element — preload exactly that URL, not images[1].
     const lcpUrl = imgs?.[0]?.url
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__PRODUCT_INITIAL__',
-      product,
-    )
     return {
       initialData: { product, productComments },
-      initialScript,
-      initialScriptHash,
+      initialScript: jsonIsland('__PRODUCT_INITIAL__', product),
       lcpPreload: lcpUrl
         ? `<link rel="preload" as="image" href="${lcpUrl}" fetchpriority="high">`
         : '',
     }
   } catch {
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    return { initialData: {}, lcpPreload: '', initialScript: '' }
   }
 }
 
 export async function fetchCollectionData(slug: string) {
-  if (!productApiBase)
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+  if (!productApiBase) return { initialData: {}, lcpPreload: '', initialScript: '' }
   try {
     const r = await fetch(`${productApiBase}/collections/${slug}`)
-    if (!r.ok)
-      return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { initialData: {}, lcpPreload: '', initialScript: '' }
     const data = unwrap(await r.json())
     const cover = (data as { cover_image_url?: string })?.cover_image_url
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__COLLECTION_INITIAL__',
-      data,
-    )
     return {
       initialData: { collection: data },
-      initialScript,
-      initialScriptHash,
+      initialScript: jsonIsland('__COLLECTION_INITIAL__', data),
       lcpPreload: cover
         ? `<link rel="preload" as="image" href="${cover}" fetchpriority="high">`
         : '',
     }
   } catch {
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    return { initialData: {}, lcpPreload: '', initialScript: '' }
   }
 }
 
 export async function fetchCollectionsListData() {
-  if (!productApiBase) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+  if (!productApiBase) return { initialData: {}, initialScript: '' }
   try {
     const r = await fetch(`${productApiBase}/collections`)
-    if (!r.ok) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { initialData: {}, initialScript: '' }
     const raw = unwrap(await r.json())
     const items = (raw as { items?: unknown[] })?.items ?? (Array.isArray(raw) ? raw : [])
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__COLLECTIONS_INITIAL__',
-      items,
-    )
     return {
       initialData: { collections: items },
-      initialScript,
-      initialScriptHash,
+      initialScript: jsonIsland('__COLLECTIONS_INITIAL__', items),
     }
   } catch {
     return { initialData: {}, initialScript: '' }
@@ -596,26 +572,19 @@ export async function fetchCollectionsListData() {
 }
 
 export async function fetchBlogPostData(slug: string) {
-  if (!storeApiBase)
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+  if (!storeApiBase) return { initialData: {}, lcpPreload: '', initialScript: '' }
   try {
     const r = await fetch(`${storeApiBase}/store/blog/${encodeURIComponent(slug)}`)
-    if (!r.ok)
-      return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { initialData: {}, lcpPreload: '', initialScript: '' }
     const data = unwrap(await r.json())
     const img = (data as { featured_image_url?: string })?.featured_image_url
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__BLOG_POST_INITIAL__',
-      data,
-    )
     return {
       initialData: { blogPost: data },
-      initialScript,
-      initialScriptHash,
+      initialScript: jsonIsland('__BLOG_POST_INITIAL__', data),
       lcpPreload: img ? `<link rel="preload" as="image" href="${img}" fetchpriority="high">` : '',
     }
   } catch {
-    return { initialData: {}, lcpPreload: '', initialScript: '', initialScriptHash: '' as const }
+    return { initialData: {}, lcpPreload: '', initialScript: '' }
   }
 }
 
@@ -624,15 +593,14 @@ let _blogListExpiry = 0
 let _blogListRefreshInflight: Promise<void> | null = null
 
 export async function fetchBlogListData(page = 1) {
-  if (!storeApiBase) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+  if (!storeApiBase) return { initialData: {}, initialScript: '' }
 
   const now = Date.now()
   if (page === 1 && _blogListCache && now < _blogListExpiry) {
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__BLOG_LIST_INITIAL__',
-      _blogListCache,
-    )
-    return { initialData: { blogList: _blogListCache }, initialScript, initialScriptHash }
+    return {
+      initialData: { blogList: _blogListCache },
+      initialScript: jsonIsland('__BLOG_LIST_INITIAL__', _blogListCache),
+    }
   }
 
   // Stale-while-revalidate for page 1
@@ -652,35 +620,33 @@ export async function fetchBlogListData(page = 1) {
           _blogListRefreshInflight = null
         })
     }
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__BLOG_LIST_INITIAL__',
-      _blogListCache,
-    )
-    return { initialData: { blogList: _blogListCache }, initialScript, initialScriptHash }
+    return {
+      initialData: { blogList: _blogListCache },
+      initialScript: jsonIsland('__BLOG_LIST_INITIAL__', _blogListCache),
+    }
   }
 
   try {
     const r = await fetch(`${storeApiBase}/store/blog?page=${page}&page_size=12`, {
       signal: AbortSignal.timeout(8000),
     })
-    if (!r.ok) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { initialData: {}, initialScript: '' }
     const data = unwrap(await r.json())
     if (page === 1) {
       _blogListCache = data
       _blogListExpiry = Date.now() + 2 * 60 * 1000
     }
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__BLOG_LIST_INITIAL__',
-      data,
-    )
-    return { initialData: { blogList: data }, initialScript, initialScriptHash }
+    return {
+      initialData: { blogList: data },
+      initialScript: jsonIsland('__BLOG_LIST_INITIAL__', data),
+    }
   } catch {
-    return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+    return { initialData: {}, initialScript: '' }
   }
 }
 
 export async function fetchCategoryData(slug: string) {
-  if (!productApiBase) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+  if (!productApiBase) return { initialData: {}, initialScript: '' }
   try {
     let apiCategoryId: string | undefined
     if (slug !== 'new') {
@@ -691,16 +657,12 @@ export async function fetchCategoryData(slug: string) {
     const qs = new URLSearchParams({ sort: 'newest', limit: '60' })
     if (apiCategoryId) qs.set('category_id', apiCategoryId)
     const r = await fetch(`${productApiBase}/products?${qs}`)
-    if (!r.ok) return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+    if (!r.ok) return { initialData: {}, initialScript: '' }
     const data = unwrap(await r.json()) as { items?: unknown[]; next_cursor?: string }
     const initialData = { categoryProducts: data, categoryResolvedId: apiCategoryId ?? null }
-    const { html: initialScript, hash: initialScriptHash } = scriptTag(
-      '__CATEGORY_INITIAL__',
-      initialData,
-    )
-    return { initialData, initialScript, initialScriptHash }
+    return { initialData, initialScript: jsonIsland('__CATEGORY_INITIAL__', initialData) }
   } catch {
-    return { initialData: {}, initialScript: '', initialScriptHash: '' as const }
+    return { initialData: {}, initialScript: '' }
   }
 }
 

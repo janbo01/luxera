@@ -51,15 +51,12 @@ const cat = CATEGORIES.find((c) => c.id === id)
 const seoTitle = (id && CATEGORY_SEO_TITLES[id]) || cat?.fa || 'دسته‌بندی'
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, initialScript }, footerData] = await Promise.all([
   fetchCategoryData(id!),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 type ProductLink = { id: string; slug?: string; title_fa?: string; title: string }
 const productItems: ProductLink[] =
@@ -92,7 +89,7 @@ const categoryJsonLd = safeJson({
   jsonLd={categoryJsonLd}
 >
   <h1 class="sr-only">{seoTitle}</h1>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   {id && CATEGORY_BODY_TEXT[id] && (
     <p class="sr-only">{CATEGORY_BODY_TEXT[id]}</p>
   )}

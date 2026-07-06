@@ -7,15 +7,12 @@ import type { ServerInitialData } from '../../context/initialData'
 const { slug } = Astro.params
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, lcpPreload, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchBlogPostData(slug!),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 const post = (initialData as { blogPost?: Record<string, unknown> }).blogPost
 const h1Title = (post?.title ?? 'مقاله') as string
@@ -51,6 +48,6 @@ const blogJsonLd = post ? safeJson({
   jsonLd={blogJsonLd}
 >
   <h1 class="sr-only">{h1Title}</h1>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   <BlogDetailPage client:only="react" slug={slug!} initialData={initialData as ServerInitialData} />
 </BaseLayout>

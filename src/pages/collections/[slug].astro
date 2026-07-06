@@ -6,15 +6,12 @@ import { fetchCollectionData, fetchFooterData, buildFooterScript, safeJson } fro
 const { slug } = Astro.params
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, lcpPreload, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchCollectionData(slug!),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 const col = (initialData as { collection?: Record<string, unknown> }).collection
 const colName = (col?.name_fa ?? 'مجموعه') as string
@@ -66,6 +63,6 @@ const collectionJsonLd = col ? safeJson({
     بازگشت کالا تا ۴ روز پس از دریافت امکان‌پذیر است. برای مشاوره‌ی انتخاب مجموعه یا راهنمایی درباره‌ی
     سایز و نگهداری، پشتیبانی لوکسرا روزانه از ساعت ۱۰ تا ۲۲ از طریق واتس‌اپ و فرم تماس پاسخگوست.
   </p>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   <CollectionDetailPage client:only="react" slug={slug!} initialData={initialData} />
 </BaseLayout>

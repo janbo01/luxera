@@ -5,15 +5,12 @@ import { fetchCollectionsListData, fetchFooterData, buildFooterScript } from '..
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, initialScript }, footerData] = await Promise.all([
   fetchCollectionsListData(),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 type CollectionLink = { slug: string; name_fa: string }
 const collectionItems: CollectionLink[] =
@@ -55,7 +52,7 @@ const collectionsJsonLd = JSON.stringify({
     مجموعه‌های مختلف فراهم شده است. با بازگشت رایگان تا ۴ روز و ارسال سریع به تهران و سراسر ایران، خرید
     مجموعه جواهرات از لوکسرا تجربه‌ای مطمئن و راحت است.
   </p>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   {collectionItems.length > 0 && (
     <nav aria-hidden="true" class="sr-only">
       {collectionItems.map(col => <a href={`/collections/${col.slug}`}>{col.name_fa}</a>)}

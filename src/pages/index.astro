@@ -6,19 +6,13 @@ import Story from '../components/home/Story'
 import BlogCarousel from '../components/home/BlogCarousel'
 import { fetchHomeData, fetchHomeListsData, fetchFooterData, buildFooterScript } from '../lib/ssr'
 
-const [{ lcpPreload, initialScript, initialScriptHash }, homeLists, footerData] = await Promise.all([
+const [{ lcpPreload, initialScript }, homeLists, footerData] = await Promise.all([
   fetchHomeData(),
   fetchHomeListsData(),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-// Per-request dynamic scripts aren't covered by astro.config.mjs's build-time CSP
-// hashing — register each one's hash for this response (see cspHash() in ssr.ts).
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (homeLists.initialScriptHash) Astro.csp?.insertScriptHash(homeLists.initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
@@ -55,7 +49,7 @@ const homeJsonLd = JSON.stringify([
   jsonLd={homeJsonLd}
 >
   <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
-  <Fragment set:html={initialScript + homeLists.initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
   <HomePage client:load />
   <Feature />
   <Story />

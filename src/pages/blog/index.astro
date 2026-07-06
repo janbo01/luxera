@@ -6,15 +6,12 @@ import type { ServerInitialData } from '../../context/initialData'
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, initialScript }, footerData] = await Promise.all([
   fetchBlogListData(),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 type BlogPostLink = { slug: string; title: string }
 const blogPosts: BlogPostLink[] =
@@ -51,7 +48,7 @@ const blogJsonLd = JSON.stringify({
     را بیابید و با انواع آلیاژهای مورد استفاده در جواهرات فانتزی آشنا شوید تا با اطمینان بیشتری
     خرید کنید.
   </p>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   {blogPosts.length > 0 && (
     <nav aria-hidden="true" class="sr-only">
       {blogPosts.map(post => <a href={`/blog/${post.slug}`}>{post.title}</a>)}

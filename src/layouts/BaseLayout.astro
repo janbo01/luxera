@@ -4,6 +4,7 @@ import AppShell from '../components/layout/AppShell'
 import Header from '../components/layout/Header'
 import Footer from '../components/layout/Footer'
 import { fetchThemeStyleTag, fetchSocialSettings, fetchSettingsScript } from '../lib/ssr'
+import HydrateReader from '../components/shared/HydrateReader.astro'
 import '../index.css'
 
 interface Props {
@@ -28,17 +29,17 @@ const {
   noIndex = false,
 } = Astro.props
 
-const [theme, socialSettings, settings] = await Promise.all([
+const [theme, socialSettings, settingsScript] = await Promise.all([
   fetchThemeStyleTag(),
   fetchSocialSettings(),
   fetchSettingsScript(),
 ])
 
-// Per-request dynamic <style>/<script> content isn't known at build time, so it can't
-// be covered by astro.config.mjs's auto-hashed CSP — register each one's hash for this
-// response. See cspHash()/scriptTag() in ssr.ts.
+// The theme <style> tag's content is per-request (store settings), so it isn't covered
+// by astro.config.mjs's auto-hashed CSP — register its hash for this response.
+// settingsScript is an inert JSON island (see jsonIsland() in ssr.ts) — CSP doesn't
+// apply to it at all, so no hash is needed there.
 if (theme.hash) Astro.csp?.insertStyleHash(theme.hash)
-if (settings.hash) Astro.csp?.insertScriptHash(settings.hash)
 
 const SITE_URL = 'https://luxera.ir'
 const rawCanonical = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
@@ -96,10 +97,14 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     {theme.html && <Fragment set:html={theme.html} />}
 
     <!-- Settings (injected from store API, so client hooks don't re-fetch on mount) -->
-    {settings.html && <Fragment set:html={settings.html} />}
+    {settingsScript && <Fragment set:html={settingsScript} />}
 
     <!-- JSON-LD structured data (injected per-page) -->
     {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
+
+    <!-- Reads every page's JSON-island hydration data into window globals — once, here,
+         not per-page: see HydrateReader.astro for why. -->
+    <HydrateReader />
 
     <!-- Astro ClientRouter for SPA-like navigation -->
     <ClientRouter />

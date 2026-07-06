@@ -1,0 +1,40 @@
+---
+// Reads sibling `<script type="application/json" data-hydrate>` blocks (built by
+// jsonIsland() in src/lib/ssr.ts) and assigns them to window globals. Those blocks are
+// inert to the browser (not a JS mimetype), so they're outside script-src's reach —
+// unlike an executable <script>, whose per-request hash only matches the exact page
+// that emitted it and breaks on Astro ClientRouter's client-side page swaps, where the
+// browser still enforces the *originating* page's CSP header against newly inserted
+// content (confirmed by reproducing it locally).
+//
+// Rendered exactly once, in BaseLayout, not per-page: a <script> embedded in content
+// that ClientRouter swaps in on navigation never gets a fresh execution chance —
+// confirmed by testing directly (a per-render-unique attribute didn't help; only
+// astro-island custom elements re-run their lifecycle on new content, via
+// connectedCallback, which fires on insertion regardless of method). So instead of
+// re-running per navigation, this runs once and subscribes to `astro:page-load`
+// (dispatched by ClientRouter after every navigation, including the first) to re-scan
+// for JSON islands each time — the listener lives on `document`, which persists across
+// soft navigations, so it doesn't need to be re-attached.
+//
+// is:inline is required (it opts a script out of Astro's build-time CSP hashing but
+// also, critically, keeps it a classic script — without it Astro compiles it to
+// `type="module"`, and those get de-duplicated by content, so a second identical
+// instance elsewhere on the page would silently no-op). Its hash is registered
+// manually via cspHash() — safe because this content is a fixed string.
+import { cspHash } from '../../lib/ssr'
+
+const READER_JS = `function __hydrate() {
+  document.querySelectorAll('script[type="application/json"][data-hydrate]').forEach((el) => {
+    try {
+      window[el.dataset.hydrate] = JSON.parse(el.textContent || 'null')
+    } catch {}
+  })
+}
+__hydrate()
+document.addEventListener('astro:page-load', __hydrate)`
+
+Astro.csp?.insertScriptHash(cspHash(READER_JS))
+---
+
+<script is:inline set:html={READER_JS} />

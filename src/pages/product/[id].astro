@@ -5,15 +5,12 @@ import { fetchProductData, fetchFooterData, buildFooterScript, safeJson } from '
 
 const { id } = Astro.params
 
-const [{ initialData, lcpPreload, initialScript, initialScriptHash }, footerData] = await Promise.all([
+const [{ initialData, lcpPreload, initialScript }, footerData] = await Promise.all([
   fetchProductData(id!),
   fetchFooterData(),
 ])
 
 const footerScript = buildFooterScript(footerData)
-
-if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
-if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 const product = (initialData as { product?: Record<string, unknown> }).product
 const BASE_TITLE = 'Luxera · لوکسرا'
@@ -131,6 +128,6 @@ const productJsonLd = product
     بسته‌بندی هدیه‌ای استاندارد، ارسال یک‌روزه در تهران و ۲ تا ۴ روز در سراسر ایران.
     بازگشت رایگان تا ۴ روز پس از دریافت.
   </p>
-  <Fragment set:html={initialScript + footerScript.html} />
+  <Fragment set:html={initialScript + footerScript} />
   <ProductPage client:load id={id!} initialData={initialData} />
 </BaseLayout>
