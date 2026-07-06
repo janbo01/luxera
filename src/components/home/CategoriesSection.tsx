@@ -79,11 +79,13 @@ const CategoriesSection: FC = () => {
               {imgSrc ? (
                 <img
                   {...imgSet(imgSrc, {
-                    widths: isFeatured ? [640, 960, 1280] : [320, 480, 640],
+                    widths: isFeatured ? [480, 720, 960, 1280, 1856] : [320, 400, 480, 640, 960],
                     ratio: isFeatured ? 16 / 10 : 3 / 4,
+                    // Actual rendered width: page-section pad (20px/side on mobile) +
+                    // 12px grid gap; capped by --maxw 1480 (featured 908px, small 448px).
                     sizes: isFeatured
-                      ? '(max-width: 768px) 100vw, 66vw'
-                      : '(max-width: 768px) 50vw, 33vw',
+                      ? '(max-width: 767px) calc(100vw - 40px), (max-width: 1480px) calc(61vw - 4px), 908px'
+                      : '(max-width: 767px) calc(50vw - 26px), (max-width: 1480px) calc(31vw - 8px), 448px',
                   })}
                   alt={cat.fa}
                   loading="lazy"

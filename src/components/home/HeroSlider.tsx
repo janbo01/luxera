@@ -139,8 +139,8 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
               {slide.imageUrl ? (
                 <img
                   {...imgSet(slide.imageUrl, {
-                    widths: [480, 640, 960, 1280],
-                    sizes: '(max-width: 768px) 100vw, 45vw',
+                    widths: [480, 720, 960, 1280],
+                    sizes: '(max-width: 767px) calc(100vw - 40px), 45vw',
                   })}
                   alt={slide.caption}
                   className="w-full h-full object-cover"
