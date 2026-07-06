@@ -36,4 +36,23 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  security: {
+    // Renders a per-request <meta http-equiv="content-security-policy"> tag.
+    // script-src/style-src get 'self' + auto-generated hashes for every script/style
+    // Astro compiles at build time; per-request dynamic scripts (hydration data, JSON-LD,
+    // the theme <style>) register their own hash at render time via Astro.csp.insertScriptHash
+    // / insertStyleHash in src/lib/ssr.ts + the pages that call it — see cspHash() there.
+    // frame-ancestors/report-uri/sandbox are omitted: browsers ignore them in a <meta> CSP.
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "img-src 'self' https://image.luxera.ir https://img.luxera.ir https://trustseal.enamad.ir",
+        "connect-src 'self' https://api.luxera.ir",
+        "font-src 'self'",
+      ],
+    },
+  },
 })

@@ -28,11 +28,17 @@ const {
   noIndex = false,
 } = Astro.props
 
-const [themeStyle, socialSettings, settingsScript] = await Promise.all([
+const [theme, socialSettings, settings] = await Promise.all([
   fetchThemeStyleTag(),
   fetchSocialSettings(),
   fetchSettingsScript(),
 ])
+
+// Per-request dynamic <style>/<script> content isn't known at build time, so it can't
+// be covered by astro.config.mjs's auto-hashed CSP — register each one's hash for this
+// response. See cspHash()/scriptTag() in ssr.ts.
+if (theme.hash) Astro.csp?.insertStyleHash(theme.hash)
+if (settings.hash) Astro.csp?.insertScriptHash(settings.hash)
 
 const SITE_URL = 'https://luxera.ir'
 const rawCanonical = canonical ? `${SITE_URL}${canonical}` : `${SITE_URL}${Astro.url.pathname}`
@@ -87,10 +93,10 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     {lcpPreload && <Fragment set:html={lcpPreload} />}
 
     <!-- Theme CSS (injected from store API) -->
-    {themeStyle && <Fragment set:html={themeStyle} />}
+    {theme.html && <Fragment set:html={theme.html} />}
 
     <!-- Settings (injected from store API, so client hooks don't re-fetch on mount) -->
-    {settingsScript && <Fragment set:html={settingsScript} />}
+    {settings.html && <Fragment set:html={settings.html} />}
 
     <!-- JSON-LD structured data (injected per-page) -->
     {jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}

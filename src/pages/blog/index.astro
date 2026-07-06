@@ -1,19 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogListPage from '../../views/BlogListPage'
-import { fetchBlogListData, fetchFooterData, safeJson } from '../../lib/ssr'
+import { fetchBlogListData, fetchFooterData, buildFooterScript } from '../../lib/ssr'
 import type { ServerInitialData } from '../../context/initialData'
 
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript }, footerData] = await Promise.all([
+const [{ initialData, initialScript, initialScriptHash }, footerData] = await Promise.all([
   fetchBlogListData(),
   fetchFooterData(),
 ])
 
-const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
-  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
-  : ''
+const footerScript = buildFooterScript(footerData)
+
+if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
+if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 type BlogPostLink = { slug: string; title: string }
 const blogPosts: BlogPostLink[] =
@@ -50,7 +51,7 @@ const blogJsonLd = JSON.stringify({
     را بیابید و با انواع آلیاژهای مورد استفاده در جواهرات فانتزی آشنا شوید تا با اطمینان بیشتری
     خرید کنید.
   </p>
-  <Fragment set:html={initialScript + footerScript} />
+  <Fragment set:html={initialScript + footerScript.html} />
   {blogPosts.length > 0 && (
     <nav aria-hidden="true" class="sr-only">
       {blogPosts.map(post => <a href={`/blog/${post.slug}`}>{post.title}</a>)}

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import CategoryPage from '../../views/CategoryPage'
-import { fetchCategoryData, fetchFooterData, safeJson } from '../../lib/ssr'
+import { fetchCategoryData, fetchFooterData, buildFooterScript, safeJson } from '../../lib/ssr'
 import { CATEGORIES } from '../../data/categories'
 
 const { id } = Astro.params
@@ -51,14 +51,15 @@ const cat = CATEGORIES.find((c) => c.id === id)
 const seoTitle = (id && CATEGORY_SEO_TITLES[id]) || cat?.fa || 'دسته‌بندی'
 const BASE_TITLE = 'Luxera · لوکسرا'
 
-const [{ initialData, initialScript }, footerData] = await Promise.all([
+const [{ initialData, initialScript, initialScriptHash }, footerData] = await Promise.all([
   fetchCategoryData(id!),
   fetchFooterData(),
 ])
 
-const footerScript = footerData.categories.length > 0 || footerData.collections.length > 0
-  ? `<script>window.__FOOTER_INITIAL__=${safeJson(footerData)}</script>`
-  : ''
+const footerScript = buildFooterScript(footerData)
+
+if (initialScriptHash) Astro.csp?.insertScriptHash(initialScriptHash)
+if (footerScript.hash) Astro.csp?.insertScriptHash(footerScript.hash)
 
 type ProductLink = { id: string; slug?: string; title_fa?: string; title: string }
 const productItems: ProductLink[] =
@@ -91,7 +92,7 @@ const categoryJsonLd = safeJson({
   jsonLd={categoryJsonLd}
 >
   <h1 class="sr-only">{seoTitle}</h1>
-  <Fragment set:html={initialScript + footerScript} />
+  <Fragment set:html={initialScript + footerScript.html} />
   {id && CATEGORY_BODY_TEXT[id] && (
     <p class="sr-only">{CATEGORY_BODY_TEXT[id]}</p>
   )}
