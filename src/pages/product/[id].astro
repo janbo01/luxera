@@ -131,5 +131,5 @@ const productJsonLd = product
     بازگشت رایگان تا ۴ روز پس از دریافت.
   </p>
   <Fragment set:html={initialScript + footerScript} />
-  <ProductPage client:only="react" id={id!} initialData={initialData} />
+  <ProductPage client:load id={id!} initialData={initialData} />
 </BaseLayout>
