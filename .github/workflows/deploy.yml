@@ -21,6 +21,7 @@ jobs:
           PUBLIC_USER_API: ${{ vars.PUBLIC_USER_API }}
           PUBLIC_ORDER_API: ${{ vars.PUBLIC_ORDER_API }}
           PUBLIC_PAYMENT_API: ${{ vars.PUBLIC_PAYMENT_API }}
+          PUBLIC_IMAGE_CDN: ${{ vars.PUBLIC_IMAGE_CDN }}
         run: |
           docker build \
             --build-arg PUBLIC_STORE_API="$PUBLIC_STORE_API" \
@@ -28,6 +29,7 @@ jobs:
             --build-arg PUBLIC_USER_API="$PUBLIC_USER_API" \
             --build-arg PUBLIC_ORDER_API="$PUBLIC_ORDER_API" \
             --build-arg PUBLIC_PAYMENT_API="$PUBLIC_PAYMENT_API" \
+            --build-arg PUBLIC_IMAGE_CDN="$PUBLIC_IMAGE_CDN" \
             -t core-era/luxera:latest .
 
       - name: Transfer image to VPS
