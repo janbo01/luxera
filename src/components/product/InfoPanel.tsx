@@ -92,6 +92,13 @@ const InfoPanel: FC<InfoPanelProps> = ({
         </span>
       </h1>
 
+      {/* Short description */}
+      {p.shortDescription && (
+        <p className="mt-3.5 text-[14px] leading-[1.7] text-ink-2 font-body max-w-[46ch]">
+          {p.shortDescription}
+        </p>
+      )}
+
       {/* Rating */}
       <div className="flex items-center gap-3.5 mt-[18px] pb-[22px] border-b border-rule text-[12px] text-muted">
         <Stars value={p.rating} size={14} />

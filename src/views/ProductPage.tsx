@@ -30,6 +30,7 @@ function adaptDetail(api: ApiProductDetail): ProductDetail {
     rating: api.rating ?? 0,
     reviewCount: api.review_count ?? 0,
     description: api.long_description ?? api.short_description ?? '',
+    shortDescription: api.short_description ?? '',
     highlights: api.highlights ?? [],
     specs: (api.specs ?? []).map((row) => [row[0] ?? '', row[1] ?? ''] as [string, string]),
     stockCount: 0,

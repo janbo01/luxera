@@ -21,6 +21,7 @@ export interface ProductDetail extends Product {
   rating: number
   reviewCount: number
   description: string
+  shortDescription: string
   highlights: string[]
   specs: [string, string][]
   stockCount: number
