@@ -30,13 +30,26 @@ function isResizable(url: string): boolean {
   }
 }
 
+// imgproxy runs in unsigned (/insecure/) mode — IMGPROXY_ALLOWED_SOURCES on the server
+// closes the open-proxy/SSRF hole, but nothing server-side stops a crafted URL from
+// asking for absurd dimensions (rs:fill:20000:20000 repeated with random sizes to burn
+// worker time and dodge the CDN cache). Clamp here so every URL this module builds is
+// within the range the proxy is actually deployed for; 0 stays 0 (source aspect ratio).
+const MIN_DIMENSION = 16
+const MAX_DIMENSION = 2560
+
+function clampDimension(n: number): number {
+  if (n === 0) return 0
+  return Math.min(MAX_DIMENSION, Math.max(MIN_DIMENSION, Math.round(n)))
+}
+
 /**
  * Single resized URL: fits/crops the image to `w`×`h` device pixels as WebP.
  * `h = 0` keeps the source aspect ratio. Use for fixed-size thumbnails.
  */
 export function imgUrl(url: string, w: number, h = 0): string {
   if (!isResizable(url)) return url
-  return `${PROXY_BASE}/insecure/rs:fill:${w}:${h}/${base64Url(url)}.webp`
+  return `${PROXY_BASE}/insecure/rs:fill:${clampDimension(w)}:${clampDimension(h)}/${base64Url(url)}.webp`
 }
 
 // Hero LCP image config, shared between HeroSlider (the <img>) and the SSR
