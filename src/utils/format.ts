@@ -21,7 +21,8 @@ export const toFa = (n: string | number): string =>
   String(n).replace(/[0-9]/g, (d) => FA_DIGITS[Number(d)] ?? d)
 
 /** Number with Farsi digits and thousands separators, no currency suffix. */
-export const formatNumber = (n: number): string => toFa(n.toLocaleString('en-US'))
+export const formatNumber = (n: number): string =>
+  Number.isFinite(n) ? toFa(n.toLocaleString('en-US')) : '—'
 
 /** Number with Farsi digits, thousands separators, and " تومان" suffix. */
 export const formatToman = (n: number): string => formatNumber(n) + ' تومان'

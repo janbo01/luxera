@@ -37,7 +37,7 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
       <div className="flex items-end justify-between gap-8 mb-8">
         <div className="flex flex-col gap-2">
           <span className="font-display italic text-[18px] text-copper-dark tracking-[0.04em]">
-            VOUS AIMEREZ AUSSI
+            You May Also Like
           </span>
           <h2 className="font-heading font-bold leading-[1.1] m-0 text-[clamp(38px,3.4vw,52px)] text-ink">
             شاید <em className="font-body italic font-normal text-copper-dark">دوست داشته باشید</em>

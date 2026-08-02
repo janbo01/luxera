@@ -65,7 +65,8 @@ const InfoPanel: FC<InfoPanelProps> = ({
   const [qty, setQty] = useState(1)
   const { wishlisted, toggle } = useWishlist(p)
 
-  const discountPct = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : 0
+  const discountPct =
+    p.oldPrice && Number.isFinite(p.price) ? Math.round((1 - p.price / p.oldPrice) * 100) : 0
 
   const handleAdd = () => {
     const safeQty = Math.min(qty, effectiveStock)
@@ -119,18 +120,22 @@ const InfoPanel: FC<InfoPanelProps> = ({
             <span className="text-[18px] line-through text-muted font-mono">
               {formatToman(p.oldPrice)}
             </span>
-            <span className="px-2 py-[2px] bg-sale text-white rounded-[4px] text-[10px] tracking-[0.1em] font-mono">
-              {toFa(discountPct)}٪ تخفیف
-            </span>
+            {discountPct > 0 && (
+              <span className="px-2 py-[2px] bg-sale text-white rounded-[4px] text-[10px] tracking-[0.1em] font-mono">
+                {toFa(discountPct)}٪ تخفیف
+              </span>
+            )}
           </div>
         )}
         <span className="font-heading text-[38px] font-bold text-ink leading-none mt-3.5 flex items-baseline gap-2">
           {formatNumber(p.price)}
-          <small className="font-body text-[13px] font-normal text-muted">تومان</small>
+          {Number.isFinite(p.price) && (
+            <small className="font-body text-[13px] font-normal text-muted">تومان</small>
+          )}
         </span>
-        {p.oldPrice && (
+        {p.oldPrice && Number.isFinite(p.price) && (
           <span className="text-[12px] text-ok font-mono tracking-[0.04em] mt-0.5">
-            شما {formatToman(p.oldPrice - p.price)} تومان صرفه‌جویی می‌کنید
+            شما {formatToman(p.oldPrice - p.price)} صرفه‌جویی می‌کنید
           </span>
         )}
       </div>

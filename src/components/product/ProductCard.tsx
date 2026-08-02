@@ -120,7 +120,9 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
             )}
             <span className="font-heading text-[17px] font-bold text-ink leading-none">
               {formatNumber(product.price)}
-              <small className="text-[11px] font-normal text-muted me-1 font-body"> تومان</small>
+              {Number.isFinite(product.price) && (
+                <small className="text-[11px] font-normal text-muted me-1 font-body"> تومان</small>
+              )}
             </span>
           </div>
         </div>

@@ -88,8 +88,10 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
     }
   }, [sectionId, catSlug])
 
+  const showEmpty = !loading && products.length === 0
+
   return (
-    <section className="page-section cv-auto" id={sectionId}>
+    <section className={`page-section${showEmpty ? '' : ' cv-auto'}`} id={sectionId}>
       <SectionHeader
         kicker={kicker}
         title={title}
@@ -111,18 +113,26 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
           </div>
         }
       />
-      <div
-        ref={trackRef}
-        className="flex gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 [direction:rtl]"
-      >
-        {loading
-          ? SKELETONS
-          : products.map((product, i) => (
-              <div key={product.id} className="snap-start flex-shrink-0" style={{ width: CARD_W }}>
-                <ProductCard product={product} onAdd={addItem} priority={i < 2} />
-              </div>
-            ))}
-      </div>
+      {showEmpty ? (
+        <p className="text-muted text-sm text-center py-12">هنوز محصولی در این بخش ثبت نشده است.</p>
+      ) : (
+        <div
+          ref={trackRef}
+          className="flex gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 [direction:rtl]"
+        >
+          {loading
+            ? SKELETONS
+            : products.map((product, i) => (
+                <div
+                  key={product.id}
+                  className="snap-start flex-shrink-0"
+                  style={{ width: CARD_W }}
+                >
+                  <ProductCard product={product} onAdd={addItem} priority={i < 2} />
+                </div>
+              ))}
+        </div>
+      )}
     </section>
   )
 }
