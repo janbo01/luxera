@@ -30,12 +30,7 @@ export interface ApiOrderItem {
 }
 
 export type ApiOrderStatus =
-  | 'pending'
-  | 'paid'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled'
+  'pending' | 'paid' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
 
 export interface ApiOrder {
   id: string
