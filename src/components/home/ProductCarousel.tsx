@@ -7,8 +7,7 @@ import { useCartStore } from '../../store/cartStore'
 import { listProducts, listCategories, adaptProduct, type ApiProduct } from '../../api/product'
 import { useCarousel } from '../../hooks/useCarousel'
 import { useHydrated } from '../../hooks/useHydrated'
-import { BTN_GHOST_CLS } from '../ui/Button'
-import Icon from '../icons/Icon'
+import ViewAllLink from '../shared/ViewAllLink'
 import { CATEGORIES } from '../../data/categories'
 import { readHomeInitial } from './homeInitial'
 import type { Product } from '../../types'
@@ -19,19 +18,23 @@ interface ProductCarouselProps {
   link: string
   sectionId: string
   catSlug?: string
+  /** Render on the tinted band background to break up consecutive carousels. */
+  band?: boolean
 }
 
-const CARD_W = 'clamp(210px,23vw,290px)'
+// ~2.2 cards visible on phones (the peek signals the row scrolls), ~4.5 on desktop.
+const CARD_W = 'clamp(150px,42vw,272px)'
 
 const SkeletonCard = () => (
-  <div
-    className="animate-pulse flex-shrink-0 border border-rule overflow-hidden bg-surface rounded-[var(--radius)]"
-    style={{ width: CARD_W }}
-  >
-    <div className="aspect-square bg-plate" />
-    <div className="px-4 pt-4 pb-5 flex flex-col gap-3">
+  <div className="animate-pulse flex-shrink-0" style={{ width: CARD_W }}>
+    <div className="aspect-square bg-plate rounded-[var(--radius)]" />
+    <div className="pt-3.5 flex flex-col gap-2.5">
       <div className="h-4 bg-plate rounded w-4/5" />
-      <div className="h-5 bg-plate rounded w-1/2" />
+      <div className="h-4 bg-plate rounded w-3/5" />
+      <div className="flex justify-between items-center mt-1">
+        <div className="h-5 bg-plate rounded w-2/5" />
+        <div className="w-11 h-11 bg-plate rounded-full" />
+      </div>
     </div>
   </div>
 )
@@ -47,7 +50,14 @@ async function resolveCategoryId(slug: string): Promise<string | undefined> {
   return cats.find((c) => c.name === fa)?.id
 }
 
-const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectionId, catSlug }) => {
+const ProductCarousel: FC<ProductCarouselProps> = ({
+  kicker,
+  title,
+  link,
+  sectionId,
+  catSlug,
+  band = false,
+}) => {
   const addItem = useCartStore((s) => s.addItem)
   const hydrated = useHydrated()
   // Client-fetched fallback, used only when SSR didn't inject this carousel's products.
@@ -91,48 +101,50 @@ const ProductCarousel: FC<ProductCarouselProps> = ({ kicker, title, link, sectio
   const showEmpty = !loading && products.length === 0
 
   return (
-    <section className={`page-section${showEmpty ? '' : ' cv-auto'}`} id={sectionId}>
-      <SectionHeader
-        kicker={kicker}
-        title={title}
-        aside={
-          <div className="flex items-center gap-3 self-start sm:self-end">
-            <CarouselArrows
-              canPrev={canPrev}
-              canNext={canNext}
-              onScroll={scroll}
-              prevLabel="محصول قبلی"
-              nextLabel="محصول بعدی"
-            />
-            <a href={link} className={BTN_GHOST_CLS}>
-              مشاهده‌ی همه
-              <span className="arr">
-                <Icon name="arrow-left" size={16} />
-              </span>
-            </a>
+    <section
+      className={`${band ? 'section-band ' : ''}${showEmpty ? '' : 'cv-auto'}`}
+      id={sectionId}
+    >
+      <div className="page-section">
+        <SectionHeader
+          kicker={kicker}
+          title={title}
+          aside={
+            <>
+              <ViewAllLink href={link}>مشاهده‌ی همه</ViewAllLink>
+              <CarouselArrows
+                canPrev={canPrev}
+                canNext={canNext}
+                onScroll={scroll}
+                prevLabel="محصول قبلی"
+                nextLabel="محصول بعدی"
+              />
+            </>
+          }
+        />
+        {showEmpty ? (
+          <p className="text-muted text-sm text-center py-12">
+            هنوز محصولی در این بخش ثبت نشده است.
+          </p>
+        ) : (
+          <div
+            ref={trackRef}
+            className="flex gap-3.5 sm:gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 -mx-[var(--pad)] px-[var(--pad)] scroll-px-[var(--pad)] [direction:rtl]"
+          >
+            {loading
+              ? SKELETONS
+              : products.map((product, i) => (
+                  <div
+                    key={product.id}
+                    className="snap-start flex-shrink-0"
+                    style={{ width: CARD_W }}
+                  >
+                    <ProductCard product={product} onAdd={addItem} priority={i < 2} />
+                  </div>
+                ))}
           </div>
-        }
-      />
-      {showEmpty ? (
-        <p className="text-muted text-sm text-center py-12">هنوز محصولی در این بخش ثبت نشده است.</p>
-      ) : (
-        <div
-          ref={trackRef}
-          className="flex gap-5 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 [direction:rtl]"
-        >
-          {loading
-            ? SKELETONS
-            : products.map((product, i) => (
-                <div
-                  key={product.id}
-                  className="snap-start flex-shrink-0"
-                  style={{ width: CARD_W }}
-                >
-                  <ProductCard product={product} onAdd={addItem} priority={i < 2} />
-                </div>
-              ))}
-        </div>
-      )}
+        )}
+      </div>
     </section>
   )
 }

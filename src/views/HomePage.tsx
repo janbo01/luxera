@@ -40,6 +40,7 @@ const HomePage: FC = () => {
       <CategoriesSection />
       <ProductCarousel
         sectionId="new"
+        band
         kicker="NEW ARRIVALS · تازه‌ترین‌ها"
         title={
           <>
@@ -61,6 +62,7 @@ const HomePage: FC = () => {
       />
       <ProductCarousel
         sectionId="rings"
+        band
         kicker="RINGS · انگشتر"
         title={
           <>
@@ -83,6 +85,7 @@ const HomePage: FC = () => {
       />
       <ProductCarousel
         sectionId="bracelets"
+        band
         kicker="BRACELETS · دستبند"
         title={
           <>

@@ -49,29 +49,34 @@ const Hero: FC = () => {
   const [slide, setSlide] = useState<SlideInfo>(() => getFirstSlideInfo())
 
   return (
-    <section className="pt-7">
-      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.15fr_0.85fr] max-md:grid-cols-1 gap-[22px] items-stretch min-h-[560px] max-md:min-h-0">
+    <section className="pt-4 md:pt-7">
+      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-4 items-stretch min-h-[580px] max-md:min-h-0">
         {/* ── Dark stage (left) ── */}
-        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,rgba(196,135,58,0.25),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-[280px] max-md:order-2">
+        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-square">
           <div className="absolute inset-0 z-[1]">
             <HeroSlider onSlide={setSlide} />
           </div>
 
           {/* Overlay meta at bottom */}
-          <div className="absolute bottom-0 inset-x-0 z-[3] flex justify-between items-end gap-5 px-7 pt-5 pb-[60px] bg-[linear-gradient(to_top,rgba(0,0,0,0.75)_0%,rgba(0,0,0,0.2)_60%,transparent_100%)]">
-            <div>
-              <div className="font-heading text-lg font-semibold text-bg">{slide.name}</div>
+          <div className="absolute bottom-0 inset-x-0 z-[3] flex justify-between items-end gap-5 px-5 md:px-8 pt-16 pb-[72px] md:pb-[76px] bg-[linear-gradient(to_top,rgb(0_0_0/0.6)_0%,rgb(0_0_0/0.15)_60%,transparent_100%)] pointer-events-none">
+            <div className="min-w-0">
+              <div className="font-display italic text-[12px] tracking-[0.08em] text-white/70 mb-1">
+                Featured
+              </div>
+              <div className="font-heading text-lg md:text-[22px] font-semibold text-white leading-tight">
+                {slide.name}
+              </div>
             </div>
             {slide.price ? (
               <div className="flex flex-col items-end gap-0.5">
                 {slide.oldPrice ? (
-                  <span className="text-[11px] line-through text-[rgba(245,237,224,0.45)] font-mono">
+                  <span className="text-[11px] line-through text-white/50 font-mono">
                     {fmtPrice(slide.oldPrice)}
                   </span>
                 ) : null}
-                <span className="font-heading text-xl font-bold text-[var(--color-dust-rose-light)]">
+                <span className="font-heading text-xl md:text-2xl font-bold text-white whitespace-nowrap">
                   {fmtPrice(slide.price)}
-                  <small className="font-body text-[11px] font-normal text-[rgba(245,237,224,0.6)] me-1">
+                  <small className="font-body text-[11px] font-normal text-white/65 me-1">
                     {' '}
                     تومان
                   </small>
@@ -82,23 +87,21 @@ const Hero: FC = () => {
         </div>
 
         {/* ── Cream copy panel (right) ── */}
-        <div className="relative overflow-hidden rounded-[var(--radius)] bg-surface border border-rule px-10 py-11 flex flex-col max-md:px-6 max-md:py-8 max-md:order-1">
-          {/* Decorative display watermark */}
+        <div className="relative overflow-hidden rounded-[var(--radius)] bg-surface ring-1 ring-inset ring-rule px-[clamp(24px,3.4vw,52px)] py-[clamp(28px,3.4vw,52px)] flex flex-col justify-center isolate">
+          {/* Soft brand-tinted glow in the corner — derived from theme tokens */}
           <div
             aria-hidden="true"
-            className="absolute bottom-0 start-0 font-display italic font-semibold text-[clamp(72px,8.5vw,128px)] leading-none text-ink/[0.038] pointer-events-none select-none translate-y-[30%] whitespace-nowrap ps-2"
-          >
-            جواهرات فانتزی
-          </div>
+            className="absolute -top-1/3 -start-1/4 w-[80%] aspect-square rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-copper)_12%,transparent),transparent)] -z-10 pointer-events-none"
+          />
 
-          <span className="inline-flex items-center gap-2 mb-5 animate-rise [animation-delay:80ms]">
+          <span className="inline-flex items-center gap-2 mb-4 md:mb-6 animate-rise [animation-delay:80ms]">
             <span className="w-5 h-px bg-copper-dark opacity-70" />
             <span className="font-display italic font-normal text-sm tracking-[0.04em] text-copper-dark">
               New Arrivals · پاییز ۱۴۰۴
             </span>
           </span>
 
-          <h1 className="font-heading font-bold text-[clamp(34px,4vw,56px)] leading-[1.05] tracking-[-0.01em] m-0 mb-5 text-ink animate-rise [animation-delay:160ms]">
+          <h1 className="font-heading font-bold text-[clamp(32px,4.2vw,60px)] leading-[1.08] tracking-[-0.01em] m-0 mb-4 md:mb-6 text-ink animate-rise [animation-delay:160ms]">
             استایلِ امروز،
             <br />
             <span className="text-copper-dark relative inline-block after:absolute after:inset-x-0 after:bottom-1 after:h-2.5 after:bg-copper/[0.18] after:-z-10 after:rounded-sm">
@@ -107,12 +110,12 @@ const Hero: FC = () => {
             .
           </h1>
 
-          <p className="text-ink-2 text-[14.5px] leading-[1.85] font-light max-w-[38ch] m-0 mb-8 animate-rise [animation-delay:260ms]">
+          <p className="text-ink-2 text-[14.5px] md:text-[15.5px] leading-[1.9] font-light max-w-[40ch] m-0 mb-7 md:mb-9 animate-rise [animation-delay:260ms]">
             جواهرات فانتزی و اکسسوری مد از بهترین برندها — گردنبند، دستبند، انگشتر و گوشواره برای هر
             سبک و هر مناسبت. کیفیت خوب، بدون پرداخت هزینه‌ی گزاف.
           </p>
 
-          <div className="flex gap-2.5 flex-wrap mb-auto animate-rise [animation-delay:380ms]">
+          <div className="flex gap-2.5 flex-wrap animate-rise [animation-delay:380ms] max-sm:[&>a]:flex-1 max-sm:[&>a]:justify-center max-sm:[&>a]:px-4 max-sm:[&>a]:whitespace-nowrap max-sm:[&>a]:text-[13px]">
             <a href="/category/new" className={BTN_CLS}>
               مشاهده‌ی محصولات
               <span className="arr">
@@ -125,14 +128,14 @@ const Hero: FC = () => {
             </a>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
+          <div className="mt-8 md:mt-12 pt-5 md:pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
             {STATS_JSX}
           </div>
         </div>
       </div>
 
       {/* ── Ticker ── */}
-      <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3.5 border-t border-b border-rule py-3.5 overflow-hidden">
+      <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3 md:mt-4 border-t border-b border-rule py-3.5 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
         <div className="flex w-max font-mono text-[11px] tracking-[0.22em] uppercase text-ink-2 animate-ticker">
           {/* Two identical halves, each padded by one gap, so the 50% keyframe
             shift loops seamlessly; the copy is hidden from screen readers. */}

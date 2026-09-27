@@ -4,17 +4,19 @@ import { CATEGORIES } from '../../data/categories'
 import SectionHeader from '../shared/SectionHeader'
 import { listCategories, type ApiCategory } from '../../api/product'
 import { useHydrated } from '../../hooks/useHydrated'
-import { BTN_GHOST_CLS } from '../ui/Button'
+import ViewAllLink from '../shared/ViewAllLink'
 import Icon from '../icons/Icon'
 import { readHomeInitial } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
 
+// Fallback fills (shown only while a category has no image) — all theme tokens,
+// so they follow the colours chosen in the admin panel.
 const CAT_BG: Record<string, string> = {
-  necklaces: 'bg-[linear-gradient(155deg,#a06828_0%,#6b3e10_100%)]',
-  bracelets: 'bg-[linear-gradient(155deg,#1a0f10_0%,#0d0508_100%)]',
-  rings: 'bg-[linear-gradient(155deg,#5c3d1e_0%,#2e1a08_100%)]',
+  necklaces: 'bg-[linear-gradient(155deg,var(--color-copper)_0%,var(--color-copper-dark)_100%)]',
+  bracelets: 'bg-[linear-gradient(155deg,var(--color-ink-2)_0%,var(--color-ink)_100%)]',
+  rings: 'bg-[linear-gradient(155deg,var(--color-copper-2)_0%,var(--color-ink)_100%)]',
   earrings: 'bg-[linear-gradient(155deg,var(--color-plum)_0%,var(--color-plum-dark)_100%)]',
-  sets: 'bg-[linear-gradient(155deg,#4a2820_0%,#1e0e0a_100%)]',
+  sets: 'bg-[linear-gradient(155deg,var(--color-plum-dark)_0%,var(--color-ink)_100%)]',
 }
 
 const VISIBLE_CATS = CATEGORIES.filter((c) => !['bridal', 'new', 'mens'].includes(c.id))
@@ -53,17 +55,10 @@ const CategoriesSection: FC = () => {
             <em>هر مناسبت</em>
           </>
         }
-        aside={
-          <a href="/collections" className={`${BTN_GHOST_CLS} self-end`}>
-            همه‌ی دسته‌بندی‌ها
-            <span className="arr">
-              <Icon name="arrow-left" size={16} />
-            </span>
-          </a>
-        }
+        aside={<ViewAllLink href="/collections">همه‌ی دسته‌بندی‌ها</ViewAllLink>}
       />
 
-      <div className="grid grid-cols-3 max-md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3.5">
         {VISIBLE_CATS.map((cat, index) => {
           const apiCat = apiByName.get(cat.fa)
           const imgSrc = apiCat?.image_url
@@ -74,30 +69,31 @@ const CategoriesSection: FC = () => {
             <a
               key={cat.id}
               href={`/category/${cat.id}`}
-              className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 min-h-[480px] max-md:min-h-0 max-md:aspect-[16/10]' : 'aspect-[3/4]'}`}
+              className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 aspect-[16/10] md:row-span-2 md:aspect-auto' : 'aspect-square'}`}
             >
               {imgSrc ? (
                 <img
                   {...imgSet(imgSrc, {
-                    widths: isFeatured ? [480, 720, 960, 1280, 1856] : [320, 400, 480, 640, 960],
-                    ratio: isFeatured ? 16 / 10 : 3 / 4,
-                    // Actual rendered width: page-section pad (20px/side on mobile) +
-                    // 12px grid gap; capped by --maxw 1480 (featured 908px, small 448px).
+                    widths: isFeatured ? [480, 720, 960, 1280] : [240, 320, 400, 480, 640],
+                    ratio: 1,
+                    // Bento: featured spans 2×2 of a 4-col grid on desktop (≈ half the
+                    // container, square), full width at 16:10 on mobile; small tiles are
+                    // square quarters (desktop) or halves (mobile). Capped by --maxw 1480.
                     sizes: isFeatured
-                      ? '(max-width: 767px) calc(100vw - 40px), (max-width: 1480px) calc(61vw - 4px), 908px'
-                      : '(max-width: 767px) calc(50vw - 26px), (max-width: 1480px) calc(31vw - 8px), 448px',
+                      ? '(max-width: 767px) calc(100vw - 40px), (max-width: 1480px) 46vw, 680px'
+                      : '(max-width: 767px) calc(50vw - 26px), (max-width: 1480px) 23vw, 336px',
                   })}
                   alt={cat.fa}
                   loading="lazy"
                   decoding="async"
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-500 ease-in-out group-hover:scale-[1.06]"
-                  width={isFeatured ? 640 : 400}
-                  height={isFeatured ? 400 : 533}
+                  width={isFeatured ? 680 : 336}
+                  height={isFeatured ? 680 : 336}
                 />
               ) : null}
 
-              {/* Bottom gradient overlay */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.1)_50%,transparent_100%)]" />
+              {/* Bottom scrim — neutral black so white labels stay legible on any photo */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.62)_0%,rgb(0_0_0/0.08)_45%,transparent_100%)] transition-opacity duration-300 group-hover:opacity-90" />
 
               {/* Index number — top end corner */}
               <span className="absolute top-4 end-4 z-[2] font-mono text-[10px] tracking-[0.2em] text-white/55">
@@ -105,18 +101,22 @@ const CategoriesSection: FC = () => {
               </span>
 
               {/* Bottom content */}
-              <div className="relative z-[2] flex items-end justify-between gap-2 px-5 pb-5 text-white">
+              <div
+                className={`relative z-[2] flex items-end justify-between gap-2 text-white ${isFeatured ? 'px-5 pb-5 md:px-8 md:pb-8' : 'px-4 pb-4 md:px-5 md:pb-5'}`}
+              >
                 <div className="min-w-0">
                   <div className="font-display italic text-[11px] tracking-[0.06em] mb-1 text-white/55">
                     {cat.en}
                   </div>
-                  <div className="font-heading text-[21px] font-semibold leading-[1.15]">
+                  <div
+                    className={`font-heading font-semibold leading-[1.15] ${isFeatured ? 'text-[24px] md:text-[34px]' : 'text-[18px] md:text-[21px]'}`}
+                  >
                     {cat.fa}
                   </div>
                 </div>
 
                 {/* Arrow */}
-                <span className="flex-shrink-0 w-8 h-8 rounded-full border border-white/20 grid place-items-center text-white/55 transition-all duration-200 group-hover:bg-white group-hover:text-ink group-hover:border-white">
+                <span className="flex-shrink-0 w-9 h-9 rounded-full border border-white/35 bg-white/10 backdrop-blur-[6px] grid place-items-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-ink group-hover:border-white group-hover:-translate-x-0.5">
                   <Icon name="arrow-left" size={13} />
                 </span>
               </div>

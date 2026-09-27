@@ -7,22 +7,22 @@ interface SectionHeaderProps {
   headClass?: string
 }
 
+// Title and aside share one row at every width so the aside (view-all link,
+// carousel arrows) never costs mobile users an extra line of scroll.
 const SectionHeader: FC<SectionHeaderProps> = ({ kicker, title, aside, headClass }) => (
   <div
     className={
       headClass ??
-      'flex flex-col gap-5 mb-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 sm:mb-12'
+      'flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule sm:gap-6 sm:mb-10 sm:pb-7'
     }
   >
-    <div>
-      <span className="font-mono text-[10px] tracking-[0.2em] text-muted uppercase mb-3.5 block">
-        {kicker}
-      </span>
-      <h2 className="font-heading font-bold text-[clamp(32px,4vw,56px)] leading-[1.05] tracking-[-0.005em] m-0 max-w-[18ch] text-ink [&_em]:text-plum [&_em]:font-normal [&_em]:not-italic">
+    <div className="min-w-0">
+      <span className="kicker mb-3 sm:mb-4">{kicker}</span>
+      <h2 className="font-heading font-bold text-[clamp(26px,3.6vw,48px)] leading-[1.1] tracking-[-0.005em] m-0 max-w-[18ch] text-ink [&_em]:text-plum [&_em]:font-normal [&_em]:not-italic">
         {title}
       </h2>
     </div>
-    {aside}
+    {aside ? <div className="flex items-center gap-2 shrink-0 sm:gap-3">{aside}</div> : null}
   </div>
 )
 

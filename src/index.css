@@ -21,7 +21,7 @@
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
   --font-body: 'Yekan Bakh', 'Tahoma', sans-serif;
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono', 'Yekan Bakh', ui-monospace, monospace;
 
   /* Border radius */
   --radius-xs: 4px;
@@ -390,13 +390,6 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  body[data-density='shoppy'] .product-quick {
-    max-height: 44px;
-    opacity: 1;
-    padding: 10px 14px;
-    margin-top: 8px;
-  }
-
   body[data-density='shoppy'] .product-media {
     aspect-ratio: 1/1.1;
   }
@@ -409,7 +402,12 @@
     padding-inline: var(--pad);
     max-width: var(--maxw);
     margin-inline: auto;
-    padding-block: 88px;
+    padding-block: clamp(48px, 5.5vw, 80px);
+  }
+
+  /* Tinted band — alternates rhythm between otherwise identical sections */
+  .section-band {
+    background: color-mix(in srgb, var(--color-copper) 5%, var(--color-bg));
   }
 
   /* Mono kicker label (uppercase tracking label above headings) */
@@ -431,22 +429,108 @@
     contain-intrinsic-size: auto 720px;
   }
 
-  /* Common card hover lift */
+  /* Common card hover lift — shadow tinted from the theme's ink colour */
   .card-lift {
     transition:
-      transform 350ms ease-out,
-      box-shadow 350ms ease-out,
+      transform 350ms var(--ease-lux),
+      box-shadow 350ms var(--ease-lux),
       border-color 280ms ease;
   }
-  .card-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 50px -30px rgba(27, 15, 29, 0.25);
+  @media (hover: hover) {
+    .card-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  /* Kicker: hairline + small caps label that sits above section titles */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-copper-dark);
+  }
+  .kicker::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  /* Text link with an underline that draws in on hover */
+  .link-draw {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: color 200ms ease;
+  }
+  .link-draw::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 10px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.35);
+    transform-origin: right;
+    opacity: 0.5;
+    transition:
+      transform 300ms var(--ease-lux),
+      opacity 300ms ease;
+  }
+  .link-draw:hover {
+    color: var(--color-plum);
+  }
+  .link-draw:hover::after {
+    transform: scaleX(1);
+    opacity: 1;
   }
 }
 
 @media (max-width: 767px) {
   .page-section {
-    padding-block: 52px;
+    padding-block: 44px;
+  }
+}
+
+/* ── Interaction foundations ────────────────────────────────── */
+@layer base {
+  :root {
+    --ease-lux: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --shadow-soft:
+      0 1px 2px color-mix(in srgb, var(--color-ink) 4%, transparent),
+      0 8px 24px -12px color-mix(in srgb, var(--color-ink) 12%, transparent);
+    --shadow-lift:
+      0 2px 4px color-mix(in srgb, var(--color-ink) 4%, transparent),
+      0 24px 48px -24px color-mix(in srgb, var(--color-ink) 22%, transparent);
+  }
+
+  /* Visible keyboard focus everywhere, in the theme accent */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-plum);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 1ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -502,7 +586,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.12em;
-  color: rgba(245, 237, 224, 0.65);
+  color: rgb(255 255 255 / 0.7);
   z-index: 10;
 }
 
@@ -520,9 +604,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(245, 237, 224, 0.12);
-  border: 1px solid rgba(245, 237, 224, 0.2);
-  color: rgba(245, 237, 224, 0.85);
+  background: rgb(255 255 255 / 0.14);
+  border: 1px solid rgb(255 255 255 / 0.3);
+  color: rgb(255 255 255 / 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -534,8 +618,8 @@
 }
 
 .hero-slider__arrow:hover {
-  background: rgba(245, 237, 224, 0.22);
-  border-color: rgba(245, 237, 224, 0.4);
+  background: rgb(255 255 255 / 0.28);
+  border-color: rgb(255 255 255 / 0.55);
 }
 
 /* dot nav — hidden in favour of arrows, kept for accessibility */
@@ -547,7 +631,7 @@
 .products-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
+  gap: clamp(28px, 3vw, 44px) clamp(12px, 1.5vw, 22px);
 }
 
 .products-grid.cols-4 {
@@ -592,14 +676,11 @@
   user-select: none;
 }
 
-.story-section--dark {
-  --lx-copper: #c27200; /* brighter copper for dark bg — contrast ≥ 4.5:1 on bg-ink */
-  --color-copper: #c27200;
-}
-
+/* On the dark band the theme's light accent (gold) replaces copper, so the
+   section stays legible whatever colours are chosen in the admin panel. */
 .story-section--dark .story-card::after {
-  color: var(--color-copper);
-  opacity: 0.07;
+  color: var(--color-gold);
+  opacity: 0.08;
 }
 
 /* ── Blog article prose ──────────────────────────────────────────────────── */

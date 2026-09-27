@@ -5,8 +5,7 @@ import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
 import { useCarousel } from '../../hooks'
 import { useHydrated } from '../../hooks/useHydrated'
-import { BTN_GHOST_CLS } from '../ui/Button'
-import Icon from '../icons/Icon'
+import ViewAllLink from '../shared/ViewAllLink'
 import { readHomeInitial } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
 
@@ -125,7 +124,8 @@ const BlogCarousel: FC = () => {
           </>
         }
         aside={
-          <div className="flex items-center gap-3 self-start sm:self-end">
+          <>
+            <ViewAllLink href="/blog">همه مقالات</ViewAllLink>
             <CarouselArrows
               canPrev={canPrev}
               canNext={canNext}
@@ -133,13 +133,7 @@ const BlogCarousel: FC = () => {
               prevLabel="مقاله قبلی"
               nextLabel="مقاله بعدی"
             />
-            <a href="/blog" className={BTN_GHOST_CLS}>
-              همه مقالات
-              <span className="arr">
-                <Icon name="arrow-left" size={16} />
-              </span>
-            </a>
-          </div>
+          </>
         }
       />
 
@@ -148,7 +142,7 @@ const BlogCarousel: FC = () => {
       ) : (
         <div
           ref={trackRef}
-          className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 [direction:rtl]"
+          className="flex gap-4 sm:gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-2 -mx-[var(--pad)] px-[var(--pad)] scroll-px-[var(--pad)] [direction:rtl]"
         >
           {showSkeletons
             ? SKELETONS

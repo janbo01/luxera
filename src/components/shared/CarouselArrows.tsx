@@ -10,7 +10,7 @@ interface CarouselArrowsProps {
 }
 
 const ARROW_CLS =
-  'w-10 h-10 rounded-full flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed'
+  'w-11 h-11 rounded-full flex items-center justify-center border border-rule bg-surface text-ink-2 transition-colors duration-200 hover:border-ink hover:bg-ink hover:text-bg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-surface disabled:hover:text-ink-2 disabled:hover:border-rule'
 
 const CarouselArrows: FC<CarouselArrowsProps> = ({
   canPrev,
@@ -19,7 +19,7 @@ const CarouselArrows: FC<CarouselArrowsProps> = ({
   prevLabel,
   nextLabel,
 }) => (
-  <>
+  <div className="hidden md:flex items-center gap-2">
     <button
       onClick={() => onScroll('prev')}
       disabled={!canPrev}
@@ -36,7 +36,7 @@ const CarouselArrows: FC<CarouselArrowsProps> = ({
     >
       <Icon name="chevron-left" size={16} />
     </button>
-  </>
+  </div>
 )
 
 export default memo(CarouselArrows)

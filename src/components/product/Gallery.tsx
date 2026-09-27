@@ -28,14 +28,14 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const hasApiImages = galleryImages && galleryImages.length > 0
 
   return (
-    <div className="lg:sticky lg:top-[96px] rounded-[var(--radius)] overflow-hidden bg-[linear-gradient(145deg,var(--color-plum)_0%,var(--color-plum-2)_100%)] text-bg isolate grid [grid-template-columns:100px_1fr] before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-plum)_18%,transparent),transparent_70%)] before:blur-[20px] before:-z-[1] before:pointer-events-none max-lg:relative max-lg:flex max-lg:flex-col">
+    <div className="lg:sticky lg:top-[96px] rounded-[var(--radius)] overflow-hidden bg-surface ring-1 ring-inset ring-rule text-ink isolate grid [grid-template-columns:100px_1fr] max-lg:relative max-lg:flex max-lg:flex-col">
       {/* thumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
-      <div className="flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-bg/[12%]">
+      <div className="flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-rule">
         {hasApiImages
           ? galleryImages.map((img, i) => (
               <button
                 key={img.id}
-                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-[var(--color-dust-rose)] bg-dust-rose/[12%]' : 'border-transparent hover:border-bg/30'}`}
+                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -53,7 +53,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           : PRODUCT_GALLERY.map((item, i) => (
               <button
                 key={item.tone}
-                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-[var(--color-dust-rose)]' : 'border-transparent hover:border-bg/30'}`}
+                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -97,22 +97,25 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
             ))}
 
         {/* Bottom caption + nav */}
-        <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between px-5 py-4 bg-[linear-gradient(to_top,rgba(0,0,0,0.75)_0%,rgba(0,0,0,0.2)_60%,transparent_100%)] font-mono text-[10px] tracking-[0.16em] uppercase text-bg/60">
-          <span>
-            {formatPaddedIndex(activeIdx + 1)} / {formatPaddedIndex(count)} — {productName}
+        <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between p-3 sm:p-4 pointer-events-none">
+          <span
+            className="font-mono text-[11px] tracking-[0.12em] text-ink bg-surface/85 backdrop-blur-[8px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]"
+            aria-label={`تصویر ${activeIdx + 1} از ${count} — ${productName}`}
+          >
+            {formatPaddedIndex(activeIdx + 1)} / {formatPaddedIndex(count)}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 pointer-events-auto">
             <button
               onClick={() => selectThumb(Math.max(0, activeIdx - 1))}
               aria-label="تصویر قبلی"
-              className="w-[48px] h-[48px] rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%]"
+              className="w-11 h-11 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-colors hover:bg-ink hover:text-bg disabled:opacity-40"
             >
               <Icon name="arrow-right" size={13} />
             </button>
             <button
               onClick={() => selectThumb(Math.min(count - 1, activeIdx + 1))}
               aria-label="تصویر بعدی"
-              className="w-[48px] h-[48px] rounded-full bg-bg/[8%] border border-bg/[18%] grid place-items-center text-bg transition-colors hover:bg-bg/[16%] rotate-180"
+              className="w-11 h-11 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-colors hover:bg-ink hover:text-bg disabled:opacity-40 rotate-180"
             >
               <Icon name="arrow-right" size={13} />
             </button>
