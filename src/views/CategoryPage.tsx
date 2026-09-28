@@ -91,12 +91,13 @@ const VIEW_MODES = [
 ] as const
 
 const PRODUCT_SKELETON = (
-  <div className="products-grid" style={{ opacity: 0.5 }}>
-    {Array.from({ length: 8 }, (_, i) => (
-      <div
-        key={i}
-        style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }}
-      />
+  <div className="products-grid" aria-busy="true" aria-label="در حال بارگذاری محصولات">
+    {Array.from({ length: 6 }, (_, i) => (
+      <div key={i} className="animate-pulse">
+        <div className="aspect-square bg-plate rounded-[var(--radius)]" />
+        <div className="h-4 bg-plate rounded w-4/5 mt-3.5" />
+        <div className="h-4 bg-plate rounded w-2/5 mt-2.5" />
+      </div>
     ))}
   </div>
 )
@@ -365,6 +366,15 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     await fetchProducts(match?.id, apiSort, activeColors)
   }, [id, apiSort, activeColors, fetchProducts])
 
+  const heroPreviews = useMemo(
+    () =>
+      allProducts
+        .map((p) => p.imageUrl)
+        .filter((u): u is string => !!u)
+        .slice(0, 3),
+    [allProducts],
+  )
+
   const pages = useMemo(() => Array.from({ length: totalPages }, (_, i) => i + 1), [totalPages])
 
   if (!category) {
@@ -387,97 +397,98 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
           catId={id!}
           productCount={allProducts.length}
           catProductCounts={CAT_PRODUCT_COUNTS}
+          previews={heroPreviews}
         />
       </div>
 
       <section className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
-        {/* ── Toolbar ─────────────────────────────────────────────── */}
-        <div className="mt-7 mb-[18px] bg-surface rounded-[var(--radius)] border border-rule">
-          {/* Main row */}
-          <div className="flex items-center gap-[18px] px-[22px] py-[18px] max-sm:px-4 max-sm:py-3 max-sm:gap-3">
-            {/* Product count */}
-            <h2 className="font-heading text-base font-semibold flex items-center gap-2 m-0">
-              <span>نمایش</span>
-              <span className="font-mono text-copper">
-                {loading ? '…' : toFa(paginated.length)}
-              </span>
-              <span>از</span>
-              <span className="font-mono text-copper">{loading ? '…' : toFa(sorted.length)}</span>
-              <span>{category.fa}</span>
+        {/* ── Toolbar: result count · visible sort options · view mode ── */}
+        <div className="mt-6 md:mt-8 mb-6 pb-4 border-b border-rule">
+          <div className="flex items-center gap-4 flex-wrap">
+            <h2 className="m-0 text-[14px] font-body font-normal text-muted">
+              {loading ? (
+                'در حال بارگذاری…'
+              ) : (
+                <>
+                  <span className="font-heading font-bold text-[17px] text-ink">
+                    {toFa(sorted.length)}
+                  </span>{' '}
+                  محصول در {category.fa}
+                </>
+              )}
             </h2>
 
             <div className="flex-1" />
 
-            {/* View mode — hidden on small mobile */}
-            <div className="inline-flex gap-0.5 bg-bg border border-rule rounded-lg p-[3px] max-sm:hidden">
-              {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
+            {/* Sort — visible options instead of a hidden dropdown (desktop) */}
+            <div
+              role="radiogroup"
+              aria-label="مرتب‌سازی"
+              className="flex items-center gap-1 max-[1100px]:hidden"
+            >
+              <span className="text-[12.5px] text-muted me-1">مرتب‌سازی:</span>
+              {SORT_OPTIONS.map((opt) => (
                 <button
-                  key={mode || 'default'}
-                  className={`w-[30px] h-[30px] rounded-md grid place-items-center border-none cursor-pointer transition-[background,color] duration-150 ${viewMode === mode ? 'bg-ink text-bg' : 'bg-transparent text-muted'}`}
-                  onClick={() => setViewMode(mode)}
-                  title={title}
+                  key={opt.key}
+                  role="radio"
+                  aria-checked={sort === opt.key}
+                  onClick={() => handleSort(opt.key)}
+                  className={`min-h-[36px] px-3.5 rounded-full text-[13px] transition-colors duration-150 cursor-pointer ${sort === opt.key ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-bg-2'}`}
                 >
-                  <ModeIcon size={14} strokeWidth={1.6} />
+                  {opt.label}
                 </button>
               ))}
             </div>
 
-            {/* Sort dropdown — hidden on mobile (moved to sticky bottom bar) */}
-            <div className="relative max-[1100px]:hidden">
-              <button
-                className="inline-flex items-center gap-2.5 px-3.5 py-[9px] bg-bg border border-rule rounded-full text-[13px] cursor-pointer font-body transition-[border-color] duration-200 hover:border-ink"
-                onClick={() => setSortOpen((o) => !o)}
-              >
-                <span className="text-muted text-xs">مرتب‌سازی:</span>
-                <span>{currentSortLabel}</span>
-                <Icon name="chevron-down" size={12} />
-              </button>
-              {sortOpen && (
-                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[180px] bg-surface border border-rule rounded-[4px] shadow-[0_8px_24px_rgba(26,15,29,0.1)] z-20 [direction:rtl]">
-                  {SORT_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.key}
-                      className={`flex items-center gap-2 w-full px-4 py-3 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-plum font-normal' : 'text-ink-2'}`}
-                      onClick={() => handleSort(opt.key)}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              )}
+            {/* View mode */}
+            <div
+              role="group"
+              aria-label="نحوه‌ی نمایش"
+              className="inline-flex gap-0.5 bg-surface ring-1 ring-inset ring-rule rounded-full p-1 max-sm:hidden"
+            >
+              {VIEW_MODES.map(({ mode, title, Icon: ModeIcon }) => (
+                <button
+                  key={mode || 'default'}
+                  className={`w-9 h-9 rounded-full grid place-items-center cursor-pointer transition-colors duration-150 ${viewMode === mode ? 'bg-ink text-bg' : 'text-muted hover:text-ink'}`}
+                  onClick={() => setViewMode(mode)}
+                  title={title}
+                  aria-label={title}
+                  aria-pressed={viewMode === mode}
+                >
+                  <ModeIcon size={15} strokeWidth={1.6} />
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Applied filter chips — own scrollable row, always below the main row */}
+          {/* Applied filter chips */}
           {appliedChips.length > 0 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap border-t border-rule px-[22px] pb-3 pt-2.5 max-sm:px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-1.5 overflow-x-auto flex-nowrap pt-3 scrollbar-none">
               {appliedChips.map((chip, i) => (
-                <span
+                <button
                   key={i}
-                  className="inline-flex items-center gap-1.5 py-[5px] pl-1.5 pr-3 bg-bg border border-rule rounded-full text-xs text-ink-2 shrink-0"
+                  onClick={chip.remove}
+                  aria-label={`حذف فیلتر ${chip.label}`}
+                  className="group inline-flex items-center gap-1.5 min-h-[34px] ps-3 pe-2 bg-surface ring-1 ring-inset ring-rule rounded-full text-[12.5px] text-ink-2 shrink-0 cursor-pointer hover:ring-ink"
                 >
                   {chip.label}
-                  <button
-                    onClick={chip.remove}
-                    aria-label="حذف فیلتر"
-                    className="w-[18px] h-[18px] rounded-full grid place-items-center bg-transparent text-muted shrink-0 cursor-pointer hover:bg-ink hover:text-bg"
-                  >
-                    <Icon name="x" size={9} />
-                  </button>
-                </span>
+                  <span className="w-5 h-5 rounded-full grid place-items-center text-muted group-hover:bg-ink group-hover:text-bg transition-colors">
+                    <Icon name="x" size={10} />
+                  </span>
+                </button>
               ))}
               <button
-                className="text-xs text-copper px-2 underline underline-offset-[3px] bg-transparent border-none cursor-pointer shrink-0"
+                className="min-h-[34px] text-[12.5px] text-plum px-2 cursor-pointer shrink-0 hover:text-ink"
                 onClick={resetFilters}
               >
-                پاک کردن
+                پاک کردن همه
               </button>
             </div>
           )}
         </div>
 
         {/* ── Grid: filter sidebar + product section ───────────────── */}
-        <div className="grid grid-cols-[280px_1fr] gap-8 pb-[88px] max-[1100px]:grid-cols-1 max-[1100px]:pb-[120px] max-[720px]:pb-[200px]">
+        <div className="grid grid-cols-[272px_1fr] gap-10 pb-[88px] max-[1100px]:grid-cols-1 max-[1100px]:pb-[120px] max-[720px]:pb-[200px]">
           <FilterPanel
             isOpen={filterOpen}
             onClose={() => setFilterOpen(false)}
@@ -495,6 +506,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
             onToggleColor={handleToggleColor}
             onInStockChange={handleInStock}
             onReset={resetFilters}
+            resultCount={sorted.length}
           />
 
           <section>
@@ -527,11 +539,11 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
 
             {/* Pagination */}
             {!loading && totalPages > 1 && (
-              <div className="mt-9 pt-6 border-t border-rule">
+              <div className="mt-12 pt-6 border-t border-rule">
                 {/* Mobile: simplified prev / X of Y / next */}
                 <div className="flex items-center justify-between sm:hidden">
                   <button
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2"
                     disabled={page === 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
@@ -542,7 +554,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
                     {toFa(page)} / {toFa(totalPages)}
                   </span>
                   <button
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2"
                     disabled={page === totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
@@ -554,7 +566,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
                 {/* Desktop: full page number buttons */}
                 <div className="hidden sm:flex items-center justify-center gap-1 flex-wrap">
                   <button
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2 me-1"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2 me-1"
                     disabled={page === 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                   >
@@ -564,14 +576,15 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
                   {pages.map((p) => (
                     <button
                       key={p}
-                      className={`w-9 h-9 rounded-full text-[13px] border font-mono cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink font-medium' : 'bg-transparent text-ink-2 border-transparent hover:border-rule hover:text-ink'}`}
+                      aria-current={p === page ? 'page' : undefined}
+                      className={`w-11 h-11 rounded-full text-[13.5px] border cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink font-medium' : 'bg-transparent text-ink-2 border-transparent hover:border-rule hover:text-ink'}`}
                       onClick={() => setPage(p)}
                     >
                       {toFa(p)}
                     </button>
                   ))}
                   <button
-                    className="inline-flex items-center gap-2 h-9 px-4 rounded-full border border-rule font-body text-[13px] bg-transparent cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:text-ink text-ink-2 ms-1"
+                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2 ms-1"
                     disabled={page === totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   >
@@ -599,28 +612,28 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
       </section>
 
       {/* ── Mobile sticky action bar ─────────────────────────────── */}
-      <div className="hidden max-[1100px]:flex fixed bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom,0px))] inset-x-0 z-[110] bg-surface/95 backdrop-blur-sm border-t border-rule px-4 pt-3 pb-3">
+      <div
+        className={`hidden max-[1100px]:flex fixed bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom,0px))] inset-x-0 z-[110] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-4 py-2.5 gap-2 transition-transform duration-300 ${filterOpen ? 'translate-y-full pointer-events-none' : ''}`}
+      >
         {/* Filter button */}
         <button
           onClick={() => setFilterOpen(true)}
-          className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-ink text-bg rounded-full text-[13px] font-body cursor-pointer transition-opacity duration-150 active:opacity-80"
+          className="flex-1 inline-flex items-center justify-center gap-2 min-h-[48px] bg-ink text-bg rounded-full text-[13.5px] font-body cursor-pointer transition-opacity duration-150 active:opacity-80"
         >
           <Icon name="sliders" size={14} />
           فیلترها
           {appliedChips.length > 0 && (
-            <span className="w-[18px] h-[18px] rounded-full bg-copper text-bg text-[10px] font-mono grid place-items-center flex-shrink-0">
+            <span className="min-w-5 h-5 px-1 rounded-full bg-plum text-bg text-[11px] grid place-items-center flex-shrink-0">
               {toFa(appliedChips.length)}
             </span>
           )}
         </button>
 
-        <div className="w-px mx-3 bg-rule self-stretch" />
-
         {/* Sort button + dropdown */}
         <div className="flex-1 relative">
           <button
             onClick={() => setSortOpen((o) => !o)}
-            className="w-full inline-flex items-center justify-center gap-2 py-3 border border-rule rounded-full text-[13px] font-body cursor-pointer transition-[border-color] duration-150 hover:border-ink active:border-ink"
+            className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] bg-surface border border-rule rounded-full text-[13.5px] font-body cursor-pointer transition-[border-color] duration-150 hover:border-ink active:border-ink"
           >
             <span className="text-muted text-[11px]">ترتیب:</span>
             <span>{currentSortLabel}</span>
@@ -631,11 +644,11 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
             />
           </button>
           {sortOpen && (
-            <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[12px] overflow-hidden shadow-[0_-8px_28px_rgba(26,15,29,0.12)] z-20">
+            <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[12px] overflow-hidden shadow-[var(--shadow-lift)] z-20">
               {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt.key}
-                  className={`flex items-center w-full px-4 py-3.5 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-copper font-medium' : 'text-ink-2'}`}
+                  className={`flex items-center w-full px-4 py-3.5 text-[13px] text-right transition-colors duration-150 hover:bg-plate ${sort === opt.key ? 'text-plum font-medium' : 'text-ink-2'}`}
                   onClick={() => handleSort(opt.key)}
                 >
                   {opt.label}
