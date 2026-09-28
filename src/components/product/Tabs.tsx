@@ -37,7 +37,7 @@ const Tabs: FC<TabsProps> = ({ product }) => {
       <div className="py-10">
         {/* Description */}
         <div
-          className={`grid-cols-2 gap-12 items-start max-md:grid-cols-1 max-md:gap-8 ${activeTab === 'desc' ? 'grid' : 'hidden'}`}
+          className={`${p.highlights.length > 0 ? 'grid-cols-2' : 'grid-cols-1'} gap-12 items-start max-md:grid-cols-1 max-md:gap-8 ${activeTab === 'desc' ? 'grid' : 'hidden'}`}
         >
           <div>
             <h2 className="font-heading text-[24px] font-bold m-0 mb-4 leading-[1.2] flex items-center gap-2.5">
@@ -47,32 +47,34 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               </span>
             </h2>
             {p.description.split('\n\n').map((para, i) => (
-              <p key={i} className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">
+              <p key={i} className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[68ch]">
                 {para}
               </p>
             ))}
           </div>
-          <div>
-            <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
-                <Icon name="check" size={11} strokeWidth={2.4} />
-              </span>
-              ویژگی‌های اصلی
-            </h3>
-            <ul className="flex flex-col gap-3 list-none p-0 m-0">
-              {p.highlights.map((h, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]"
-                >
-                  <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
-                    <Icon name="check" size={11} strokeWidth={2.4} />
-                  </span>
-                  {h}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {p.highlights.length > 0 && (
+            <div>
+              <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
+                  <Icon name="check" size={11} strokeWidth={2.4} />
+                </span>
+                ویژگی‌های اصلی
+              </h3>
+              <ul className="flex flex-col gap-3 list-none p-0 m-0">
+                {p.highlights.map((h, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]"
+                  >
+                    <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
+                      <Icon name="check" size={11} strokeWidth={2.4} />
+                    </span>
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Specs */}

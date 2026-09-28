@@ -1,7 +1,9 @@
 import { useState, useEffect, useTransition, useMemo, useRef, type FC } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
 import type { ServerInitialData } from '../context/initialData'
-import { getBlogPostBySlug, type ApiBlogPost } from '../api/blog'
+import { getBlogPostBySlug, getBlogPosts, type ApiBlogPost } from '../api/blog'
+import Icon from '../components/icons/Icon'
+import { BTN_CLS } from '../components/ui/Button'
 import { imgSet } from '../utils/cdnImage'
 
 declare global {
@@ -54,6 +56,31 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
   const progressBarRef = useRef<HTMLDivElement>(null)
 
   const jsonLd = useMemo(() => (post ? buildJsonLd(post) : undefined), [post])
+  // ~200 Persian words per minute; strip tags so markup doesn't count.
+  const readMinutes = useMemo(() => {
+    if (!post?.body) return 0
+    const words = post.body
+      .replace(/<[^>]+>/g, ' ')
+      .split(/\s+/)
+      .filter(Boolean).length
+    return Math.max(1, Math.round(words / 200))
+  }, [post])
+
+  const [morePosts, setMorePosts] = useState<ApiBlogPost[]>([])
+  useEffect(() => {
+    const currentSlug = post?.slug
+    if (!currentSlug) return
+    let cancelled = false
+    getBlogPosts(1, 4)
+      .then((res) => {
+        if (!cancelled) setMorePosts(res.posts.filter((p) => p.slug !== currentSlug).slice(0, 3))
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [post?.slug])
+
   const date = useMemo(
     () =>
       post?.published_at
@@ -195,12 +222,18 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
 
         {/* Article header */}
         <header className="mb-10 pb-10 border-b border-rule">
-          {date !== null && (
-            <div className="flex items-center gap-3 mb-6">
-              <span aria-hidden="true" className="block w-8 h-px bg-plum" />
-              <time className="label-mono tracking-[.16em] text-plum">{date}</time>
-            </div>
-          )}
+          <div className="flex items-center flex-wrap gap-x-3 gap-y-2 mb-6 text-[12.5px] text-muted">
+            <span className="kicker">Journal</span>
+            {date !== null && <time className="text-ink-2">{date}</time>}
+            {readMinutes > 0 && (
+              <>
+                <span aria-hidden="true" className="opacity-40">
+                  ·
+                </span>
+                <span>{readMinutes.toLocaleString('fa-IR')} دقیقه مطالعه</span>
+              </>
+            )}
+          </div>
           <h1 className="font-heading font-bold text-[clamp(28px,4.5vw,52px)] leading-[1.18] text-ink mb-5">
             {post.title}
           </h1>
@@ -213,10 +246,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
 
         {/* Featured image */}
         {post.featured_image_url && (
-          <figure
-            className="mb-12 overflow-hidden"
-            style={{ boxShadow: '0 24px 60px -20px rgba(27, 15, 29, 0.22)' }}
-          >
+          <figure className="mb-12 overflow-hidden rounded-[var(--radius-lg)] ring-1 ring-rule shadow-[var(--shadow-lift)] md:-mx-[min(8vw,120px)]">
             <img
               {...imgSet(post.featured_image_url, {
                 widths: [640, 960, 1280],
@@ -233,20 +263,91 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
         {/* Article body */}
         <article className="prose-blog" dangerouslySetInnerHTML={{ __html: post.body }} />
 
-        {/* Back to blog */}
-        <div className="mt-16 pt-8 border-t border-rule">
-          <a
-            href="/blog"
-            className="group inline-flex items-center gap-3 text-[13px] text-muted hover:text-ink transition-colors"
-          >
-            <span
-              aria-hidden="true"
-              className="block h-px bg-current transition-all duration-300 w-6 group-hover:w-12"
+        {/* Shop the story */}
+        <aside className="mt-16 rounded-[var(--radius-lg)] bg-surface ring-1 ring-inset ring-rule p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div>
+            <span className="kicker mb-2">Shop the story</span>
+            <p className="font-heading font-bold text-[20px] leading-snug text-ink m-0">
+              استایل این مقاله را از لوکسرا بخرید
+            </p>
+            <p className="text-[13.5px] text-ink-2 m-0 mt-1.5">
+              جدیدترین جواهرات فانتزی با ارسال یک‌روزه در تهران.
+            </p>
+          </div>
+          <a href="/category/new" className={`${BTN_CLS} shrink-0 justify-center`}>
+            مشاهده‌ی محصولات
+            <span className="arr">
+              <Icon name="arrow-left" size={16} />
+            </span>
+          </a>
+        </aside>
+
+        <div className="mt-10">
+          <a href="/blog" className="link-draw group">
+            <Icon
+              name="arrow-right"
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1"
             />
             بازگشت به بلاگ
           </a>
         </div>
       </div>
+
+      {/* More articles */}
+      {morePosts.length > 0 && (
+        <section className="section-band">
+          <div className="page-section">
+            <div className="flex items-end justify-between gap-4 mb-8 pb-5 border-b border-rule">
+              <div>
+                <span className="kicker mb-3">Keep reading</span>
+                <h2 className="font-heading font-bold text-[clamp(24px,3vw,36px)] leading-tight m-0 text-ink">
+                  مقالات بیشتر
+                </h2>
+              </div>
+              <a href="/blog" className="link-draw group whitespace-nowrap">
+                همه مقالات
+                <Icon
+                  name="arrow-left"
+                  size={15}
+                  className="transition-transform duration-300 group-hover:-translate-x-1"
+                />
+              </a>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+              {morePosts.map((p) => (
+                <a key={p.id} href={`/blog/${p.slug}`} className="group flex flex-col">
+                  <div className="aspect-[3/2] overflow-hidden bg-plate rounded-[var(--radius)] ring-1 ring-inset ring-rule transition-shadow duration-300 group-hover:shadow-[var(--shadow-lift)]">
+                    {p.featured_image_url ? (
+                      <img
+                        {...imgSet(p.featured_image_url, {
+                          widths: [320, 480, 640],
+                          ratio: 3 / 2,
+                          sizes: '(max-width: 720px) 100vw, 33vw',
+                        })}
+                        alt={p.title}
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04]"
+                      />
+                    ) : (
+                      <div className="w-full h-full blog-placeholder-art" />
+                    )}
+                  </div>
+                  <h3 className="font-heading font-bold text-[17px] leading-[1.45] m-0 mt-4 text-ink group-hover:text-plum transition-colors">
+                    {p.title}
+                  </h3>
+                  {p.excerpt && (
+                    <p className="text-[13px] leading-[1.8] text-ink-2 line-clamp-2 m-0 mt-2">
+                      {p.excerpt}
+                    </p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   )
 }

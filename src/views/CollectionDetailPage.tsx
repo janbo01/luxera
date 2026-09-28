@@ -1,11 +1,11 @@
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useEffect, useState, useRef, useMemo, type FC } from 'react'
 import ProductCard from '../components/product/ProductCard'
+import PageIntro from '../components/shared/PageIntro'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import { toFa } from '../utils/format'
 import { useCartStore } from '../store/cartStore'
 import { getCollectionBySlug, adaptProduct, type ApiCollectionDetail } from '../api/product'
-import { toneStyle, toneClass } from '../utils/toneStyle'
 import { imgSet } from '../utils/cdnImage'
 import type { ServerInitialData } from '../context/initialData'
 import type { Product } from '../types'
@@ -126,115 +126,57 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
         ]}
       />
 
-      {/* ── Cinematic banner ── */}
-      <div
-        className={[
-          'relative overflow-hidden flex flex-col justify-end animate-rise',
-          toneClass(col.tone, 'coll-banner'),
-        ].join(' ')}
-        style={{
-          ...toneStyle(col.tone),
-          minHeight: 'clamp(360px, 52vh, 580px)',
-          paddingInline: 'clamp(20px, 4vw, 56px)',
-          paddingBottom: 'clamp(40px, 6vw, 72px)',
-          paddingTop: '80px',
-        }}
-      >
-        {/* Cover image (if present) — full bleed behind content */}
-        {col.cover_image_url && (
-          <img
-            {...imgSet(col.cover_image_url, {
-              widths: [768, 1280, 1920],
-              sizes: '100vw',
-            })}
-            alt={col.name_fa}
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
-            aria-hidden
-          />
-        )}
-
-        {/* English name — massive ghost watermark */}
-        {col.name_en && (
-          <div
-            className="absolute inset-0 flex items-center justify-end overflow-hidden pointer-events-none"
-            aria-hidden
-          >
-            <span
-              className="font-display italic font-light leading-[0.85] whitespace-nowrap pe-[clamp(20px,4vw,56px)]"
-              style={{
-                fontSize: 'clamp(90px, 12vw, 200px)',
-                opacity: 0.07,
-                transform: 'translateY(8%)',
-              }}
-            >
-              {col.name_en}
-            </span>
-          </div>
-        )}
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col gap-4 max-w-[800px]">
-          {/* Kicker */}
-          <span className="font-mono text-[10px] tracking-[0.22em] opacity-60 uppercase">
-            COLLECTION
-            {col.name_en ? ` · ${col.name_en}` : ''}
-          </span>
-
-          {/* Persian heading — editorial scale */}
-          <h1
-            className="font-heading font-bold leading-[1.05] tracking-[-0.02em] m-0"
-            style={{ fontSize: 'clamp(44px, 6vw, 78px)' }}
-          >
-            {col.name_fa}
-          </h1>
-
-          {/* Ornamental separator */}
-          <div className="flex items-center gap-3 mt-1">
-            <div className="h-px w-12 bg-current opacity-30" />
-            <span className="opacity-25 text-[11px] font-display" aria-hidden>
-              ✦
-            </span>
-            <div className="h-px w-40 bg-current opacity-15" />
-          </div>
-
-          {/* Description */}
-          {col.description && (
-            <p
-              className="text-[14px] leading-[1.9] opacity-75 max-[768px]:hidden"
-              style={{ maxWidth: '52ch' }}
-            >
-              {col.description}
-            </p>
-          )}
-
-          {/* Product count pill */}
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] opacity-55 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-70" aria-hidden />
-            {toFa(products.length)} محصول در این کالکشن
-          </span>
-        </div>
+      <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)]">
+        <PageIntro
+          kicker={col.name_en ? `Collection · ${col.name_en}` : 'Collection'}
+          title={col.name_fa}
+          description={col.description}
+          meta={<span>{toFa(products.length)} محصول در این کالکشن</span>}
+          aside={
+            col.cover_image_url || products.some((p) => p.imageUrl) ? (
+              <div className="hidden md:flex gap-2 w-[min(38vw,420px)]" aria-hidden>
+                {col.cover_image_url ? (
+                  <img
+                    {...imgSet(col.cover_image_url, {
+                      widths: [480, 840],
+                      ratio: 16 / 10,
+                      sizes: '420px',
+                    })}
+                    alt=""
+                    fetchPriority="high"
+                    decoding="async"
+                    className="w-full aspect-[16/10] object-cover rounded-[var(--radius)]"
+                  />
+                ) : (
+                  products
+                    .filter((p) => p.imageUrl)
+                    .slice(0, 3)
+                    .map((p, i) => (
+                      <img
+                        key={p.id}
+                        {...imgSet(p.imageUrl!, {
+                          widths: [240, 480],
+                          ratio: 3 / 4,
+                          sizes: '140px',
+                        })}
+                        alt=""
+                        decoding="async"
+                        className={`flex-1 min-w-0 aspect-[3/4] object-cover rounded-[var(--radius)] ring-1 ring-rule ${i === 1 ? 'translate-y-4' : ''}`}
+                      />
+                    ))
+                )}
+              </div>
+            ) : undefined
+          }
+        />
       </div>
 
       {/* ── Product grid section ── */}
-      <section className="py-[88px] px-[clamp(20px,4vw,56px)] max-w-[1480px] mx-auto">
-        {/* Ornamental divider */}
-        <div className="flex items-center gap-5 mb-14">
-          <div className="h-px flex-1 bg-rule" />
-          <span
-            className="font-display italic text-[22px] text-muted/60 font-light select-none"
-            aria-hidden
-          >
-            ✦
-          </span>
-          <div className="h-px flex-1 bg-rule" />
-        </div>
-
+      <section className="pt-8 md:pt-12 pb-[clamp(56px,7vw,96px)] px-[var(--pad)] max-w-[var(--maxw)] mx-auto">
         <h2 className="sr-only">محصولاتِ این کالکشن</h2>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-[18px]">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-[clamp(12px,1.5vw,22px)] gap-y-[clamp(28px,3vw,44px)]">
             {products.map((p, i) => (
               <div
                 key={p.id}

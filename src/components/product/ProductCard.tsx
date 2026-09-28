@@ -131,21 +131,27 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
             <Illustration name={product.illus} />
           )}
         </div>
+
+        {/* Add to cart — floats on the photo corner so the price can sit right under the title */}
+        <button
+          className="product-quick absolute bottom-1 end-1 z-[3] w-11 h-11 grid place-items-center cursor-pointer"
+          onClick={handleAdd}
+          aria-label={`افزودن ${product.fa} به سبد`}
+        >
+          <span className="w-9 h-9 rounded-full grid place-items-center bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] transition-all duration-200 group-hover:bg-ink group-hover:text-bg active:scale-90">
+            <Icon name="bag" size={16} strokeWidth={1.7} />
+          </span>
+        </button>
       </div>
 
       {/* Body */}
-      <div className="pt-3.5 px-0.5 flex flex-col gap-2.5 flex-1">
-        <h3 className="font-heading text-[14.5px] sm:text-[15.5px] font-semibold leading-[1.45] text-ink m-0 line-clamp-2 min-h-[2.9em] transition-colors duration-200 group-hover:text-plum">
+      <div className="pt-3 px-0.5 flex flex-col gap-1.5 flex-1">
+        <h3 className="font-heading text-[14.5px] sm:text-[15.5px] font-semibold leading-[1.45] text-ink m-0 line-clamp-2 transition-colors duration-200 group-hover:text-plum">
           {product.fa}
         </h3>
 
-        <div className="flex justify-between items-center gap-2 mt-auto">
-          <div className="flex flex-col items-start min-w-0 [font-feature-settings:'tnum']">
-            {hasDiscount && (
-              <span className="text-muted line-through text-[11px] font-mono leading-none mb-1">
-                {formatNumber(product.oldPrice!)}
-              </span>
-            )}
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <div className="flex items-baseline gap-2 min-w-0 [font-feature-settings:'tnum']">
             <span
               className={`font-heading text-[15.5px] sm:text-[17px] font-bold leading-none whitespace-nowrap ${hasDiscount ? 'text-sale' : 'text-ink'}`}
             >
@@ -154,16 +160,12 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
                 <small className="text-[11px] font-normal text-muted me-1 font-body"> تومان</small>
               )}
             </span>
+            {hasDiscount && (
+              <span className="text-muted line-through text-[11.5px] font-mono leading-none">
+                {formatNumber(product.oldPrice!)}
+              </span>
+            )}
           </div>
-
-          {/* Add to cart */}
-          <button
-            className="product-quick shrink-0 w-11 h-11 rounded-full grid place-items-center border border-rule bg-surface text-ink cursor-pointer transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink active:scale-95 group-hover:border-ink"
-            onClick={handleAdd}
-            aria-label={`افزودن ${product.fa} به سبد`}
-          >
-            <Icon name="bag" size={17} strokeWidth={1.6} />
-          </button>
         </div>
       </div>
     </a>

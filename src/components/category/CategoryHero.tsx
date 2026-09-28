@@ -59,11 +59,7 @@ const CategoryHero: FC<CategoryHeroProps> = ({
       {/* Brand-tinted glow — theme tokens only */}
       <div
         aria-hidden="true"
-        className="absolute -top-1/2 -end-[10%] w-[55%] aspect-square rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-plum)_14%,transparent),transparent)] -z-10 pointer-events-none"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute -bottom-2/3 end-[20%] w-[45%] aspect-square rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-copper)_12%,transparent),transparent)] -z-10 pointer-events-none"
+        className="absolute -bottom-2/3 end-[20%] w-[45%] aspect-square rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-copper)_9%,transparent),transparent)] -z-10 pointer-events-none"
       />
 
       <div className="min-w-0">

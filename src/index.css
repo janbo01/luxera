@@ -326,6 +326,9 @@
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Persian faces ship no italic; never fake-slant them. Latin display
+       text still gets Cormorant's real italic cut. */
+    font-synthesis-style: none;
   }
 
   body {
@@ -812,17 +815,8 @@
   color: var(--color-ink);
 }
 
-/* Drop cap */
-.prose-blog > p:first-of-type::first-letter {
-  font-family: var(--font-heading);
-  font-size: 3.6em;
-  font-weight: 700;
-  line-height: 0.82;
-  float: right;
-  margin-left: 0.1em;
-  margin-top: 0.08em;
-  color: var(--color-plum);
-}
+/* No drop cap: a floated first letter breaks Persian cursive joining
+   (the initial glyph detaches from the rest of the word). */
 
 /* Heading scroll offset for anchor links */
 .prose-blog h2,
@@ -842,19 +836,20 @@
 }
 
 /* ── Collection named-tone palettes ──────────────────────── */
-/* Applied when the API returns a named tone rather than hex  */
+/* Applied when the API returns a named tone rather than hex.
+   Derived from theme tokens so they follow the admin palette. */
 .coll-card--plum,
 .coll-banner--plum {
-  background: linear-gradient(160deg, #4a1125 0%, #1d0510 100%);
-  color: #f0e4d8;
+  background: linear-gradient(160deg, var(--color-plum) 0%, var(--color-plum-dark) 100%);
+  color: var(--color-bg);
 }
 .coll-card--sand,
 .coll-banner--sand {
-  background: linear-gradient(160deg, #c49060 0%, #7a5232 100%);
-  color: #1a0e04;
+  background: linear-gradient(160deg, var(--color-dust-rose-light) 0%, var(--color-dust-rose) 100%);
+  color: var(--color-ink);
 }
 .coll-card--copper,
 .coll-banner--copper {
-  background: linear-gradient(160deg, #9a5500 0%, #5a3000 100%);
-  color: #f5ead8;
+  background: linear-gradient(160deg, var(--color-copper) 0%, var(--color-copper-dark) 100%);
+  color: var(--color-bg);
 }

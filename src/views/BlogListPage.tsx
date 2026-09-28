@@ -2,6 +2,7 @@ import { useState, useEffect, useTransition, useRef, memo, type FC } from 'react
 import { usePageMeta } from '../hooks/usePageMeta'
 import type { ServerInitialData } from '../context/initialData'
 import { getBlogPosts, type ApiBlogPost, type ApiBlogPostList } from '../api/blog'
+import PageIntro from '../components/shared/PageIntro'
 import { imgSet } from '../utils/cdnImage'
 
 declare global {
@@ -39,25 +40,25 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
   return (
     <a
       href={`/blog/${post.slug}`}
-      className="group flex flex-col-reverse md:grid md:grid-cols-2 border border-rule hover:border-plum overflow-hidden card-lift animate-rise mb-14 max-[640px]:mb-10"
+      className="group flex flex-col-reverse md:grid md:grid-cols-[1fr_1.15fr] rounded-[var(--radius-lg)] ring-1 ring-inset ring-rule bg-surface overflow-hidden transition-shadow duration-300 hover:shadow-[var(--shadow-lift)] animate-rise mb-12 max-[640px]:mb-10"
     >
       {/* Text side — first in DOM = right side in RTL grid */}
-      <div className="p-8 sm:p-10 flex flex-col justify-between gap-8 bg-surface">
+      <div className="p-6 sm:p-10 lg:p-14 flex flex-col justify-center gap-8">
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-2.5 py-[3px] bg-plum text-bg font-body text-[10px] tracking-[.14em] uppercase leading-none">
-              ویژه
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-plum/10 text-plum text-[11.5px] font-medium leading-none">
+              مقاله‌ی ویژه
             </span>
             {date && <span className="label-mono">{date}</span>}
           </div>
-          <h2 className="font-heading font-bold text-[clamp(20px,3vw,36px)] leading-[1.22] text-ink group-hover:text-plum transition-colors duration-300 max-w-[24ch]">
+          <h2 className="font-heading font-bold text-[clamp(22px,3vw,40px)] leading-[1.25] m-0 text-ink group-hover:text-plum transition-colors duration-300 max-w-[22ch]">
             {post.title}
           </h2>
           {post.excerpt && (
             <p className="text-[14px] leading-[1.9] text-ink-2 line-clamp-3">{post.excerpt}</p>
           )}
         </div>
-        <span className="inline-flex items-center gap-2.5 text-[12px] text-plum font-medium self-start">
+        <span className="inline-flex items-center gap-2.5 text-[13px] text-ink font-medium self-start group-hover:text-plum transition-colors">
           ادامه مطلب
           <span
             aria-hidden="true"
@@ -65,12 +66,12 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
           >
             ←
           </span>
-          <span className="block h-px bg-plum/40 transition-all duration-400 w-5 group-hover:w-10" />
+          <span className="block h-px bg-current opacity-40 transition-all duration-500 w-5 group-hover:w-10" />
         </span>
       </div>
 
       {/* Image side — second in DOM = left side in RTL grid, top in mobile (flex-col-reverse) */}
-      <div className="aspect-[4/3] overflow-hidden bg-plate flex-shrink-0">
+      <div className="aspect-[4/3] md:aspect-auto md:min-h-[420px] relative overflow-hidden bg-plate flex-shrink-0">
         {post.featured_image_url ? (
           <img
             {...imgSet(post.featured_image_url, {
@@ -83,10 +84,10 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
             height={720}
             fetchPriority="high"
             decoding="async"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="w-full h-full blog-placeholder-art" />
+          <div className="absolute inset-0 blog-placeholder-art" />
         )}
       </div>
     </a>
@@ -106,10 +107,10 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
   return (
     <a
       href={`/blog/${post.slug}`}
-      className="group flex flex-col border border-rule hover:border-plum overflow-hidden card-lift animate-rise"
+      className="group flex flex-col animate-rise"
       style={{ animationDelay: `${index * 65}ms` }}
     >
-      <div className="aspect-[3/2] overflow-hidden bg-plate flex-shrink-0">
+      <div className="aspect-[3/2] overflow-hidden bg-plate flex-shrink-0 rounded-[var(--radius)] ring-1 ring-inset ring-rule transition-shadow duration-300 group-hover:shadow-[var(--shadow-lift)]">
         {post.featured_image_url ? (
           <img
             {...imgSet(post.featured_image_url, {
@@ -122,22 +123,22 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
             height={427}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+            className="w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04]"
           />
         ) : (
           <div className="w-full h-full blog-placeholder-art" />
         )}
       </div>
 
-      <div className="p-5 sm:p-6 flex flex-col gap-2.5 flex-1 bg-surface">
+      <div className="pt-4 px-0.5 flex flex-col gap-2 flex-1">
         {date && <span className="label-mono">{date}</span>}
-        <h3 className="font-heading font-bold text-[clamp(15px,1.8vw,18px)] leading-[1.35] text-ink group-hover:text-plum transition-colors duration-200 flex-1">
+        <h3 className="font-heading font-bold text-[clamp(16px,1.8vw,19px)] leading-[1.45] m-0 text-ink group-hover:text-plum transition-colors duration-200">
           {post.title}
         </h3>
         {post.excerpt && (
           <p className="text-[13px] leading-[1.8] text-ink-2 line-clamp-2">{post.excerpt}</p>
         )}
-        <span className="mt-3 inline-flex items-center gap-2 text-[12px] text-plum font-medium">
+        <span className="mt-auto pt-2 inline-flex items-center gap-2 text-[12.5px] text-ink-2 font-medium group-hover:text-plum transition-colors">
           ادامه مطلب
           <span
             aria-hidden="true"
@@ -202,17 +203,18 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
   const isInitialLoading = isPending && !data
 
   return (
-    <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* ── Page header ── */}
-      <div className="pt-[72px] pb-14 border-b border-rule mb-14 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="label-mono mb-4 block">BLOG · مقالات لوکسرا</span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          مقالات
-          <em className="font-heading not-italic text-plum font-normal"> لوکسرا</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85]">
-          راهنماها، نکات مراقبتی و ترندهای جواهرات فانتزی
-        </p>
+    <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,100px)]">
+      <div className="pt-2 md:pt-3 mb-8 md:mb-12">
+        <PageIntro
+          kicker="Journal"
+          title={
+            <>
+              مقالات <em>لوکسرا</em>
+            </>
+          }
+          description="راهنماها، نکات مراقبتی و ترندهای جواهرات فانتزی — برای انتخاب آگاهانه‌تر."
+          meta={data ? <span>{data.total.toLocaleString('fa-IR')} مقاله</span> : undefined}
+        />
       </div>
 
       {/* ── Loading skeleton ── */}
@@ -268,7 +270,7 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
 
           {/* Remaining posts grid */}
           {data.posts.length > 1 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 md:gap-y-12">
               {data.posts.slice(1).map((post, i) => (
                 <PostCard key={post.id} post={post} index={i} />
               ))}
@@ -281,7 +283,7 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
               <button
                 onClick={() => goToPage(Math.max(1, page - 1))}
                 disabled={page === 1 || isPending}
-                className="w-10 h-10 flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-lg leading-none"
+                className="w-11 h-11 rounded-full flex items-center justify-center border border-rule bg-surface text-ink-2 hover:border-ink hover:bg-ink hover:text-bg transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-lg leading-none"
                 aria-label="صفحه قبلی"
               >
                 ›
@@ -292,10 +294,11 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
                   key={n}
                   onClick={() => goToPage(n)}
                   disabled={n === page || isPending}
-                  className={`w-10 h-10 flex items-center justify-center border text-sm transition-colors disabled:cursor-default ${
+                  aria-current={n === page ? 'page' : undefined}
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border text-sm transition-colors disabled:cursor-default ${
                     n === page
-                      ? 'border-plum bg-plum text-bg font-medium'
-                      : 'border-rule text-ink-2 hover:border-plum hover:text-plum'
+                      ? 'border-ink bg-ink text-bg font-medium'
+                      : 'border-rule bg-surface text-ink-2 hover:border-ink'
                   }`}
                 >
                   {n}
@@ -311,7 +314,7 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
               <button
                 onClick={() => goToPage(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages || isPending}
-                className="w-10 h-10 flex items-center justify-center border border-rule text-ink-2 hover:border-plum hover:text-plum transition-colors disabled:opacity-25 disabled:cursor-not-allowed text-lg leading-none"
+                className="w-11 h-11 rounded-full flex items-center justify-center border border-rule bg-surface text-ink-2 hover:border-ink hover:bg-ink hover:text-bg transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-lg leading-none"
                 aria-label="صفحه بعدی"
               >
                 ‹

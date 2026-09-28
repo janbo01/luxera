@@ -31,10 +31,7 @@ const SkeletonCard = () => (
     <div className="pt-3.5 flex flex-col gap-2.5">
       <div className="h-4 bg-plate rounded w-4/5" />
       <div className="h-4 bg-plate rounded w-3/5" />
-      <div className="flex justify-between items-center mt-1">
-        <div className="h-5 bg-plate rounded w-2/5" />
-        <div className="w-11 h-11 bg-plate rounded-full" />
-      </div>
+      <div className="h-5 bg-plate rounded w-2/5 mt-1" />
     </div>
   </div>
 )

@@ -2,7 +2,9 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import { useEffect, useState, useRef, type FC } from 'react'
 import Breadcrumb from '../components/shared/Breadcrumb'
 import { toFa } from '../utils/format'
-import { listCollections, type ApiCollection } from '../api/product'
+import { listCollections, getCollectionBySlug, type ApiCollection } from '../api/product'
+import PageIntro from '../components/shared/PageIntro'
+import Icon from '../components/icons/Icon'
 import { toneStyle, toneClass } from '../utils/toneStyle'
 import { imgSet } from '../utils/cdnImage'
 import type { ServerInitialData } from '../context/initialData'
@@ -52,169 +54,170 @@ const CollectionsPage: FC<CollectionsPageProps> = ({ initialData }) => {
     <>
       <Breadcrumb items={[{ label: 'خانه', to: '/' }, { label: 'کالکشن‌ها' }]} />
 
-      <section className="py-[88px] px-[clamp(20px,4vw,56px)] max-w-[1480px] mx-auto">
-        {/* ── Section header ── */}
-        <header className="relative mb-14">
-          {/* Ghost numeral watermark */}
-          {!loading && collections.length > 0 && (
-            <span
-              className="absolute top-0 start-0 font-display italic font-light leading-[0.8] pointer-events-none select-none text-ink"
-              style={{ fontSize: 'clamp(80px,10vw,160px)', opacity: 0.04 }}
-              aria-hidden
-            >
-              {String(collections.length).padStart(2, '0')}
-            </span>
-          )}
-          <div className="relative flex items-end justify-between gap-6 pb-8 border-b border-rule">
-            <div>
-              <span className="font-mono text-[10px] tracking-[0.22em] text-muted uppercase mb-4 block">
-                COLLECTIONS · لوکسرا
-              </span>
-              <h1
-                className="font-heading font-bold leading-[1.05] tracking-[-0.01em] m-0 text-ink"
-                style={{ fontSize: 'clamp(36px,4.5vw,60px)' }}
-              >
-                کالکشن‌های{' '}
-                <em className="text-plum font-normal not-italic font-display italic">منتخب</em>
-              </h1>
-            </div>
-            <p className="max-w-[38ch] text-ink-2 text-[13px] leading-[2] max-[768px]:hidden">
-              مجموعه‌های دستچین‌شده برای هر مناسبت و سلیقه‌ای
-            </p>
-          </div>
-        </header>
+      <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,96px)]">
+        <PageIntro
+          kicker="Collections"
+          title={
+            <>
+              کالکشن‌های <em>منتخب</em>
+            </>
+          }
+          description="مجموعه‌های دستچین‌شده برای هر مناسبت و سلیقه‌ای — هر کالکشن، یک داستان."
+          meta={
+            !loading && collections.length > 0 ? (
+              <span>{toFa(collections.length)} کالکشن</span>
+            ) : undefined
+          }
+        />
 
-        {/* ── Grid ── */}
         <h2 className="sr-only">مجموعه‌های لوکسرا</h2>
-        {loading ? (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {Array.from({ length: 4 }).map((_, i) => (
+        <div className="mt-8 md:mt-12">
+          {loading ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-10">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-[4/3] bg-plate rounded-[var(--radius)]" />
+                  <div className="h-5 bg-plate rounded w-1/2 mt-4" />
+                  <div className="h-4 bg-plate rounded w-1/4 mt-2" />
+                </div>
+              ))}
+            </div>
+          ) : collections.length === 0 ? (
+            <p className="text-center text-muted py-20">هیچ کالکشنی یافت نشد.</p>
+          ) : (
+            <div
+              className={`grid sm:grid-cols-2 gap-x-5 gap-y-10 ${collections.length > 2 ? 'lg:grid-cols-3' : 'lg:max-w-[1000px]'}`}
+            >
+              {collections.map((col, i) => (
+                <CollectionCard key={col.slug} col={col} index={i} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
+interface CollectionCardProps {
+  col: ApiCollection
+  index: number
+}
+
+// Without a cover image, the card previews the collection's own products as a
+// 1 + 2 mosaic — fetched lazily per card, so the list itself stays one request.
+const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
+  const [previews, setPreviews] = useState<string[]>([])
+
+  useEffect(() => {
+    if (col.cover_image_url) return
+    let cancelled = false
+    getCollectionBySlug(col.slug)
+      .then((d) => {
+        if (cancelled) return
+        setPreviews(
+          d.products
+            .map((p) => p.image_url)
+            .filter((u): u is string => !!u)
+            .slice(0, 3),
+        )
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [col.slug, col.cover_image_url])
+
+  const eager = index < 3
+
+  return (
+    <a
+      href={`/collections/${col.slug}`}
+      className="group flex flex-col animate-rise"
+      style={{ animationDelay: `${Math.min(index, 6) * 80}ms` }}
+      aria-label={`مشاهده کالکشن ${col.name_fa}، ${toFa(col.product_count)} محصول`}
+    >
+      <div
+        className={[
+          'relative aspect-[4/3] rounded-[var(--radius)] overflow-hidden ring-1 ring-inset ring-rule transition-shadow duration-300 group-hover:shadow-[var(--shadow-lift)]',
+          toneClass(col.tone, 'coll-card'),
+        ].join(' ')}
+        style={toneStyle(col.tone)}
+      >
+        {col.cover_image_url ? (
+          <img
+            {...imgSet(col.cover_image_url, {
+              widths: [480, 640, 960],
+              ratio: 4 / 3,
+              sizes: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
+            })}
+            alt=""
+            loading={eager ? 'eager' : 'lazy'}
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04]"
+          />
+        ) : previews.length > 0 ? (
+          <div
+            className={`absolute inset-1.5 grid gap-1.5 ${previews.length > 1 ? 'grid-cols-[1.6fr_1fr] grid-rows-2' : ''}`}
+          >
+            {previews.map((src, i) => (
               <div
-                key={i}
-                className={`bg-surface/60 rounded-[var(--radius-sm)] animate-pulse ${i === 0 ? 'col-span-2 lg:col-span-2' : 'col-span-1'}`}
-                style={{ aspectRatio: i === 0 ? '3/2' : '3/4' }}
-              />
+                key={src}
+                className={`relative overflow-hidden rounded-[calc(var(--radius)-6px)] bg-bg-2 ${i === 0 && previews.length > 1 ? 'row-span-2' : ''} ${previews.length === 2 && i === 1 ? 'row-span-2' : ''}`}
+              >
+                <img
+                  {...imgSet(src, {
+                    widths: [240, 480, 640],
+                    ratio: 1,
+                    sizes: '(max-width: 640px) 60vw, 25vw',
+                  })}
+                  alt=""
+                  loading={eager ? 'eager' : 'lazy'}
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.05]"
+                />
+              </div>
             ))}
           </div>
-        ) : collections.length === 0 ? (
-          <p className="text-center text-muted py-20">هیچ کالکشنی یافت نشد.</p>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {collections.map((col, i) => {
-              const total = collections.length
-              const isWide = i === 0 || (i > 0 && i % 3 === 0)
-              // Solo card spans the full grid; last card in an odd list fills the row
-              const isFullRow = total === 1 || (isWide && i === total - 1 && total % 3 === 1)
-              const colSpan = isFullRow
-                ? 'col-span-2 lg:col-span-3'
-                : isWide
-                  ? 'col-span-2 lg:col-span-2'
-                  : 'col-span-1'
-              const ratio = isFullRow ? '16/7' : isWide ? '3/2' : '3/4'
-              return (
-                <a
-                  key={col.slug}
-                  href={`/collections/${col.slug}`}
-                  className={[
-                    'group relative overflow-hidden rounded-[var(--radius-sm)] cursor-pointer animate-rise',
-                    colSpan,
-                    toneClass(col.tone, 'coll-card'),
-                  ].join(' ')}
-                  style={
-                    {
-                      ...toneStyle(col.tone),
-                      aspectRatio: ratio,
-                      animationDelay: `${i * 90}ms`,
-                    } as React.CSSProperties
-                  }
-                  aria-label={`مشاهده کالکشن ${col.name_fa}، ${toFa(col.product_count)} محصول`}
-                >
-                  {/* Background: cover image or decorative letter */}
-                  {col.cover_image_url ? (
-                    <img
-                      {...imgSet(col.cover_image_url, {
-                        widths: isWide ? [640, 960, 1280] : [320, 480, 640],
-                        sizes: isWide
-                          ? '(max-width: 1024px) 100vw, 66vw'
-                          : '(max-width: 1024px) 50vw, 33vw',
-                      })}
-                      alt={col.name_fa}
-                      loading={i < 3 ? 'eager' : 'lazy'}
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out will-change-transform group-hover:scale-[1.04]"
-                      aria-hidden
-                    />
-                  ) : (
-                    <span
-                      className="absolute inset-0 flex items-center justify-center font-display italic font-light leading-none select-none pointer-events-none transition-transform duration-700 group-hover:scale-[1.08]"
-                      style={{ fontSize: 'clamp(120px,16vw,240px)', opacity: 0.12 }}
-                      aria-hidden
-                    >
-                      {(col.name_en ?? col.name_fa).charAt(0)}
-                    </span>
-                  )}
-
-                  {/* Gradient veil — deepens on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent transition-opacity duration-500 group-hover:opacity-[1.15]" />
-
-                  {/* Badge */}
-                  {col.badge && (
-                    <span className="absolute top-4 end-4 font-mono text-[9px] tracking-[0.2em] uppercase z-10 bg-white/15 border border-white/25 backdrop-blur-[6px] px-3 py-1.5">
-                      {col.badge}
-                    </span>
-                  )}
-
-                  {/* Info panel */}
-                  <div className="absolute bottom-0 inset-x-0 z-10">
-                    {/* Description — slides up on hover */}
-                    {col.description && (
-                      <div className="overflow-hidden px-5">
-                        <p className="text-[12px] leading-relaxed pb-1 translate-y-full opacity-0 transition-all duration-[380ms] ease-out group-hover:translate-y-0 group-hover:opacity-80">
-                          {col.description}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Name + count + arrow */}
-                    <div className="px-5 py-4 flex items-center justify-between gap-3">
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <span className="font-heading text-[16px] font-bold leading-snug truncate">
-                          {col.name_fa}
-                        </span>
-                        <span className="font-mono text-[10px] opacity-55 tracking-[0.12em]">
-                          {toFa(col.product_count)} محصول
-                        </span>
-                      </div>
-                      {/* RTL arrow — scales in on hover */}
-                      <span
-                        className="shrink-0 w-8 h-8 rounded-full border border-current/30 flex items-center justify-center opacity-0 scale-75 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100"
-                        aria-hidden
-                      >
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path
-                            d="M7 2.5L3.5 6L7 9.5"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M3.5 6H10.5"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              )
-            })}
-          </div>
+          <span
+            className="absolute inset-0 grid place-items-center font-display italic font-light leading-none select-none opacity-20 text-[clamp(96px,12vw,160px)]"
+            aria-hidden
+          >
+            {(col.name_en ?? col.name_fa).charAt(0)}
+          </span>
         )}
-      </section>
-    </>
+
+        {col.badge && (
+          <span className="absolute top-3 end-3 z-10 font-mono text-[10px] tracking-[0.14em] uppercase bg-surface/90 text-ink backdrop-blur-[6px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]">
+            {col.badge}
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-start justify-between gap-3 pt-4">
+        <div className="min-w-0">
+          {col.name_en && (
+            <div className="font-display italic text-[13px] text-copper-dark leading-none mb-1.5">
+              {col.name_en}
+            </div>
+          )}
+          <h3 className="font-heading text-[19px] md:text-[21px] font-bold leading-snug m-0 text-ink transition-colors duration-200 group-hover:text-plum">
+            {col.name_fa}
+          </h3>
+          <p className="text-[12.5px] text-muted m-0 mt-1">
+            {toFa(col.product_count)} محصول
+            {col.description ? <span className="line-clamp-1 mt-1">{col.description}</span> : null}
+          </p>
+        </div>
+        <span
+          className="shrink-0 mt-1 w-11 h-11 rounded-full border border-rule bg-surface grid place-items-center text-ink transition-all duration-300 group-hover:bg-ink group-hover:text-bg group-hover:border-ink group-hover:-translate-x-1"
+          aria-hidden
+        >
+          <Icon name="arrow-left" size={16} />
+        </span>
+      </div>
+    </a>
   )
 }
 

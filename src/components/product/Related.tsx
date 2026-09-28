@@ -1,6 +1,7 @@
 import { useState, useEffect, memo, type FC } from 'react'
 
-import Icon from '../icons/Icon'
+import SectionHeader from '../shared/SectionHeader'
+import ViewAllLink from '../shared/ViewAllLink'
 import { useCartStore } from '../../store/cartStore'
 import { listProducts, adaptProduct } from '../../api/product'
 import ProductCard from './ProductCard'
@@ -33,25 +34,17 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
   if (loading || products.length === 0) return null
 
   return (
-    <section className="py-[80px] px-[var(--pad)]">
-      <div className="flex items-end justify-between gap-8 mb-8">
-        <div className="flex flex-col gap-2">
-          <span className="font-display italic text-[18px] text-copper-dark tracking-[0.04em]">
-            You May Also Like
-          </span>
-          <h2 className="font-heading font-bold leading-[1.1] m-0 text-[clamp(38px,3.4vw,52px)] text-ink">
-            شاید <em className="font-body italic font-normal text-copper-dark">دوست داشته باشید</em>
-          </h2>
-        </div>
-        <a
-          href="/"
-          className="inline-flex items-center gap-2 text-[13px] px-[18px] min-h-[50px] rounded-full border border-rule text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink flex-shrink-0"
-        >
-          بازگشت به فروشگاه
-          <Icon name="arrow-left" size={13} />
-        </a>
-      </div>
-      <div className="grid grid-cols-4 gap-[18px] max-md:grid-cols-2">
+    <section className="page-section">
+      <SectionHeader
+        kicker="You may also like"
+        title={
+          <>
+            شاید <em>دوست داشته باشید</em>
+          </>
+        }
+        aside={<ViewAllLink href="/category/new">همه‌ی محصولات</ViewAllLink>}
+      />
+      <div className="products-grid cols-4">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} onAdd={addItem} />
         ))}

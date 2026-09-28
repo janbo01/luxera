@@ -1,4 +1,4 @@
-import { useState, type FC } from 'react'
+import { useEffect, useRef, useState, type FC } from 'react'
 import Icon from '../icons/Icon'
 import QuantityStepper from '../shared/QuantityStepper'
 import Stars from './Stars'
@@ -63,6 +63,18 @@ const InfoPanel: FC<InfoPanelProps> = ({
 
   const effectiveStock = variantQuantity ?? p.stockCount
   const [qty, setQty] = useState(1)
+  // Sticky mobile buy bar: shown once the main add-to-cart row leaves the viewport.
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const [ctaOffscreen, setCtaOffscreen] = useState(false)
+  useEffect(() => {
+    const el = ctaRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([entry]) =>
+      setCtaOffscreen(!entry.isIntersecting && entry.boundingClientRect.top < 0),
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   const { wishlisted, toggle } = useWishlist(p)
 
   const discountPct =
@@ -219,7 +231,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
           <StockNotifyForm productId={p.id} />
         </div>
       ) : (
-        <div className="flex gap-2.5 mt-[22px] items-stretch">
+        <div ref={ctaRef} className="flex gap-2.5 mt-[22px] items-stretch">
           <QuantityStepper
             value={qty}
             onDecrement={() => setQty(Math.max(1, qty - 1))}
@@ -227,14 +239,14 @@ const InfoPanel: FC<InfoPanelProps> = ({
             className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-[48px] [&>button]:h-[48px] [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
           />
           <button
-            className="flex-1 bg-plum text-bg px-[26px] flex items-center justify-between rounded-full transition-colors duration-200 hover:bg-plum-2 min-h-[52px]"
+            className="flex-1 min-w-0 bg-plum text-bg px-5 sm:px-[26px] flex items-center justify-center sm:justify-between gap-3 rounded-full transition-all duration-200 hover:bg-plum-2 active:scale-[0.99] min-h-[56px] shadow-[0_10px_24px_-12px_var(--color-plum)]"
             onClick={handleAdd}
           >
-            <span className="font-medium text-[14px] inline-flex items-center gap-2.5">
+            <span className="font-medium text-[14.5px] inline-flex items-center gap-2.5 whitespace-nowrap">
               <Icon name="bag" size={16} />
               افزودن به سبد
             </span>
-            <span className="font-body text-[13px] opacity-90">
+            <span className="font-body text-[13px] opacity-90 whitespace-nowrap max-sm:hidden">
               {formatNumber(p.price * qty)} ت
             </span>
           </button>
@@ -252,25 +264,47 @@ const InfoPanel: FC<InfoPanelProps> = ({
 
       <ShareRow productName={p.fa} />
 
-      {/* Perks */}
-      <div className="mt-[22px] flex flex-col gap-3">
+      {/* Perks — one grouped card with hairline dividers */}
+      <div className="mt-[22px] flex flex-col bg-surface rounded-[var(--radius)] ring-1 ring-inset ring-rule divide-y divide-rule">
         {PERKS.map(({ icon, heading, body }) => (
-          <div
-            key={icon}
-            className="flex items-start gap-3.5 p-3.5 bg-surface rounded-[12px] border border-rule"
-          >
-            <span className="w-9 h-9 rounded-[8px] bg-bg-2 grid place-items-center text-copper flex-shrink-0">
+          <div key={icon} className="flex items-center gap-3.5 px-4 py-3.5">
+            <span className="w-10 h-10 rounded-full bg-copper/10 grid place-items-center text-copper-dark flex-shrink-0">
               <Icon name={icon} size={17} />
             </span>
             <div className="flex flex-col gap-0.5 min-w-0">
-              <span className="font-heading text-[13px] font-semibold leading-[1.3] text-ink">
+              <span className="font-heading text-[13.5px] font-semibold leading-[1.3] text-ink">
                 {heading}
               </span>
-              <span className="text-[11px] text-muted leading-[1.5]">{body}</span>
+              <span className="text-[12px] text-muted leading-[1.5]">{body}</span>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Sticky buy bar — single-column layouts only; sits above the mobile bottom nav */}
+      {!outOfStock && (
+        <div
+          className={`lg:hidden fixed inset-x-0 bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom))] z-[90] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-[var(--pad)] py-2.5 flex items-center gap-3 transition-transform duration-300 ease-[var(--ease-lux)] ${ctaOffscreen ? 'translate-y-0' : 'translate-y-[calc(100%+80px)]'}`}
+          aria-hidden={!ctaOffscreen}
+          inert={!ctaOffscreen}
+        >
+          <div className="min-w-0 flex-1">
+            <div className="text-[12px] text-muted truncate">{p.fa}</div>
+            <div className="font-heading font-bold text-[17px] text-ink leading-tight whitespace-nowrap">
+              {formatNumber(p.price * qty)}
+              <small className="font-body font-normal text-[11px] text-muted me-1"> تومان</small>
+            </div>
+          </div>
+          <button
+            className="shrink-0 bg-plum text-bg px-5 min-h-[48px] rounded-full inline-flex items-center gap-2 font-medium text-[14px] whitespace-nowrap transition-colors hover:bg-plum-2 active:scale-[0.98]"
+            onClick={handleAdd}
+            tabIndex={ctaOffscreen ? 0 : -1}
+          >
+            <Icon name="bag" size={16} />
+            افزودن به سبد
+          </button>
+        </div>
+      )}
     </aside>
   )
 }
