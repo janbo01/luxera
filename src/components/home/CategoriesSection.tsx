@@ -50,12 +50,10 @@ const CategoriesSection: FC = () => {
         kicker="Browse by category"
         title={
           <>
-            هر استایل،
-            <br />
-            <em>هر مناسبت</em>
+            دسته‌بندی <em>محصولات</em>
           </>
         }
-        aside={<ViewAllLink href="/collections">همه‌ی دسته‌بندی‌ها</ViewAllLink>}
+        aside={<ViewAllLink href="/collections">مشاهده‌ی همه</ViewAllLink>}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3.5">

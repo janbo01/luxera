@@ -39,7 +39,7 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
         kicker="You may also like"
         title={
           <>
-            شاید <em>دوست داشته باشید</em>
+            محصولات <em>مشابه</em>
           </>
         }
         aside={<ViewAllLink href="/category/new">همه‌ی محصولات</ViewAllLink>}
