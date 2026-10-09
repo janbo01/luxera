@@ -2,6 +2,7 @@ import { type FC, type ChangeEvent } from 'react'
 import { Illustration } from '../../illustrations'
 import { formatToman, toFa } from '../../utils/format'
 import Icon from '../icons/Icon'
+import { useCartStore } from '../../store/cartStore'
 import { GIFT_WRAP_PRICE } from '../../data/checkout'
 import type { CartItem, CouponState, CheckoutStep } from '../../types'
 import type { ShippingOption } from '../../data/shipping'
@@ -85,13 +86,17 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         <div className="flex items-center justify-between gap-2.5 mb-[18px] pb-4 border-b border-rule">
           <h3 className="font-heading text-[16px] font-semibold m-0 flex items-center gap-2.5">
             خلاصه‌ی سفارش
-            <span className="font-mono text-[11px] bg-bg-2 text-ink px-[9px] py-1 rounded-full tracking-[.04em]">
+            <span className="font-body text-[11.5px] font-normal bg-bg-2 text-ink px-[9px] py-1 rounded-full">
               {toFa(items.length)} قلم
             </span>
           </h3>
-          <a className="text-[12px] text-copper underline-offset-[3px] hover:underline" href="#">
+          <button
+            type="button"
+            className="min-h-11 text-[12.5px] text-copper-dark underline underline-offset-4 transition-colors duration-200 hover:text-plum"
+            onClick={() => useCartStore.getState().openCart()}
+          >
             ویرایش سبد
-          </a>
+          </button>
         </div>
 
         {/* Line items */}
@@ -165,9 +170,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               <Icon name="clock" size={14} strokeWidth={1.7} />
             </span>
             <div className="flex flex-col gap-[1px] flex-1">
-              <span className="font-mono text-[9px] tracking-[.14em] uppercase text-muted">
-                تخمینِ تحویل
-              </span>
+              <span className="text-[12px] text-muted">تخمینِ تحویل</span>
               <span className="font-heading text-[13px] font-semibold">
                 {selectedShipping.id === 'snapp_box'
                   ? `${snappDate} · ${snappTime}`
@@ -190,9 +193,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               <Icon name="location" size={14} strokeWidth={1.8} />
             </span>
             <div className="flex-1 flex flex-col gap-[1px]">
-              <span className="font-mono text-[9px] tracking-[.14em] text-muted uppercase">
-                آدرسِ تحویل
-              </span>
+              <span className="text-[12px] text-muted ">آدرسِ تحویل</span>
               {addrName && (
                 <span className="text-ink-2">
                   <strong className="font-heading font-semibold text-ink">{addrName}</strong>

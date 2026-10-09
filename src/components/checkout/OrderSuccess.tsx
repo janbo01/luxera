@@ -96,7 +96,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
       </div>
 
       <div className="w-full border border-rule bg-surface mb-8 text-right animate-rise [animation-delay:260ms]">
-        <div className="px-5 py-[10px] font-mono text-[10px] tracking-[.14em] uppercase text-muted border-b border-rule">
+        <div className="px-5 py-[10px] text-[12px] text-muted border-b border-rule">
           محصولات سفارش
         </div>
         {confirmedItems.map((item) => (

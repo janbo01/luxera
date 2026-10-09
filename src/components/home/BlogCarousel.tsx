@@ -117,7 +117,7 @@ const BlogCarousel: FC = () => {
   return (
     <section className={`page-section${showEmpty ? '' : ' cv-auto'}`} id="blog">
       <SectionHeader
-        kicker="BLOG · مقالات"
+        kicker="Journal"
         title={
           <>
             آخرین <em>مقالات</em>

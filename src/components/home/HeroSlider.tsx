@@ -21,6 +21,7 @@ interface Slide {
 
 export interface SlideInfo {
   name: string
+  href?: string
   price?: string
   oldPrice?: string
 }
@@ -121,7 +122,13 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
 
   useLayoutEffect(() => {
     const s = slides[idx]
-    if (s) onSlideRef.current?.({ name: s.caption, price: s.price, oldPrice: s.oldPrice })
+    if (s)
+      onSlideRef.current?.({
+        name: s.caption,
+        href: s.linkUrl,
+        price: s.price,
+        oldPrice: s.oldPrice,
+      })
   }, [idx, slides])
 
   const go = useCallback((n: number) => setIdx((n + total) % total), [total])
@@ -163,9 +170,11 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
         </div>
       ))}
 
-      <span className="hero-slider__count">
-        {formatPaddedIndex(idx + 1)} / {formatPaddedIndex(total)}
-      </span>
+      {total > 1 && (
+        <span className="hero-slider__count" aria-hidden="true">
+          {formatPaddedIndex(idx + 1)} / {formatPaddedIndex(total)}
+        </span>
+      )}
 
       <div className="hero-slider__nav">
         {slides.map((slide, i) => (
@@ -178,14 +187,24 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
         ))}
       </div>
 
-      <div className="hero-slider__arrows">
-        <button className="hero-slider__arrow" onClick={() => go(idx - 1)} aria-label="قبل">
-          <Icon name="arrow-right" size={14} />
-        </button>
-        <button className="hero-slider__arrow" onClick={() => go(idx + 1)} aria-label="بعد">
-          <Icon name="arrow-left" size={14} />
-        </button>
-      </div>
+      {total > 1 && (
+        <div className="hero-slider__arrows">
+          <button
+            className="hero-slider__arrow"
+            onClick={() => go(idx - 1)}
+            aria-label="اسلاید قبلی"
+          >
+            <Icon name="arrow-right" size={16} />
+          </button>
+          <button
+            className="hero-slider__arrow"
+            onClick={() => go(idx + 1)}
+            aria-label="اسلاید بعدی"
+          >
+            <Icon name="arrow-left" size={16} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }

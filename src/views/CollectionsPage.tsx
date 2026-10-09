@@ -189,7 +189,7 @@ const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
         )}
 
         {col.badge && (
-          <span className="absolute top-3 end-3 z-10 font-mono text-[10px] tracking-[0.14em] uppercase bg-surface/90 text-ink backdrop-blur-[6px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]">
+          <span className="absolute top-3 end-3 z-10 text-[11.5px] font-medium leading-none bg-surface/90 text-ink backdrop-blur-[6px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]">
             {col.badge}
           </span>
         )}

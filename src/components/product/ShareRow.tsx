@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Icon from '../icons/Icon'
 import { IconTelegram, IconWhatsApp } from '../icons/BrandIcons'
+import { useHydrated } from '../../hooks/useHydrated'
 
 interface ShareRowProps {
   productName: string
@@ -10,6 +11,10 @@ const SHARE_BTN =
   'w-[48px] h-[48px] rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg hover:border-ink'
 
 export function ShareRow({ productName }: ShareRowProps) {
+  // navigator.share only exists in the browser; gate on hydration so the first
+  // client render matches the server markup (React #418).
+  const hydrated = useHydrated()
+  const canShare = hydrated && typeof navigator.share === 'function'
   const [toastVisible, setToastVisible] = useState(false)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -66,10 +71,8 @@ export function ShareRow({ productName }: ShareRowProps) {
   return (
     <>
       <div className="mt-[22px] flex items-center gap-2.5 pt-[18px] border-t border-rule">
-        <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-muted me-auto">
-          اشتراک‌گذاری
-        </span>
-        {typeof navigator !== 'undefined' && !!navigator.share && (
+        <span className="text-[12px] text-muted me-auto">اشتراک‌گذاری</span>
+        {canShare && (
           <button className={SHARE_BTN} onClick={handleNativeShare} aria-label="اشتراک‌گذاری">
             <Icon name="share" size={13} />
           </button>
@@ -87,7 +90,7 @@ export function ShareRow({ productName }: ShareRowProps) {
 
       {toastVisible && (
         <div
-          className="fixed bottom-7 left-1/2 -translate-x-1/2 bg-ink text-bg font-body text-[13px] px-[22px] py-2.5 z-[300] pointer-events-none animate-[luxera-rise_220ms_cubic-bezier(.2,.7,.2,1)_both] rounded-[4px]"
+          className="fixed bottom-7 left-1/2 -translate-x-1/2 bg-ink text-bg font-body text-[13px] px-[22px] py-2.5 z-[300] pointer-events-none animate-[luxera-rise_220ms_cubic-bezier(.2,.7,.2,1)_both] rounded-full shadow-[var(--shadow-lift)] max-[720px]:bottom-[calc(72px+env(safe-area-inset-bottom))]"
           role="status"
           aria-live="polite"
         >

@@ -41,7 +41,7 @@ const HomePage: FC = () => {
       <ProductCarousel
         sectionId="new"
         band
-        kicker="NEW ARRIVALS · تازه‌ترین‌ها"
+        kicker="New arrivals"
         title={
           <>
             جدیدترین <em>محصولات</em>
@@ -51,7 +51,7 @@ const HomePage: FC = () => {
       />
       <ProductCarousel
         sectionId="necklaces"
-        kicker="NECKLACES · گردنبند"
+        kicker="Necklaces"
         title={
           <>
             کلکسیون <em>گردنبند</em>
@@ -63,7 +63,7 @@ const HomePage: FC = () => {
       <ProductCarousel
         sectionId="rings"
         band
-        kicker="RINGS · انگشتر"
+        kicker="Rings"
         title={
           <>
             کلکسیون <em>انگشتر</em>
@@ -74,7 +74,7 @@ const HomePage: FC = () => {
       />
       <ProductCarousel
         sectionId="earrings"
-        kicker="EARRINGS · گوشواره"
+        kicker="Earrings"
         title={
           <>
             کلکسیون <em>گوشواره</em>
@@ -86,7 +86,7 @@ const HomePage: FC = () => {
       <ProductCarousel
         sectionId="bracelets"
         band
-        kicker="BRACELETS · دستبند"
+        kicker="Bracelets"
         title={
           <>
             کلکسیون <em>دستبند</em>

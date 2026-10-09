@@ -46,10 +46,10 @@ function NavLinkItem({
   const cls = mobile
     ? accent
       ? 'flex items-center px-6 h-14 text-[15px] text-copper-dark font-medium border-b border-rule'
-      : 'flex items-center px-6 h-14 text-[15px] text-ink border-b border-rule transition-colors duration-150 active:bg-bg-2'
+      : 'flex items-center px-6 h-14 text-[15px] text-ink border-b border-rule transition-colors duration-150 hover:bg-bg-2 active:bg-bg-2'
     : accent
       ? 'text-copper-dark font-medium relative after:absolute after:content-[""] after:-end-3.5 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-1 after:rounded-full after:bg-copper'
-      : 'relative py-1.5 text-ink transition-colors duration-200 hover:text-copper'
+      : 'relative py-1.5 text-ink transition-colors duration-200 hover:text-plum after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-plum after:origin-right after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100'
   return (
     <a key={to} href={to} className={cls} onClick={onClick}>
       {label}
@@ -75,6 +75,12 @@ const Header: FC = () => {
     else openLogin()
   }, [isLoggedIn, navigate, openLogin])
 
+  // Platform is only knowable in the browser; ⌘K is the SSR/first-render default.
+  const shortcutHint =
+    hydrated && !/Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent)
+      ? 'Ctrl K'
+      : '⌘K'
+
   useBodyLock(menuOpen)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
 
@@ -92,7 +98,7 @@ const Header: FC = () => {
       <header className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden">
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
         <div
-          className="relative flex items-center justify-between px-[var(--pad)] h-[78px] gap-3"
+          className="relative flex items-center justify-between px-[var(--pad)] h-[78px] max-[720px]:h-[64px] gap-3 max-w-[1480px] mx-auto"
           dir="ltr"
         >
           {/* Logo — left */}
@@ -104,8 +110,7 @@ const Header: FC = () => {
           >
             <img
               src="/logo-crystal.svg"
-              alt="Luxera"
-              aria-hidden="true"
+              alt=""
               width={300}
               height={210}
               className="h-[38px] w-auto"
@@ -141,8 +146,11 @@ const Header: FC = () => {
             >
               <Icon name="search" size={16} strokeWidth={1.6} />
               <span>جستجو در فروشگاه…</span>
-              <kbd className="ms-auto font-mono text-[10px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2">
-                ⌘K
+              <kbd
+                className="ms-auto font-mono text-[10px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2"
+                dir="ltr"
+              >
+                {shortcutHint}
               </kbd>
             </button>
 
@@ -194,7 +202,7 @@ const Header: FC = () => {
 
       {/* Mobile overlay — outside header so backdrop-filter doesn't create a containing block */}
       <div
-        className={`fixed inset-0 bg-plum/45 z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
+        className={`fixed inset-0 bg-[rgba(17,17,17,0.45)] backdrop-blur-[2px] z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
         onClick={closeMenu}
         aria-hidden="true"
       />
@@ -213,18 +221,11 @@ const Header: FC = () => {
           dir="ltr"
         >
           <a href="/" className="flex items-center gap-2" onClick={closeMenu}>
-            <img
-              src="/logo-crystal.svg"
-              alt="Luxera"
-              aria-hidden="true"
-              width={300}
-              height={210}
-              className="h-8 w-auto"
-            />
+            <img src="/logo-crystal.svg" alt="" width={300} height={210} className="h-8 w-auto" />
             <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
           </a>
           <button
-            className="flex items-center justify-center w-9 h-9 text-ink-2"
+            className="flex items-center justify-center w-11 h-11 -me-2 rounded-full text-ink-2 transition-colors duration-200 hover:bg-bg-2 hover:text-ink"
             onClick={closeMenu}
             aria-label="بستن منو"
           >
@@ -238,14 +239,22 @@ const Header: FC = () => {
           ))}
         </nav>
 
-        <div className="flex gap-5 items-center px-6 py-[18px] border-t border-rule text-xs text-ink-2">
-          <button className="flex items-center gap-1.5" aria-label="تغییر زبان">
-            <Icon name="globe" size={14} />
-            <span>FA</span>
-          </button>
-          <button aria-label="پشتیبانی">
+        <div className="flex items-center justify-between gap-4 px-6 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] border-t border-rule text-[13px] text-ink-2">
+          <a
+            href="/contact"
+            className="inline-flex items-center gap-2 min-h-11 transition-colors duration-200 hover:text-plum"
+            onClick={closeMenu}
+          >
+            <Icon name="phone" size={15} />
             <span>پشتیبانی</span>
-          </button>
+          </a>
+          <a
+            href="/faq"
+            className="inline-flex items-center min-h-11 transition-colors duration-200 hover:text-plum"
+            onClick={closeMenu}
+          >
+            پرسش‌های متداول
+          </a>
         </div>
       </div>
     </>

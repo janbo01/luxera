@@ -14,7 +14,7 @@ const KIND_CLASS: Record<string, string> = {
 const Badge: FC<BadgeProps> = ({ label, kind = 'new' }) =>
   label ? (
     <span
-      className={`font-mono text-[10px] tracking-[0.14em] uppercase px-[9px] py-[5px] rounded-[4px] font-medium product-badge ${KIND_CLASS[kind] ?? 'bg-plum text-white'}`}
+      className={`text-[11px] leading-none px-2.5 py-[6px] rounded-full font-medium shadow-[var(--shadow-soft)] product-badge ${KIND_CLASS[kind] ?? 'bg-plum text-white'}`}
     >
       {label}
     </span>

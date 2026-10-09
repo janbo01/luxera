@@ -25,6 +25,20 @@ const CartDrawer: FC = () => {
 
   useBodyLock(isOpen)
 
+  // `inert` keeps the off-screen drawer out of the tab order and the a11y tree.
+  useEffect(() => {
+    if (drawerRef.current) drawerRef.current.inert = !isOpen
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeCart()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [isOpen, closeCart])
+
   useEffect(() => {
     if (!isOpen && drawerRef.current) {
       drawerRef.current.style.transition = ''
@@ -95,12 +109,13 @@ const CartDrawer: FC = () => {
         ref={overlayRef}
         className={`fixed inset-0 bg-[rgba(17,17,17,0.4)] backdrop-blur-[2px] z-[120] transition-opacity duration-[350ms] ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={closeCart}
+        aria-hidden="true"
       />
 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 bottom-0 right-0 w-[min(440px,100vw)] bg-surface z-[130] flex flex-col shadow-[-6px_0_40px_rgba(0,0,0,0.08)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 bottom-0 right-0 w-[min(440px,100vw)] bg-surface z-[130] flex flex-col transition-[transform,box-shadow] duration-500 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${isOpen ? 'translate-x-0 shadow-[-6px_0_40px_rgba(0,0,0,0.08)]' : 'translate-x-full shadow-none'}`}
         role="dialog"
         aria-modal="true"
         aria-label="سبد خرید"
@@ -110,12 +125,12 @@ const CartDrawer: FC = () => {
       >
         {/* Head */}
         <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
-          <div className="font-body font-light text-[22px] m-0 flex items-baseline gap-2">
+          <h2 className="font-heading font-bold text-[22px] leading-none m-0 flex items-baseline gap-2.5">
             سبد خرید
-            <small className="font-mono text-[11px] text-muted font-normal">
+            <small className="font-body text-[12px] text-muted font-normal">
               {toFa(totalQty)} قطعه
             </small>
-          </div>
+          </h2>
           <button
             className="w-[48px] h-[48px] flex items-center justify-center border border-rule rounded-full transition-colors duration-200 hover:bg-plate"
             onClick={closeCart}
@@ -128,14 +143,14 @@ const CartDrawer: FC = () => {
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-7 py-2">
           {items.length === 0 ? (
-            <div className="text-center py-20 px-5 text-muted">
-              <span className="inline-flex">
-                <Icon name="bag" size={36} />
+            <div className="flex flex-col items-center text-center py-20 px-5 text-muted">
+              <span className="w-[72px] h-[72px] rounded-full bg-copper/10 text-copper-dark grid place-items-center">
+                <Icon name="bag" size={28} strokeWidth={1.4} />
               </span>
-              <h3 className="font-body font-light text-[22px] text-ink mt-4 mb-2">
+              <h3 className="font-heading font-bold text-[20px] text-ink mt-5 mb-2">
                 سبد شما خالی است
               </h3>
-              <p className="text-[13px] max-w-[24ch] mx-auto mt-0 mb-6">
+              <p className="text-[13.5px] leading-[1.8] max-w-[26ch] mx-auto mt-0 mb-6">
                 قطعاتی را که دوست دارید به سبد اضافه کنید تا اینجا ببینید.
               </p>
               <button className={BTN_GHOST_CLS} onClick={closeCart}>
@@ -164,22 +179,22 @@ const CartDrawer: FC = () => {
                   )}
                 </div>
                 <div>
-                  <div className="text-[13px] font-normal mb-1 leading-[1.4]">{item.fa}</div>
-                  <span className="font-display italic text-[11px] text-muted">{item.en}</span>
-                  <div className="font-mono text-[10px] text-muted tracking-[0.08em] mt-1.5">
-                    {item.meta.join(' · ')}
+                  <div className="text-[13.5px] font-medium text-ink mb-1 leading-[1.5]">
+                    {item.fa}
                   </div>
+                  <span className="font-display italic text-[11px] text-muted">{item.en}</span>
+                  <div className="text-[11px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
                   <QuantityStepper
                     value={item.qty}
                     onDecrement={() => decrement(item.id)}
                     onIncrement={() => increment(item.id)}
-                    className="inline-flex items-center gap-2 mt-2.5 border border-rule rounded-full px-2.5 py-1 font-mono text-xs [&>button]:w-[18px] [&>button]:h-[18px] [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink"
+                    className="inline-flex items-center gap-2 mt-2.5 border border-rule rounded-full px-1 py-0.5 text-xs [font-feature-settings:'tnum'] [&>button]:w-8 [&>button]:h-8 [&>button]:rounded-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink"
                   />
                 </div>
                 <div className="text-end text-[13px] [font-feature-settings:'tnum'] flex flex-col items-end gap-2">
                   <span>{formatToman(item.price * item.qty)}</span>
                   <button
-                    className="text-[11px] text-muted border-b border-transparent transition-colors duration-200 hover:text-sale hover:border-sale"
+                    className="text-[12px] text-muted min-h-8 px-1 -me-1 underline-offset-4 transition-colors duration-200 hover:text-sale hover:underline"
                     onClick={() => remove(item.id)}
                   >
                     حذف
@@ -202,23 +217,23 @@ const CartDrawer: FC = () => {
                 <span>ارسال</span>
                 <span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span>
               </div>
-              <div className="flex justify-between text-ink pt-3 mt-1.5 border-t border-rule text-base font-normal [font-feature-settings:'tnum']">
+              <div className="flex justify-between text-ink pt-3 mt-1.5 border-t border-rule text-base font-medium [font-feature-settings:'tnum']">
                 <span>قابل پرداخت</span>
                 <span>{formatToman(total)}</span>
               </div>
             </div>
             <a
               href="/checkout"
-              className="block w-full text-center bg-plum text-bg py-4 text-sm font-body tracking-[0.04em] border border-plum rounded-full transition-all duration-200 hover:bg-transparent hover:text-plum"
+              className="block w-full text-center bg-plum text-bg py-4 text-sm font-medium border border-plum rounded-full transition-colors duration-200 hover:bg-plum-dark hover:border-plum-dark"
               onClick={closeCart}
             >
               تکمیل سفارش — {formatToman(total)}
             </a>
             <button
-              className="block text-center w-full mt-3 text-xs text-muted underline underline-offset-4"
+              className="block text-center w-full mt-2 min-h-11 text-[13px] text-muted underline underline-offset-4 transition-colors duration-200 hover:text-ink"
               onClick={closeCart}
             >
-              یا، ادامه‌ی خرید
+              ادامه‌ی خرید
             </button>
           </div>
         )}

@@ -4,6 +4,7 @@ import EnamadLogo from '../shared/EnamadLogo'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useHydrated } from '../../hooks/useHydrated'
 import { CATEGORIES } from '../../data/categories'
+import { jalaliYear } from '../../utils/format'
 interface SocialSettings {
   instagram_url: string
   whatsapp_number: string
@@ -103,20 +104,23 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
     [instagram_url, whatsapp_number, bale_link, ita_link],
   )
 
-  const col = 'flex flex-col gap-[11px] max-md:gap-1'
+  const col = 'flex flex-col gap-[11px] max-md:gap-0'
   // On touch (mobile) each link gets a 48px tap target; desktop keeps its compact look.
   const colLink =
-    'inline-flex items-center text-[13px] text-ink-2 transition-colors duration-200 hover:text-copper max-md:min-h-[48px]'
+    'inline-flex items-center text-[13.5px] text-ink-2 transition-colors duration-200 hover:text-plum max-md:min-h-[44px]'
 
   return (
-    <footer className="pt-[72px] pb-6 max-[720px]:pb-[calc(56px+env(safe-area-inset-bottom)+16px)] px-[var(--pad)] text-ink-2">
+    <footer className="mt-[clamp(32px,5vw,72px)] pt-[clamp(44px,5vw,72px)] pb-6 max-[720px]:pb-[calc(56px+env(safe-area-inset-bottom)+16px)] px-[var(--pad)] text-ink-2 bg-bg-2/60 border-t border-rule">
       <div className="grid grid-cols-[1.6fr_repeat(3,1fr)] max-lg:grid-cols-2 max-md:grid-cols-2 gap-12 max-md:gap-8 pb-12 border-b border-rule max-w-[1480px] mx-auto">
         {/* Brand column */}
         <div className="flex flex-col gap-[18px] max-w-[34ch] max-md:col-span-2">
           <span className="font-display italic text-[42px] text-ink leading-none font-normal">
             Luxera
           </span>
-          <p className="text-muted text-[13px] leading-[1.7] m-0">جواهرات فانتزی، طراحی اختصاصی.</p>
+          <p className="text-ink-2 text-[13.5px] leading-[1.9] m-0">
+            جواهرات فانتزی و اکسسوری مد با روکش ماندگار و بدون نیکل — با ارسال سریع و ۴ روز ضمانت
+            بازگشت.
+          </p>
           {socialLinks.length > 0 && (
             <div className="flex gap-2 mt-1">
               {socialLinks.map(({ href, icon, label }) => (
@@ -126,7 +130,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-[48px] h-[48px] rounded-full border border-rule grid place-items-center text-ink-2 transition-all duration-200 hover:bg-ink hover:text-bg [&>svg]:w-3.5 [&>svg]:h-3.5"
+                  className="w-11 h-11 rounded-full border border-rule bg-surface grid place-items-center text-ink-2 transition-colors duration-200 hover:bg-ink hover:text-bg hover:border-ink [&>svg]:w-4 [&>svg]:h-4"
                 >
                   {icon}
                 </a>
@@ -136,21 +140,22 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
 
           {/* Trust badge */}
           <div className="mt-1 pt-5 border-t border-rule">
-            <p className="text-[11px] text-muted tracking-[0.06em] uppercase mb-3 m-0">
-              نماد اعتماد الکترونیکی
-            </p>
-            <div className="inline-flex items-center gap-3 rounded-xl border border-rule bg-plate/40 px-4 py-3">
+            <div className="inline-flex items-center gap-3 rounded-[var(--radius)] border border-rule bg-surface px-4 py-3">
               <EnamadLogo />
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[11px] font-semibold text-ink leading-none">لوکسرا</span>
-                <span className="text-[10px] text-muted leading-none">فروشگاه معتبر</span>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[12.5px] font-semibold text-ink leading-none">
+                  نماد اعتماد الکترونیکی
+                </span>
+                <span className="text-[11.5px] text-muted leading-none">فروشگاه معتبر</span>
               </div>
             </div>
           </div>
         </div>
 
         <div>
-          <h3 className="font-heading text-sm font-semibold mb-[18px] text-ink m-0">فروشگاه</h3>
+          <h3 className="font-heading text-[15px] font-bold mb-[18px] max-md:mb-2 text-ink m-0">
+            فروشگاه
+          </h3>
           <ul className={`list-none p-0 m-0 ${col}`}>
             {categoryLinks.map(({ label, to }) => (
               <li key={to}>
@@ -164,7 +169,9 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
 
         {STATIC_COLS.map(({ title, links }) => (
           <div key={title}>
-            <h3 className="font-heading text-sm font-semibold mb-[18px] text-ink m-0">{title}</h3>
+            <h3 className="font-heading text-[15px] font-bold mb-[18px] max-md:mb-2 text-ink m-0">
+              {title}
+            </h3>
             <ul className={`list-none p-0 m-0 ${col}`}>
               {links.map(({ label, to }) => (
                 <li key={label}>
@@ -178,9 +185,11 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
         ))}
       </div>
 
-      <div className="pt-6 flex justify-between items-center flex-wrap gap-4 text-xs text-muted font-mono tracking-[0.04em] max-w-[1480px] mx-auto">
-        <span>© ۱۴۰۴ Luxera Jewelry · Tehran</span>
-        <span>طراحی و توسعه — استودیو لوکسرا</span>
+      <div className="pt-6 flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-[12px] text-muted max-w-[1480px] mx-auto">
+        <span>© {jalaliYear()} لوکسرا — تمامی حقوق محفوظ است.</span>
+        <span className="font-display italic text-[14px] tracking-[0.04em]">
+          Luxera Jewelry · Tehran
+        </span>
       </div>
     </footer>
   )

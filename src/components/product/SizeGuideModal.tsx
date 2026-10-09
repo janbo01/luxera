@@ -178,13 +178,13 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
             <caption className="sr-only">جدول اندازه‌های گردنبند</caption>
             <thead>
               <tr>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
                   طول
                 </th>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
                   سبک
                 </th>
-                <th className="py-3.5 px-3 text-end font-normal text-[11px] font-mono tracking-[0.1em] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
                   مناسب برای
                 </th>
               </tr>

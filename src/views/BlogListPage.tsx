@@ -49,7 +49,7 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-plum/10 text-plum text-[11.5px] font-medium leading-none">
               مقاله‌ی ویژه
             </span>
-            {date && <span className="label-mono">{date}</span>}
+            {date && <span className="label-fa">{date}</span>}
           </div>
           <h2 className="font-heading font-bold text-[clamp(22px,3vw,40px)] leading-[1.25] m-0 text-ink group-hover:text-plum transition-colors duration-300 max-w-[22ch]">
             {post.title}
@@ -131,7 +131,7 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
       </div>
 
       <div className="pt-4 px-0.5 flex flex-col gap-2 flex-1">
-        {date && <span className="label-mono">{date}</span>}
+        {date && <span className="label-fa">{date}</span>}
         <h3 className="font-heading font-bold text-[clamp(16px,1.8vw,19px)] leading-[1.45] m-0 text-ink group-hover:text-plum transition-colors duration-200">
           {post.title}
         </h3>

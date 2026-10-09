@@ -22,16 +22,16 @@ interface InfoPanelProps {
 
 const PERKS = [
   {
-    icon: 'spark',
+    icon: 'shield',
     heading: 'اصالت و کیفیت',
     body: 'آلیاژ بدون نیکل با روکش ماندگار، ایمن برای پوست حساس',
   },
   {
-    icon: 'bag',
+    icon: 'truck',
     heading: 'ارسال رایگان بالای ۲.۵ میلیون',
     body: 'تهران: ۴–۶ ساعت · سراسر ایران: ۲–۵ روز کاری',
   },
-  { icon: 'globe', heading: 'بازگشتِ ۴ روزه', body: 'تا ۴ روز پس از دریافت، با بسته‌بندی اصلی' },
+  { icon: 'refresh', heading: 'بازگشتِ ۴ روزه', body: 'تا ۴ روز پس از دریافت، با بسته‌بندی اصلی' },
 ]
 
 const SWATCH_BG: Record<string, string> = {
@@ -62,7 +62,9 @@ const InfoPanel: FC<InfoPanelProps> = ({
   } = useVariantSelector(apiColors, apiSizes, apiVariants)
 
   const effectiveStock = variantQuantity ?? p.stockCount
-  const [qty, setQty] = useState(1)
+  const [rawQty, setQty] = useState(1)
+  // Clamp to the selected variant's stock (it changes with colour/size), never below 1.
+  const qty = Math.max(1, Math.min(rawQty, effectiveStock))
   // Sticky mobile buy bar: shown once the main add-to-cart row leaves the viewport.
   const ctaRef = useRef<HTMLDivElement>(null)
   const [ctaOffscreen, setCtaOffscreen] = useState(false)
@@ -76,6 +78,9 @@ const InfoPanel: FC<InfoPanelProps> = ({
     return () => io.disconnect()
   }, [])
   const { wishlisted, toggle } = useWishlist(p)
+  // One-size products are stored with a placeholder size ("-"); a picker showing a
+  // lone dash is noise, so only render it when a size has a real label.
+  const hasRealSizes = sizeOptions.some((s) => /[\p{L}\p{N}]/u.test(s.label))
 
   const discountPct =
     p.oldPrice && Number.isFinite(p.price) ? Math.round((1 - p.price / p.oldPrice) * 100) : 0
@@ -89,7 +94,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
     <aside className="flex flex-col px-1.5 pt-2">
       {/* Category + SKU */}
       <div className="flex items-center justify-between gap-3.5 mb-[18px]">
-        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-copper-dark inline-flex items-center gap-2 before:block before:w-[18px] before:h-px before:bg-current before:opacity-60">
+        <span className="text-[12.5px] text-copper-dark inline-flex items-center gap-2 before:block before:w-[18px] before:h-px before:bg-current before:opacity-60">
           {p.cat || 'جواهرات'}
         </span>
         <span className="font-mono text-[10px] text-muted tracking-[0.16em]">
@@ -98,55 +103,84 @@ const InfoPanel: FC<InfoPanelProps> = ({
       </div>
 
       {/* Product name */}
-      <h1 className="font-heading font-bold leading-[1.05] tracking-[-0.01em] text-[clamp(32px,3.2vw,48px)] m-0 text-ink">
+      <h1 className="font-heading font-bold leading-[1.3] text-[clamp(26px,2.7vw,40px)] m-0 text-ink text-balance">
         {p.fa}
-        <span className="block font-display italic font-normal text-[18px] text-copper-dark mt-2 tracking-[0.02em]">
-          {p.en}
-        </span>
+        {p.en && p.en !== p.fa && (
+          <span
+            className="block text-end font-display italic font-normal text-[18px] leading-[1.3] text-copper-dark mt-2 tracking-[0.02em]"
+            dir="ltr"
+            lang="en"
+          >
+            {p.en}
+          </span>
+        )}
       </h1>
 
       {/* Short description */}
       {p.shortDescription && (
-        <p className="mt-3.5 text-[14px] leading-[1.7] text-ink-2 font-body max-w-[46ch]">
+        <p className="mt-3.5 text-[14.5px] leading-[1.9] text-ink-2 font-body max-w-[52ch]">
           {p.shortDescription}
         </p>
       )}
 
       {/* Rating */}
-      <div className="flex items-center gap-3.5 mt-[18px] pb-[22px] border-b border-rule text-[12px] text-muted">
-        <Stars value={p.rating} size={14} />
-        <span className="font-mono text-[13px] text-ink">{toFa(p.rating.toFixed(1))}</span>
-        <span className="w-[3px] h-[3px] rounded-full bg-rule flex-shrink-0" />
-        <a
-          href="#reviews"
-          className="inline-flex items-center gap-1 min-h-[48px] text-muted font-mono tracking-[0.04em] text-[12px] hover:text-ink transition-colors duration-200"
-        >
-          <b className="text-ink font-semibold">{toFa(p.reviewCount)}</b> نظر
-        </a>
+      <div className="flex items-center gap-3 mt-2.5 pb-2.5 border-b border-rule text-[12.5px] text-muted">
+        {p.reviewCount > 0 ? (
+          <>
+            <Stars value={p.rating} size={14} />
+            <span className="text-[13px] text-ink font-medium [font-feature-settings:'tnum']">
+              {toFa(p.rating.toFixed(1))}
+            </span>
+            <span className="w-[3px] h-[3px] rounded-full bg-muted/50 flex-shrink-0" />
+            <a
+              href="#reviews"
+              className="inline-flex items-center gap-1 min-h-[44px] text-muted underline-offset-4 hover:text-ink hover:underline transition-colors duration-200"
+            >
+              <b className="text-ink font-semibold">{toFa(p.reviewCount)}</b> نظر
+            </a>
+          </>
+        ) : (
+          // An empty five-star row with ۰.۰ reads as a bad rating, not as "no reviews yet".
+          <a
+            href="#reviews"
+            className="inline-flex items-center gap-2 min-h-[44px] text-muted underline-offset-4 hover:text-ink hover:underline transition-colors duration-200"
+          >
+            <Stars value={0} size={14} />
+            اولین نظر را شما بنویسید
+          </a>
+        )}
       </div>
 
       {/* Price block */}
       <div className="mt-[22px] flex flex-col gap-1">
         {p.oldPrice && (
           <div className="inline-flex items-center gap-2.5">
-            <span className="text-[18px] line-through text-muted font-mono">
+            <span className="text-[16px] line-through text-muted [font-feature-settings:'tnum']">
               {formatToman(p.oldPrice)}
             </span>
             {discountPct > 0 && (
-              <span className="px-2 py-[2px] bg-sale text-white rounded-[4px] text-[10px] tracking-[0.1em] font-mono">
+              <span className="px-2.5 py-1 bg-sale text-white rounded-full text-[11.5px] font-medium leading-none">
                 {toFa(discountPct)}٪ تخفیف
               </span>
             )}
           </div>
         )}
-        <span className="font-heading text-[38px] font-bold text-ink leading-none mt-3.5 flex items-baseline gap-2">
-          {formatNumber(p.price)}
-          {Number.isFinite(p.price) && (
-            <small className="font-body text-[13px] font-normal text-muted">تومان</small>
+        <div className="mt-3.5 flex items-center justify-between gap-3 flex-wrap">
+          <span className="font-heading text-[clamp(30px,3vw,38px)] font-bold text-ink leading-none flex items-baseline gap-2 [font-feature-settings:'tnum']">
+            {formatNumber(p.price)}
+            {Number.isFinite(p.price) && (
+              <small className="font-body text-[13px] font-normal text-muted">تومان</small>
+            )}
+          </span>
+          {outOfStock && (
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-bg-2 text-ink-2 text-[12.5px] font-medium leading-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-muted" aria-hidden="true" />
+              ناموجود
+            </span>
           )}
-        </span>
+        </div>
         {p.oldPrice && Number.isFinite(p.price) && (
-          <span className="text-[12px] text-ok font-mono tracking-[0.04em] mt-0.5">
+          <span className="text-[12.5px] text-ok mt-1">
             شما {formatToman(p.oldPrice - p.price)} صرفه‌جویی می‌کنید
           </span>
         )}
@@ -158,9 +192,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-[13px] text-ink font-medium flex items-center gap-2">
               <b className="font-heading font-semibold">رنگ:</b>
-              <span className="text-copper-dark font-body italic text-[14px]">
-                {selectedColor?.fa}
-              </span>
+              <span className="text-copper-dark font-body text-[14px]">{selectedColor?.fa}</span>
             </span>
           </div>
           <div className="flex gap-2.5 items-center flex-wrap">
@@ -172,6 +204,8 @@ const InfoPanel: FC<InfoPanelProps> = ({
                   c.hex ? ({ '--swatch': hexToSwatch(c.hex) } as React.CSSProperties) : undefined
                 }
                 onClick={() => !c.disabled && setColor(c.id)}
+                disabled={c.disabled}
+                aria-pressed={c.id === color}
                 aria-label={c.fa}
               >
                 <span
@@ -184,35 +218,36 @@ const InfoPanel: FC<InfoPanelProps> = ({
         </div>
       )}
 
-      {/* Size selector */}
-      <div className="mt-[26px]">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="text-[13px] text-ink font-medium flex items-center gap-2">
-            <b className="font-heading font-semibold">طول زنجیر:</b>
-            <span className="text-copper-dark font-body italic text-[14px]">
-              {selectedSize?.label} سانتی‌متر
+      {/* Size selector — only when the product actually has sizes */}
+      {hasRealSizes && (
+        <div className="mt-[22px]">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[13px] text-ink font-medium flex items-center gap-2">
+              <b className="font-heading font-semibold">سایز:</b>
+              <span className="text-copper-dark font-body text-[14px]">{selectedSize?.label}</span>
             </span>
-          </span>
-          <button
-            className="inline-flex items-center min-h-[48px] text-[11px] text-muted underline underline-offset-[3px] font-body tracking-[0.04em] cursor-pointer transition-colors duration-200 hover:text-copper"
-            onClick={onSizeGuide}
-          >
-            راهنمای سایز
-          </button>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {sizeOptions.map((s) => (
             <button
-              key={s.id}
-              className={`min-w-[54px] min-h-[48px] px-3.5 inline-flex items-center justify-center border rounded-[10px] font-body text-[13px] transition-all duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.35] cursor-not-allowed line-through' : 'cursor-pointer'}`}
-              disabled={s.disabled}
-              onClick={() => !s.disabled && setSize(s.id)}
+              className="inline-flex items-center min-h-[44px] text-[12.5px] text-muted underline underline-offset-4 font-body cursor-pointer transition-colors duration-200 hover:text-plum"
+              onClick={onSizeGuide}
             >
-              {s.label}
+              راهنمای سایز
             </button>
-          ))}
+          </div>
+          <div className="flex gap-2 flex-wrap" role="group" aria-label="انتخاب سایز">
+            {sizeOptions.map((s) => (
+              <button
+                key={s.id}
+                className={`min-w-[54px] min-h-[48px] px-3.5 inline-flex items-center justify-center border rounded-[10px] font-body text-[13.5px] transition-colors duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.4] cursor-not-allowed line-through' : 'cursor-pointer'}`}
+                disabled={s.disabled}
+                aria-pressed={s.id === effectiveSize}
+                onClick={() => !s.disabled && setSize(s.id)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Low stock indicator */}
       {effectiveStock > 0 && effectiveStock <= 5 && !outOfStock && (
@@ -235,7 +270,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
           <QuantityStepper
             value={qty}
             onDecrement={() => setQty(Math.max(1, qty - 1))}
-            onIncrement={() => setQty(Math.min(effectiveStock, qty + 1))}
+            onIncrement={() => setQty(Math.max(1, Math.min(effectiveStock, qty + 1)))}
             className="inline-flex items-center bg-surface border border-rule rounded-full p-1 [&>button]:w-[48px] [&>button]:h-[48px] [&>button]:rounded-full [&>button]:grid [&>button]:place-items-center [&>button]:text-ink [&>button]:transition-colors [&>button]:duration-200 hover:[&>button]:bg-bg-2 [&>span]:min-w-8 [&>span]:text-center [&>span]:font-body [&>span]:font-medium [&>span]:text-[14px]"
           />
           <button
@@ -247,7 +282,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
               افزودن به سبد
             </span>
             <span className="font-body text-[13px] opacity-90 whitespace-nowrap max-sm:hidden">
-              {formatNumber(p.price * qty)} ت
+              {formatNumber(p.price * qty)} تومان
             </span>
           </button>
         </div>
@@ -292,7 +327,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             <div className="text-[12px] text-muted truncate">{p.fa}</div>
             <div className="font-heading font-bold text-[17px] text-ink leading-tight whitespace-nowrap">
               {formatNumber(p.price * qty)}
-              <small className="font-body font-normal text-[11px] text-muted me-1"> تومان</small>
+              <small className="font-body font-normal text-[11px] text-muted ms-1">تومان</small>
             </div>
           </div>
           <button

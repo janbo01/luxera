@@ -279,10 +279,7 @@ const CheckoutPage: FC = () => {
               تکمیلِ <em className="font-display italic font-normal text-copper">سفارش</em>
             </h1>
           </div>
-          <div className="flex items-center gap-3.5 font-mono text-[11px] text-muted tracking-[.06em]">
-            <span>سفارش</span>
-            <span className="text-ink-2 font-medium">#LX-۱۴۰۴</span>
-            <span className="w-[5px] h-[5px] rounded-full bg-copper inline-block" />
+          <div className="flex items-center gap-3 text-[12.5px] text-muted [font-feature-settings:'tnum']">
             <span>{toFa(items.length)} کالا</span>
             <span className="w-[5px] h-[5px] rounded-full bg-copper inline-block" />
             <span>{formatToman(subtotal)}</span>

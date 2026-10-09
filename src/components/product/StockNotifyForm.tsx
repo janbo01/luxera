@@ -42,7 +42,7 @@ export function StockNotifyForm({ productId }: StockNotifyFormProps) {
   if (done) {
     return (
       <p
-        className="text-center text-[14px] text-plum font-medium p-3.5 border border-rule animate-[luxera-rise_300ms_cubic-bezier(.2,.7,.2,1)_both] m-0"
+        className="text-center text-[14px] text-plum font-medium p-3.5 border border-rule rounded-full animate-[luxera-rise_300ms_cubic-bezier(.2,.7,.2,1)_both] m-0"
         role="status"
       >
         ✓ اطلاع خواهیم داد!
@@ -53,11 +53,11 @@ export function StockNotifyForm({ productId }: StockNotifyFormProps) {
   if (!isOpen) {
     return (
       <button
-        className="w-full flex items-center justify-center gap-2 border border-rule rounded-[10px] py-3.5 text-[14px] font-body text-muted cursor-pointer transition-all duration-200 hover:border-plum hover:text-plum"
+        className="w-full min-h-[56px] flex items-center justify-center gap-2.5 bg-ink text-bg border border-ink rounded-full px-5 text-[14.5px] font-medium cursor-pointer transition-colors duration-200 hover:bg-plum hover:border-plum"
         onClick={open}
       >
-        <Icon name="bag" size={16} />
-        اطلاع‌رسانی وقتی موجود شد
+        <Icon name="bell" size={16} />
+        موجود شد خبرم کن
       </button>
     )
   }

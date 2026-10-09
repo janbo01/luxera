@@ -32,11 +32,11 @@ const EmptyState: FC<EmptyStateProps> = ({
       'flex flex-col items-center justify-center gap-4 py-20 px-[var(--pad)] text-center text-muted'
     }
   >
-    <div className="opacity-35">
-      <Icon name={icon} size={iconSize} />
+    <div className="w-20 h-20 rounded-full bg-copper/10 text-copper-dark grid place-items-center">
+      <Icon name={icon} size={Math.min(iconSize, 32)} strokeWidth={1.4} />
     </div>
-    <h3 className="font-heading text-xl font-bold text-ink-2 m-0">{title}</h3>
-    {body && <p className="text-sm leading-[1.7] text-muted m-0 max-w-[340px]">{body}</p>}
+    <h3 className="font-heading text-[22px] font-bold text-ink m-0 mt-1">{title}</h3>
+    {body && <p className="text-[14.5px] leading-[1.9] text-muted m-0 max-w-[340px]">{body}</p>}
     {action &&
       (action.to ? (
         <a href={action.to} className={action.ghost ? BTN_GHOST_CLS : BTN_CLS}>

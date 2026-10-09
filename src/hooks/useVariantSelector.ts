@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react'
-import { COLOR_OPTIONS, SIZE_OPTIONS } from '../data/productDetail'
 import type { ColorOption, SizeOption } from '../types'
 import type { ApiProductColor, ApiProductSize, ApiProductVariant } from '../api/product'
 
@@ -24,19 +23,21 @@ export function useVariantSelector(
 ) {
   const hasVariants = !!apiVariants?.length
 
+  // Only real options from the API — never placeholder colours/sizes, which would
+  // offer shoppers choices the product doesn't have.
   const allColorOptions = useMemo(
-    () => (apiColors?.length ? apiColorsToOptions(apiColors) : COLOR_OPTIONS),
+    () => (apiColors?.length ? apiColorsToOptions(apiColors) : []),
     [apiColors],
   )
 
   const allSizeOptions = useMemo(
-    () => (apiSizes?.length ? apiSizesToOptions(apiSizes) : SIZE_OPTIONS),
+    () => (apiSizes?.length ? apiSizesToOptions(apiSizes) : []),
     [apiSizes],
   )
 
-  const [color, setColor] = useState(allColorOptions[0]?.id ?? 'gold')
+  const [color, setColor] = useState(allColorOptions[0]?.id ?? '')
   const [size, setSize] = useState(
-    allSizeOptions.find((s) => !s.disabled)?.id ?? allSizeOptions[0]?.id ?? '45',
+    allSizeOptions.find((s) => !s.disabled)?.id ?? allSizeOptions[0]?.id ?? '',
   )
 
   const colorOptions = useMemo((): ColorOption[] => {
@@ -69,6 +70,7 @@ export function useVariantSelector(
       apiVariants!.find((v) => v.color_id === color && v.size_id === effectiveSize) ??
       apiVariants!.find((v) => v.color_id === color && v.size_id === null) ??
       apiVariants!.find((v) => v.color_id === null && v.size_id === effectiveSize) ??
+      apiVariants!.find((v) => v.color_id === null && v.size_id === null) ??
       null
     )
   }, [hasVariants, apiVariants, color, effectiveSize])
@@ -76,7 +78,9 @@ export function useVariantSelector(
   const selectedSize = sizeOptions.find((s) => s.id === effectiveSize)
   const selectedColor = colorOptions.find((c) => c.id === color)
   const variantQuantity = hasVariants ? (selectedVariant?.quantity ?? 0) : undefined
-  const outOfStock = hasVariants ? variantQuantity === 0 : (selectedSize?.disabled ?? false)
+  // Stock lives on variants (the order service sums their quantities), so a product
+  // with no variants has nothing to sell.
+  const outOfStock = hasVariants ? variantQuantity === 0 : true
 
   return {
     color,

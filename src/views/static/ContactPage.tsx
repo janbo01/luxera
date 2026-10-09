@@ -73,7 +73,7 @@ const ContactPage: FC = () => {
       {/* Hero */}
       <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
         <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          CONTACT · تماس با لوکسرا
+          Contact
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
           تماس با
@@ -88,9 +88,7 @@ const ContactPage: FC = () => {
         {/* Info column */}
         <aside className="flex flex-col">
           <div className="py-6 border-b border-rule first:pt-0">
-            <p className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">
-              تلفن و پیام
-            </p>
+            <p className="text-[12px] text-muted m-0 mb-2.5">تلفن و پیام</p>
             <p
               dir="ltr"
               className="text-right font-mono text-[13px] tracking-[.06em] text-ink-2 m-0"
@@ -102,9 +100,7 @@ const ContactPage: FC = () => {
             </p>
           </div>
           <div className="py-6 border-b border-rule">
-            <p className="font-mono text-[11px] tracking-[.16em] uppercase text-muted m-0 mb-2.5">
-              شبکه‌های اجتماعی
-            </p>
+            <p className="text-[12px] text-muted m-0 mb-2.5">شبکه‌های اجتماعی</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-4 flex-wrap mt-2">
                 {socialLinks.map((s) => (

@@ -107,7 +107,7 @@ const AddressStep: FC<AddressStepProps> = ({
               >
                 <Icon name="check" size={16} strokeWidth={2.5} />
               </span>
-              <span className="font-mono text-[10px] tracking-[.12em] uppercase text-copper">
+              <span className="text-[12px] text-copper">
                 {adr.label}
                 {adr.isDefault ? ' · پیش‌فرض' : ''}
               </span>
@@ -135,7 +135,7 @@ const AddressStep: FC<AddressStepProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="flex items-center gap-3.5 my-[22px] font-mono text-[11px] tracking-[.18em] uppercase text-muted before:content-[''] before:flex-1 before:h-px before:bg-rule after:content-[''] after:flex-1 after:h-px after:bg-rule">
+      <div className="flex items-center gap-3.5 my-[22px] text-[12px] text-muted before:content-[''] before:flex-1 before:h-px before:bg-rule after:content-[''] after:flex-1 after:h-px after:bg-rule">
         یا اطلاعات جدید را وارد کنید
       </div>
 

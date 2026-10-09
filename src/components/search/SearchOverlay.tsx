@@ -33,6 +33,13 @@ const SearchOverlay: FC = () => {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close()
+      // ⌘K / Ctrl+K — the shortcut advertised on the header search pill.
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        const s = useSearchStore.getState()
+        if (s.isOpen) s.close()
+        else s.open()
+      }
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
@@ -71,12 +78,9 @@ const SearchOverlay: FC = () => {
   if (!isOpen) return null
 
   const rowHover = 'hover:bg-[var(--color-bg-2)]'
-  const iconBtn =
-    'flex items-center justify-center w-8 h-8 text-muted rounded-full transition-colors duration-200 hover:text-ink hover:bg-bg-2 flex-shrink-0'
-
   return (
     <div
-      className="fixed inset-0 z-[100] flex flex-col items-center animate-[overlay-in_200ms_ease_both]"
+      className="fixed inset-0 z-[110] flex flex-col items-center sm:px-4 animate-[overlay-in_200ms_ease_both]"
       role="dialog"
       aria-label="جستجو"
       aria-modal
@@ -89,13 +93,13 @@ const SearchOverlay: FC = () => {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-[720px] bg-surface rounded-b-[8px] shadow-[0_16px_48px_rgba(26,15,29,0.14)] animate-[panel-drop_280ms_cubic-bezier(.2,.7,.2,1)_both] max-h-[90dvh] flex flex-col">
+      <div className="relative w-full max-w-[720px] bg-surface rounded-b-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] sm:mt-[8vh] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.22)] animate-[panel-drop_280ms_cubic-bezier(.2,.7,.2,1)_both] max-h-[90dvh] flex flex-col">
         {/* Input row */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-rule">
           <Icon name="search" size={18} className="text-muted flex-shrink-0" />
           <input
             ref={inputRef}
-            className="flex-1 bg-transparent border-none outline-none font-body text-[18px] font-extralight text-ink placeholder:text-muted direction-rtl"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none font-body text-[17px] font-normal text-ink placeholder:text-muted placeholder:font-light"
             type="text"
             placeholder="دنبال چه می‌گردید؟"
             value={query}
@@ -105,22 +109,37 @@ const SearchOverlay: FC = () => {
             aria-autocomplete="list"
             aria-controls="search-listbox"
           />
+          {/* Text label, so it can't be mistaken for the close button beside it */}
           {query && (
-            <button className={iconBtn} onClick={() => setQuery('')} aria-label="پاک کردن">
-              <Icon name="close" size={14} />
+            <button
+              className="shrink-0 min-h-11 px-2 text-[12.5px] text-muted transition-colors duration-200 hover:text-plum"
+              onClick={() => {
+                setQuery('')
+                inputRef.current?.focus()
+              }}
+            >
+              پاک کردن
             </button>
           )}
-          <button className={`${iconBtn} me-1`} onClick={close} aria-label="بستن جستجو">
+          <button
+            className="flex items-center justify-center w-11 h-11 -me-2 text-ink-2 rounded-full transition-colors duration-200 hover:text-ink hover:bg-bg-2 flex-shrink-0"
+            onClick={close}
+            aria-label="بستن جستجو"
+          >
             <Icon name="close" size={18} />
           </button>
         </div>
 
         {/* Results */}
-        <div className="overflow-y-auto max-h-[72vh]" id="search-listbox" role="listbox">
+        <div
+          className="overflow-y-auto overscroll-contain max-h-[72vh] pb-2"
+          id="search-listbox"
+          role="listbox"
+        >
           {showRecents ? (
             recentSearches.length > 0 ? (
               <>
-                <div className="flex items-center justify-between px-6 py-3.5 pt-[14px] label-mono">
+                <div className="flex items-center justify-between px-6 py-3.5 pt-[14px] label-fa">
                   <span>جستجوهای اخیر</span>
                   <button
                     className="font-body text-[12px] text-muted tracking-normal normal-case border-b border-transparent transition-colors duration-200 hover:text-plum hover:border-plum"
@@ -165,7 +184,7 @@ const SearchOverlay: FC = () => {
             <>
               {results.products.length > 0 && (
                 <>
-                  <div className="px-6 py-3.5 label-mono">محصولات</div>
+                  <div className="px-6 pt-4 pb-2 label-fa font-medium">محصولات</div>
                   {results.products.map((p) => (
                     <button
                       key={p.id}
@@ -194,7 +213,7 @@ const SearchOverlay: FC = () => {
 
               {results.categories.length > 0 && (
                 <>
-                  <div className="px-6 py-3.5 label-mono">دسته‌بندی‌ها</div>
+                  <div className="px-6 pt-4 pb-2 label-fa font-medium">دسته‌بندی‌ها</div>
                   {results.categories.map((c) => (
                     <button
                       key={c.id}

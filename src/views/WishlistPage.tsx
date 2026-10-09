@@ -27,9 +27,7 @@ const WishlistPage: FC = () => {
     <div className="px-[clamp(20px,4vw,56px)] pb-[88px] max-w-[1480px] mx-auto">
       {/* Hero */}
       <div className="py-[72px] pb-[52px] border-b border-rule mb-10 max-[760px]:py-12 max-[760px]:pb-9">
-        <span className="font-body text-[11px] tracking-[0.2em] text-muted uppercase mb-3.5 block">
-          لیست آرزوها
-        </span>
+        <span className="font-body text-[12px] text-muted mb-3.5 block">لیست آرزوها</span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] my-3 text-ink [&_em]:font-heading [&_em]:not-italic [&_em]:text-plum [&_em]:font-normal">
           علاقه‌مندی‌های
           <em> شما</em>
@@ -61,7 +59,7 @@ const WishlistPage: FC = () => {
       ) : (
         <>
           {/* Toolbar */}
-          <div className="flex items-center justify-between text-[13px] text-muted pb-7 border-b border-rule mb-9 font-mono tracking-[0.08em]">
+          <div className="flex items-center justify-between text-[13px] text-muted pb-7 border-b border-rule mb-9 ">
             <span>{toFa(items.length)} قطعه</span>
             <button
               className="inline-flex items-center gap-2 pb-0.5 border-b border-ink bg-transparent text-ink text-[13px] tracking-[0.04em] transition-colors duration-200 cursor-pointer hover:text-plum hover:border-plum"

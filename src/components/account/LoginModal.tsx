@@ -102,7 +102,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="absolute top-4 left-4 text-muted p-1.5 rounded-full transition-[color,background] hover:text-ink hover:bg-plate"
+          className="absolute top-2.5 left-2.5 w-11 h-11 grid place-items-center text-muted rounded-full transition-[color,background] hover:text-ink hover:bg-bg-2"
           onClick={onClose}
           aria-label="بستن"
         >
@@ -112,7 +112,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         <div className="font-display italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
           Luxera
         </div>
-        <div className="font-body text-[11px] tracking-[.12em] text-muted uppercase mb-7">
+        <div className="font-mono text-[9px] tracking-[.3em] text-muted uppercase mb-6">
           Fine Jewelry
         </div>
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />
@@ -144,6 +144,9 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                 <input
                   type="tel"
                   inputMode="numeric"
+                  autoComplete="tel-national"
+                  aria-label="شماره موبایل"
+                  aria-invalid={!!error}
                   placeholder="912 345 6789"
                   value={phone}
                   onChange={handlePhoneChange}
@@ -153,7 +156,11 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[16px] sm:text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
                 />
               </div>
-              {error && <span className="text-[12px] text-sale text-center mt-0.5">{error}</span>}
+              {error && (
+                <span className="text-[12.5px] text-sale text-center mt-0.5" role="alert">
+                  {error}
+                </span>
+              )}
             </div>
             <button
               className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 text-[15px] font-body font-medium tracking-[0.01em] border border-plum bg-plum text-bg rounded-full transition-all duration-200 cursor-pointer hover:bg-plum-2 hover:border-plum-2 hover:-translate-y-px w-full h-[50px]"
@@ -178,6 +185,8 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   }}
                   type="text"
                   inputMode="numeric"
+                  autoComplete={i === 0 ? 'one-time-code' : 'off'}
+                  aria-label={`رقم ${toFa(i + 1)} از ${toFa(OTP_LENGTH)}`}
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
@@ -188,10 +197,14 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                 />
               ))}
             </div>
-            {error && <span className="text-[12px] text-sale text-center block">{error}</span>}
+            {error && (
+              <span className="text-[12.5px] text-sale text-center block" role="alert">
+                {error}
+              </span>
+            )}
             {loading && <div className="text-[13px] text-muted text-center">در حال تأیید…</div>}
             <button
-              className="text-[12px] text-muted text-center mt-1 cursor-pointer transition-colors hover:text-plum bg-transparent border-0 p-0"
+              className="text-[13px] text-muted text-center min-h-11 cursor-pointer underline underline-offset-4 transition-colors hover:text-plum bg-transparent border-0 p-0"
               onClick={() => {
                 setStep('phone')
                 setOtp(Array(OTP_LENGTH).fill(''))
@@ -202,12 +215,9 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           </div>
         )}
 
-        <p className="text-[11px] text-muted mt-6 leading-[1.8]">
+        <p className="text-[12px] text-muted mt-6 leading-[1.8]">
           با ورود،{' '}
-          <a
-            href="#"
-            className="text-plum border-b border-transparent transition-[border-color] hover:border-plum"
-          >
+          <a href="/terms" onClick={onClose} className="text-plum underline underline-offset-4">
             قوانین و مقررات لوکسرا
           </a>{' '}
           را می‌پذیرید.

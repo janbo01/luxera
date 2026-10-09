@@ -101,7 +101,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {opt.nameEn}
                   </span>
                   {opt.id === 'snapp_box' && (
-                    <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-[4px] font-mono text-[9px] tracking-[.14em] font-medium uppercase">
+                    <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-[4px] text-[11px] font-medium ">
                       پرطرفدار
                     </span>
                   )}

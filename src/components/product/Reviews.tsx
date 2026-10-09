@@ -220,9 +220,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
           {/* Reviews list column */}
           <div>
             <div className="flex items-center gap-2.5 flex-wrap mb-[22px]">
-              <span className="font-mono text-[11px] text-muted tracking-[0.14em] uppercase me-1.5">
-                فیلتر
-              </span>
+              <span className="text-[12px] text-muted me-1.5">فیلتر</span>
               {FILTERS.map((f) => (
                 <button
                   key={f}

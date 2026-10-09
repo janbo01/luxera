@@ -1039,9 +1039,7 @@ const OrdersPane: FC = () => {
                       </div>
                       {order.trackingCode && (
                         <div className="mt-2.5 px-3.5 py-[11px] bg-surface border border-rule rounded-[10px] flex items-center gap-2.5">
-                          <span className="text-[10px] text-muted font-mono tracking-[.08em] uppercase">
-                            رهگیری
-                          </span>
+                          <span className="text-[12px] text-muted ">رهگیری</span>
                           <span
                             className="font-mono text-[13px] font-semibold flex-1 tracking-[.04em]"
                             dir="ltr"
@@ -1170,9 +1168,7 @@ const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <p className="m-0 text-[11px] font-mono tracking-[.1em] uppercase text-muted font-medium">
-              اطلاعاتِ گیرنده
-            </p>
+            <p className="m-0 text-[12px] text-muted font-medium">اطلاعاتِ گیرنده</p>
             <div className="grid grid-cols-2 gap-[18px]">
               <div className={F_FIELD}>
                 <label className={F_LABEL}>
@@ -1201,9 +1197,7 @@ const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <p className="m-0 text-[11px] font-mono tracking-[.1em] uppercase text-muted font-medium">
-              آدرس
-            </p>
+            <p className="m-0 text-[12px] text-muted font-medium">آدرس</p>
             <div className="grid grid-cols-2 gap-[18px]">
               <div className={F_FIELD}>
                 <label className={F_LABEL}>
@@ -1363,7 +1357,7 @@ const AddressesPane: FC = () => {
                     {addrIcon(addr.label)} {addr.label}
                   </span>
                   {addr.isDefault && (
-                    <span className="inline-flex items-center gap-[5px] px-2.5 py-1 bg-copper/[.12] text-copper rounded-full font-mono text-[10px] tracking-[.12em] uppercase [&_svg]:w-2.5 [&_svg]:h-2.5">
+                    <span className="inline-flex items-center gap-[5px] px-2.5 py-1 bg-copper/[.12] text-copper rounded-full text-[11px] [&_svg]:w-2.5 [&_svg]:h-2.5">
                       <IcoStar /> پیش‌فرض
                     </span>
                   )}
@@ -1710,7 +1704,7 @@ const AccountPage: FC = () => {
                 <div className="flex items-center gap-2.5 mt-1.5 text-[13px] text-muted flex-wrap">
                   {memberSince && (
                     <>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full font-mono text-[10px] tracking-[.14em] uppercase font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full text-[11px] font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
                         <IcoStar />
                         عضو
                       </span>

@@ -20,7 +20,9 @@
   /* Fonts */
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
   --font-body: 'Yekan Bakh', 'Tahoma', sans-serif;
-  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  /* Cormorant is Latin-only (see unicode-range below); Persian glyphs inside a
+     display-set element fall through to Yekan Bakh instead of a system serif. */
+  --font-display: 'Cormorant Garamond', 'Yekan Bakh', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'Yekan Bakh', ui-monospace, monospace;
 
   /* Border radius */
@@ -422,6 +424,14 @@
     color: var(--color-muted);
   }
 
+  /* Persian counterpart of .label-mono — same quiet weight, but no tracking,
+     uppercase or mono face: letter-spacing breaks the joins of Persian script. */
+  .label-fa {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+
   /* Below-the-fold sections: lets the browser skip layout/paint while
      off-screen, so scripts that force layout (e.g. ClientRouter's scroll
      restoration) only pay for the visible viewport. The intrinsic size
@@ -581,48 +591,65 @@
   display: none;
 }
 
-/* counter: top-right inside the slider */
+/* counter: top-left pill — its own dark glass, so it reads on light photos too */
 .hero-slider__count {
   position: absolute;
   top: 16px;
-  left: 20px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgb(255 255 255 / 0.7);
+  left: 16px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.32);
+  backdrop-filter: blur(8px);
+  font-size: 11.5px;
+  font-feature-settings: 'tnum';
+  line-height: 1.4;
+  direction: ltr;
+  color: rgb(255 255 255 / 0.92);
   z-index: 10;
 }
 
 /* arrow buttons: bottom-left, stacked */
 .hero-slider__arrows {
   position: absolute;
-  bottom: 22px;
-  right: 22px;
+  bottom: 20px;
+  right: 20px;
   display: flex;
   gap: 8px;
   z-index: 10;
 }
 
+/* Dark glass rather than white glass: white-on-white vanished on pale photos. */
 .hero-slider__arrow {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.14);
-  border: 1px solid rgb(255 255 255 / 0.3);
-  color: rgb(255 255 255 / 0.95);
+  background: rgb(0 0 0 / 0.34);
+  border: 1px solid rgb(255 255 255 / 0.42);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition:
     background 200ms ease,
-    border-color 200ms ease;
-  backdrop-filter: blur(6px);
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 200ms var(--ease-lux);
+  backdrop-filter: blur(8px);
 }
 
 .hero-slider__arrow:hover {
-  background: rgb(255 255 255 / 0.28);
-  border-color: rgb(255 255 255 / 0.55);
+  background: #fff;
+  border-color: #fff;
+  color: #111;
+}
+
+.hero-slider__arrow:active {
+  transform: scale(0.94);
+}
+
+.hero-slider__arrow:focus-visible {
+  outline-color: #fff;
 }
 
 /* dot nav — hidden in favour of arrows, kept for accessibility */
@@ -667,14 +694,15 @@
 .story-card::after {
   content: attr(data-story-num);
   position: absolute;
-  bottom: -0.75rem;
-  inset-inline-end: 1rem;
+  top: 1.25rem;
+  inset-inline-end: 1.5rem;
+  z-index: -1;
   font-family: var(--display);
   font-weight: 300;
-  font-size: 140px;
+  font-size: 96px;
   line-height: 1;
   color: var(--color-plum);
-  opacity: 0.055;
+  opacity: 0.07;
   pointer-events: none;
   user-select: none;
 }
@@ -683,7 +711,7 @@
    section stays legible whatever colours are chosen in the admin panel. */
 .story-section--dark .story-card::after {
   color: var(--color-gold);
-  opacity: 0.08;
+  opacity: 0.1;
 }
 
 /* ── Blog article prose ──────────────────────────────────────────────────── */
