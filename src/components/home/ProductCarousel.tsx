@@ -20,6 +20,8 @@ interface ProductCarouselProps {
   catSlug?: string
   /** Render on the tinted band background to break up consecutive carousels. */
   band?: boolean
+  /** Rendered between the section header and the product row (e.g. category tabs). */
+  subHeader?: ReactNode
 }
 
 // ~2.2 cards visible on phones (the peek signals the row scrolls), ~4.5 on desktop.
@@ -54,6 +56,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   sectionId,
   catSlug,
   band = false,
+  subHeader,
 }) => {
   const addItem = useCartStore((s) => s.addItem)
   const hydrated = useHydrated()
@@ -119,6 +122,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
             </>
           }
         />
+        {subHeader}
         {showEmpty ? (
           <p className="text-muted text-sm text-center py-12">
             هنوز محصولی در این بخش ثبت نشده است.

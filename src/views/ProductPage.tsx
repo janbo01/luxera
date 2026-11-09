@@ -6,8 +6,11 @@ import InfoPanel from '../components/product/InfoPanel'
 import Tabs from '../components/product/Tabs'
 import Reviews from '../components/product/Reviews'
 import Related from '../components/product/Related'
+import CompleteTheLook from '../components/product/CompleteTheLook'
+import RecentlyViewed from '../components/product/RecentlyViewed'
 import SizeGuideModal from '../components/product/SizeGuideModal'
 import { useCartStore } from '../store/cartStore'
+import { useRecentStore } from '../store/recentStore'
 import { getProduct, adaptProduct, type ApiProductDetail } from '../api/product'
 import type { ServerInitialData } from '../context/initialData'
 import type { ProductDetail } from '../types'
@@ -209,6 +212,12 @@ const ProductPage: FC<ProductPageProps> = ({ id, initialData }) => {
     jsonLd: productJsonLd,
   })
 
+  // Remember this product for the "recently viewed" strip.
+  const recordRecent = useRecentStore((s) => s.add)
+  useEffect(() => {
+    if (product) recordRecent(product)
+  }, [product, recordRecent])
+
   useEffect(() => {
     if (!id) return
     // Skip the first fetch when the server already seeded this product's data
@@ -276,7 +285,9 @@ const ProductPage: FC<ProductPageProps> = ({ id, initialData }) => {
         rating={product.rating}
         reviewCount={product.reviewCount}
       />
+      <CompleteTheLook categoryId={product.catId} excludeId={apiDetail?.id ?? id} />
       <Related categoryId={product.catId} excludeId={apiDetail?.id ?? id} />
+      <RecentlyViewed excludeId={apiDetail?.id ?? id} />
       <SizeGuideModal open={sizeGuideOpen} onClose={handleCloseSizeGuide} />
     </>
   )

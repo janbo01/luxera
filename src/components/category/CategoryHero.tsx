@@ -110,7 +110,7 @@ const CategoryHero: FC<CategoryHeroProps> = ({
             className={`inline-flex items-center gap-2 min-h-[40px] px-4 rounded-full text-[13px] border transition-all duration-200 shrink-0 ${active ? 'bg-ink text-bg border-ink' : 'border-rule bg-surface hover:border-ink'}`}
           >
             {cat.fa}
-            {count > 0 && <span className="font-mono text-[11px] opacity-60">{toFa(count)}</span>}
+            {count > 0 && <span className="font-mono text-[12px] opacity-60">{toFa(count)}</span>}
           </a>
         )
       })}

@@ -97,7 +97,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
         <span className="text-[12.5px] text-copper-dark inline-flex items-center gap-2 before:block before:w-[18px] before:h-px before:bg-current before:opacity-60">
           {p.cat || 'جواهرات'}
         </span>
-        <span className="font-mono text-[10px] text-muted tracking-[0.16em]">
+        <span className="font-mono text-[12px] text-muted tracking-[0.16em]">
           LUX-{p.id.slice(0, 6).toUpperCase()}
         </span>
       </div>
@@ -159,7 +159,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
               {formatToman(p.oldPrice)}
             </span>
             {discountPct > 0 && (
-              <span className="px-2.5 py-1 bg-sale text-white rounded-full text-[11.5px] font-medium leading-none">
+              <span className="px-2.5 py-1 bg-sale text-white rounded-full text-[12.5px] font-medium leading-none">
                 {toFa(discountPct)}٪ تخفیف
               </span>
             )}
@@ -237,7 +237,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             {sizeOptions.map((s) => (
               <button
                 key={s.id}
-                className={`min-w-[54px] min-h-[48px] px-3.5 inline-flex items-center justify-center border rounded-[10px] font-body text-[13.5px] transition-colors duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.4] cursor-not-allowed line-through' : 'cursor-pointer'}`}
+                className={`min-w-[54px] min-h-[48px] px-3.5 inline-flex items-center justify-center border rounded-sm font-body text-[13.5px] transition-colors duration-150 text-center ${s.id === effectiveSize ? 'bg-ink text-bg border-ink' : 'bg-surface border-rule hover:border-ink-2'} ${s.disabled ? 'opacity-[0.4] cursor-not-allowed line-through' : 'cursor-pointer'}`}
                 disabled={s.disabled}
                 aria-pressed={s.id === effectiveSize}
                 onClick={() => !s.disabled && setSize(s.id)}
@@ -288,19 +288,8 @@ const InfoPanel: FC<InfoPanelProps> = ({
         </div>
       )}
 
-      {/* Wishlist */}
-      <button
-        className={`mt-2.5 flex items-center gap-2 py-[13px] px-[18px] bg-surface border rounded-full text-[13px] w-full justify-center transition-all duration-200 font-body ${wishlisted ? 'border-plum text-plum' : 'border-rule text-ink-2 hover:border-ink hover:bg-bg'}`}
-        onClick={toggle}
-      >
-        <Icon name={wishlisted ? 'heart-filled' : 'heart'} size={15} />
-        {wishlisted ? 'در علاقه‌مندی‌ها ذخیره شد' : 'افزودن به علاقه‌مندی‌ها'}
-      </button>
-
-      <ShareRow productName={p.fa} />
-
       {/* Perks — one grouped card with hairline dividers */}
-      <div className="mt-[22px] flex flex-col bg-surface rounded-[var(--radius)] ring-1 ring-inset ring-rule divide-y divide-rule">
+      <div className="mt-5 flex flex-col bg-surface rounded-[var(--radius)] ring-1 ring-inset ring-rule divide-y divide-rule">
         {PERKS.map(({ icon, heading, body }) => (
           <div key={icon} className="flex items-center gap-3.5 px-4 py-3.5">
             <span className="w-10 h-10 rounded-full bg-copper/10 grid place-items-center text-copper-dark flex-shrink-0">
@@ -316,6 +305,17 @@ const InfoPanel: FC<InfoPanelProps> = ({
         ))}
       </div>
 
+      {/* Wishlist */}
+      <button
+        className={`mt-2.5 flex items-center gap-2 py-[13px] px-[18px] bg-surface border rounded-full text-[13px] w-full justify-center transition-all duration-200 font-body ${wishlisted ? 'border-plum text-plum' : 'border-rule text-ink-2 hover:border-ink hover:bg-bg'}`}
+        onClick={toggle}
+      >
+        <Icon name={wishlisted ? 'heart-filled' : 'heart'} size={15} />
+        {wishlisted ? 'در علاقه‌مندی‌ها ذخیره شد' : 'افزودن به علاقه‌مندی‌ها'}
+      </button>
+
+      <ShareRow productName={p.fa} />
+
       {/* Sticky buy bar — single-column layouts only; sits above the mobile bottom nav */}
       {!outOfStock && (
         <div
@@ -327,7 +327,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
             <div className="text-[12px] text-muted truncate">{p.fa}</div>
             <div className="font-heading font-bold text-[17px] text-ink leading-tight whitespace-nowrap">
               {formatNumber(p.price * qty)}
-              <small className="font-body font-normal text-[11px] text-muted ms-1">تومان</small>
+              <small className="font-body font-normal text-[12px] text-muted ms-1">تومان</small>
             </div>
           </div>
           <button

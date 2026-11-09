@@ -6,6 +6,8 @@ import type { CartItem, Product } from '../types'
 interface CartState {
   items: CartItem[]
   isOpen: boolean
+  /** Most recent successful add — drives the confirmation toast. Not persisted. */
+  lastAdded: { name: string; at: number } | null
   addItem: (product: Product) => void
   increment: (id: string) => void
   decrement: (id: string) => void
@@ -20,6 +22,7 @@ export const useCartStore = create<CartState>()(
     (set) => ({
       items: [],
       isOpen: false,
+      lastAdded: null,
 
       addItem: (product) =>
         set((state) => {
@@ -27,15 +30,17 @@ export const useCartStore = create<CartState>()(
           if (typeof navigator !== 'undefined' && navigator.vibrate) {
             navigator.vibrate(existing ? [8] : [15])
           }
+          const lastAdded = { name: product.fa, at: Date.now() }
           if (existing) {
             const maxQty = existing.stockCount ?? Infinity
             if (existing.qty >= maxQty) return state
             return {
               items: state.items.map((x) => (x.id === product.id ? { ...x, qty: x.qty + 1 } : x)),
+              lastAdded,
             }
           }
           if ((product.stockCount ?? 1) < 1) return state
-          return { items: [...state.items, { ...product, qty: 1 }] }
+          return { items: [...state.items, { ...product, qty: 1 }], lastAdded }
         }),
 
       increment: (id) =>

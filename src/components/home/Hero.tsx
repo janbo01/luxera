@@ -17,7 +17,7 @@ const TICKER_ITEMS = [
 
 const TICKER_ROW = TICKER_ITEMS.map((item) => (
   <span key={item} className="inline-flex items-center gap-2.5">
-    <i className="text-copper text-[10px] not-italic" aria-hidden="true">
+    <i className="text-copper text-[12px] not-italic" aria-hidden="true">
       ✦
     </i>
     {item}
@@ -34,9 +34,9 @@ const STATS_JSX = HERO_STATS.map(({ v, u, l }, i) => (
   <div key={l} className={i < HERO_STATS.length - 1 ? 'pe-4 border-e border-rule me-4' : ''}>
     <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
       {v}
-      {u ? <small className="text-[11px] font-medium text-copper-dark font-body">{u}</small> : null}
+      {u ? <small className="text-[12px] font-medium text-copper-dark font-body">{u}</small> : null}
     </div>
-    <div className="text-[11.5px] text-muted mt-2 leading-[1.5]">{l}</div>
+    <div className="text-[12.5px] text-muted mt-2 leading-[1.5]">{l}</div>
   </div>
 ))
 
@@ -55,7 +55,7 @@ const Hero: FC = () => {
     <section className="pt-4 md:pt-7">
       <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-4 items-stretch min-h-[580px] max-md:min-h-0">
         {/* ── Dark stage (left) ── */}
-        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-square">
+        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-[4/3]">
           {/* No z-index on this wrapper: it must not form a stacking context, or the
               scrim below (z-3) would paint over the slider's arrows and counter (z-10). */}
           <div className="absolute inset-0">
@@ -90,7 +90,7 @@ const Hero: FC = () => {
                 ) : null}
                 <span className="font-heading text-xl md:text-[26px] font-bold text-white whitespace-nowrap leading-none">
                   {fmtPrice(slide.price)}
-                  <small className="font-body text-[11.5px] font-normal text-white/80 ms-1.5">
+                  <small className="font-body text-[12.5px] font-normal text-white/80 ms-1.5">
                     تومان
                   </small>
                 </span>
@@ -127,7 +127,7 @@ const Hero: FC = () => {
             .
           </h1>
 
-          <p className="text-ink-2 text-[14.5px] md:text-[15.5px] leading-[1.9] font-light max-w-[40ch] m-0 mb-7 md:mb-9 animate-rise [animation-delay:260ms]">
+          <p className="text-ink-2 text-[15px] md:text-[16px] leading-[1.9] max-w-[40ch] m-0 mb-7 md:mb-9 animate-rise [animation-delay:260ms]">
             جواهرات فانتزی و اکسسوری مد از بهترین برندها — گردنبند، دستبند، انگشتر و گوشواره برای هر
             سبک و هر مناسبت. کیفیت خوب، بدون پرداخت هزینه‌ی گزاف.
           </p>

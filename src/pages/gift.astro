@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import GiftFinderPage from '../views/GiftFinderPage'
+const BASE_TITLE = 'Luxera · لوکسرا'
+---
+
+<BaseLayout
+  title={`راهنمای انتخاب هدیه | ${BASE_TITLE}`}
+  description="هدیه‌ی مناسب جواهر فانتزی را بر اساس گیرنده، مناسبت و بودجه پیدا کنید."
+  canonical="/gift"
+>
+  <h1 class="sr-only">راهنمای انتخاب هدیه</h1>
+  <GiftFinderPage client:only="react" />
+</BaseLayout>

@@ -46,7 +46,7 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
       <div className="p-6 sm:p-10 lg:p-14 flex flex-col justify-center gap-8">
         <div className="flex flex-col gap-5">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-plum/10 text-plum text-[11.5px] font-medium leading-none">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-plum/10 text-plum text-[12.5px] font-medium leading-none">
               مقاله‌ی ویژه
             </span>
             {date && <span className="label-fa">{date}</span>}

@@ -96,7 +96,11 @@ const SearchResultsPage: FC<SearchResultsPageProps> = ({ q: qProp }) => {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                style={{ background: 'var(--color-surface)', borderRadius: 8, minHeight: 280 }}
+                style={{
+                  background: 'var(--color-surface)',
+                  borderRadius: 'var(--radius-sm)',
+                  minHeight: 280,
+                }}
               />
             ))}
           </div>
@@ -123,7 +127,7 @@ const SearchResultsPage: FC<SearchResultsPageProps> = ({ q: qProp }) => {
                 <a
                   key={c.id}
                   href={`/category/${c.id}`}
-                  className="bg-plate border border-rule rounded-[2px] px-4 py-2 text-[13px] text-ink-2 transition-[background,color] duration-200 hover:bg-ink hover:text-bg"
+                  className="bg-plate border border-rule rounded-xs px-4 py-2 text-[13px] text-ink-2 transition-[background,color] duration-200 hover:bg-ink hover:text-bg"
                 >
                   {c.fa}
                 </a>

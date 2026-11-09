@@ -56,7 +56,7 @@ const ShippingPage: FC = () => {
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
       {/* Hero */}
       <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">
+        <span className="font-body text-[12px] tracking-[.2em] text-muted uppercase mb-3.5 block">
           Shipping & returns
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
@@ -70,7 +70,7 @@ const ShippingPage: FC = () => {
       <div className="mb-16">
         {/* Delivery */}
         <section className="mb-14">
-          <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
+          <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             زمان‌بندی تحویل
           </h2>
           <p className="text-ink-2 text-sm m-0 mb-6">
@@ -83,7 +83,7 @@ const ShippingPage: FC = () => {
                   {['منطقه', 'روش ارسال', 'زمان تحویل', 'توضیحات'].map((h) => (
                     <th
                       key={h}
-                      className="py-3 px-4 text-right font-normal text-[11px] font-mono tracking-[.1em] text-muted bg-plate border-b border-rule"
+                      className="py-3 px-4 text-right font-medium text-[13px] text-ink-2 bg-plate border-b border-rule"
                     >
                       {h}
                     </th>
@@ -99,7 +99,7 @@ const ShippingPage: FC = () => {
                     <td className="py-3.5 px-4 border-b border-rule align-middle text-ink-2">
                       {row.method}
                     </td>
-                    <td className="py-3.5 px-4 border-b border-rule align-middle font-mono text-[13px] text-plum font-medium whitespace-nowrap">
+                    <td className="py-3.5 px-4 border-b border-rule align-middle text-[14px] text-plum font-medium whitespace-nowrap">
                       {row.time}
                     </td>
                     <td className="py-3.5 px-4 border-b border-rule align-middle text-[13px] text-muted">
@@ -118,7 +118,7 @@ const ShippingPage: FC = () => {
 
         {/* Packaging */}
         <section className="mb-14">
-          <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
+          <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             بسته‌بندی
           </h2>
           <p className="text-ink-2 text-sm leading-[1.8]">
@@ -129,7 +129,7 @@ const ShippingPage: FC = () => {
 
         {/* Returns */}
         <section className="mb-14">
-          <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
+          <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             سیاست بازگشت
           </h2>
           <p className="text-ink-2 text-sm m-0 mb-6">
@@ -155,7 +155,7 @@ const ShippingPage: FC = () => {
 
         {/* Conditions */}
         <section className="mb-14">
-          <h2 className="font-body font-light text-[26px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
+          <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             شرایط بازگشت
           </h2>
           <div className="grid grid-cols-2 gap-10 mt-6 max-[900px]:grid-cols-1 max-[900px]:gap-7">

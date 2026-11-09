@@ -78,7 +78,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-rule sticky top-0 bg-surface z-[1]">
-          <h2 className="font-body font-light text-[18px] m-0 text-ink" id="sg-title">
+          <h2 className="font-heading font-bold text-[18px] m-0 text-ink" id="sg-title">
             راهنمای سایز
           </h2>
           <button

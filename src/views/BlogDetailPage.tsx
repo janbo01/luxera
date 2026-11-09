@@ -202,22 +202,26 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
       <div className="max-w-[780px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
         {/* Breadcrumb */}
         <nav
-          className="py-6 flex items-center gap-2 text-[12px] text-muted"
+          className="py-3 flex items-center gap-2 text-[13px] text-muted"
           aria-label="مسیر ناوبری"
         >
-          <a href="/" className="hover:text-ink transition-colors">
+          <a
+            href="/"
+            className="inline-flex items-center min-h-10 hover:text-ink transition-colors"
+          >
             خانه
           </a>
-          <span aria-hidden="true" className="opacity-35">
-            /
-          </span>
-          <a href="/blog" className="hover:text-ink transition-colors">
+          <Icon name="chevron-left" size={13} className="opacity-50 shrink-0" />
+          <a
+            href="/blog"
+            className="inline-flex items-center min-h-10 hover:text-ink transition-colors"
+          >
             بلاگ
           </a>
-          <span aria-hidden="true" className="opacity-35">
-            /
+          <Icon name="chevron-left" size={13} className="opacity-50 shrink-0" />
+          <span className="text-ink-2 line-clamp-1 max-w-[28ch]" aria-current="page">
+            {post.title}
           </span>
-          <span className="text-ink-2 line-clamp-1 max-w-[28ch]">{post.title}</span>
         </nav>
 
         {/* Article header */}
@@ -238,9 +242,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
             {post.title}
           </h1>
           {post.excerpt && (
-            <p className="text-[16px] leading-[1.95] text-ink-2 font-light max-w-[58ch]">
-              {post.excerpt}
-            </p>
+            <p className="text-[17px] leading-[1.95] text-ink-2 max-w-[58ch]">{post.excerpt}</p>
           )}
         </header>
 

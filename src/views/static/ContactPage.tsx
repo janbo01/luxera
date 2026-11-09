@@ -12,9 +12,9 @@ const SUBJECTS = [
 ]
 
 const FIELD = 'flex flex-col gap-[7px]'
-const LABEL = 'text-[12px] font-mono tracking-[.1em] text-muted uppercase'
+const LABEL = 'text-[14px] font-medium text-ink'
 const INPUT =
-  'font-body text-sm text-ink bg-surface border border-rule px-3.5 py-[11px] outline-none transition-[border-color] focus:border-ink resize-y appearance-none'
+  'font-body text-[15px] text-ink bg-surface border border-rule px-3.5 py-[11px] outline-none transition-[border-color] focus:border-ink resize-y appearance-none'
 
 const CONTACT_JSON_LD = {
   '@context': 'https://schema.org',
@@ -72,7 +72,7 @@ const ContactPage: FC = () => {
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
       {/* Hero */}
       <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">
+        <span className="font-body text-[12px] tracking-[.2em] text-muted uppercase mb-3.5 block">
           Contact
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
@@ -88,21 +88,22 @@ const ContactPage: FC = () => {
         {/* Info column */}
         <aside className="flex flex-col">
           <div className="py-6 border-b border-rule first:pt-0">
-            <p className="text-[12px] text-muted m-0 mb-2.5">تلفن و پیام</p>
-            <p
+            <p className="text-[13px] text-muted m-0 mb-2.5">تلفن و پیام</p>
+            <a
+              href="tel:+989128494308"
               dir="ltr"
-              className="text-right font-mono text-[13px] tracking-[.06em] text-ink-2 m-0"
+              className="inline-flex items-center min-h-11 font-mono text-[16px] font-medium text-ink transition-colors hover:text-plum"
             >
               +98 912 849 4308
-            </p>
-            <p className="text-sm leading-[1.85] text-ink-2 m-0 mt-2">
+            </a>
+            <p className="text-[15px] leading-[1.85] text-ink-2 m-0 mt-1">
               پشتیبانی واتس‌اپ: ۱۰ تا ۲۲ روزانه
             </p>
           </div>
           <div className="py-6 border-b border-rule">
-            <p className="text-[12px] text-muted m-0 mb-2.5">شبکه‌های اجتماعی</p>
+            <p className="text-[13px] text-muted m-0 mb-2.5">شبکه‌های اجتماعی</p>
             {socialLinks.length > 0 && (
-              <div className="flex gap-4 flex-wrap mt-2">
+              <div className="flex gap-2.5 flex-wrap mt-2">
                 {socialLinks.map((s) => (
                   <a
                     key={s.label}
@@ -110,7 +111,7 @@ const ContactPage: FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${s.label} لوکسرا`}
-                    className="font-mono text-[11px] tracking-[.1em] text-muted border-b border-rule pb-0.5 transition-[color,border-color] hover:text-plum hover:border-plum"
+                    className="inline-flex items-center min-h-11 px-5 rounded-full border border-rule bg-surface text-[14px] text-ink-2 transition-colors hover:border-ink hover:bg-ink hover:text-bg"
                   >
                     {s.label}
                   </a>
@@ -130,7 +131,7 @@ const ContactPage: FC = () => {
               >
                 ✓
               </div>
-              <h2 className="font-body font-light text-[22px] m-0 text-ink">پیام شما ارسال شد</h2>
+              <h2 className="font-heading font-bold text-[21px] m-0 text-ink">پیام شما ارسال شد</h2>
               <p className="text-sm text-muted m-0">تیم لوکسرا حداکثر ظرف ۲۴ ساعت پاسخ می‌دهد.</p>
               <button
                 className={BTN_CLS}

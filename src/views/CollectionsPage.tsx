@@ -163,7 +163,7 @@ const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
             {previews.map((src, i) => (
               <div
                 key={src}
-                className={`relative overflow-hidden rounded-[calc(var(--radius)-6px)] bg-bg-2 ${i === 0 && previews.length > 1 ? 'row-span-2' : ''} ${previews.length === 2 && i === 1 ? 'row-span-2' : ''}`}
+                className={`relative overflow-hidden rounded-sm bg-bg-2 ${i === 0 && previews.length > 1 ? 'row-span-2' : ''} ${previews.length === 2 && i === 1 ? 'row-span-2' : ''}`}
               >
                 <img
                   {...imgSet(src, {
@@ -189,7 +189,7 @@ const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
         )}
 
         {col.badge && (
-          <span className="absolute top-3 end-3 z-10 text-[11.5px] font-medium leading-none bg-surface/90 text-ink backdrop-blur-[6px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]">
+          <span className="absolute top-3 end-3 z-10 text-[12.5px] font-medium leading-none bg-surface/90 text-ink backdrop-blur-[6px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]">
             {col.badge}
           </span>
         )}

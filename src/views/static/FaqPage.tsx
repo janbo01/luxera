@@ -145,7 +145,7 @@ const FaqPage: FC = () => {
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
       {/* Hero */}
       <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[11px] tracking-[.2em] text-muted uppercase mb-3.5 block">
+        <span className="font-body text-[12px] tracking-[.2em] text-muted uppercase mb-3.5 block">
           FAQ
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
@@ -161,7 +161,7 @@ const FaqPage: FC = () => {
       <div className="flex flex-col gap-14 mb-16">
         {SECTIONS.map((sec) => (
           <section key={sec.title}>
-            <h2 className="font-body font-light text-[22px] m-0 mb-5 text-ink pb-3 border-b border-rule">
+            <h2 className="font-heading font-bold text-[21px] m-0 mb-5 text-ink pb-3 border-b border-rule">
               {sec.title}
             </h2>
             <div className="flex flex-col">
@@ -178,7 +178,9 @@ const FaqPage: FC = () => {
         <p className="font-heading font-bold text-[clamp(28px,3vw,44px)] m-0 mb-3 text-ink">
           جواب سوالتان را پیدا نکردید؟
         </p>
-        <p className="text-muted text-sm m-0 mb-7">تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.</p>
+        <p className="text-ink-2 text-[15px] m-0 mb-7">
+          تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.
+        </p>
         <a href="/contact" className={BTN_CLS}>
           تماس با ما <span className="arr">←</span>
         </a>

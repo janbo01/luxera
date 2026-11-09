@@ -1,4 +1,5 @@
-import type { FC } from 'react'
+import { useState, type FC } from 'react'
+import GalleryLightbox from './GalleryLightbox'
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
@@ -26,6 +27,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
   const { activeIdx, selectThumb } = useGallery({ count })
 
   const hasApiImages = galleryImages && galleryImages.length > 0
+  const [lightbox, setLightbox] = useState(false)
 
   return (
     <div className="lg:sticky lg:top-[96px] rounded-[var(--radius)] overflow-hidden bg-surface ring-1 ring-inset ring-rule text-ink isolate grid [grid-template-columns:100px_1fr] max-lg:relative max-lg:flex max-lg:flex-col">
@@ -35,7 +37,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           ? galleryImages.map((img, i) => (
               <button
                 key={img.id}
-                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
+                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -53,7 +55,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           : PRODUCT_GALLERY.map((item, i) => (
               <button
                 key={item.tone}
-                className={`w-full aspect-square flex-shrink-0 rounded-[8px] overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
+                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
                 onClick={() => selectThumb(i)}
                 aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
               >
@@ -96,10 +98,20 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
               </div>
             ))}
 
+        {hasApiImages && (
+          <button
+            onClick={() => setLightbox(true)}
+            aria-label="بزرگ‌نمایی تصویر"
+            className="absolute top-3 end-3 z-[2] w-11 h-11 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-colors hover:bg-ink hover:text-bg"
+          >
+            <Icon name="search" size={16} />
+          </button>
+        )}
+
         {/* Bottom caption + nav */}
         <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between p-3 sm:p-4 pointer-events-none">
           <span
-            className="font-mono text-[11px] tracking-[0.12em] text-ink bg-surface/85 backdrop-blur-[8px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]"
+            className="font-mono text-[12px] text-ink bg-surface/85 backdrop-blur-[8px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]"
             aria-label={`تصویر ${activeIdx + 1} از ${count} — ${productName}`}
           >
             {formatPaddedIndex(activeIdx + 1)} / {formatPaddedIndex(count)}
@@ -122,6 +134,15 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           </div>
         </div>
       </div>
+      {lightbox && hasApiImages && (
+        <GalleryLightbox
+          images={galleryImages}
+          index={activeIdx}
+          productName={productName}
+          onIndexChange={selectThumb}
+          onClose={() => setLightbox(false)}
+        />
+      )}
     </div>
   )
 }

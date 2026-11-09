@@ -258,7 +258,7 @@ const CheckoutPage: FC = () => {
     return (
       <div className="flex flex-col items-center gap-3.5 text-center py-24 px-[var(--pad)] text-muted">
         <Icon name="bag" size={40} strokeWidth={1.5} />
-        <h1 className="font-heading font-light text-[26px] text-ink m-0">سبد خرید شما خالی است</h1>
+        <h1 className="font-heading font-bold text-[24px] text-ink m-0">سبد خرید شما خالی است</h1>
         <p className="text-sm max-w-[30ch] m-0">محصولی به سبد اضافه کنید تا بتوانید سفارش دهید.</p>
         <a href="/" className={BTN_CLS}>
           بازگشت به فروشگاه
@@ -287,14 +287,16 @@ const CheckoutPage: FC = () => {
         </div>
 
         <div className="my-7">
-          <div className="grid grid-cols-3 bg-surface rounded-[var(--radius)] border border-rule p-2 max-[640px]:grid-cols-1 max-[640px]:p-1.5 max-[640px]:gap-1">
+          <div className="grid grid-cols-3 bg-surface rounded-[var(--radius)] border border-rule p-2 max-[640px]:p-1 max-[640px]:gap-1">
             {STEP_LABELS.map(({ lbl, name }, i) => {
               const isActive = i === step
               const isDone = i < step
               return (
                 <button
                   key={i}
-                  className={`flex items-center gap-3.5 px-[18px] py-3.5 rounded-[10px] transition-colors relative ${
+                  aria-current={isActive ? 'step' : undefined}
+                  aria-disabled={!isActive && !isDone ? true : undefined}
+                  className={`flex items-center gap-3.5 px-[18px] py-3.5 rounded-sm transition-colors relative max-[640px]:flex-col max-[640px]:gap-1.5 max-[640px]:px-1 max-[640px]:py-2.5 max-[640px]:text-center ${
                     isActive ? 'bg-ink text-bg' : isDone ? 'hover:bg-bg-2' : 'hover:bg-bg-2'
                   }`}
                   onClick={() => {
@@ -303,7 +305,7 @@ const CheckoutPage: FC = () => {
                   style={{ cursor: isDone ? 'pointer' : isActive ? 'default' : 'not-allowed' }}
                 >
                   <span
-                    className={`w-9 h-9 rounded-full border-[1.5px] grid place-items-center font-mono text-sm font-semibold shrink-0 transition-all ${
+                    className={`w-9 h-9 max-[640px]:w-8 max-[640px]:h-8 rounded-full border-[1.5px] grid place-items-center font-mono text-sm font-semibold shrink-0 transition-all ${
                       isActive
                         ? 'bg-copper text-white border-copper'
                         : isDone
@@ -315,14 +317,14 @@ const CheckoutPage: FC = () => {
                   </span>
                   <span className="flex flex-col gap-0.5 min-w-0">
                     <span
-                      className={`font-mono text-[10px] tracking-[.16em] uppercase transition-colors ${
+                      className={`font-mono text-[12px] uppercase transition-colors max-[640px]:hidden ${
                         isActive ? 'text-bg/60' : isDone ? 'text-ok' : 'text-muted'
                       }`}
                     >
                       {lbl}
                     </span>
                     <span
-                      className={`font-heading text-[15px] font-semibold leading-[1.2] transition-colors ${
+                      className={`font-heading text-[15px] max-[640px]:text-[13.5px] font-semibold leading-[1.2] transition-colors ${
                         isActive ? 'text-bg' : 'text-ink'
                       }`}
                     >

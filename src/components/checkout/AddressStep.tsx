@@ -20,14 +20,14 @@ interface AddressStepProps {
 const SELECT_BG = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A6555' stroke-width='1.8' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>")`
 
 const inputCls =
-  'bg-bg border border-rule rounded-[10px] px-4 py-[13px] text-sm text-ink transition-all font-body w-full outline-none placeholder:text-muted placeholder:font-light focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
+  'bg-bg border border-rule rounded-sm px-4 py-[13px] text-[15px] text-ink transition-all font-body w-full outline-none placeholder:text-muted placeholder:font-light focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
 const selectCls =
-  'appearance-none bg-bg border border-rule rounded-[10px] px-4 py-[13px] pl-[38px] text-sm text-ink font-body w-full outline-none cursor-pointer bg-no-repeat bg-[position:left_14px_center] bg-[length:14px] focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)] disabled:opacity-50'
+  'appearance-none bg-bg border border-rule rounded-sm px-4 py-[13px] pl-[38px] text-[15px] text-ink font-body w-full outline-none cursor-pointer bg-no-repeat bg-[position:left_14px_center] bg-[length:14px] focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)] disabled:opacity-50'
 const textareaCls = `${inputCls} resize-y min-h-24 leading-[1.7]`
 const fieldCls = 'flex flex-col gap-2 min-w-0'
-const labelCls = 'text-[13px] font-medium text-ink flex items-center gap-1.5'
+const labelCls = 'text-[14px] font-medium text-ink flex items-center gap-1.5'
 const reqSpan = <span className="text-sale text-[14px] leading-none">*</span>
-const optCls = 'font-mono text-[10px] text-muted font-normal tracking-[.04em]'
+const optCls = 'font-mono text-[12px] text-muted font-normal'
 
 const AddressStep: FC<AddressStepProps> = ({
   addr,
@@ -57,8 +57,8 @@ const AddressStep: FC<AddressStepProps> = ({
   return (
     <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
       {/* Pane header */}
-      <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
-        <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 mb-7 pb-5 border-b border-rule">
+        <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3 whitespace-nowrap">
           <span className="w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[18px] [&_svg]:h-[18px]">
             <Icon name="location" size={18} strokeWidth={1.8} />
           </span>
@@ -82,7 +82,7 @@ const AddressStep: FC<AddressStepProps> = ({
             <label
               key={adr.id}
               htmlFor={`adr-${adr.id}`}
-              className={`relative px-4 pt-4 pb-4 border rounded-[10px] cursor-pointer transition-[border-color,background,box-shadow] flex flex-col gap-1.5 text-right hover:border-ink-2 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ink has-[:focus-visible]:ring-offset-1 ${
+              className={`relative px-4 pt-4 pb-4 border rounded-sm cursor-pointer transition-[border-color,background,box-shadow] flex flex-col gap-1.5 text-right hover:border-ink-2 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ink has-[:focus-visible]:ring-offset-1 ${
                 isOn
                   ? 'border-ink bg-surface-2 shadow-[inset_0_0_0_1px_var(--color-ink)]'
                   : 'border-rule bg-bg'
@@ -123,7 +123,7 @@ const AddressStep: FC<AddressStepProps> = ({
         {/* Add new card */}
         <button
           type="button"
-          className="relative px-4 py-4 border border-dashed border-rule rounded-[10px] bg-bg cursor-pointer grid place-items-center text-muted text-center gap-1.5 hover:border-ink-2 transition-colors focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-1 focus-visible:outline-none"
+          className="relative px-4 py-4 border border-dashed border-rule rounded-sm bg-bg cursor-pointer grid place-items-center text-muted text-center gap-1.5 hover:border-ink-2 transition-colors focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-1 focus-visible:outline-none"
           onClick={onAddNew}
           aria-label="افزودن آدرس جدید"
         >
@@ -185,8 +185,8 @@ const AddressStep: FC<AddressStepProps> = ({
           <label htmlFor="addr-phone" className={labelCls}>
             شماره‌ی موبایل {reqSpan}
           </label>
-          <div className="flex items-stretch [direction:ltr] border border-rule rounded-[10px] overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink">
-            <span className="flex items-center px-[11px] text-[13px] font-mono tracking-[0.03em] text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">
+          <div className="flex items-stretch [direction:ltr] border border-rule rounded-sm overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink">
+            <span className="flex items-center px-[11px] text-[13px] font-mono text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">
               +98
             </span>
             <input
@@ -199,11 +199,11 @@ const AddressStep: FC<AddressStepProps> = ({
               value={toLocalPhone(addr.phone)}
               onChange={handlePhoneChange}
               maxLength={10}
-              className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
+              className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] font-mono placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
             />
           </div>
           {/^9\d{9}$/.test(addr.phone) && (
-            <span className="flex items-center gap-1.5 text-[11px] text-ok font-mono tracking-[.04em] -mt-0.5 [&_svg]:w-3 [&_svg]:h-3">
+            <span className="flex items-center gap-1.5 text-[12px] text-ok font-mono -mt-0.5 [&_svg]:w-3 [&_svg]:h-3">
               <Icon name="check" size={12} strokeWidth={2} />
               با ایرانسل تأیید شد
             </span>
@@ -305,7 +305,7 @@ const AddressStep: FC<AddressStepProps> = ({
             onChange={(e) => onNotesChange(e.target.value.slice(0, 300))}
             placeholder="مثلاً: تماس قبل از تحویل، رنگ دلخواه بسته‌بندی…"
           />
-          <div className="font-mono text-[10px] text-muted text-left mt-1 tracking-[.04em]">
+          <div className="font-mono text-[12px] text-muted text-left mt-1">
             {toFa(orderNotes.length)} / ۳۰۰
           </div>
         </div>
@@ -315,7 +315,7 @@ const AddressStep: FC<AddressStepProps> = ({
       <div className="flex justify-between items-center gap-3.5 mt-7 pt-6 border-t border-rule max-[640px]:flex-col-reverse max-[640px]:items-stretch">
         <label className="flex items-center gap-2.5 text-[12px] text-muted cursor-pointer select-none group">
           <span
-            className={`w-[18px] h-[18px] rounded-[4px] border flex-shrink-0 grid place-items-center transition-all duration-150 [&_svg]:w-[10px] [&_svg]:h-[10px] ${saveDefault ? 'bg-ink border-ink text-bg' : 'bg-bg border-rule group-hover:border-ink-2'}`}
+            className={`w-[18px] h-[18px] rounded-xs border flex-shrink-0 grid place-items-center transition-all duration-150 [&_svg]:w-[10px] [&_svg]:h-[10px] ${saveDefault ? 'bg-ink border-ink text-bg' : 'bg-bg border-rule group-hover:border-ink-2'}`}
           >
             {saveDefault && <Icon name="check" size={12} strokeWidth={2.5} />}
           </span>

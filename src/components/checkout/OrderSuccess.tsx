@@ -21,7 +21,7 @@ interface OrderSuccessProps {
 
 const ROW =
   'flex justify-between items-center px-5 py-[13px] border-b border-rule text-[13px] last:border-b-0'
-const ROW_LABEL = 'font-mono text-[10px] tracking-[.12em] uppercase text-muted'
+const ROW_LABEL = 'font-mono text-[12px] uppercase text-muted'
 
 const OrderSuccess: FC<OrderSuccessProps> = ({
   orderNum,
@@ -72,9 +72,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
       <div className="w-full border border-rule bg-surface my-7 animate-rise [animation-delay:160ms]">
         <div className={ROW}>
           <span className={ROW_LABEL}>شماره سفارش</span>
-          <strong className="font-mono text-[15px] tracking-[.16em] text-plum font-normal">
-            {orderNum}
-          </strong>
+          <strong className="font-mono text-[15px] text-plum font-normal">{orderNum}</strong>
         </div>
         <div className={ROW}>
           <span className={ROW_LABEL}>روش ارسال</span>
@@ -82,7 +80,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
         </div>
         <div className={ROW}>
           <span className={ROW_LABEL}>تخمین تحویل</span>
-          <span className="inline-flex items-center gap-[5px] font-mono text-[11px] tracking-[.08em] text-copper">
+          <span className="inline-flex items-center gap-[5px] font-mono text-[12px] text-copper">
             <Icon name={confirmedShipping?.id === 'snapp_box' ? 'clock' : 'truck'} size={11} />
             {eta}
           </span>
@@ -109,9 +107,9 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
             </div>
             <div>
               <div className="text-[12px] font-normal text-ink leading-[1.4]">{item.fa}</div>
-              <div className="font-mono text-[10px] text-muted mt-[3px]">{toFa(item.qty)} عدد</div>
+              <div className="font-mono text-[12px] text-muted mt-[3px]">{toFa(item.qty)} عدد</div>
             </div>
-            <div className="text-[11px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+            <div className="text-[12px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
               {formatToman(item.price * item.qty)}
             </div>
           </div>
@@ -124,13 +122,13 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
             <div>
               <div className="text-[12px] font-normal text-ink leading-[1.4]">بسته‌بندی هدیه</div>
               {giftNote && (
-                <div className="font-mono text-[10px] text-muted mt-[3px] italic text-ink-2">
+                <div className="font-mono text-[12px] text-muted mt-[3px] italic text-ink-2">
                   «{giftNote.slice(0, 60)}
                   {giftNote.length > 60 ? '…' : ''}»
                 </div>
               )}
             </div>
-            <div className="text-[11px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+            <div className="text-[12px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
               {formatToman(giftWrapPrice)}
             </div>
           </div>

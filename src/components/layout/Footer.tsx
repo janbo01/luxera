@@ -104,10 +104,11 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
     [instagram_url, whatsapp_number, bale_link, ita_link],
   )
 
-  const col = 'flex flex-col gap-[11px] max-md:gap-0'
-  // On touch (mobile) each link gets a 48px tap target; desktop keeps its compact look.
+  const col = 'flex flex-col'
+  // Every link is a full-height row (40px desktop / 44px touch) so they're easy to hit,
+  // while the rows themselves provide the vertical rhythm instead of a gap.
   const colLink =
-    'inline-flex items-center text-[13.5px] text-ink-2 transition-colors duration-200 hover:text-plum max-md:min-h-[44px]'
+    'inline-flex items-center min-h-10 max-md:min-h-11 text-[14.5px] text-ink-2 transition-colors duration-200 hover:text-plum'
 
   return (
     <footer className="mt-[clamp(32px,5vw,72px)] pt-[clamp(44px,5vw,72px)] pb-6 max-[720px]:pb-[calc(56px+env(safe-area-inset-bottom)+16px)] px-[var(--pad)] text-ink-2 bg-bg-2/60 border-t border-rule">
@@ -117,7 +118,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
           <span className="font-display italic text-[42px] text-ink leading-none font-normal">
             Luxera
           </span>
-          <p className="text-ink-2 text-[13.5px] leading-[1.9] m-0">
+          <p className="text-ink-2 text-[14.5px] leading-[1.9] m-0">
             جواهرات فانتزی و اکسسوری مد با روکش ماندگار و بدون نیکل — با ارسال سریع و ۴ روز ضمانت
             بازگشت.
           </p>
@@ -146,16 +147,14 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
                 <span className="text-[12.5px] font-semibold text-ink leading-none">
                   نماد اعتماد الکترونیکی
                 </span>
-                <span className="text-[11.5px] text-muted leading-none">فروشگاه معتبر</span>
+                <span className="text-[12.5px] text-muted leading-none">فروشگاه معتبر</span>
               </div>
             </div>
           </div>
         </div>
 
         <div>
-          <h3 className="font-heading text-[15px] font-bold mb-[18px] max-md:mb-2 text-ink m-0">
-            فروشگاه
-          </h3>
+          <h3 className="font-heading text-[16px] font-bold mb-2 text-ink m-0">فروشگاه</h3>
           <ul className={`list-none p-0 m-0 ${col}`}>
             {categoryLinks.map(({ label, to }) => (
               <li key={to}>
@@ -169,9 +168,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
 
         {STATIC_COLS.map(({ title, links }) => (
           <div key={title}>
-            <h3 className="font-heading text-[15px] font-bold mb-[18px] max-md:mb-2 text-ink m-0">
-              {title}
-            </h3>
+            <h3 className="font-heading text-[16px] font-bold mb-2 text-ink m-0">{title}</h3>
             <ul className={`list-none p-0 m-0 ${col}`}>
               {links.map(({ label, to }) => (
                 <li key={label}>

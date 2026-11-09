@@ -113,7 +113,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
           {/* Summary column */}
           <div className="sticky top-24 max-md:relative max-md:top-0">
             <div className="flex flex-col gap-1.5 mb-6">
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-copper-dark">
+              <span className="font-mono text-[12px] uppercase text-copper-dark">
                 Customer reviews
               </span>
               <h2 className="font-heading font-bold text-[clamp(32px,3.5vw,48px)] leading-[1.1] m-0 text-ink">
@@ -130,7 +130,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
               </span>
               <div className="flex flex-col gap-1.5 pb-1.5">
                 <Stars value={displayRating} size={16} />
-                <span className="text-[11px] text-muted font-mono tracking-[0.06em]">
+                <span className="text-[12px] text-muted font-mono">
                   بر اساسِ {toFa(total)} نظرِ ثبت‌شده
                 </span>
               </div>
@@ -141,7 +141,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                 {breakdown.map((r) => (
                   <div
                     key={r.stars}
-                    className="grid [grid-template-columns:30px_1fr_36px] gap-2.5 items-center font-mono text-[11px] text-muted"
+                    className="grid [grid-template-columns:30px_1fr_36px] gap-2.5 items-center font-mono text-[12px] text-muted"
                   >
                     <span className="inline-flex items-center gap-1 text-ink-2">
                       {toFa(r.stars)} <Icon name="star" size={10} />
@@ -155,7 +155,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
               </div>
             )}
 
-            <div className="mt-6 p-[18px] bg-bg rounded-[12px] text-[13px] text-ink-2 leading-[1.7]">
+            <div className="mt-6 p-[18px] bg-bg rounded-[var(--radius)] text-[13px] text-ink-2 leading-[1.7]">
               <p className="m-0 mb-3">
                 تجربه‌ی خود را با خریداران آینده در میان بگذارید. هر نظر تأیید‌شده با کدِ منحصر به
                 مشتریِ خریدار همراه است.
@@ -199,7 +199,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                   ))}
                 </div>
                 <textarea
-                  className="w-full border border-rule rounded-[8px] p-3 font-body text-[14px] text-ink bg-surface resize-none outline-none focus:border-ink transition-colors duration-200 placeholder:text-muted"
+                  className="w-full border border-rule rounded-sm p-3 font-body text-[14px] text-ink bg-surface resize-none outline-none focus:border-ink transition-colors duration-200 placeholder:text-muted"
                   value={formContent}
                   onChange={(e) => setFormContent(e.target.value)}
                   placeholder="نظر خود را بنویسید…"
@@ -263,15 +263,13 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                         <span className="font-heading text-[14px] font-semibold flex items-center gap-2 flex-wrap">
                           {review.name}
                           {review.verified && (
-                            <span className="inline-flex items-center gap-1 font-mono text-[9px] text-ok bg-[rgba(31,138,91,.1)] px-[7px] py-0.5 rounded-full tracking-[0.04em]">
+                            <span className="inline-flex items-center gap-1 font-mono text-[12px] text-ok bg-[rgba(31,138,91,.1)] px-[7px] py-0.5 rounded-full">
                               <Icon name="check" size={9} strokeWidth={2.4} />
                               تأیید‌شده
                             </span>
                           )}
                         </span>
-                        <span className="font-mono text-[10px] text-muted tracking-[0.06em]">
-                          {review.date}
-                        </span>
+                        <span className="font-mono text-[12px] text-muted">{review.date}</span>
                       </div>
                       <Stars value={review.rating} size={11} />
                     </div>

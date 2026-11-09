@@ -1,5 +1,7 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import type { FC } from 'react'
+import { useEffect, type FC } from 'react'
+import { batchProducts } from '../api/product'
+import { StockNotifyForm } from '../components/product/StockNotifyForm'
 import { useWishlistStore } from '../store/wishlistStore'
 import { useCartStore } from '../store/cartStore'
 import { Illustration } from '../illustrations'
@@ -13,9 +15,24 @@ import { imgSet } from '../utils/cdnImage'
 
 const WishlistPage: FC = () => {
   usePageMeta({ title: 'علاقه‌مندی‌ها' })
-  const { items, remove, clear } = useWishlistStore()
+  const { items, remove, clear, refreshLive } = useWishlistStore()
   const addItem = useCartStore((s) => s.addItem)
   const openCart = useCartStore((s) => s.openCart)
+
+  // Fetch today's prices once so a drop since saving can be shown on the card.
+  useEffect(() => {
+    const ids = useWishlistStore.getState().items.map((i) => i.id)
+    if (!ids.length) return
+    batchProducts(ids)
+      .then((rows) =>
+        refreshLive(
+          Object.fromEntries(
+            rows.map((r) => [r.id, { price: parseFloat(r.price), stockCount: r.stock_count }]),
+          ),
+        ),
+      )
+      .catch(() => {})
+  }, [refreshLive])
 
   const handleMoveToCart = (product: (typeof items)[number]) => {
     addItem(product)
@@ -45,7 +62,7 @@ const WishlistPage: FC = () => {
           <div className="w-[88px] h-[88px] bg-plate rounded-full flex items-center justify-center text-muted mb-7 animate-[wishlist-pulse_3s_ease-in-out_infinite]">
             <Icon name="heart" size={48} />
           </div>
-          <h2 className="font-body font-light text-[28px] m-0 mb-3">لیست شما خالی است</h2>
+          <h2 className="font-heading font-bold text-[26px] m-0 mb-3">لیست شما خالی است</h2>
           <p className="text-muted text-sm leading-[1.85] max-w-[36ch] m-0 mb-9">
             روی قلب هر محصول بزنید تا اینجا ذخیره شود.
             <br />
@@ -80,7 +97,18 @@ const WishlistPage: FC = () => {
                   href={`/product/${product.slug ?? product.id}`}
                   className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline"
                 >
-                  <Badge label={product.badge} kind={product.badgeKind} />
+                  <Badge
+                    label={
+                      product.savedPrice != null && product.price < product.savedPrice
+                        ? 'کاهش قیمت'
+                        : product.badge
+                    }
+                    kind={
+                      product.savedPrice != null && product.price < product.savedPrice
+                        ? 'sale'
+                        : product.badgeKind
+                    }
+                  />
                   <button
                     className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-muted opacity-0 scale-[0.8] transition-[opacity,transform,color,background] duration-[250ms] z-[4] backdrop-blur-sm group-hover:opacity-100 group-hover:scale-100 hover:text-sale hover:bg-[#fff5f5]"
                     aria-label="حذف از علاقه‌مندی"
@@ -118,31 +146,41 @@ const WishlistPage: FC = () => {
                       className="no-underline text-inherit"
                     >
                       <div className="text-sm font-normal text-ink mb-0.5">{product.fa}</div>
-                      <span className="font-display italic text-[11px] text-muted block mb-2">
+                      <span className="font-display italic text-[12px] text-muted block mb-2">
                         {product.en}
                       </span>
                     </a>
                     <ProductMeta
                       items={product.meta}
-                      className="font-mono text-[10px] tracking-[0.1em] text-muted flex flex-wrap gap-2"
+                      className="font-mono text-[12px] text-muted flex flex-wrap gap-2"
                     />
                   </div>
 
                   <div className="flex items-center justify-between gap-2 border-t border-rule pt-3">
                     <PriceDisplay
                       price={product.price}
-                      oldPrice={product.oldPrice}
+                      oldPrice={
+                        product.savedPrice != null && product.price < product.savedPrice
+                          ? product.savedPrice
+                          : product.oldPrice
+                      }
                       className="text-[13px] text-ink flex flex-col gap-0.5"
-                      oldClassName="text-muted line-through text-[11px]"
+                      oldClassName="text-muted line-through text-[12px]"
                     />
-                    <button
-                      className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-ink text-bg text-xs tracking-[0.04em] whitespace-nowrap transition-[background,color] duration-[250ms] shrink-0 hover:bg-plum"
-                      onClick={() => handleMoveToCart(product)}
-                    >
-                      <Icon name="bag" size={13} />
-                      افزودن به سبد
-                    </button>
+                    {product.stockCount === 0 ? (
+                      <span className="text-[12.5px] text-muted">ناموجود</span>
+                    ) : (
+                      <button
+                        className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-ink text-bg text-xs tracking-[0.04em] whitespace-nowrap transition-[background,color] duration-[250ms] shrink-0 hover:bg-plum"
+                        onClick={() => handleMoveToCart(product)}
+                      >
+                        <Icon name="bag" size={13} />
+                        افزودن به سبد
+                      </button>
+                    )}
                   </div>
+                  {/* Sold out: the wishlist is where intent is highest, so offer the restock alert here */}
+                  {product.stockCount === 0 && <StockNotifyForm productId={product.id} />}
                 </div>
               </div>
             ))}

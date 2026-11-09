@@ -94,7 +94,7 @@ const CategoriesSection: FC = () => {
               <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.62)_0%,rgb(0_0_0/0.08)_45%,transparent_100%)] transition-opacity duration-300 group-hover:opacity-90" />
 
               {/* Index number — top end corner */}
-              <span className="absolute top-4 end-4 z-[2] font-mono text-[10px] tracking-[0.2em] text-white/55">
+              <span className="absolute top-4 end-4 z-[2] font-mono text-[12px] tracking-[0.2em] text-white/55">
                 {cat.num}
               </span>
 
@@ -103,7 +103,7 @@ const CategoriesSection: FC = () => {
                 className={`relative z-[2] flex items-end justify-between gap-2 text-white ${isFeatured ? 'px-5 pb-5 md:px-8 md:pb-8' : 'px-4 pb-4 md:px-5 md:pb-5'}`}
               >
                 <div className="min-w-0">
-                  <div className="font-display italic text-[11px] tracking-[0.06em] mb-1 text-white/55">
+                  <div className="font-display italic text-[12px] tracking-[0.06em] mb-1 text-white/55">
                     {cat.en}
                   </div>
                   <div

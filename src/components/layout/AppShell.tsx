@@ -5,6 +5,7 @@ import { useStoreTheme } from '../../hooks/useStoreTheme'
 import { UI_DEFAULTS } from '../../utils/constants'
 import ScrollToTop from './ScrollToTop'
 import CartDrawer from '../cart/CartDrawer'
+import CartToast from '../cart/CartToast'
 import SearchOverlay from '../search/SearchOverlay'
 import LoginModal from '../account/LoginModal'
 import BottomNav from './BottomNav'
@@ -52,6 +53,7 @@ export default function AppShell() {
     <>
       <ScrollToTop />
       <CartDrawer />
+      <CartToast />
       <SearchOverlay />
       <LoginModalContainer />
       <BottomNav />

@@ -39,7 +39,7 @@ interface OrderSummaryProps {
 }
 
 const inputCls =
-  'flex-1 bg-bg border border-rule rounded-[10px] px-3.5 py-[11px] text-[13px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
+  'flex-1 bg-bg border border-rule rounded-sm px-3.5 py-[11px] text-[14.5px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
 
 const PERKS = [
   'ارسالِ بیمه‌شده · بیمه‌ی البرز',
@@ -86,7 +86,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         <div className="flex items-center justify-between gap-2.5 mb-[18px] pb-4 border-b border-rule">
           <h3 className="font-heading text-[16px] font-semibold m-0 flex items-center gap-2.5">
             خلاصه‌ی سفارش
-            <span className="font-body text-[11.5px] font-normal bg-bg-2 text-ink px-[9px] py-1 rounded-full">
+            <span className="font-body text-[12.5px] font-normal bg-bg-2 text-ink px-[9px] py-1 rounded-full">
               {toFa(items.length)} قلم
             </span>
           </h3>
@@ -103,8 +103,8 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         <div className="flex flex-col gap-3.5">
           {items.map((item) => (
             <div key={item.id} className="grid grid-cols-[50px_1fr_auto] gap-3 items-center">
-              <div className="w-[50px] h-[50px] rounded-[8px] bg-bg-2 grid place-items-center text-ink-2 relative shrink-0 [&_svg]:w-[30px] [&_svg]:h-[30px] [&_svg]:stroke-[1]">
-                <span className="absolute -top-1.5 -left-1.5 min-w-[18px] h-[18px] rounded-[9px] bg-ink text-bg font-mono text-[10px] font-semibold grid place-items-center px-[5px] border-2 border-surface">
+              <div className="w-[50px] h-[50px] rounded-sm bg-bg-2 grid place-items-center text-ink-2 relative shrink-0 [&_svg]:w-[30px] [&_svg]:h-[30px] [&_svg]:stroke-[1]">
+                <span className="absolute -top-1.5 -left-1.5 min-w-5 h-5 rounded-sm bg-ink text-bg font-mono text-[11px] font-semibold grid place-items-center px-[5px] border-2 border-surface">
                   {toFa(item.qty)}
                 </span>
                 <Illustration name={item.illus} />
@@ -113,13 +113,13 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 <div className="font-heading text-[13px] font-semibold leading-[1.3]">
                   {item.fa}
                 </div>
-                <div className="text-[11px] text-muted font-mono tracking-[.04em] mt-0.5 [direction:ltr]">
+                <div className="text-[12px] text-muted font-mono mt-0.5 [direction:ltr]">
                   {formatToman(item.price).replace(' تومان', '')} ت
                 </div>
               </div>
               <div className="font-heading text-[13px] font-semibold text-left">
                 {formatToman(item.price * item.qty).replace(' تومان', '')}
-                <small className="text-[10px] font-normal text-muted mr-0.5">ت</small>
+                <small className="text-[12px] font-normal text-muted mr-0.5">ت</small>
               </div>
             </div>
           ))}
@@ -165,8 +165,8 @@ const OrderSummary: FC<OrderSummaryProps> = ({
 
         {/* ETA chip */}
         {step >= 1 && selectedShipping && (
-          <div className="mt-3 px-3.5 py-3 bg-bg border border-rule rounded-[10px] flex items-center gap-3 text-[12px]">
-            <span className="w-8 h-8 rounded-[8px] bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">
+          <div className="mt-3 px-3.5 py-3 bg-bg border border-rule rounded-sm flex items-center gap-3 text-[12px]">
+            <span className="w-8 h-8 rounded-sm bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">
               <Icon name="clock" size={14} strokeWidth={1.7} />
             </span>
             <div className="flex flex-col gap-[1px] flex-1">
@@ -178,7 +178,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </span>
             </div>
             <button
-              className="text-[11px] text-copper font-body cursor-pointer hover:underline hover:underline-offset-[3px]"
+              className="text-[12px] text-copper font-body cursor-pointer hover:underline hover:underline-offset-[3px]"
               onClick={() => onGoStep(1)}
             >
               تغییر
@@ -188,7 +188,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
 
         {/* Address chip */}
         {step >= 1 && addrCity && (
-          <div className="mt-2.5 p-3.5 bg-bg border border-rule rounded-[10px] flex gap-3 items-start text-[12px] text-ink-2 leading-[1.6]">
+          <div className="mt-2.5 p-3.5 bg-bg border border-rule rounded-sm flex gap-3 items-start text-[12px] text-ink-2 leading-[1.6]">
             <span className="w-[30px] h-[30px] rounded-full bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-3.5 [&_svg]:h-3.5">
               <Icon name="location" size={14} strokeWidth={1.8} />
             </span>
@@ -199,12 +199,12 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                   <strong className="font-heading font-semibold text-ink">{addrName}</strong>
                 </span>
               )}
-              <span className="text-[11px] text-muted">
+              <span className="text-[12px] text-muted">
                 {addrProvince}، {addrCity}
                 {addrStreet ? `، ${addrStreet.slice(0, 40)}` : ''}
               </span>
               <button
-                className="text-[11px] text-copper self-start mt-0.5 cursor-pointer hover:underline"
+                className="text-[12px] text-copper self-start mt-0.5 cursor-pointer hover:underline"
                 onClick={() => onGoStep(0)}
               >
                 ویرایش
@@ -225,13 +225,13 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         {/* Loyalty points */}
         {loyaltyBalance > 0 && loyaltyPointValue > 0 && (
           <div className="mt-3.5">
-            <div className="px-3.5 py-3 bg-bg border border-rule rounded-[10px]">
+            <div className="px-3.5 py-3 bg-bg border border-rule rounded-sm">
               <div className="flex items-center justify-between gap-2 mb-2.5">
                 <span className="font-heading text-[13px] font-semibold flex items-center gap-1.5">
                   <Icon name="star" size={13} strokeWidth={1.8} />
                   امتیازِ شما
                 </span>
-                <span className="font-mono text-[11px] text-copper bg-copper/10 px-2 py-[3px] rounded-full">
+                <span className="font-mono text-[12px] text-copper bg-copper/10 px-2 py-[3px] rounded-full">
                   {toFa(loyaltyBalance)} امتیاز موجود
                 </span>
               </div>
@@ -251,14 +251,14 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 />
                 <button
                   type="button"
-                  className="shrink-0 px-3.5 py-[11px] bg-bg-2 text-ink-2 text-[12px] rounded-[10px] border border-rule cursor-pointer hover:bg-bg hover:text-ink transition-colors whitespace-nowrap"
+                  className="shrink-0 px-3.5 py-[11px] bg-bg-2 text-ink-2 text-[12px] rounded-sm border border-rule cursor-pointer hover:bg-bg hover:text-ink transition-colors whitespace-nowrap"
                   onClick={() => onLoyaltyPointsChange(loyaltyBalance)}
                 >
                   همه
                 </button>
               </div>
               {loyaltyPointsToUse > 0 && (
-                <p className="text-[11px] text-ok mt-1.5 font-body">
+                <p className="text-[12px] text-ok mt-1.5 font-body">
                   معادلِ {formatToman(loyaltyDiscount)} تخفیف
                 </p>
               )}
@@ -283,7 +283,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 dir="ltr"
               />
               <button
-                className="px-5 py-[11px] bg-ink text-bg rounded-[10px] text-[13px] font-medium cursor-pointer hover:bg-plum transition-colors disabled:bg-bg-2 disabled:text-muted disabled:cursor-not-allowed"
+                className="px-5 py-[11px] bg-ink text-bg rounded-sm text-[13px] font-medium cursor-pointer hover:bg-plum transition-colors disabled:bg-bg-2 disabled:text-muted disabled:cursor-not-allowed"
                 onClick={onApplyCoupon}
                 disabled={couponState === 'loading' || !coupon.trim()}
               >
@@ -291,12 +291,9 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </button>
             </div>
           ) : (
-            <div className="mt-2.5 px-3 py-[9px] bg-[rgba(31,138,91,.08)] border border-[rgba(31,138,91,.25)] rounded-[8px] flex items-center gap-2 text-[12px] text-ok">
+            <div className="mt-2.5 px-3 py-[9px] bg-[rgba(31,138,91,.08)] border border-[rgba(31,138,91,.25)] rounded-sm flex items-center gap-2 text-[12px] text-ok">
               <Icon name="check" size={14} strokeWidth={2} />
-              کدِ <span className="font-mono font-semibold tracking-[.08em]">
-                {appliedCode}
-              </span>{' '}
-              اعمال شد —{' '}
+              کدِ <span className="font-mono font-semibold">{appliedCode}</span> اعمال شد —{' '}
               {appliedCoupon?.discount_type === 'percentage'
                 ? `${toFa(appliedCoupon.discount_value)}٪ تخفیف`
                 : `${formatToman(Number(appliedCoupon?.discount_value ?? 0))} تخفیف`}
@@ -310,14 +307,14 @@ const OrderSummary: FC<OrderSummaryProps> = ({
             </div>
           )}
           {couponState === 'error' && (
-            <p className="text-[11px] text-sale mt-1 font-mono" role="alert">
+            <p className="text-[12px] text-sale mt-1 font-mono" role="alert">
               {couponError || 'این کد معتبر نیست یا منقضی شده'}
             </p>
           )}
         </div>
 
         {/* Perks */}
-        <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[11px] text-muted">
+        <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[12px] text-muted">
           {PERKS.map((text) => (
             <span
               key={text}

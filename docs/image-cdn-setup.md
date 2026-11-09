@@ -62,7 +62,7 @@ curl -s -o /dev/null -w '%{http_code} %{size_download}\n' \
 ```nginx
 server {
     listen 80;
-    server_name img.shoorbaloo.com img.luxera.ir;
+    server_name img.luxera.ir;
 
     location / {
         proxy_pass http://127.0.0.1:8095;

@@ -44,7 +44,10 @@ export async function apiFetch<T = unknown>(url: string, options: RequestInit = 
     } catch {
       // ignore parse error
     }
-    if (res.status === 401) {
+    // Only an expired *session* is news to the user. A 401 on a request that carried no
+    // token just means "not signed in" — announcing "your session expired" to a visitor
+    // who never logged in is confusing.
+    if (res.status === 401 && token) {
       window.dispatchEvent(new CustomEvent('auth:unauthorized'))
     }
     throw new HttpError(res.status, message)

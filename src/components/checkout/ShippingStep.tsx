@@ -57,8 +57,8 @@ const ShippingStep: FC<ShippingStepProps> = ({
 }) => (
   <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
     {/* Pane header */}
-    <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
-      <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3">
+    <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 mb-7 pb-5 border-b border-rule">
+      <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3 whitespace-nowrap">
         <span className="w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[18px] [&_svg]:h-[18px]">
           <Icon name="truck" size={18} strokeWidth={1.8} />
         </span>
@@ -75,7 +75,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
         return (
           <div
             key={opt.id}
-            className={`relative border rounded-[12px] bg-bg overflow-hidden transition-[border-color,box-shadow] hover:border-ink-2 ${
+            className={`relative border rounded-[var(--radius)] bg-bg overflow-hidden transition-[border-color,box-shadow] hover:border-ink-2 ${
               isOn ? 'border-ink shadow-[0_0_0_1px_var(--ink)]' : 'border-rule'
             }`}
           >
@@ -101,14 +101,14 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {opt.nameEn}
                   </span>
                   {opt.id === 'snapp_box' && (
-                    <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-[4px] text-[11px] font-medium ">
+                    <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-xs text-[12px] font-medium ">
                       پرطرفدار
                     </span>
                   )}
                 </span>
                 <span className="text-[13px] text-muted leading-[1.55] flex items-center gap-2 flex-wrap">
                   {opt.desc}
-                  <span className="inline-flex items-center gap-[5px] px-[9px] py-[3px] bg-surface-2 border border-rule rounded-full text-[11px] text-ink-2 font-mono tracking-[.04em] [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:text-ink-2">
+                  <span className="inline-flex items-center gap-[5px] px-[9px] py-[3px] bg-surface-2 border border-rule rounded-full text-[12px] text-ink-2 font-mono [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:text-ink-2">
                     {opt.id === 'snapp_box' ? (
                       <Icon name="clock" size={12} strokeWidth={1.8} />
                     ) : (
@@ -121,7 +121,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
 
               {/* Logo (hidden on ≤1100px) */}
               <span
-                className={`w-[50px] h-[50px] rounded-[10px] grid place-items-center font-display italic text-[20px] shrink-0 font-medium max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}
+                className={`w-[50px] h-[50px] rounded-sm grid place-items-center font-display italic text-[20px] shrink-0 font-medium max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}
               >
                 {opt.id === 'snapp_box' ? 'S' : opt.id === 'tipax' ? 'T' : 'P'}
               </span>
@@ -135,11 +135,11 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     formatToman(opt.price).replace(' تومان', '')
                   )}
                   {opt.price > 0 && (
-                    <small className="text-[11px] font-normal text-muted mr-1">تومان</small>
+                    <small className="text-[12px] font-normal text-muted mr-1">تومان</small>
                   )}
                 </span>
                 {opt.id === 'snapp_box' && (
-                  <span className="text-[11px] line-through text-muted font-mono">۳۲۰٬۰۰۰</span>
+                  <span className="text-[12px] line-through text-muted font-mono">۳۲۰٬۰۰۰</span>
                 )}
               </span>
             </div>
@@ -151,7 +151,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-heading text-[13px] font-semibold">تاریخِ تحویل</span>
-                    <span className="text-[11px] text-muted font-mono tracking-[.04em]">
+                    <span className="text-[12px] text-muted font-mono">
                       {formatPersianDate(deliveryOptions[snappDayIdx]?.date ?? '')}
                     </span>
                   </div>
@@ -159,7 +159,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {deliveryOptions.map((d, i) => (
                       <button
                         key={d.date}
-                        className={`flex-1 min-w-[120px] max-[640px]:min-w-0 px-3.5 py-3 border rounded-[10px] cursor-pointer transition-all flex flex-col gap-0.5 text-right ${
+                        className={`flex-1 min-w-[120px] max-[640px]:min-w-0 px-3.5 py-3 border rounded-sm cursor-pointer transition-all flex flex-col gap-0.5 text-right ${
                           snappDayIdx === i
                             ? 'bg-ink text-bg border-ink'
                             : 'bg-bg border-rule hover:border-ink-2'
@@ -170,7 +170,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                           {DAY_LABELS[i]}
                         </span>
                         <span
-                          className={`font-mono text-[11px] tracking-[.04em] ${snappDayIdx === i ? 'text-[rgba(245,237,224,.6)]' : 'text-muted'}`}
+                          className={`font-mono text-[12px] ${snappDayIdx === i ? 'text-[rgba(245,237,224,.6)]' : 'text-muted'}`}
                         >
                           {formatPersianDate(d.date)}
                         </span>
@@ -183,7 +183,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between gap-3">
                     <span className="font-heading text-[13px] font-semibold">بازه‌ی زمانی</span>
-                    <span className="text-[11px] text-muted font-mono tracking-[.04em]">
+                    <span className="text-[12px] text-muted font-mono">
                       پیک ۱۵ دقیقه قبل تماس می‌گیرد
                     </span>
                   </div>
@@ -191,7 +191,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {(deliveryOptions[snappDayIdx]?.slots ?? []).map((t, i) => (
                       <button
                         key={t.label}
-                        className={`px-3.5 py-2.5 border rounded-[8px] text-[13px] font-mono transition-all cursor-pointer tracking-[.04em] ${
+                        className={`px-3.5 py-2.5 border rounded-sm text-[13px] font-mono transition-all cursor-pointer ${
                           snappTimeIdx === i
                             ? 'bg-ink text-bg border-ink'
                             : 'bg-bg border-rule hover:border-ink-2'
@@ -212,7 +212,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
 
     {/* Gift wrap toggle */}
     <div
-      className={`mt-[18px] px-[18px] py-4 border rounded-[10px] flex items-center gap-3.5 cursor-pointer transition-[border-color,background] ${
+      className={`mt-[18px] px-[18px] py-4 border rounded-sm flex items-center gap-3.5 cursor-pointer transition-[border-color,background] ${
         giftWrap
           ? 'border-copper border-solid bg-[rgba(196,135,58,.04)]'
           : 'border-rule border-dashed bg-bg hover:border-ink-2'
@@ -237,10 +237,10 @@ const ShippingStep: FC<ShippingStepProps> = ({
       </span>
       <span className="font-heading text-[14px] font-semibold">
         {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰
-        <small className="text-[11px] font-normal text-muted mr-[3px]">تومان</small>
+        <small className="text-[12px] font-normal text-muted mr-[3px]">تومان</small>
       </span>
       <span
-        className={`w-[22px] h-[22px] rounded-[6px] border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${
+        className={`w-[22px] h-[22px] rounded-xs border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${
           giftWrap
             ? 'bg-copper border-copper text-white [&_svg]:opacity-100'
             : 'bg-white border-rule text-white [&_svg]:opacity-0'

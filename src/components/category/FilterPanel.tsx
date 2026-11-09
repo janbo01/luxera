@@ -105,7 +105,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
     })
 
   const inputCls =
-    'w-full h-11 bg-bg rounded-[10px] ring-1 ring-inset ring-rule px-3 text-[14px] text-ink text-start outline-none transition-shadow duration-200 focus:ring-2 focus:ring-plum [font-feature-settings:"tnum"]'
+    'w-full h-11 bg-bg rounded-sm ring-1 ring-inset ring-rule px-3 text-[14px] text-ink text-start outline-none transition-shadow duration-200 focus:ring-2 focus:ring-plum [font-feature-settings:"tnum"]'
 
   const activePreset = PRICE_PRESETS.find((p) => p.min === priceMin && p.max === priceMax)
   const priceChanged = priceMin > 0 || priceMax < MAX_PRICE
@@ -131,7 +131,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
           'max-[1100px]:fixed max-[1100px]:bottom-0 max-[1100px]:inset-x-0 max-[1100px]:top-auto',
           // Above the bottom nav (z-100) and the page's sticky filter bar (z-110)
           'max-[1100px]:max-h-[85vh] max-[1100px]:z-[120] max-[1100px]:px-5 max-[1100px]:pt-2 max-[1100px]:pb-0',
-          'max-[1100px]:rounded-t-[24px] max-[1100px]:rounded-b-none max-[1100px]:ring-0',
+          'max-[1100px]:rounded-t-[var(--radius-lg)] max-[1100px]:rounded-b-none max-[1100px]:ring-0',
           'max-[1100px]:shadow-[0_-16px_56px_color-mix(in_srgb,var(--color-ink)_18%,transparent)]',
           'max-[1100px]:transition-transform max-[1100px]:duration-300 max-[1100px]:ease-[var(--ease-lux)]',
           !isOpen
@@ -153,7 +153,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
           <h3 className="font-heading text-[16px] font-bold m-0 text-ink flex items-center gap-2">
             فیلترها
             {activeCount > 0 && (
-              <span className="min-w-5 h-5 px-1.5 rounded-full bg-plum text-bg text-[11px] font-body grid place-items-center">
+              <span className="min-w-5 h-5 px-1.5 rounded-full bg-plum text-bg text-[12px] font-body grid place-items-center">
                 {toFa(activeCount)}
               </span>
             )}

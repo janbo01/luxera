@@ -11,15 +11,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const BASE =
   'inline-flex items-center gap-2.5 min-h-[48px] font-medium tracking-[0.01em] border rounded-full transition-all duration-200 cursor-pointer [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0 [&_.arr]:inline-block [&_.arr]:w-4 [&_.arr]:h-4 [&_.arr]:transition-transform [&:hover_.arr]:-translate-x-[3px] disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none'
 
-export const BTN_CLS = `${BASE} px-6 py-3.5 text-sm border-ink bg-ink text-bg hover:bg-plum hover:border-plum hover:-translate-y-px`
-export const BTN_GHOST_CLS = `${BASE} px-6 py-3.5 text-sm border-ink bg-transparent text-ink hover:bg-ink hover:text-bg hover:-translate-y-px`
+export const BTN_CLS = `${BASE} px-6 py-3.5 text-[15px] border-ink bg-ink text-bg hover:bg-plum hover:border-plum hover:-translate-y-px`
+export const BTN_GHOST_CLS = `${BASE} px-6 py-3.5 text-[15px] border-ink bg-transparent text-ink hover:bg-ink hover:text-bg hover:-translate-y-px`
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary: BTN_CLS,
   ghost: BTN_GHOST_CLS,
-  link: 'inline-flex items-center gap-2.5 pb-1 border-b border-ink bg-transparent text-ink text-[13px] tracking-[0.04em] rounded-none transition-all duration-200 cursor-pointer hover:text-plum hover:border-plum disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
-  icon: 'w-10 h-10 rounded-full grid place-items-center bg-bg-2 text-ink border-none transition-colors duration-200 cursor-pointer hover:bg-plate shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
-  small: `${BASE} px-[18px] py-2.5 text-xs border-ink bg-ink text-bg hover:bg-plum hover:border-plum hover:-translate-y-px`,
+  link: 'inline-flex items-center gap-2.5 pb-1 border-b border-ink bg-transparent text-ink text-[14px] rounded-none transition-all duration-200 cursor-pointer hover:text-plum hover:border-plum disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+  icon: 'w-11 h-11 rounded-full grid place-items-center bg-bg-2 text-ink border-none transition-colors duration-200 cursor-pointer hover:bg-plate shrink-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
+  small: `${BASE} px-[18px] py-2.5 text-[13px] border-ink bg-ink text-bg hover:bg-plum hover:border-plum hover:-translate-y-px`,
 }
 
 const Spinner = () => (

@@ -7,7 +7,8 @@ import { formatToman, toFa } from '../../utils/format'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { useCart } from '../../hooks/useCart'
 import QuantityStepper from '../shared/QuantityStepper'
-import { calcSimpleShipping } from '../../data/shipping'
+import CartUpsell from './CartUpsell'
+import { calcSimpleShipping, FREE_SHIPPING_THRESHOLD } from '../../data/shipping'
 import { imgUrl } from '../../utils/cdnImage'
 
 const CartDrawer: FC = () => {
@@ -15,6 +16,8 @@ const CartDrawer: FC = () => {
 
   const shipping = calcSimpleShipping(subtotal)
   const total = subtotal + shipping
+  const remainingForFree = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
+  const freeShipPct = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100))
 
   const drawerRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -127,7 +130,7 @@ const CartDrawer: FC = () => {
         <div className="flex items-center justify-between px-7 py-6 border-b border-rule">
           <h2 className="font-heading font-bold text-[22px] leading-none m-0 flex items-baseline gap-2.5">
             سبد خرید
-            <small className="font-body text-[12px] text-muted font-normal">
+            <small className="font-body text-[13px] text-muted font-normal">
               {toFa(totalQty)} قطعه
             </small>
           </h2>
@@ -139,6 +142,36 @@ const CartDrawer: FC = () => {
             <Icon name="close" size={14} />
           </button>
         </div>
+
+        {/* Free-shipping progress — shows exactly how far the shopper is from the threshold */}
+        {items.length > 0 && (
+          <div className="px-7 py-3.5 border-b border-rule bg-bg-2/60">
+            <p className="m-0 text-[13.5px] text-ink-2 flex items-center gap-2" aria-live="polite">
+              <Icon name="truck" size={16} className="text-copper-dark shrink-0" />
+              {remainingForFree > 0 ? (
+                <span>
+                  <strong className="font-medium text-ink">{formatToman(remainingForFree)}</strong>{' '}
+                  تا ارسال رایگان
+                </span>
+              ) : (
+                <span className="text-ok font-medium">ارسال این سفارش رایگان است</span>
+              )}
+            </p>
+            <div
+              className="mt-2.5 h-1.5 rounded-full bg-plate overflow-hidden"
+              role="progressbar"
+              aria-label="پیشرفت تا ارسال رایگان"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={freeShipPct}
+            >
+              <div
+                className={`h-full rounded-full transition-[width] duration-500 ${remainingForFree > 0 ? 'bg-copper' : 'bg-ok'}`}
+                style={{ width: `${freeShipPct}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-7 py-2">
@@ -182,19 +215,19 @@ const CartDrawer: FC = () => {
                   <div className="text-[13.5px] font-medium text-ink mb-1 leading-[1.5]">
                     {item.fa}
                   </div>
-                  <span className="font-display italic text-[11px] text-muted">{item.en}</span>
-                  <div className="text-[11px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
+                  <span className="font-display italic text-[12px] text-muted">{item.en}</span>
+                  <div className="text-[12px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
                   <QuantityStepper
                     value={item.qty}
                     onDecrement={() => decrement(item.id)}
                     onIncrement={() => increment(item.id)}
-                    className="inline-flex items-center gap-2 mt-2.5 border border-rule rounded-full px-1 py-0.5 text-xs [font-feature-settings:'tnum'] [&>button]:w-8 [&>button]:h-8 [&>button]:rounded-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink"
+                    className="inline-flex items-center gap-1 mt-2.5 border border-rule rounded-full p-0.5 text-[14px] [font-feature-settings:'tnum'] [&>button]:w-10 [&>button]:h-10 [&>button]:rounded-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink"
                   />
                 </div>
                 <div className="text-end text-[13px] [font-feature-settings:'tnum'] flex flex-col items-end gap-2">
                   <span>{formatToman(item.price * item.qty)}</span>
                   <button
-                    className="text-[12px] text-muted min-h-8 px-1 -me-1 underline-offset-4 transition-colors duration-200 hover:text-sale hover:underline"
+                    className="text-[13px] text-muted min-h-10 px-2 -me-2 underline-offset-4 transition-colors duration-200 hover:text-sale hover:underline"
                     onClick={() => remove(item.id)}
                   >
                     حذف
@@ -202,6 +235,13 @@ const CartDrawer: FC = () => {
                 </div>
               </div>
             ))
+          )}
+          {items.length > 0 && remainingForFree > 0 && (
+            <CartUpsell
+              remaining={remainingForFree}
+              inCartIds={items.map((i) => i.id)}
+              active={isOpen}
+            />
           )}
         </div>
 

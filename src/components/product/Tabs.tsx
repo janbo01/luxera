@@ -55,7 +55,7 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           {p.highlights.length > 0 && (
             <div>
               <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
+                <span className="w-6 h-6 rounded-xs bg-bg-2 grid place-items-center text-copper">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 ویژگی‌های اصلی
@@ -64,7 +64,7 @@ const Tabs: FC<TabsProps> = ({ product }) => {
                 {p.highlights.map((h, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]"
+                    className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]"
                   >
                     <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                       <Icon name="check" size={11} strokeWidth={2.4} />
@@ -106,25 +106,25 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           </div>
           <div>
             <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
+              <span className="w-6 h-6 rounded-xs bg-bg-2 grid place-items-center text-copper">
                 <Icon name="shield" size={13} strokeWidth={2} />
               </span>
               کیفیت و اصالت
             </h3>
             <ul className="flex flex-col gap-3 list-none p-0 m-0">
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 انتخاب و تأیید کیفیت توسط تیم لوکسرا
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 هر قطعه با کدِ یکتای اصالت همراه است
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
@@ -153,25 +153,25 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           </div>
           <div>
             <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
+              <span className="w-6 h-6 rounded-xs bg-bg-2 grid place-items-center text-copper">
                 <Icon name="info" size={13} strokeWidth={2} />
               </span>
               توصیه‌های روزمره
             </h3>
             <ul className="flex flex-col gap-3 list-none p-0 m-0">
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 پارچه‌ی مخصوصِ پولیش — هر دو هفته یک بار
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 دور از رطوبت و گرمای مستقیم
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
@@ -204,25 +204,25 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           </div>
           <div>
             <h3 className="font-heading text-[18px] font-semibold m-0 mb-4 flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-[6px] bg-bg-2 grid place-items-center text-copper">
+              <span className="w-6 h-6 rounded-xs bg-bg-2 grid place-items-center text-copper">
                 <Icon name="truck" size={13} strokeWidth={2} />
               </span>
               روش‌های ارسال
             </h3>
             <ul className="flex flex-col gap-3 list-none p-0 m-0">
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 اسنپ‌باکس · تهران · ۴–۶ ساعت
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>
                 تیپاکس · سراسر ایران · ۲۴–۴۸ ساعت
               </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-[10px] text-[14px] leading-[1.55]">
+              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
                 <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
                   <Icon name="check" size={11} strokeWidth={2.4} />
                 </span>

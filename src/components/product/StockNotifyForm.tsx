@@ -64,14 +64,14 @@ export function StockNotifyForm({ productId }: StockNotifyFormProps) {
 
   return (
     <form
-      className="p-4 bg-surface border border-rule rounded-[10px] flex flex-col gap-2.5"
+      className="p-4 bg-surface border border-rule rounded-sm flex flex-col gap-2.5"
       id="notify-form"
       onSubmit={handleSubmit}
       noValidate
     >
       <p className="text-[13px] text-muted m-0">شماره موبایل را وارد کنید تا اطلاع دهیم</p>
       <div className="flex gap-2 items-stretch">
-        <div className="flex-1 flex items-center border border-rule rounded-[8px] bg-surface overflow-hidden focus-within:border-ink transition-colors duration-200">
+        <div className="flex-1 flex items-center border border-rule rounded-sm bg-surface overflow-hidden focus-within:border-ink transition-colors duration-200">
           <span className="px-3 text-[13px] font-mono text-muted border-e border-rule self-stretch flex items-center">
             +98
           </span>

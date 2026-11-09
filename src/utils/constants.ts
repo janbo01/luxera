@@ -4,6 +4,7 @@ export const STORAGE_KEYS = {
   auth: 'luxera-auth',
   ui: 'luxera-ui',
   search: 'luxera-search',
+  recent: 'luxera-recent',
 } as const
 
 export const UI_DEFAULTS = {

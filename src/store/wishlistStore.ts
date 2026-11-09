@@ -24,12 +24,13 @@ function batchItemToProduct(b: ApiBatchItem): Product {
     cat: '',
     catId: '',
     price: parseFloat(b.price),
-    oldPrice: null,
+    oldPrice: b.old_price ? parseFloat(b.old_price) : null,
     badge: null,
     illus: 'NecklaceB',
     illusAlt: 'NecklaceC',
     meta: [],
     imageUrl: b.image_url || undefined,
+    stockCount: b.stock_count,
   }
 }
 
@@ -39,6 +40,8 @@ interface WishlistState {
   remove: (id: string) => void
   has: (id: string) => boolean
   clear: () => void
+  /** Updates current price and stock (keeps the saved price) so drops and sell-outs show. */
+  refreshLive: (live: Record<string, { price: number; stockCount?: number }>) => void
   syncFromServer: () => Promise<void>
 }
 
@@ -52,7 +55,7 @@ export const useWishlistStore = create<WishlistState>()(
         set((state) => ({
           items: exists
             ? state.items.filter((x) => x.id !== product.id)
-            : [...state.items, product],
+            : [...state.items, { ...product, savedPrice: product.price }],
         }))
         if (isLoggedIn()) {
           if (exists) {
@@ -74,6 +77,20 @@ export const useWishlistStore = create<WishlistState>()(
 
       clear: () => set({ items: [] }),
 
+      refreshLive: (live) =>
+        set((state) => ({
+          items: state.items.map((x) =>
+            live[x.id]
+              ? {
+                  ...x,
+                  price: live[x.id].price,
+                  stockCount: live[x.id].stockCount ?? x.stockCount,
+                  savedPrice: x.savedPrice ?? x.price,
+                }
+              : x,
+          ),
+        })),
+
       syncFromServer: async () => {
         try {
           const serverItems = await userApi.getWishlist()
@@ -83,7 +100,11 @@ export const useWishlistStore = create<WishlistState>()(
           }
           const ids = serverItems.map((i) => i.product_id)
           const batch = await batchProducts(ids)
-          const products = batch.map(batchItemToProduct)
+          const saved = new Map(get().items.map((x) => [x.id, x.savedPrice]))
+          const products = batch.map((b) => ({
+            ...batchItemToProduct(b),
+            savedPrice: saved.get(b.id),
+          }))
           set({ items: products })
         } catch {
           // Network errors don't clear local wishlist

@@ -36,8 +36,8 @@ const PaymentStep: FC<PaymentStepProps> = ({
 }) => (
   <section className="bg-surface rounded-[var(--radius)] border border-rule px-9 pt-9 pb-8 max-[640px]:px-5 max-[640px]:py-6">
     {/* Pane header */}
-    <div className="flex items-end justify-between gap-4 mb-7 pb-5 border-b border-rule">
-      <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3">
+    <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 mb-7 pb-5 border-b border-rule">
+      <h2 className="font-heading text-[22px] font-semibold m-0 leading-[1.2] flex items-center gap-3 whitespace-nowrap">
         <span className="w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[18px] [&_svg]:h-[18px]">
           <Icon name="card" size={18} strokeWidth={1.8} />
         </span>
@@ -56,7 +56,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
         return (
           <div
             key={p.id}
-            className={`relative px-5 py-[18px] border rounded-[12px] cursor-pointer transition-all flex items-center gap-3.5 hover:border-ink-2 ${
+            className={`relative px-5 py-[18px] border rounded-[var(--radius)] cursor-pointer transition-all flex items-center gap-3.5 hover:border-ink-2 ${
               isOn ? 'border-ink shadow-[0_0_0_1px_var(--ink)] bg-surface-2' : 'bg-bg border-rule'
             }`}
             onClick={() => onSelectGateway(p.id)}
@@ -71,7 +71,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
             </span>
             {/* Logo */}
             <span
-              className={`w-[42px] h-[42px] rounded-[9px] grid place-items-center font-display italic text-[18px] font-medium shrink-0 ${PAY_LOGO_STYLE[p.logoClass] ?? 'bg-bg-2 text-ink-2'}`}
+              className={`w-[42px] h-[42px] rounded-sm grid place-items-center font-display italic text-[18px] font-medium shrink-0 ${PAY_LOGO_STYLE[p.logoClass] ?? 'bg-bg-2 text-ink-2'}`}
             >
               {p.logoChar}
             </span>

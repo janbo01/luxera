@@ -13,15 +13,18 @@ const QuantityStepper: FC<QuantityStepperProps> = ({
   value,
   onDecrement,
   onIncrement,
-  className = 'inline-flex items-center gap-2 border border-rule rounded-full px-2.5 py-1 font-mono text-xs [&>button]:w-[18px] [&>button]:h-[18px] [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink',
+  className = 'inline-flex items-center gap-1 border border-rule rounded-full p-0.5 text-[14px] [&>button]:w-10 [&>button]:h-10 [&>button]:rounded-full [&>button]:flex [&>button]:items-center [&>button]:justify-center [&>button]:text-muted hover:[&>button]:text-ink',
 }) => (
-  <div className={className}>
-    <button onClick={onDecrement} aria-label="کم">
-      <Icon name="minus" size={12} />
+  <div className={className} role="group" aria-label="تعداد">
+    <button type="button" onClick={onDecrement} aria-label="کم کردن تعداد" disabled={value <= 1}>
+      <Icon name="minus" size={14} />
     </button>
-    <span>{toFa(value)}</span>
-    <button onClick={onIncrement} aria-label="زیاد">
-      <Icon name="plus" size={12} />
+    {/* Announced on change so screen-reader users hear the new quantity */}
+    <span aria-live="polite" aria-atomic="true">
+      {toFa(value)}
+    </span>
+    <button type="button" onClick={onIncrement} aria-label="افزودن تعداد">
+      <Icon name="plus" size={14} />
     </button>
   </div>
 )

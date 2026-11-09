@@ -33,6 +33,11 @@ export interface ApiProduct {
   slug?: string
   created_at: string
   updated_at: string
+  /** List endpoint extras (absent on other endpoints). */
+  stock_count?: number
+  rating?: number
+  review_count?: number
+  colors?: { id: string; name: string; hex_code?: string }[]
 }
 
 export interface ApiProductImage {
@@ -90,8 +95,10 @@ export interface ApiBatchItem {
   id: string
   title: string
   price: string
+  old_price?: string
   image_url: string
   slug?: string
+  stock_count?: number
 }
 
 export interface ApiCategory {
@@ -181,9 +188,12 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
   const detail = api as ApiProductDetail
   const imageUrl = detail.images?.[0]?.url ?? api.image_url
   const imageUrlAlt = detail.images?.[1]?.url
-  const stockCount = detail.variants
-    ? detail.variants.reduce((sum, v) => sum + v.quantity, 0)
-    : undefined
+  // Prefer the server's total (list endpoint); fall back to summing variants (detail endpoint).
+  const stockCount =
+    api.stock_count ??
+    (detail.variants ? detail.variants.reduce((sum, v) => sum + v.quantity, 0) : undefined)
+  const rating = api.rating && api.review_count ? api.rating : undefined
+  const colors = api.colors?.map((c) => ({ id: c.id, name: c.name, hex: c.hex_code }))
 
   return {
     id: api.id,
@@ -202,6 +212,9 @@ export function adaptProduct(api: ApiProduct, categoryName?: string): Product {
     imageUrl,
     imageUrlAlt,
     stockCount,
+    rating,
+    reviewCount: api.review_count || undefined,
+    colors: colors?.length ? colors : undefined,
   }
 }
 

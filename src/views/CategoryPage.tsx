@@ -65,10 +65,12 @@ function getInitialCategoryData(
   }
 }
 
-type SortKey = 'newest' | 'price-asc' | 'price-desc'
+type SortKey = 'newest' | 'popular' | 'discount' | 'price-asc' | 'price-desc'
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: 'newest', label: 'جدیدترین' },
+  { key: 'popular', label: 'محبوب‌ترین' },
+  { key: 'discount', label: 'بیشترین تخفیف' },
   { key: 'price-asc', label: 'ارزان‌ترین' },
   { key: 'price-desc', label: 'گران‌ترین' },
 ]
@@ -192,8 +194,15 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
 
   useBodyLock(filterOpen)
 
+  // "discount" has no server sort: it re-orders the loaded products on the client.
   const apiSort =
-    sort === 'price-asc' ? 'price_asc' : sort === 'price-desc' ? 'price_desc' : 'newest'
+    sort === 'price-asc'
+      ? 'price_asc'
+      : sort === 'price-desc'
+        ? 'price_desc'
+        : sort === 'popular'
+          ? 'most_reviewed'
+          : 'newest'
 
   const fetchProducts = useCallback(
     async (
@@ -202,7 +211,8 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
       colorIds?: string[],
       afterId?: string,
     ) => {
-      setLoading(true)
+      // Appending a page keeps the grid on screen so the scroll position doesn't jump.
+      if (!afterId) setLoading(true)
       try {
         const { items, nextCursor: nc } = await listProducts({
           categoryId: apiCategoryId,
@@ -282,10 +292,16 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     [allProducts, deferredPriceMin, deferredPriceMax],
   )
 
-  const sorted = filtered
+  const sorted = useMemo(() => {
+    if (sort !== 'discount') return filtered
+    const pct = (p: Product) => (p.oldPrice && p.oldPrice > p.price ? 1 - p.price / p.oldPrice : 0)
+    return [...filtered].sort((a, b) => pct(b) - pct(a))
+  }, [filtered, sort])
 
-  const totalPages = Math.ceil(sorted.length / PER_PAGE)
-  const paginated = sorted.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+  // `page` counts how many PER_PAGE batches are revealed, so "show more" never leaves the page.
+  const shown = Math.min(sorted.length, page * PER_PAGE)
+  const paginated = sorted.slice(0, shown)
+  const hasMoreLocal = shown < sorted.length
 
   const toggleColor = useCallback(
     (id: string) =>
@@ -375,7 +391,50 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     [allProducts],
   )
 
-  const pages = useMemo(() => Array.from({ length: totalPages }, (_, i) => i + 1), [totalPages])
+  // Coming back from a product (browser back) restores how far the shopper had scrolled.
+  const restoreKey = `lx-cat:${id}`
+  const restoredRef = useRef(false)
+  useEffect(() => {
+    const onScroll = () => {
+      try {
+        sessionStorage.setItem(restoreKey, JSON.stringify({ page, y: window.scrollY }))
+      } catch {
+        /* storage unavailable */
+      }
+    }
+    let raf = 0
+    const throttled = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(onScroll)
+    }
+    window.addEventListener('scroll', throttled, { passive: true })
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', throttled)
+    }
+  }, [restoreKey, page])
+
+  useEffect(() => {
+    if (restoredRef.current || loading || allProducts.length === 0) return
+    restoredRef.current = true
+    const nav = performance.getEntriesByType('navigation')[0] as
+      PerformanceNavigationTiming | undefined
+    if (nav?.type !== 'back_forward') return
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(restoreKey) ?? 'null') as {
+        page: number
+        y: number
+      } | null
+      if (!saved) return
+      // Deferred so the extra batches render first, then the saved offset is applied.
+      window.setTimeout(() => {
+        setPage(Math.max(1, saved.page))
+        requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, saved.y)))
+      }, 0)
+    } catch {
+      /* ignore malformed entry */
+    }
+  }, [loading, allProducts.length, restoreKey])
 
   if (!category) {
     return (
@@ -537,73 +596,36 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
               </div>
             )}
 
-            {/* Pagination */}
-            {!loading && totalPages > 1 && (
-              <div className="mt-12 pt-6 border-t border-rule">
-                {/* Mobile: simplified prev / X of Y / next */}
-                <div className="flex items-center justify-between sm:hidden">
-                  <button
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2"
-                    disabled={page === 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  >
-                    <Icon name="arrow-right" size={13} />
-                    قبلی
-                  </button>
-                  <span className="font-mono text-[13px] text-muted tabular-nums">
-                    {toFa(page)} / {toFa(totalPages)}
-                  </span>
-                  <button
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2"
-                    disabled={page === totalPages}
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  >
-                    بعدی
-                    <Icon name="arrow-left" size={13} />
-                  </button>
+            {/* Show more: reveals the next batch, then pulls the next server page when needed */}
+            {!loading && (hasMoreLocal || nextCursor !== '') && (
+              <div className="mt-12 pt-6 border-t border-rule flex flex-col items-center gap-3">
+                <span className="text-[13px] text-muted" aria-live="polite">
+                  {toFa(shown)} از {toFa(sorted.length)}
+                  {nextCursor !== '' && !hasMoreLocal ? '+' : ''} محصول
+                </span>
+                <div
+                  className="w-[200px] h-1 rounded-full bg-plate overflow-hidden"
+                  aria-hidden="true"
+                >
+                  <div
+                    className="h-full bg-copper"
+                    style={{ width: `${Math.round((shown / Math.max(1, sorted.length)) * 100)}%` }}
+                  />
                 </div>
-
-                {/* Desktop: full page number buttons */}
-                <div className="hidden sm:flex items-center justify-center gap-1 flex-wrap">
-                  <button
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2 me-1"
-                    disabled={page === 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  >
-                    <Icon name="arrow-right" size={13} />
-                    قبلی
-                  </button>
-                  {pages.map((p) => (
-                    <button
-                      key={p}
-                      aria-current={p === page ? 'page' : undefined}
-                      className={`w-11 h-11 rounded-full text-[13.5px] border cursor-pointer transition-all duration-150 ${p === page ? 'bg-ink text-bg border-ink font-medium' : 'bg-transparent text-ink-2 border-transparent hover:border-rule hover:text-ink'}`}
-                      onClick={() => setPage(p)}
-                    >
-                      {toFa(p)}
-                    </button>
-                  ))}
-                  <button
-                    className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-rule bg-surface font-body text-[13px] cursor-pointer transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed hover:enabled:border-ink hover:enabled:bg-ink hover:enabled:text-bg text-ink-2 ms-1"
-                    disabled={page === totalPages}
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  >
-                    بعدی
-                    <Icon name="arrow-left" size={13} />
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {!loading && nextCursor !== '' && (
-              <div style={{ textAlign: 'center', marginTop: 16 }}>
                 <button
                   className={BTN_GHOST_CLS}
-                  onClick={() =>
-                    fetchProducts(resolvedCatId ?? undefined, apiSort, activeColors, nextCursor)
-                  }
+                  onClick={() => {
+                    if (hasMoreLocal) setPage((p) => p + 1)
+                    else
+                      void fetchProducts(
+                        resolvedCatId ?? undefined,
+                        apiSort,
+                        activeColors,
+                        nextCursor,
+                      ).then(() => setPage((p) => p + 1))
+                  }}
                 >
-                  بارگذاری بیشتر
+                  نمایش بیشتر
                 </button>
               </div>
             )}
@@ -623,7 +645,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
           <Icon name="sliders" size={14} />
           فیلترها
           {appliedChips.length > 0 && (
-            <span className="min-w-5 h-5 px-1 rounded-full bg-plum text-bg text-[11px] grid place-items-center flex-shrink-0">
+            <span className="min-w-5 h-5 px-1 rounded-full bg-plum text-bg text-[12px] grid place-items-center flex-shrink-0">
               {toFa(appliedChips.length)}
             </span>
           )}
@@ -635,7 +657,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
             onClick={() => setSortOpen((o) => !o)}
             className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] bg-surface border border-rule rounded-full text-[13.5px] font-body cursor-pointer transition-[border-color] duration-150 hover:border-ink active:border-ink"
           >
-            <span className="text-muted text-[11px]">ترتیب:</span>
+            <span className="text-muted text-[12px]">ترتیب:</span>
             <span>{currentSortLabel}</span>
             <Icon
               name="chevron-down"
@@ -644,7 +666,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
             />
           </button>
           {sortOpen && (
-            <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[12px] overflow-hidden shadow-[var(--shadow-lift)] z-20">
+            <div className="absolute bottom-[calc(100%+6px)] inset-x-0 bg-surface border border-rule rounded-[var(--radius)] overflow-hidden shadow-[var(--shadow-lift)] z-20">
               {SORT_OPTIONS.map((opt) => (
                 <button
                   key={opt.key}

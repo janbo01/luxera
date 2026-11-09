@@ -112,9 +112,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         <div className="font-display italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
           Luxera
         </div>
-        <div className="font-mono text-[9px] tracking-[.3em] text-muted uppercase mb-6">
-          Fine Jewelry
-        </div>
+        <div className="font-mono text-[12px] text-muted uppercase mb-6">Fine Jewelry</div>
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />
 
         {message && (
@@ -136,9 +134,9 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           <div className="flex flex-col gap-3.5">
             <div className="flex flex-col gap-1.5 text-right">
               <div
-                className={`flex items-stretch [direction:ltr] border rounded-[10px] overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink ${error ? 'border-sale' : 'border-rule'}`}
+                className={`flex items-stretch [direction:ltr] border rounded-sm overflow-hidden bg-bg transition-[border-color] duration-150 focus-within:border-ink ${error ? 'border-sale' : 'border-rule'}`}
               >
-                <span className="flex items-center px-[11px] text-[13px] font-mono tracking-[0.03em] text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">
+                <span className="flex items-center px-[11px] text-[13px] font-mono text-muted bg-surface border-r border-rule whitespace-nowrap select-none shrink-0">
                   +98
                 </span>
                 <input
@@ -153,7 +151,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   onKeyDown={(e) => e.key === 'Enter' && handlePhoneSubmit()}
                   maxLength={10}
                   autoFocus
-                  className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[16px] sm:text-[14px] text-ink [direction:ltr] font-mono tracking-[0.02em] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
+                  className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[16px] sm:text-[14px] text-ink [direction:ltr] font-mono placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
                 />
               </div>
               {error && (
@@ -191,7 +189,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   value={digit}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                  className="w-16 h-[68px] text-center text-[26px] font-mono border-[1.5px] border-rule rounded-[12px] bg-bg text-plum outline-none transition-[border-color,box-shadow] font-semibold disabled:opacity-40 focus:border-plum focus:shadow-[0_0_0_3px_rgba(62,26,53,.10)] max-[640px]:w-14 max-[640px]:h-[60px] max-[640px]:text-[22px]"
+                  className="w-16 h-[68px] text-center text-[26px] font-mono border-[1.5px] border-rule rounded-[var(--radius)] bg-bg text-plum outline-none transition-[border-color,box-shadow] font-semibold disabled:opacity-40 focus:border-plum focus:shadow-[0_0_0_3px_rgba(62,26,53,.10)] max-[640px]:w-14 max-[640px]:h-[60px] max-[640px]:text-[22px]"
                   disabled={loading}
                   dir="ltr"
                 />

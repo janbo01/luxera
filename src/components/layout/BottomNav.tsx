@@ -32,7 +32,7 @@ const BottomNav: FC = () => {
   }
 
   const tab = (active: boolean) =>
-    `flex-1 flex flex-col items-center justify-center gap-[3px] font-body text-[10px] transition-colors duration-150 text-decoration-none cursor-pointer [-webkit-tap-highlight-color:transparent] active:scale-[0.88] ${active ? 'text-plum' : 'text-muted'}`
+    `flex-1 flex flex-col items-center justify-center gap-[3px] font-body text-[12px] transition-colors duration-150 text-decoration-none cursor-pointer [-webkit-tap-highlight-color:transparent] active:scale-[0.88] ${active ? 'text-plum' : 'text-muted'}`
 
   return (
     <nav
@@ -59,7 +59,7 @@ const BottomNav: FC = () => {
         <span className="relative flex items-center justify-center">
           <Icon name="bag" size={22} />
           {cartCount > 0 && (
-            <span className="absolute -top-[5px] -end-2 bg-copper text-white text-[9px] font-mono min-w-4 h-4 rounded-lg flex items-center justify-center px-[3px]">
+            <span className="absolute -top-[5px] -end-2 bg-copper text-white text-[11px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
               {cartCount > 9 ? '۹+' : toFa(cartCount)}
             </span>
           )}
@@ -76,7 +76,7 @@ const BottomNav: FC = () => {
         <span className="relative flex items-center justify-center">
           <Icon name={wishActive ? 'heart-filled' : 'heart'} size={22} />
           {wishCount > 0 && (
-            <span className="absolute -top-[5px] -end-2 bg-plum text-bg text-[9px] font-mono min-w-4 h-4 rounded-lg flex items-center justify-center px-[3px]">
+            <span className="absolute -top-[5px] -end-2 bg-plum text-bg text-[11px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
               {wishCount > 9 ? '۹+' : toFa(wishCount)}
             </span>
           )}

@@ -3,6 +3,11 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import Hero from '../components/home/Hero'
 import CategoriesSection from '../components/home/CategoriesSection'
 import ProductCarousel from '../components/home/ProductCarousel'
+import TrustStrip from '../components/home/TrustStrip'
+import CollectionSpotlight from '../components/home/CollectionSpotlight'
+import CategoryTabs from '../components/home/CategoryTabs'
+import GiftBanner from '../components/home/GiftBanner'
+import RecentlyViewed from '../components/product/RecentlyViewed'
 
 const HOME_JSON_LD = {
   '@context': 'https://schema.org',
@@ -37,6 +42,7 @@ const HomePage: FC = () => {
   return (
     <>
       <Hero />
+      <TrustStrip />
       <CategoriesSection />
       <ProductCarousel
         sectionId="new"
@@ -49,52 +55,10 @@ const HomePage: FC = () => {
         }
         link="/category/new"
       />
-      <ProductCarousel
-        sectionId="necklaces"
-        kicker="Necklaces"
-        title={
-          <>
-            کلکسیون <em>گردنبند</em>
-          </>
-        }
-        link="/category/necklaces"
-        catSlug="necklaces"
-      />
-      <ProductCarousel
-        sectionId="rings"
-        band
-        kicker="Rings"
-        title={
-          <>
-            کلکسیون <em>انگشتر</em>
-          </>
-        }
-        link="/category/rings"
-        catSlug="rings"
-      />
-      <ProductCarousel
-        sectionId="earrings"
-        kicker="Earrings"
-        title={
-          <>
-            کلکسیون <em>گوشواره</em>
-          </>
-        }
-        link="/category/earrings"
-        catSlug="earrings"
-      />
-      <ProductCarousel
-        sectionId="bracelets"
-        band
-        kicker="Bracelets"
-        title={
-          <>
-            کلکسیون <em>دستبند</em>
-          </>
-        }
-        link="/category/bracelets"
-        catSlug="bracelets"
-      />
+      <CollectionSpotlight />
+      <CategoryTabs />
+      <GiftBanner />
+      <RecentlyViewed min={3} />
     </>
   )
 }

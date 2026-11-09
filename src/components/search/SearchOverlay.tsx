@@ -5,6 +5,15 @@ import { Illustration } from '../../illustrations'
 import { useSearchStore } from '../../store/searchStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { formatToman } from '../../utils/format'
+import { imgUrl } from '../../utils/cdnImage'
+import { NAV_LINKS } from '../../data/navigation'
+
+// Shown when there's nothing typed and no history yet, so the panel is never a dead end.
+const SHORTCUTS = [
+  ...NAV_LINKS.filter((l) => l.to.startsWith('/category/')),
+  { to: '/collections', label: 'کالکشن‌ها' },
+  { to: '/gift', label: 'راهنمای هدیه' },
+]
 
 const SearchOverlay: FC = () => {
   const navigate = useNavigate()
@@ -63,7 +72,7 @@ const SearchOverlay: FC = () => {
     const parts = text.split(highlightRe)
     return parts.map((part, i) =>
       highlightRe.test(part) ? (
-        <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-[2px] px-0.5">
+        <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-xs px-0.5">
           {part}
         </mark>
       ) : (
@@ -99,8 +108,9 @@ const SearchOverlay: FC = () => {
           <Icon name="search" size={18} className="text-muted flex-shrink-0" />
           <input
             ref={inputRef}
-            className="flex-1 min-w-0 bg-transparent border-none outline-none font-body text-[17px] font-normal text-ink placeholder:text-muted placeholder:font-light"
-            type="text"
+            className="flex-1 min-w-0 bg-transparent border-none outline-none font-body text-[17px] font-normal text-ink placeholder:text-muted placeholder:font-light [&::-webkit-search-cancel-button]:appearance-none"
+            type="search"
+            enterKeyHint="search"
             placeholder="دنبال چه می‌گردید؟"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -112,7 +122,7 @@ const SearchOverlay: FC = () => {
           {/* Text label, so it can't be mistaken for the close button beside it */}
           {query && (
             <button
-              className="shrink-0 min-h-11 px-2 text-[12.5px] text-muted transition-colors duration-200 hover:text-plum"
+              className="shrink-0 min-h-11 px-2 text-[13.5px] text-muted transition-colors duration-200 hover:text-plum"
               onClick={() => {
                 setQuery('')
                 inputRef.current?.focus()
@@ -137,49 +147,69 @@ const SearchOverlay: FC = () => {
           role="listbox"
         >
           {showRecents ? (
-            recentSearches.length > 0 ? (
-              <>
-                <div className="flex items-center justify-between px-6 py-3.5 pt-[14px] label-fa">
-                  <span>جستجوهای اخیر</span>
-                  <button
-                    className="font-body text-[12px] text-muted tracking-normal normal-case border-b border-transparent transition-colors duration-200 hover:text-plum hover:border-plum"
-                    onClick={clearRecent}
-                  >
-                    پاک کردن همه
-                  </button>
-                </div>
-                {recentSearches.map((r) => (
-                  <div
-                    key={r}
-                    className={`flex items-center gap-2 px-6 border-b border-rule h-[52px] transition-colors duration-150 ${rowHover} last:border-b-0`}
-                    role="option"
-                    aria-selected="false"
-                  >
+            <>
+              {recentSearches.length > 0 ? (
+                <>
+                  <div className="flex items-center justify-between px-6 py-3.5 pt-[14px] label-fa">
+                    <span>جستجوهای اخیر</span>
                     <button
-                      className="flex-1 flex items-center gap-2.5 text-[14px] text-ink-2 text-end"
-                      onClick={() => {
-                        setQuery(r)
-                        handleSubmit(r)
-                      }}
+                      className="inline-flex items-center min-h-10 px-1 -me-1 font-body text-[13px] text-muted transition-colors duration-200 hover:text-plum"
+                      onClick={clearRecent}
                     >
-                      <Icon
-                        name="clock"
-                        size={14}
-                        className="text-muted opacity-70 flex-shrink-0"
-                      />
-                      <span>{r}</span>
-                    </button>
-                    <button
-                      className="w-6 h-6 flex items-center justify-center text-muted opacity-0 hover:opacity-100 hover:text-ink transition-all duration-200 flex-shrink-0 group-hover:opacity-100"
-                      onClick={() => removeRecent(r)}
-                      aria-label="حذف از جستجوهای اخیر"
-                    >
-                      <Icon name="close" size={12} />
+                      پاک کردن همه
                     </button>
                   </div>
-                ))}
-              </>
-            ) : null
+                  {recentSearches.map((r) => (
+                    <div
+                      key={r}
+                      className={`flex items-center gap-2 ps-6 pe-4 border-b border-rule h-[52px] transition-colors duration-150 ${rowHover} last:border-b-0`}
+                      role="option"
+                      aria-selected="false"
+                    >
+                      <button
+                        className="flex-1 self-stretch flex items-center gap-2.5 text-[15px] text-ink-2 text-start"
+                        onClick={() => {
+                          setQuery(r)
+                          handleSubmit(r)
+                        }}
+                      >
+                        <Icon
+                          name="clock"
+                          size={14}
+                          className="text-muted opacity-70 flex-shrink-0"
+                        />
+                        <span>{r}</span>
+                      </button>
+                      <button
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-plate transition-colors duration-200 flex-shrink-0"
+                        onClick={() => removeRecent(r)}
+                        aria-label="حذف از جستجوهای اخیر"
+                      >
+                        <Icon name="close" size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </>
+              ) : null}
+              <div className="px-6 py-5">
+                <div className="label-fa mb-3">میانبرها</div>
+                <div className="flex flex-wrap gap-2">
+                  {SHORTCUTS.map((l) => (
+                    <button
+                      key={l.to}
+                      type="button"
+                      className="inline-flex items-center min-h-11 px-4 rounded-full border border-rule bg-bg text-[14.5px] text-ink-2 transition-colors duration-200 hover:border-ink hover:text-ink"
+                      onClick={() => {
+                        close()
+                        navigate(l.to)
+                      }}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
           ) : hasResults ? (
             <>
               {results.products.length > 0 && (
@@ -197,13 +227,25 @@ const SearchOverlay: FC = () => {
                         navigate(`/product/${p.slug ?? p.id}`)
                       }}
                     >
-                      <div className="w-10 h-10 bg-bg-2 rounded-[4px] flex items-center justify-center flex-shrink-0 overflow-hidden text-ink [&>svg]:w-[80%] [&>svg]:h-auto">
-                        <Illustration name={p.illus} />
+                      <div className="w-11 h-11 bg-bg-2 rounded-[var(--radius-sm)] flex items-center justify-center flex-shrink-0 overflow-hidden text-ink [&>svg]:w-[80%] [&>svg]:h-auto">
+                        {p.imageUrl ? (
+                          <img
+                            src={imgUrl(p.imageUrl, 88, 88)}
+                            alt=""
+                            width={44}
+                            height={44}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Illustration name={p.illus} />
+                        )}
                       </div>
-                      <span className="flex-1 text-[14px] text-ink overflow-hidden text-ellipsis whitespace-nowrap">
+                      <span className="flex-1 text-[15px] text-ink overflow-hidden text-ellipsis whitespace-nowrap text-start">
                         {highlight(p.fa)}
                       </span>
-                      <span className="font-mono text-[12px] text-ink-2 whitespace-nowrap flex-shrink-0">
+                      <span className="text-[13.5px] text-ink-2 whitespace-nowrap flex-shrink-0 [font-feature-settings:'tnum']">
                         {formatToman(p.price)}
                       </span>
                     </button>
@@ -217,7 +259,7 @@ const SearchOverlay: FC = () => {
                   {results.categories.map((c) => (
                     <button
                       key={c.id}
-                      className={`flex items-center gap-3 w-full px-6 h-[48px] text-end text-[13px] text-ink-2 border-b border-rule transition-colors duration-150 ${rowHover} hover:text-ink last:border-b-0`}
+                      className={`flex items-center gap-3 w-full px-6 h-[48px] text-start text-[15px] text-ink-2 border-b border-rule transition-colors duration-150 ${rowHover} hover:text-ink last:border-b-0`}
                       role="option"
                       aria-selected="false"
                       onClick={() => {
@@ -235,7 +277,7 @@ const SearchOverlay: FC = () => {
               )}
 
               <button
-                className={`flex items-center justify-between w-full px-6 py-4 text-[13px] text-plum border-t border-rule transition-colors duration-200 font-body ${rowHover}`}
+                className={`flex items-center justify-between w-full px-6 py-4 min-h-[52px] text-[14.5px] font-medium text-plum border-t border-rule transition-colors duration-200 font-body ${rowHover}`}
                 onClick={() => handleSubmit(query)}
               >
                 <span>مشاهده همه نتایج برای «{query}»</span>

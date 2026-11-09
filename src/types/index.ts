@@ -15,6 +15,13 @@ export interface Product {
   imageUrl?: string
   imageUrlAlt?: string
   stockCount?: number
+  /** Average star rating, from the list API (absent when the product has no ratings). */
+  rating?: number
+  reviewCount?: number
+  /** Colors currently in stock; `hex` may hold several comma-separated stops. */
+  colors?: { id: string; name: string; hex?: string }[]
+  /** Wishlist only: the price when the shopper saved it, used to flag price drops. */
+  savedPrice?: number
 }
 
 export interface ProductDetail extends Product {
