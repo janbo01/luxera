@@ -29,7 +29,7 @@ const Story: FC = () => (
     <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] py-[clamp(44px,5.5vw,80px)]">
       {/* Section kicker */}
       <div className="flex items-center gap-5">
-        <span className="kicker text-gold shrink-0">Our Commitments</span>
+        <span className="kicker text-gold shrink-0">تعهدات ما</span>
         <div className="h-px flex-1 bg-bg/10" />
       </div>
 

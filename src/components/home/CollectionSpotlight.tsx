@@ -30,7 +30,7 @@ const CollectionSpotlight: FC = () => {
     <section className="page-section cv-auto" aria-label="کالکشن ویژه">
       <div className="grid grid-cols-2 max-md:grid-cols-1 bg-surface ring-1 ring-inset ring-rule rounded-[var(--radius-lg)] overflow-hidden">
         <div className="p-[clamp(24px,4.5vw,64px)] flex flex-col gap-5 justify-center">
-          <span className="kicker">Featured collection</span>
+          <span className="kicker">کالکشن ویژه</span>
           <h2 className="font-heading font-bold text-[clamp(28px,3.2vw,44px)] leading-[1.15] m-0 text-ink">
             {collection.name_fa}
           </h2>

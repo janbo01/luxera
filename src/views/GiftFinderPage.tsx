@@ -170,7 +170,7 @@ const GiftFinderPage: FC = () => {
       <Breadcrumb items={[{ label: 'خانه', to: '/' }, { label: 'راهنمای هدیه' }]} />
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,96px)]">
         <header className="py-[clamp(32px,5vw,64px)] max-w-[60ch]">
-          <span className="kicker mb-3">Gift finder</span>
+          <span className="kicker mb-3">راهنمای هدیه</span>
           <h1 className="font-heading font-bold text-[clamp(32px,4.4vw,60px)] leading-[1.1] m-0 mb-4">
             هدیه‌ی مناسب را پیدا کنید
           </h1>

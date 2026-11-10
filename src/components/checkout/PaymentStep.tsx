@@ -6,10 +6,10 @@ import type { PaymentOption } from '../../data/checkout'
 import type { PaymentGateway } from '../../types'
 
 const PAY_LOGO_STYLE: Record<string, string> = {
-  zp: 'bg-[#D4F0E0] text-ok',
+  zp: 'bg-ok/15 text-ok',
   sep: 'bg-[#DCE7F8] text-[#3656C9]',
   cod: 'bg-bg-2 text-ink-2',
-  inst: 'bg-[#FFE4D0] text-copper',
+  inst: 'bg-copper/15 text-copper',
   mock: 'bg-bg-2 text-ink-2',
 }
 

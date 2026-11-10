@@ -61,7 +61,7 @@ const CategoryHero: FC<CategoryHeroProps> = ({
 
     {/* Editorial header — shared with collections/blog; compact so the grid starts above the fold */}
     <PageIntro
-      kicker={category.en}
+      kicker="دسته‌بندی"
       title={category.fa}
       description={CAT_DESC[catId] ?? ''}
       meta={

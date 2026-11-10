@@ -2,7 +2,7 @@ import { useState, memo, type FC } from 'react'
 
 import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
-import { BTN_CLS, BTN_GHOST_CLS } from '../ui/Button'
+import { BTN_CLS } from '../ui/Button'
 import { formatNumber, jalaliSeason } from '../../utils/format'
 
 const TICKER_ITEMS = [
@@ -24,22 +24,6 @@ const TICKER_ROW = TICKER_ITEMS.map((item) => (
   </span>
 ))
 
-const HERO_STATS = [
-  { v: '۴', u: 'روز', l: 'ضمانت بازگشت' },
-  { v: 'رایگان', u: '', l: 'ارسال بالای ۲.۵ میلیون' },
-  { v: '۲۰۰+', u: 'مدل', l: 'محصول موجود' },
-] as const
-
-const STATS_JSX = HERO_STATS.map(({ v, u, l }, i) => (
-  <div key={l} className={i < HERO_STATS.length - 1 ? 'pe-4 border-e border-rule me-4' : ''}>
-    <div className="font-heading text-[20px] font-bold text-ink leading-none flex items-baseline gap-1">
-      {v}
-      {u ? <small className="text-[12px] font-medium text-copper-dark font-body">{u}</small> : null}
-    </div>
-    <div className="text-[12.5px] text-muted mt-2 leading-[1.5]">{l}</div>
-  </div>
-))
-
 function fmtPrice(raw?: string): string {
   const n = Number(raw)
   return raw && !isNaN(n) ? formatNumber(n) : (raw ?? '')
@@ -53,7 +37,7 @@ const Hero: FC = () => {
 
   return (
     <section className="pt-4 md:pt-7">
-      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-4 items-stretch min-h-[580px] max-md:min-h-0">
+      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-4 items-stretch min-h-[500px] max-md:min-h-0">
         {/* ── Dark stage (left) ── */}
         <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-[4/3]">
           {/* No z-index on this wrapper: it must not form a stacking context, or the
@@ -65,9 +49,7 @@ const Hero: FC = () => {
           {/* Overlay meta at bottom */}
           <div className="absolute bottom-0 inset-x-0 z-[3] flex justify-between items-end gap-5 px-5 md:px-8 pt-24 pb-[76px] md:pb-[84px] bg-[linear-gradient(to_top,rgb(0_0_0/0.72)_0%,rgb(0_0_0/0.38)_45%,transparent_100%)] pointer-events-none">
             <div className="min-w-0">
-              <div className="font-display italic text-[13px] tracking-[0.08em] text-white/80 leading-none mb-2">
-                Featured
-              </div>
+              <div className="text-[12.5px] text-white/80 leading-none mb-2">منتخب</div>
               {slide.href ? (
                 <a
                   href={slide.href}
@@ -109,9 +91,7 @@ const Hero: FC = () => {
 
           <span className="inline-flex items-center gap-2 mb-4 md:mb-6 animate-rise [animation-delay:80ms]">
             <span className="w-5 h-px bg-copper-dark opacity-70" />
-            <span className="font-display italic font-normal text-[15px] tracking-[0.04em] text-copper-dark">
-              New Arrivals
-            </span>
+            <span className="text-[13px] font-medium text-copper-dark">تازه‌ها</span>
             <span className="text-copper-dark/50" aria-hidden="true">
               ·
             </span>
@@ -132,21 +112,17 @@ const Hero: FC = () => {
             سبک و هر مناسبت. کیفیت خوب، بدون پرداخت هزینه‌ی گزاف.
           </p>
 
-          <div className="flex gap-2.5 flex-wrap animate-rise [animation-delay:380ms] max-sm:[&>a]:flex-1 max-sm:[&>a]:justify-center max-sm:[&>a]:px-4 max-sm:[&>a]:whitespace-nowrap max-sm:[&>a]:text-[13px]">
-            <a href="/category/new" className={BTN_CLS}>
+          <div className="flex items-center gap-5 flex-wrap animate-rise [animation-delay:380ms]">
+            <a href="/category/new" className={`${BTN_CLS} max-sm:flex-1 max-sm:justify-center`}>
               مشاهده‌ی محصولات
               <span className="arr">
                 <Icon name="arrow-left" size={16} />
               </span>
             </a>
-            <a href="/about" className={BTN_GHOST_CLS}>
+            <a href="/about" className="link-draw">
               بیشتر بدانید
               <span className="sr-only"> درباره‌ی لوکسرا</span>
             </a>
-          </div>
-
-          <div className="mt-8 md:mt-12 pt-5 md:pt-6 border-t border-rule grid grid-cols-3 animate-rise [animation-delay:520ms]">
-            {STATS_JSX}
           </div>
         </div>
       </div>

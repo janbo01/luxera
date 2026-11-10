@@ -194,6 +194,18 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
 
   useBodyLock(filterOpen)
 
+  // Escape closes the filter sheet / sort menu.
+  useEffect(() => {
+    if (!filterOpen && !sortOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setFilterOpen(false)
+      setSortOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [filterOpen, sortOpen])
+
   // "discount" has no server sort: it re-orders the loaded products on the client.
   const apiSort =
     sort === 'price-asc'
@@ -350,11 +362,22 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
         label: colorMap.get(id) ?? id,
         remove: () => handleToggleColor(id),
       })),
-      ...(priceMin > 0
-        ? [{ label: `از ${formatNumber(priceMin)}`, remove: () => handlePriceMin(0) }]
-        : []),
-      ...(priceMax < MAX_PRICE
-        ? [{ label: `تا ${formatNumber(priceMax)}`, remove: () => handlePriceMax(MAX_PRICE) }]
+      // One chip for the whole price range, so a single tap clears it.
+      ...(priceMin > 0 || priceMax < MAX_PRICE
+        ? [
+            {
+              label:
+                priceMin > 0 && priceMax < MAX_PRICE
+                  ? `${formatNumber(priceMin)} تا ${formatNumber(priceMax)} تومان`
+                  : priceMin > 0
+                    ? `از ${formatNumber(priceMin)} تومان`
+                    : `تا ${formatNumber(priceMax)} تومان`,
+              remove: () => {
+                handlePriceMax(MAX_PRICE)
+                handlePriceMin(0)
+              },
+            },
+          ]
         : []),
       ...(inStockOnly ? [{ label: 'فقط موجود', remove: () => handleInStock(false) }] : []),
     ]

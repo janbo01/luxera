@@ -65,7 +65,11 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
       </div>
 
       {/* Main image — 1:1 square */}
-      <div className="relative z-[1] aspect-square max-sm:aspect-[4/3]">
+      <div
+        className="relative z-[1] aspect-square max-sm:aspect-[4/3]"
+        data-vt-hero
+        style={{ viewTransitionName: 'product-hero' }}
+      >
         {hasApiImages
           ? galleryImages.map((img, i) => (
               <div

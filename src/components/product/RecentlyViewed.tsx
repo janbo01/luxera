@@ -27,9 +27,9 @@ const RecentlyViewed: FC<RecentlyViewedProps> = ({ excludeId, min = 2 }) => {
   if (list.length < min) return null
 
   return (
-    <section className="page-section cv-auto" aria-label="بازدیدهای اخیر">
+    <section className="page-section page-section--compact cv-auto" aria-label="بازدیدهای اخیر">
       <SectionHeader
-        kicker="Recently viewed"
+        kicker="بازدیدهای اخیر"
         title={
           <>
             بازدیدهای <em>اخیر</em>

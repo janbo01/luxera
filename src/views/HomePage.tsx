@@ -47,7 +47,7 @@ const HomePage: FC = () => {
       <ProductCarousel
         sectionId="new"
         band
-        kicker="New arrivals"
+        kicker="تازه‌های لوکسرا"
         title={
           <>
             جدیدترین <em>محصولات</em>

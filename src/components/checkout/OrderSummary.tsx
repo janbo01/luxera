@@ -39,7 +39,7 @@ interface OrderSummaryProps {
 }
 
 const inputCls =
-  'flex-1 bg-bg border border-rule rounded-sm px-3.5 py-[11px] text-[14.5px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
+  'flex-1 bg-bg border border-rule rounded-sm px-3.5 py-[11px] text-[14.5px] text-ink font-body outline-none placeholder:text-muted placeholder:font-light transition-all focus:border-ink focus:bg-surface focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-ink)_8%,transparent)]'
 
 const PERKS = [
   'ارسالِ بیمه‌شده · بیمه‌ی البرز',
@@ -291,7 +291,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </button>
             </div>
           ) : (
-            <div className="mt-2.5 px-3 py-[9px] bg-[rgba(31,138,91,.08)] border border-[rgba(31,138,91,.25)] rounded-sm flex items-center gap-2 text-[12px] text-ok">
+            <div className="mt-2.5 px-3 py-[9px] bg-ok/10 border border-ok/25 rounded-sm flex items-center gap-2 text-[12px] text-ok">
               <Icon name="check" size={14} strokeWidth={2} />
               کدِ <span className="font-mono font-semibold">{appliedCode}</span> اعمال شد —{' '}
               {appliedCoupon?.discount_type === 'percentage'

@@ -206,7 +206,7 @@ const BlogListPage: FC<BlogListPageProps> = ({ initialData }) => {
     <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,100px)]">
       <div className="pt-2 md:pt-3 mb-8 md:mb-12">
         <PageIntro
-          kicker="Journal"
+          kicker="مجله‌ی لوکسرا"
           title={
             <>
               مقالات <em>لوکسرا</em>

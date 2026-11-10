@@ -65,7 +65,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
   return createPortal(
     <>
       <div
-        className="fixed inset-0 bg-[rgba(26,15,29,0.55)] backdrop-blur-[4px] z-[400] animate-[sg-fade-in_220ms_ease_both]"
+        className="fixed inset-0 bg-ink/55 backdrop-blur-[4px] z-[400] animate-[sg-fade-in_220ms_ease_both]"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -111,7 +111,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
               cy="100"
               rx="28"
               ry="6"
-              stroke="#b8a98a"
+              stroke="var(--color-muted)"
               strokeWidth="1"
               strokeDasharray="3 2"
               fill="none"
@@ -122,7 +122,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
               cy="108"
               rx="34"
               ry="8"
-              stroke="#b8a98a"
+              stroke="var(--color-muted)"
               strokeWidth="1"
               strokeDasharray="3 2"
               fill="none"
@@ -143,7 +143,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
               cy="130"
               rx="50"
               ry="14"
-              stroke="#b8a98a"
+              stroke="var(--color-muted)"
               strokeWidth="1"
               strokeDasharray="3 2"
               fill="none"
@@ -154,7 +154,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
               cy="144"
               rx="60"
               ry="17"
-              stroke="#b8a98a"
+              stroke="var(--color-muted)"
               strokeWidth="1"
               strokeDasharray="3 2"
               fill="none"
@@ -191,7 +191,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
             </thead>
             <tbody>
               {SIZES.map((s) => (
-                <tr key={s.cm} className={s.recommended ? 'bg-[rgba(237,227,213,0.5)]' : ''}>
+                <tr key={s.cm} className={s.recommended ? 'bg-bg-2' : ''}>
                   <td
                     className={`py-[11px] px-3 border-b border-rule align-middle font-mono whitespace-nowrap ${s.recommended ? 'border-e-2 border-e-plum text-plum font-medium' : 'text-ink'}`}
                     dir="ltr"

@@ -56,7 +56,7 @@ const CollectionsPage: FC<CollectionsPageProps> = ({ initialData }) => {
 
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,96px)]">
         <PageIntro
-          kicker="Collections"
+          kicker="کالکشن‌ها"
           title={
             <>
               کالکشن‌های <em>منتخب</em>

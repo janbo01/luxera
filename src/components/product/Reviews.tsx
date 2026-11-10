@@ -187,7 +187,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                         color:
                           star <= (formHover || formRating)
                             ? 'var(--color-copper)'
-                            : 'rgba(26,17,10,0.2)',
+                            : 'color-mix(in srgb, var(--color-ink) 20%, transparent)',
                       }}
                       onClick={() => setFormRating(star)}
                       onMouseEnter={() => setFormHover(star)}
@@ -263,7 +263,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
                         <span className="font-heading text-[14px] font-semibold flex items-center gap-2 flex-wrap">
                           {review.name}
                           {review.verified && (
-                            <span className="inline-flex items-center gap-1 font-mono text-[12px] text-ok bg-[rgba(31,138,91,.1)] px-[7px] py-0.5 rounded-full">
+                            <span className="inline-flex items-center gap-1 font-mono text-[12px] text-ok bg-ok/10 px-[7px] py-0.5 rounded-full">
                               <Icon name="check" size={9} strokeWidth={2.4} />
                               تأیید‌شده
                             </span>

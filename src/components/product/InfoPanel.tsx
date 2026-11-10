@@ -316,15 +316,19 @@ const InfoPanel: FC<InfoPanelProps> = ({
 
       <ShareRow productName={p.fa} />
 
-      {/* Sticky buy bar — single-column layouts only; sits above the mobile bottom nav */}
+      {/* Sticky buy bar — single-column layouts only; replaces the mobile bottom nav on product pages */}
       {!outOfStock && (
         <div
-          className={`lg:hidden fixed inset-x-0 bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom))] z-[90] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-[var(--pad)] py-2.5 flex items-center gap-3 transition-transform duration-300 ease-[var(--ease-lux)] ${ctaOffscreen ? 'translate-y-0' : 'translate-y-[calc(100%+80px)]'}`}
+          className={`lg:hidden fixed inset-x-0 bottom-0 z-[90] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-[var(--pad)] pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] flex items-center gap-3 transition-transform duration-300 ease-[var(--ease-lux)] ${ctaOffscreen ? 'translate-y-0' : 'translate-y-[calc(100%+80px)]'}`}
           aria-hidden={!ctaOffscreen}
           inert={!ctaOffscreen}
         >
           <div className="min-w-0 flex-1">
-            <div className="text-[12px] text-muted truncate">{p.fa}</div>
+            <div className="text-[12px] text-muted truncate">
+              {[p.fa, selectedColor?.fa, hasRealSizes ? selectedSize?.label : null]
+                .filter(Boolean)
+                .join(' · ')}
+            </div>
             <div className="font-heading font-bold text-[17px] text-ink leading-tight whitespace-nowrap">
               {formatNumber(p.price * qty)}
               <small className="font-body font-normal text-[12px] text-muted ms-1">تومان</small>

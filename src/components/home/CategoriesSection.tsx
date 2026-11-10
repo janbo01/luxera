@@ -47,7 +47,7 @@ const CategoriesSection: FC = () => {
   return (
     <section className="page-section cv-auto">
       <SectionHeader
-        kicker="Browse by category"
+        kicker="خرید بر اساس دسته"
         title={
           <>
             دسته‌بندی <em>محصولات</em>
@@ -90,31 +90,18 @@ const CategoriesSection: FC = () => {
                 />
               ) : null}
 
-              {/* Bottom scrim — neutral black so white labels stay legible on any photo */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgb(0_0_0/0.62)_0%,rgb(0_0_0/0.08)_45%,transparent_100%)] transition-opacity duration-300 group-hover:opacity-90" />
-
-              {/* Index number — top end corner */}
-              <span className="absolute top-4 end-4 z-[2] font-mono text-[12px] tracking-[0.2em] text-white/55">
-                {cat.num}
-              </span>
-
-              {/* Bottom content */}
+              {/* Label pill — frosted surface, so pale photos stay clean (no dark scrim) */}
               <div
-                className={`relative z-[2] flex items-end justify-between gap-2 text-white ${isFeatured ? 'px-5 pb-5 md:px-8 md:pb-8' : 'px-4 pb-4 md:px-5 md:pb-5'}`}
+                className={`relative z-[2] flex items-end justify-between gap-2 ${isFeatured ? 'p-3.5 md:p-5' : 'p-2.5 md:p-3.5'}`}
               >
-                <div className="min-w-0">
-                  <div className="font-display italic text-[12px] tracking-[0.06em] mb-1 text-white/55">
-                    {cat.en}
-                  </div>
-                  <div
-                    className={`font-heading font-semibold leading-[1.15] ${isFeatured ? 'text-[24px] md:text-[34px]' : 'text-[18px] md:text-[21px]'}`}
-                  >
-                    {cat.fa}
-                  </div>
-                </div>
+                <span
+                  className={`inline-flex items-center min-w-0 rounded-full bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] font-heading font-semibold leading-[1.3] ${isFeatured ? 'px-5 py-2 text-[18px] md:text-[22px]' : 'px-3.5 py-1.5 text-[15px] md:text-[17px]'}`}
+                >
+                  {cat.fa}
+                </span>
 
                 {/* Arrow */}
-                <span className="flex-shrink-0 w-9 h-9 rounded-full border border-white/35 bg-white/10 backdrop-blur-[6px] grid place-items-center text-white transition-all duration-300 group-hover:bg-white group-hover:text-ink group-hover:border-white group-hover:-translate-x-0.5">
+                <span className="flex-shrink-0 w-9 h-9 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-all duration-300 group-hover:bg-ink group-hover:text-bg group-hover:-translate-x-0.5">
                   <Icon name="arrow-left" size={13} />
                 </span>
               </div>

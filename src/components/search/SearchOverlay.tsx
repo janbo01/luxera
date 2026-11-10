@@ -72,7 +72,7 @@ const SearchOverlay: FC = () => {
     const parts = text.split(highlightRe)
     return parts.map((part, i) =>
       highlightRe.test(part) ? (
-        <mark key={i} className="bg-[rgba(61,43,32,.1)] text-plum rounded-xs px-0.5">
+        <mark key={i} className="bg-plum/10 text-plum rounded-xs px-0.5">
           {part}
         </mark>
       ) : (
@@ -95,14 +95,10 @@ const SearchOverlay: FC = () => {
       aria-modal
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-[rgba(26,15,29,0.6)] backdrop-blur-[8px]"
-        onClick={close}
-        aria-hidden
-      />
+      <div className="absolute inset-0 bg-ink/60 backdrop-blur-[8px]" onClick={close} aria-hidden />
 
       {/* Panel */}
-      <div className="relative w-full max-w-[720px] bg-surface rounded-b-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] sm:mt-[8vh] overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.22)] animate-[panel-drop_280ms_cubic-bezier(.2,.7,.2,1)_both] max-h-[90dvh] flex flex-col">
+      <div className="relative w-full max-w-[720px] bg-surface rounded-b-[var(--radius-lg)] sm:rounded-[var(--radius-lg)] sm:mt-[8vh] overflow-hidden shadow-[0_24px_64px_color-mix(in_srgb,var(--color-ink)_26%,transparent)] animate-[panel-drop_280ms_cubic-bezier(.2,.7,.2,1)_both] max-h-[90dvh] flex flex-col">
         {/* Input row */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-rule">
           <Icon name="search" size={18} className="text-muted flex-shrink-0" />

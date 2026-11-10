@@ -6,16 +6,14 @@ import Icon from '../icons/Icon'
 
 const PILLARS = [
   { icon: 'shield', title: 'گواهیِ اصالت', desc: 'برای هر قطعه‌ی جواهر فانتزی' },
-  { icon: 'check', title: '۴ روز بازگشت', desc: 'بدون پرسش، بدون هزینه' },
   { icon: 'bag', title: 'کیفیت تضمینی', desc: 'از برندهای معتبر' },
-  { icon: 'clock', title: 'ارسال سریع', desc: 'رایگان بالای ۲.۵ میلیون' },
 ]
 
 const Feature: FC = () => (
   <section className="page-section cv-auto">
     <div className="bg-surface ring-1 ring-inset ring-rule rounded-[var(--radius-lg)] overflow-hidden grid grid-cols-[1.05fr_1fr] max-md:grid-cols-1">
       <div className="py-[clamp(32px,4.5vw,64px)] px-[clamp(24px,4.5vw,64px)] flex flex-col gap-6 justify-center">
-        <span className="kicker">Our Promise</span>
+        <span className="kicker">چرا لوکسرا</span>
         <h2 className="font-heading font-bold text-[clamp(30px,2.8vw,40px)] leading-[1.2] m-0 [&_em]:font-body [&_em]:italic [&_em]:font-normal [&_em]:text-copper-dark">
           جواهراتِ فانتزی، <em>قیمتِ واقعی.</em>
         </h2>

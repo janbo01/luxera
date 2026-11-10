@@ -128,7 +128,7 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
 
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)]">
         <PageIntro
-          kicker={col.name_en ? `Collection · ${col.name_en}` : 'Collection'}
+          kicker="کالکشن"
           title={col.name_fa}
           description={col.description}
           meta={<span>{toFa(products.length)} محصول در این کالکشن</span>}

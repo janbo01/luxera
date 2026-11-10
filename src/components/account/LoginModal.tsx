@@ -91,7 +91,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-[rgba(27,15,29,.50)] backdrop-blur-[6px] z-[200] flex items-center justify-center p-6"
+      className="fixed inset-0 bg-ink/50 backdrop-blur-[6px] z-[200] flex items-center justify-center p-6"
       onClick={onClose}
       role="dialog"
       aria-modal
@@ -189,7 +189,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
                   value={digit}
                   onChange={(e) => handleOtpChange(i, e.target.value)}
                   onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                  className="w-16 h-[68px] text-center text-[26px] font-mono border-[1.5px] border-rule rounded-[var(--radius)] bg-bg text-plum outline-none transition-[border-color,box-shadow] font-semibold disabled:opacity-40 focus:border-plum focus:shadow-[0_0_0_3px_rgba(62,26,53,.10)] max-[640px]:w-14 max-[640px]:h-[60px] max-[640px]:text-[22px]"
+                  className="w-16 h-[68px] text-center text-[26px] font-mono border-[1.5px] border-rule rounded-[var(--radius)] bg-bg text-plum outline-none transition-[border-color,box-shadow] font-semibold disabled:opacity-40 focus:border-plum focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-plum)_14%,transparent)] max-[640px]:w-14 max-[640px]:h-[60px] max-[640px]:text-[22px]"
                   disabled={loading}
                   dir="ltr"
                 />

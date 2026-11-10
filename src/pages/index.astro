@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import HomePage from '../views/HomePage'
 import Feature from '../components/home/Feature'
-import Story from '../components/home/Story'
 import BlogCarousel from '../components/home/BlogCarousel'
 import { fetchHomeData, fetchHomeListsData, fetchFooterData, buildFooterScript } from '../lib/ssr'
 
@@ -52,6 +51,5 @@ const homeJsonLd = JSON.stringify([
   <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
   <HomePage client:load />
   <Feature />
-  <Story />
   <BlogCarousel client:visible />
 </BaseLayout>

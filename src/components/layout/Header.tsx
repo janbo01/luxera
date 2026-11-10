@@ -16,53 +16,34 @@ import { NAV_LINKS, isCategoryLink, type NavLink } from '../../data/navigation'
 import { CATEGORIES } from '../../data/categories'
 import { Illustration } from '../../illustrations'
 
-function AnnouncementBar() {
-  const supportPhone = useSettingsStore((s) => s.support_phone || s.support_landline)
-  return (
-    <div className="bg-plum-2 text-[var(--color-petal)] text-xs tracking-[0.02em] max-[720px]:hidden">
-      <div className="flex justify-between items-center gap-6 py-2.5 px-[var(--pad)] max-w-[1480px] mx-auto">
-        <div className="text-[12px]">{supportPhone ? `تماس: ${supportPhone}` : null}</div>
-        <div className="flex items-center gap-[18px] flex-wrap">
-          <span className="inline-flex items-center gap-2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="13" height="13">
-              <path d="M3 7h13l5 5-5 5H3z" strokeWidth="1.6" />
-            </svg>
-            ارسال رایگان سفارش‌های بالای ۲.۵ میلیون تومان
-          </span>
-          <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
-          <span>۴ روز ضمانت بازگشت</span>
-          <i className="block w-[3px] h-[3px] rounded-full bg-copper" />
-          <span>گارانتی کیفیت محصول</span>
-        </div>
-        <div className="text-[12px]">فارسی · تومان</div>
-      </div>
-    </div>
-  )
-}
-
-const MOBILE_MESSAGES = [
+const ANNOUNCEMENTS = [
   'ارسال رایگان سفارش‌های بالای ۲.۵ میلیون تومان',
   '۴ روز ضمانت بازگشت',
   'گارانتی کیفیت محصول',
 ]
 
-/** Phones lose the desktop announcement bar, so one line rotates the same promises. */
-function MobileStrip() {
+/** One quiet line on every screen size. It rotates the store promises (once each, here only);
+ *  the support phone sits at the start edge on wider screens. */
+function AnnouncementBar() {
+  const supportPhone = useSettingsStore((s) => s.support_phone || s.support_landline)
   const [i, setI] = useState(0)
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const t = window.setInterval(() => setI((n) => (n + 1) % MOBILE_MESSAGES.length), 4000)
+    const t = window.setInterval(() => setI((n) => (n + 1) % ANNOUNCEMENTS.length), 4000)
     return () => window.clearInterval(t)
   }, [])
   return (
-    <div
-      className="hidden max-[720px]:flex bg-plum-2 text-[var(--color-petal)] text-[12px] h-8 items-center justify-center px-4"
-      role="status"
-      aria-live="off"
-    >
-      <span key={i} className="animate-overlay-in">
-        {MOBILE_MESSAGES[i]}
-      </span>
+    <div className="bg-plum-2 text-[var(--color-petal)] text-[12px]" role="status" aria-live="off">
+      <div className="relative flex items-center justify-center h-8 md:h-9 px-4 max-w-[1480px] mx-auto md:px-[var(--pad)]">
+        {supportPhone ? (
+          <span className="absolute start-4 md:start-[var(--pad)] max-md:hidden">
+            تماس: {supportPhone}
+          </span>
+        ) : null}
+        <span key={i} className="animate-overlay-in">
+          {ANNOUNCEMENTS[i]}
+        </span>
+      </div>
     </div>
   )
 }
@@ -187,24 +168,19 @@ function MegaMenu({
             style={{ top }}
             className="fixed inset-x-0 z-[49] bg-bg border-b border-rule shadow-[0_24px_48px_-24px_color-mix(in_srgb,var(--color-ink)_30%,transparent)] animate-panel-drop"
           >
-            <div className="max-w-[1480px] mx-auto px-[var(--pad)] py-8 grid grid-cols-[1fr_240px] gap-10">
-              <ul className="m-0 p-0 list-none grid grid-cols-4 gap-4">
+            <div className="max-w-[1480px] mx-auto px-[var(--pad)] py-6 grid grid-cols-[1fr_240px] gap-10">
+              <ul className="m-0 p-0 list-none grid grid-cols-3 gap-x-6 gap-y-1 content-start">
                 {MEGA_CATS.map((c) => (
                   <li key={c.id}>
                     <a
                       href={`/category/${c.id}`}
-                      className="group flex flex-col gap-3 rounded-[var(--radius)] p-3 transition-colors duration-150 hover:bg-bg-2"
+                      className="group flex items-center gap-3.5 rounded-[var(--radius)] p-2 min-h-14 transition-colors duration-150 hover:bg-bg-2"
                     >
-                      <span className="aspect-[4/3] rounded-[var(--radius-sm)] bg-plate grid place-items-center text-ink [&>svg]:w-[44%] [&>svg]:h-auto transition-transform duration-500 group-hover:[&>svg]:scale-105">
+                      <span className="w-12 h-12 shrink-0 rounded-full bg-plate grid place-items-center text-ink [&>svg]:w-[58%] [&>svg]:h-auto">
                         <Illustration name={c.illus} />
                       </span>
-                      <span>
-                        <span className="block text-[15px] text-ink group-hover:text-plum">
-                          {c.fa}
-                        </span>
-                        <span className="block font-display italic text-[13px] text-muted">
-                          {c.en}
-                        </span>
+                      <span className="text-[15px] text-ink transition-colors duration-150 group-hover:text-plum">
+                        {c.fa}
                       </span>
                     </a>
                   </li>
@@ -252,6 +228,25 @@ const Header: FC = () => {
   // appears after hydration — otherwise SSR and the first client render disagree.
   const activePath = hydrated ? pathname : ''
   const [menuOpen, setMenuOpen] = useState(false)
+  // Compact header once the visitor scrolls. Two thresholds (hysteresis) stop it flickering
+  // between sizes when the scroll position sits right on the boundary.
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    let raf = 0
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY
+        setScrolled((was) => (was ? y > 40 : y > 120))
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [])
   const handleAccountClick = useCallback(() => {
     if (isLoggedIn) navigate('/account')
     else openLogin()
@@ -277,7 +272,6 @@ const Header: FC = () => {
   return (
     <>
       <AnnouncementBar />
-      <MobileStrip />
 
       <header
         ref={headerRef}
@@ -285,7 +279,7 @@ const Header: FC = () => {
       >
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
         <div
-          className="relative flex items-center justify-between px-[var(--pad)] h-[78px] max-[720px]:h-[64px] gap-3 max-w-[1480px] mx-auto"
+          className={`relative flex items-center justify-between px-[var(--pad)] gap-3 max-w-[1480px] mx-auto transition-[height] duration-300 ease-[var(--ease-lux)] ${scrolled ? 'h-[60px] max-[720px]:h-[56px]' : 'h-[78px] max-[720px]:h-[64px]'}`}
           dir="ltr"
         >
           {/* Logo — left */}
@@ -300,7 +294,7 @@ const Header: FC = () => {
               alt=""
               width={300}
               height={210}
-              className="h-[38px] w-auto"
+              className={`w-auto transition-[height] duration-300 ease-[var(--ease-lux)] ${scrolled ? 'h-[32px]' : 'h-[38px]'}`}
             />
             <div className="flex flex-col leading-none gap-[3px]">
               <span className="font-display italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">
@@ -398,7 +392,7 @@ const Header: FC = () => {
 
       {/* Mobile overlay — outside header so backdrop-filter doesn't create a containing block */}
       <div
-        className={`fixed inset-0 bg-[rgba(17,17,17,0.45)] backdrop-blur-[2px] z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
+        className={`fixed inset-0 bg-ink/45 backdrop-blur-[2px] z-[200] transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none hidden'}`}
         onClick={closeMenu}
         aria-hidden="true"
       />

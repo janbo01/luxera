@@ -31,7 +31,7 @@ export const Modal: FC<ModalProps> = ({ onClose, children, className = '', ariaL
       }}
     >
       <div
-        className={`bg-surface border border-rule rounded-[var(--radius)] w-full max-w-[520px] max-h-[90vh] overflow-hidden flex flex-col shadow-[0_20px_60px_rgba(27,15,29,0.18)]${className ? ` ${className}` : ''}`}
+        className={`bg-surface border border-rule rounded-[var(--radius)] w-full max-w-[520px] max-h-[90vh] overflow-hidden flex flex-col shadow-[0_20px_60px_color-mix(in_srgb,var(--color-ink)_20%,transparent)]${className ? ` ${className}` : ''}`}
       >
         {children}
       </div>

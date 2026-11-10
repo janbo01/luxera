@@ -111,9 +111,12 @@ const BlogCarousel: FC = () => {
   const showEmpty = !loading && posts.length === 0
 
   return (
-    <section className={`page-section${showEmpty ? '' : ' cv-auto'}`} id="blog">
+    <section
+      className={`page-section page-section--compact${showEmpty ? '' : ' cv-auto'}`}
+      id="blog"
+    >
       <SectionHeader
-        kicker="Journal"
+        kicker="مجله‌ی لوکسرا"
         title={
           <>
             آخرین <em>مقالات</em>

@@ -57,9 +57,9 @@ const WishlistPane: FC = () => {
               {items.map((product) => (
                 <article
                   key={product.id}
-                  className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col relative transition-[transform,box-shadow] duration-[250ms] group hover:-translate-y-[3px] hover:shadow-[0_16px_40px_-28px_rgba(27,15,29,.25)]"
+                  className="bg-surface border border-rule rounded-[var(--radius)] overflow-hidden flex flex-col relative transition-[transform,box-shadow] duration-[250ms] group hover:-translate-y-[3px] hover:shadow-[0_16px_40px_-28px_color-mix(in_srgb,var(--color-ink)_30%,transparent)]"
                 >
-                  <div className="aspect-square bg-gradient-to-bl from-[#EFE5D5] to-[#E6D8C2] grid place-items-center text-ink-2 relative overflow-hidden">
+                  <div className="aspect-square bg-gradient-to-bl from-bg-2 to-plate grid place-items-center text-ink-2 relative overflow-hidden">
                     <svg
                       viewBox="0 0 100 100"
                       fill="none"
@@ -76,7 +76,7 @@ const WishlistPane: FC = () => {
                       <IcoHeartFill />
                     </button>
                     <button
-                      className="absolute bottom-2.5 left-2.5 right-2.5 bg-[rgba(27,15,29,.94)] text-bg py-2 rounded-lg text-[12px] font-medium flex justify-center gap-1.5 items-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 cursor-pointer font-body [&_svg]:w-3 [&_svg]:h-3"
+                      className="absolute bottom-2.5 left-2.5 right-2.5 bg-ink/95 text-bg py-2 rounded-lg text-[12px] font-medium flex justify-center gap-1.5 items-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 cursor-pointer font-body [&_svg]:w-3 [&_svg]:h-3"
                       onClick={() => addToCart(product)}
                     >
                       <IcoBag /> افزودن به سبد
@@ -95,7 +95,7 @@ const WishlistPane: FC = () => {
                         <small className="text-[12px] text-muted font-normal mr-[3px]">ت</small>
                       </span>
                       <span
-                        className={`font-mono text-[12px] inline-flex items-center gap-1 ${product.oldPrice ? 'text-[#B98223]' : 'text-ok'} before:content-[''] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current`}
+                        className={`font-mono text-[12px] inline-flex items-center gap-1 ${product.oldPrice ? 'text-sale' : 'text-ok'} before:content-[''] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current`}
                       >
                         موجود
                       </span>

@@ -19,9 +19,9 @@ function formatPersianDate(isoDate: string): string {
 }
 
 const LOGO_STYLE: Record<string, string> = {
-  snap: 'bg-[#FFE8D6] text-copper',
+  snap: 'bg-copper/15 text-copper',
   tipax: 'bg-[#E0E6FF] text-[#3656C9]',
-  post: 'bg-[#FFE8DD] text-[var(--copper-2)]',
+  post: 'bg-copper/15 text-copper-2',
 }
 
 interface ShippingStepProps {
@@ -101,7 +101,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {opt.nameEn}
                   </span>
                   {opt.id === 'snapp_box' && (
-                    <span className="px-2 py-0.5 bg-[rgba(196,135,58,.12)] text-copper rounded-xs text-[12px] font-medium ">
+                    <span className="px-2 py-0.5 bg-copper/12 text-copper rounded-xs text-[12px] font-medium ">
                       پرطرفدار
                     </span>
                   )}
@@ -170,7 +170,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                           {DAY_LABELS[i]}
                         </span>
                         <span
-                          className={`font-mono text-[12px] ${snappDayIdx === i ? 'text-[rgba(245,237,224,.6)]' : 'text-muted'}`}
+                          className={`font-mono text-[12px] ${snappDayIdx === i ? 'text-bg/70' : 'text-muted'}`}
                         >
                           {formatPersianDate(d.date)}
                         </span>
@@ -214,7 +214,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
     <div
       className={`mt-[18px] px-[18px] py-4 border rounded-sm flex items-center gap-3.5 cursor-pointer transition-[border-color,background] ${
         giftWrap
-          ? 'border-copper border-solid bg-[rgba(196,135,58,.04)]'
+          ? 'border-copper border-solid bg-copper/5'
           : 'border-rule border-dashed bg-bg hover:border-ink-2'
       }`}
       onClick={onGiftWrapToggle}

@@ -2,10 +2,10 @@ import { useState, type FC } from 'react'
 import ProductCarousel from './ProductCarousel'
 
 const TABS = [
-  { id: 'necklaces', label: 'گردنبند', kicker: 'Necklaces' },
-  { id: 'rings', label: 'انگشتر', kicker: 'Rings' },
-  { id: 'earrings', label: 'گوشواره', kicker: 'Earrings' },
-  { id: 'bracelets', label: 'دستبند', kicker: 'Bracelets' },
+  { id: 'necklaces', label: 'گردنبند', kicker: 'گردنبندهای منتخب' },
+  { id: 'rings', label: 'انگشتر', kicker: 'انگشترهای منتخب' },
+  { id: 'earrings', label: 'گوشواره', kicker: 'گوشواره‌های منتخب' },
+  { id: 'bracelets', label: 'دستبند', kicker: 'دستبندهای منتخب' },
 ] as const
 
 /**

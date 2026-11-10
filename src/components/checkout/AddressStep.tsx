@@ -20,9 +20,9 @@ interface AddressStepProps {
 const SELECT_BG = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A6555' stroke-width='1.8' stroke-linecap='round'><path d='m6 9 6 6 6-6'/></svg>")`
 
 const inputCls =
-  'bg-bg border border-rule rounded-sm px-4 py-[13px] text-[15px] text-ink transition-all font-body w-full outline-none placeholder:text-muted placeholder:font-light focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)]'
+  'bg-bg border border-rule rounded-sm px-4 py-[13px] text-[15px] text-ink transition-all font-body w-full outline-none placeholder:text-muted placeholder:font-light focus:border-ink focus:bg-surface focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-ink)_8%,transparent)]'
 const selectCls =
-  'appearance-none bg-bg border border-rule rounded-sm px-4 py-[13px] pl-[38px] text-[15px] text-ink font-body w-full outline-none cursor-pointer bg-no-repeat bg-[position:left_14px_center] bg-[length:14px] focus:border-ink focus:bg-white focus:shadow-[0_0_0_4px_rgba(27,15,29,.06)] disabled:opacity-50'
+  'appearance-none bg-bg border border-rule rounded-sm px-4 py-[13px] pl-[38px] text-[15px] text-ink font-body w-full outline-none cursor-pointer bg-no-repeat bg-[position:left_14px_center] bg-[length:14px] focus:border-ink focus:bg-surface focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-ink)_8%,transparent)] disabled:opacity-50'
 const textareaCls = `${inputCls} resize-y min-h-24 leading-[1.7]`
 const fieldCls = 'flex flex-col gap-2 min-w-0'
 const labelCls = 'text-[14px] font-medium text-ink flex items-center gap-1.5'

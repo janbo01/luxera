@@ -10,7 +10,7 @@ const ITEMS = [
 
 /** Compact reassurance band for directly under the hero, ahead of the first product. */
 const TrustStrip: FC = () => (
-  <section aria-label="تضمین‌های لوکسرا" className="page-section !pt-8 !pb-0">
+  <section aria-label="تضمین‌های لوکسرا" className="page-section !pt-3 md:!pt-4 !pb-0">
     <ul className="m-0 p-0 list-none grid grid-cols-4 max-[900px]:grid-cols-2 gap-px bg-rule ring-1 ring-rule rounded-[var(--radius)] overflow-hidden">
       {ITEMS.map((it) => (
         <li key={it.title} className="bg-surface flex items-center gap-3 px-4 py-3.5">

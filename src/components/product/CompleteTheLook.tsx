@@ -57,9 +57,12 @@ const CompleteTheLook: FC<CompleteTheLookProps> = ({ categoryId, excludeId }) =>
   if (picks.length === 0) return null
 
   return (
-    <section className="page-section cv-auto" aria-label="ست کردن با این قطعه">
+    <section
+      className="page-section page-section--compact cv-auto"
+      aria-label="ست کردن با این قطعه"
+    >
       <SectionHeader
-        kicker="Complete the look"
+        kicker="استایل را کامل کنید"
         title={
           <>
             با این قطعه <em>ست کنید</em>

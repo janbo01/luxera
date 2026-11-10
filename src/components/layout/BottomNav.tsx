@@ -19,7 +19,8 @@ const BottomNav: FC = () => {
   const openSearch = useSearchStore((s) => s.open)
   const openLogin = useUIStore((s) => s.openLogin)
 
-  if (pathname === '/checkout') return null
+  // Checkout has its own flow; product pages swap this bar for the sticky buy bar (InfoPanel).
+  if (pathname === '/checkout' || pathname.startsWith('/product/')) return null
 
   const homeActive = pathname === '/'
   const searchActive = pathname === '/search'

@@ -227,7 +227,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
         {/* Article header */}
         <header className="mb-10 pb-10 border-b border-rule">
           <div className="flex items-center flex-wrap gap-x-3 gap-y-2 mb-6 text-[12.5px] text-muted">
-            <span className="kicker">Journal</span>
+            <span className="kicker">مجله‌ی لوکسرا</span>
             {date !== null && <time className="text-ink-2">{date}</time>}
             {readMinutes > 0 && (
               <>
@@ -268,7 +268,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
         {/* Shop the story */}
         <aside className="mt-16 rounded-[var(--radius-lg)] bg-surface ring-1 ring-inset ring-rule p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
           <div>
-            <span className="kicker mb-2">Shop the story</span>
+            <span className="kicker mb-2">خرید از همین مطلب</span>
             <p className="font-heading font-bold text-[20px] leading-snug text-ink m-0">
               استایل این مقاله را از لوکسرا بخرید
             </p>
@@ -302,7 +302,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
           <div className="page-section">
             <div className="flex items-end justify-between gap-4 mb-8 pb-5 border-b border-rule">
               <div>
-                <span className="kicker mb-3">Keep reading</span>
+                <span className="kicker mb-3">ادامه‌ی مطالعه</span>
                 <h2 className="font-heading font-bold text-[clamp(24px,3vw,36px)] leading-tight m-0 text-ink">
                   مقالات بیشتر
                 </h2>

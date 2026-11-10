@@ -45,6 +45,19 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
     [onAdd, product],
   )
 
+  // Card → gallery: name the clicked card's photo so the browser morphs it into the product
+  // page's main image (the gallery carries the same name). Only one element may hold a name
+  // at a time, so any previous holder (e.g. the gallery when opening a related product) is cleared.
+  const handleOpen = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    document
+      .querySelectorAll<HTMLElement>('[data-vt-hero]')
+      .forEach((el) => (el.style.viewTransitionName = ''))
+    const media = cardRef.current?.querySelector<HTMLElement>('.product-media')
+    if (media) media.style.viewTransitionName = 'product-hero'
+  }, [])
+
   const handleWish = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault()
@@ -78,7 +91,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
       onMouseEnter={handleMouseEnter}
     >
       {/* Media */}
-      <div className="product-media relative bg-bg-2 aspect-square overflow-hidden rounded-[var(--radius)] ring-1 ring-inset ring-rule transition-shadow duration-300 group-hover:shadow-[var(--shadow-lift)] group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-plum">
+      <div className="product-media relative bg-bg-2 aspect-square overflow-hidden rounded-[var(--radius)] group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-plum">
         {/* Badges */}
         {(badgeLabel || hasDiscount) && (
           <div className="product-badge absolute top-2.5 end-2.5 flex flex-col gap-1.5 items-end z-[3] pointer-events-none">
@@ -143,20 +156,16 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           )}
         </div>
 
-        {/* Add to cart — floats on the photo corner so the price can sit right under the title */}
+        {/* Quick add — a full-width bar that slides up on hover/focus with a pointer, and a
+            compact corner pill on touch screens (no hover there, so it is always visible). */}
         {!soldOut && (
           <button
-            className="product-quick absolute bottom-1 end-1 z-[3] min-w-11 h-11 grid place-items-center cursor-pointer"
+            className="product-quick absolute z-[3] cursor-pointer inset-x-2.5 bottom-2.5 h-10 rounded-full inline-flex items-center justify-center gap-2 bg-ink text-bg text-[13.5px] font-medium shadow-[var(--shadow-soft)] transition-all duration-200 active:scale-[0.97] [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 focus-visible:opacity-100 focus-visible:translate-y-0 [@media(hover:none)]:inset-x-auto [@media(hover:none)]:end-2 [@media(hover:none)]:h-11 [@media(hover:none)]:px-4"
             onClick={handleAdd}
             aria-label={`افزودن ${product.fa} به سبد`}
           >
-            <span className="h-9 min-w-9 rounded-full inline-flex items-center justify-center gap-1.5 bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] transition-all duration-200 group-hover:bg-ink group-hover:text-bg active:scale-90 [@media(hover:none)]:px-3">
-              <Icon name="bag" size={16} strokeWidth={1.7} />
-              {/* Touch screens have no hover to explain a bare icon, so they get a word */}
-              <span className="hidden [@media(hover:none)]:inline text-[12.5px] font-medium">
-                افزودن
-              </span>
-            </span>
+            <Icon name="bag" size={16} strokeWidth={1.7} />
+            افزودن
           </button>
         )}
         {soldOut && (
@@ -173,6 +182,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         <h3 className="font-body text-[14.5px] sm:text-[15.5px] font-medium leading-[1.6] text-ink m-0 line-clamp-2 transition-colors duration-200 group-hover:text-plum">
           <a
             href={href}
+            onClick={handleOpen}
             className="outline-none after:absolute after:inset-0 after:z-[1] after:content-['']"
           >
             {product.fa}
