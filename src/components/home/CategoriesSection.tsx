@@ -95,7 +95,7 @@ const CategoriesSection: FC = () => {
                 className={`relative z-[2] flex items-end justify-between gap-2 ${isFeatured ? 'p-3.5 md:p-5' : 'p-2.5 md:p-3.5'}`}
               >
                 <span
-                  className={`inline-flex items-center min-w-0 rounded-full bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] font-heading font-semibold leading-[1.3] ${isFeatured ? 'px-5 py-2 text-[18px] md:text-[22px]' : 'px-3.5 py-1.5 text-[15px] md:text-[17px]'}`}
+                  className={`inline-flex items-center min-w-0 rounded-full bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] font-heading font-semibold leading-[1.3] ${isFeatured ? 'px-5 pt-[calc(8px+0.22em)] pb-[calc(8px-0.22em)] text-[18px] md:text-[22px]' : 'px-3.5 pt-[calc(6px+0.22em)] pb-[calc(6px-0.22em)] text-[15px] md:text-[17px]'}`}
                 >
                   {cat.fa}
                 </span>
