@@ -3,6 +3,7 @@ import { usePageMeta } from '../hooks/usePageMeta'
 import type { ServerInitialData } from '../context/initialData'
 import { getBlogPostBySlug, getBlogPosts, type ApiBlogPost } from '../api/blog'
 import Icon from '../components/icons/Icon'
+import ViewAllLink from '../components/shared/ViewAllLink'
 import { BTN_CLS } from '../components/ui/Button'
 import { imgSet } from '../utils/cdnImage'
 
@@ -307,14 +308,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
                   مقالات بیشتر
                 </h2>
               </div>
-              <a href="/blog" className="link-draw group whitespace-nowrap">
-                همه مقالات
-                <Icon
-                  name="arrow-left"
-                  size={15}
-                  className="transition-transform duration-300 group-hover:-translate-x-1"
-                />
-              </a>
+              <ViewAllLink href="/blog">همه مقالات</ViewAllLink>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
               {morePosts.map((p) => (

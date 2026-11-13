@@ -498,18 +498,14 @@
     bottom: 10px;
     height: 1px;
     background: currentColor;
-    transform: scaleX(0.35);
-    transform-origin: right;
-    opacity: 0.5;
-    transition:
-      transform 300ms var(--ease-lux),
-      opacity 300ms ease;
+    /* A full, faint rule at rest (a partial one read as a broken stub); solid on hover. */
+    opacity: 0.35;
+    transition: opacity 200ms ease;
   }
   .link-draw:hover {
     color: var(--color-plum);
   }
   .link-draw:hover::after {
-    transform: scaleX(1);
     opacity: 1;
   }
 }
