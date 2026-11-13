@@ -162,11 +162,12 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           )}
         </div>
 
-        {/* Quick add — a full-width bar that slides up on hover/focus with a pointer, and a
-            compact corner pill on touch screens (no hover there, so it is always visible). */}
+        {/* Quick add (pointer devices): a full-width bar that slides up on hover/focus. Touch
+            screens have no hover, so there it lives in the price row instead of covering
+            the photo. */}
         {!soldOut && (
           <button
-            className="product-quick absolute z-[3] cursor-pointer inset-x-2.5 bottom-2.5 h-10 rounded-full inline-flex items-center justify-center gap-2 bg-ink text-bg text-[13.5px] font-medium shadow-[var(--shadow-soft)] transition-all duration-200 active:scale-[0.97] [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 focus-visible:opacity-100 focus-visible:translate-y-0 [@media(hover:none)]:inset-x-auto [@media(hover:none)]:end-2 [@media(hover:none)]:h-11 [@media(hover:none)]:px-4"
+            className="product-quick absolute z-[3] cursor-pointer inset-x-2.5 bottom-2.5 h-10 rounded-full inline-flex items-center justify-center gap-2 bg-ink text-bg text-[13.5px] font-medium shadow-[var(--shadow-soft)] transition-all duration-200 active:scale-[0.97] [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 focus-visible:opacity-100 focus-visible:translate-y-0 [@media(hover:none)]:hidden"
             onClick={handleAdd}
             aria-label={`افزودن ${product.fa} به سبد`}
           >
@@ -233,20 +234,33 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           </div>
         )}
 
-        <div className="flex items-baseline gap-2 flex-wrap mt-auto [font-feature-settings:'tnum']">
-          <span
-            className={`font-heading text-[16px] sm:text-[17.5px] font-bold leading-none whitespace-nowrap ${hasDiscount ? 'text-sale' : 'text-ink'}`}
-          >
-            {formatNumber(product.price)}
-            {Number.isFinite(product.price) && (
-              <small className="text-[12.5px] font-normal text-muted ms-1 font-body">تومان</small>
-            )}
-          </span>
-          {hasDiscount && (
-            <span className="text-muted line-through text-[13px] leading-none">
-              <span className="sr-only">قیمت قبلی: </span>
-              {formatNumber(product.oldPrice!)}
+        <div className="flex items-end justify-between gap-2 mt-auto">
+          <div className="min-w-0 flex items-baseline gap-x-2 gap-y-1 flex-wrap [font-feature-settings:'tnum']">
+            <span
+              className={`font-heading text-[16px] sm:text-[17.5px] font-bold leading-none whitespace-nowrap ${hasDiscount ? 'text-sale' : 'text-ink'}`}
+            >
+              {formatNumber(product.price)}
+              {Number.isFinite(product.price) && (
+                <small className="text-[12.5px] font-normal text-muted ms-1 font-body">تومان</small>
+              )}
             </span>
+            {hasDiscount && (
+              <span className="text-muted line-through text-[13px] leading-none">
+                <span className="sr-only">قیمت قبلی: </span>
+                {formatNumber(product.oldPrice!)}
+              </span>
+            )}
+          </div>
+          {/* Touch quick add: a round bag button beside the price, off the photo. The
+              ::before widens the hit area to 48px without making the row taller. */}
+          {!soldOut && (
+            <button
+              className="product-quick hidden [@media(hover:none)]:grid relative z-[2] shrink-0 w-10 h-10 rounded-full place-items-center bg-ink text-bg cursor-pointer transition-transform duration-150 active:scale-[0.92] before:absolute before:-inset-1 before:content-[''] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-plum"
+              onClick={handleAdd}
+              aria-label={`افزودن ${product.fa} به سبد`}
+            >
+              <Icon name="bag" size={17} strokeWidth={1.7} />
+            </button>
           )}
         </div>
       </div>
