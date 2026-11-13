@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, type FC } from 'react'
 import { createPortal } from 'react-dom'
 import Icon from '../icons/Icon'
+import { useBodyLock } from '../../hooks/useBodyLock'
 
 interface SizeGuideModalProps {
   open: boolean
@@ -41,6 +42,8 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
     }
   }, [])
 
+  useBodyLock(open)
+
   useEffect(() => {
     if (open) {
       triggerRef.current = document.activeElement
@@ -51,10 +54,8 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
         if (e.key === 'Tab') trapFocus(e)
       }
       document.addEventListener('keydown', handleKey)
-      document.body.style.overflow = 'hidden'
       return () => {
         document.removeEventListener('keydown', handleKey)
-        document.body.style.overflow = ''
         ;(triggerRef.current as HTMLElement | null)?.focus()
       }
     }

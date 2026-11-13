@@ -374,8 +374,12 @@
     overflow-x: clip;
   }
 
+  /* clip, not hidden: overflow-x: hidden turns <body> into a scroll container (html's own
+     overflow is set, so body's isn't propagated to the viewport), and every position: sticky
+     element — header, product gallery, filter panel, order summary — then sticks to a body that
+     never scrolls, i.e. never sticks. clip cuts horizontal overflow without that side effect. */
   body {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 }
 
