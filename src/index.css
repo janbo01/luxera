@@ -570,12 +570,18 @@
   }
 }
 
-/* ── Card → gallery view transition ──
+/* ── Card → product page view transition ──
    ProductCard names the clicked photo, Gallery carries the same name; the browser morphs one
-   into the other during Astro's ClientRouter navigation. Skipped under reduced motion. */
+   into the other during Astro's ClientRouter navigation. utils/productMorph.ts sets
+   <html data-vt="product"> for the duration, which scopes the choreography below to these
+   navigations only. Never applied under reduced motion (productMorph skips it). */
+
+/* The photo: a long, soft-landing glide (fast start, gentle settle). The two snapshots are the
+   same photo at different crops, so they crossfade early — the box keeps gliding on a single
+   image instead of showing a ghosted double exposure. */
 ::view-transition-group(product-hero) {
-  animation-duration: 0.45s;
-  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   overflow: clip;
   border-radius: var(--radius);
 }
@@ -584,11 +590,61 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
+  animation-duration: 260ms;
+  animation-timing-function: ease-out;
 }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(product-hero) {
-    animation-duration: 1ms;
+
+/* The page: the new one rises in over the old, which holds still underneath. Fading both at
+   once (the default) lets the background show through mid-way — a visible dip on any theme. */
+@keyframes vt-page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
+}
+@keyframes vt-page-fade {
+  from {
+    opacity: 0;
+  }
+}
+html[data-vt]::view-transition-old(root) {
+  animation: none;
+}
+html[data-vt='product']::view-transition-new(root) {
+  animation: vt-page-rise 440ms 70ms cubic-bezier(0.22, 0.8, 0.2, 1) both;
+}
+
+/* Header (while on screen — see productMorph) and phone tab bar stay put instead of riding
+   along with the page. */
+html[data-vt] .vt-site-header[data-vt-pin] {
+  view-transition-name: site-header;
+}
+html[data-vt] .vt-bottom-nav {
+  view-transition-name: bottom-nav;
+}
+::view-transition-group(site-header),
+::view-transition-group(bottom-nav) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+/* The clicked card drops its overlays (heart, badge, quick-add) so only the photo travels. */
+article[data-vt-leaving] .product-media > :not(.product-photo) {
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+/* Pressing a card answers at once, while the page loads. */
+.product-media {
+  transition: transform 220ms var(--ease-lux);
+}
+article:has(h3 a:active) .product-media {
+  transform: scale(0.975);
+}
+
+/* Gallery controls would otherwise zoom along with the photo; they fade in as it lands. */
+html[data-vt='product'] [data-vt-chrome] {
+  animation: vt-page-fade 220ms 330ms ease-out both;
 }
 
 /* ── Hero Slider ── */

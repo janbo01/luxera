@@ -6,6 +6,7 @@ import { formatPaddedIndex } from '../../utils/format'
 import { PRODUCT_GALLERY } from '../../data/productDetail'
 import { useGallery } from '../../hooks/useGallery'
 import { imgSet, imgUrl } from '../../utils/cdnImage'
+import { GALLERY_HERO_IMG, HERO_NAME } from '../../utils/productMorph'
 import type { ApiProductImage } from '../../api/product'
 
 interface GalleryProps {
@@ -68,7 +69,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
       <div
         className="relative z-[1] aspect-square max-sm:aspect-[4/3]"
         data-vt-hero
-        style={{ viewTransitionName: 'product-hero' }}
+        style={{ viewTransitionName: HERO_NAME }}
       >
         {hasApiImages
           ? galleryImages.map((img, i) => (
@@ -78,10 +79,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
               >
                 <span className="absolute inset-0 bg-[radial-gradient(50%_60%_at_50%_40%,color-mix(in_srgb,var(--color-copper)_8%,transparent),transparent_70%)] pointer-events-none" />
                 <img
-                  {...imgSet(img.url, {
-                    widths: [480, 640, 960, 1280],
-                    sizes: '(max-width: 1024px) 100vw, 45vw',
-                  })}
+                  {...imgSet(img.url, GALLERY_HERO_IMG)}
                   alt={`${productName} - تصویر ${i + 1}`}
                   width={960}
                   height={960}
@@ -104,6 +102,7 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
 
         {hasApiImages && (
           <button
+            data-vt-chrome
             onClick={() => setLightbox(true)}
             aria-label="بزرگ‌نمایی تصویر"
             className="absolute top-3 end-3 z-[2] w-11 h-11 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-colors hover:bg-ink hover:text-bg"
@@ -113,7 +112,10 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
         )}
 
         {/* Bottom caption + nav */}
-        <div className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between p-3 sm:p-4 pointer-events-none">
+        <div
+          data-vt-chrome
+          className="absolute bottom-0 inset-x-0 z-[2] flex items-center justify-between p-3 sm:p-4 pointer-events-none"
+        >
           <span
             className="font-mono text-[12px] text-ink bg-surface/85 backdrop-blur-[8px] rounded-full px-3 py-1.5 shadow-[var(--shadow-soft)]"
             aria-label={`تصویر ${activeIdx + 1} از ${count} — ${productName}`}

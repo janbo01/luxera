@@ -2,6 +2,7 @@ import { useRef, useState, memo, useCallback, type FC } from 'react'
 
 import { Illustration } from '../../illustrations'
 import { flyToCart } from '../../utils/flyToCart'
+import { startProductMorph, warmProductHero } from '../../utils/productMorph'
 import { useWishlist } from '../../hooks/useWishlist'
 import { formatNumber } from '../../utils/format'
 import { imgSet, imgUrl } from '../../utils/cdnImage'
@@ -26,6 +27,10 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
   // The second photo is only mounted after the first hover, so it never costs
   // a download for visitors who just scroll past.
   const [showAlt, setShowAlt] = useState(false)
+  // Hover intent: a pointer resting on the card for a beat starts fetching the product page's
+  // large photo, so the card → gallery morph lands on a loaded image. A pointer just sweeping
+  // across the grid doesn't trigger it.
+  const warmTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const handleMouseEnter = useCallback(() => {
     if (product.imageUrlAlt && !showAlt) {
@@ -33,7 +38,14 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
       img.src = imgUrl(product.imageUrlAlt, 640, 640)
       setShowAlt(true)
     }
-  }, [product.imageUrlAlt, showAlt])
+    clearTimeout(warmTimer.current)
+    warmTimer.current = setTimeout(() => warmProductHero(product.imageUrl), 120)
+  }, [product.imageUrlAlt, product.imageUrl, showAlt])
+
+  const handleMouseLeave = useCallback(() => clearTimeout(warmTimer.current), [])
+
+  // Touch has no hover: pressing the card is the earliest signal.
+  const handlePointerDown = useCallback(() => warmProductHero(product.imageUrl), [product.imageUrl])
 
   const handleAdd = useCallback(
     (e: React.MouseEvent) => {
@@ -47,16 +59,10 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
   )
 
   // Card → gallery: name the clicked card's photo so the browser morphs it into the product
-  // page's main image (the gallery carries the same name). Only one element may hold a name
-  // at a time, so any previous holder (e.g. the gallery when opening a related product) is cleared.
+  // page's main image (the gallery carries the same name) — see utils/productMorph.
   const handleOpen = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    document
-      .querySelectorAll<HTMLElement>('[data-vt-hero]')
-      .forEach((el) => (el.style.viewTransitionName = ''))
-    const media = cardRef.current?.querySelector<HTMLElement>('.product-media')
-    if (media) media.style.viewTransitionName = 'product-hero'
+    startProductMorph(cardRef.current)
   }, [])
 
   const handleWish = useCallback(
@@ -93,6 +99,8 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
       className="flex flex-col relative min-w-0 group"
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onPointerDown={handlePointerDown}
     >
       {/* Media */}
       <div className="product-media relative bg-bg-2 aspect-square overflow-hidden rounded-[var(--radius)] group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-plum">
@@ -123,7 +131,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
 
         {/* Product image(s) */}
         <div
-          className={`absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04] ${soldOut ? 'opacity-60' : ''}`}
+          className={`product-photo absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04] ${soldOut ? 'opacity-60' : ''}`}
         >
           {product.imageUrl ? (
             <>

@@ -9,6 +9,7 @@ import CartToast from '../cart/CartToast'
 import SearchOverlay from '../search/SearchOverlay'
 import LoginModal from '../account/LoginModal'
 import BottomNav from './BottomNav'
+import { installProductMorph } from '../../utils/productMorph'
 
 function applyBodyAttrs(palette: string, density: string, heroVariant: string) {
   const b = document.body
@@ -31,6 +32,8 @@ function LoginModalContainer() {
 
 export default function AppShell() {
   useStoreTheme()
+
+  useEffect(installProductMorph, [])
 
   useEffect(() => {
     const { palette, density, heroVariant } = useUIStore.getState()

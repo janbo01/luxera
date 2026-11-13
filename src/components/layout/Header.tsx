@@ -275,7 +275,7 @@ const Header: FC = () => {
 
       <header
         ref={headerRef}
-        className="sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden"
+        className="vt-site-header sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden"
       >
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
         <div

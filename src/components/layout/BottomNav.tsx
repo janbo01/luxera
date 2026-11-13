@@ -37,7 +37,7 @@ const BottomNav: FC = () => {
 
   return (
     <nav
-      className="hidden max-[720px]:flex fixed bottom-0 inset-x-0 h-[calc(56px+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-bg border-t border-plate z-[100] shadow-[0_-2px_12px_color-mix(in_srgb,var(--color-ink)_6%,transparent)]"
+      className="vt-bottom-nav hidden max-[720px]:flex fixed bottom-0 inset-x-0 h-[calc(56px+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-bg border-t border-plate z-[100] shadow-[0_-2px_12px_color-mix(in_srgb,var(--color-ink)_6%,transparent)]"
       role="navigation"
       aria-label="ناوبری اصلی"
     >
