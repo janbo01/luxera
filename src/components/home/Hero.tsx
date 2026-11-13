@@ -28,7 +28,9 @@ const Hero: FC = () => {
           </div>
 
           {/* Overlay meta at bottom */}
-          <div className="absolute bottom-0 inset-x-0 z-[3] flex justify-between items-end gap-5 px-5 md:px-8 pt-24 pb-[76px] md:pb-[84px] bg-[linear-gradient(to_top,rgb(0_0_0/0.72)_0%,rgb(0_0_0/0.38)_45%,transparent_100%)] pointer-events-none">
+          <div
+            className={`absolute bottom-0 inset-x-0 z-[3] flex justify-between items-end gap-5 px-5 md:px-8 pt-24 ${slide.total > 1 ? 'pb-[76px] md:pb-[84px]' : 'pb-5 md:pb-7'} bg-[linear-gradient(to_top,rgb(0_0_0/0.72)_0%,rgb(0_0_0/0.38)_45%,transparent_100%)] pointer-events-none`}
+          >
             <div className="min-w-0">
               <div className="text-[12.5px] text-white/80 leading-none mb-2">منتخب</div>
               {slide.href ? (
