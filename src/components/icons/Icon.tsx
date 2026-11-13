@@ -42,6 +42,7 @@ import {
   FileText,
   Bell,
   Zap,
+  Star,
   Info,
   Link,
   MessageCircle,
@@ -108,6 +109,7 @@ const ICONS: Record<string, LucideIcon> = {
   link: Link,
   whatsapp: MessageCircle,
   message: MessageCircle,
+  star: Star,
 }
 
 const FILLED = new Set(['heart-filled', 'star'])
