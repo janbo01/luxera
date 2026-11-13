@@ -98,6 +98,9 @@ function decodeWithin(source: HTMLImageElement, ms: number): Promise<unknown> {
   ])
 }
 
+/** True between a card click and the end of its morph (ScrollToTop leaves these alone). */
+export const isProductMorphActive = () => active
+
 let installed = false
 
 /** Wire the router listeners once (called from the persisted AppShell). */
