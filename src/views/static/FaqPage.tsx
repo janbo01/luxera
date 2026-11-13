@@ -1,10 +1,13 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
-import { useState, memo, type FC } from 'react'
+import { useEffect, useState, memo, type FC } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
+import PageHeader from '../../components/shared/PageHeader'
 
 interface FaqItem {
   q: string
   a: string
+  /** Anchor for deep links (/faq#size) from the footer, product tabs and contact page. */
+  id?: string
 }
 
 interface FaqSection {
@@ -25,6 +28,7 @@ const SECTIONS: FaqSection[] = [
         a: 'تمام محصولات لوکسرا جواهرات فانتزی (Fashion Jewelry) هستند — آلیاژ بدون نیکل با روکش رنگی با کیفیت. ما هرگز ادعای فروش فلزات قیمتی یا سنگ‌های قیمتی واقعی نمی‌کنیم.',
       },
       {
+        id: 'size',
         q: 'چطور مطمئن شوم سایز درست انتخاب کرده‌ام؟',
         a: 'در صفحه‌ی هر محصول دکمه‌ی «راهنمای سایز» وجود دارد. برای گردنبند: با متر نواری اندازه‌ی گردن را بگیرید. اگر شک داشتید ۴۵ سانت برای اکثر افراد مناسب است. همچنین تا ۴ روز امکان تعویض وجود دارد.',
       },
@@ -39,19 +43,20 @@ const SECTIONS: FaqSection[] = [
     items: [
       {
         q: 'هزینه‌ی ارسال چقدر است؟',
-        a: 'ارسال برای سفارش‌های بالای ۲٫۵ میلیون تومان رایگان است. برای سفارش‌های کمتر، هزینه‌ی ارسال جداگانه محاسبه می‌شود.',
+        a: 'ارسال برای سفارش‌های بالای ۲٫۵ میلیون تومان رایگان است. برای سفارش‌های کمتر: پست پیشتاز ۱۲۰ هزار، تیپاکس ۱۸۰ هزار و اسنپ‌باکس (فقط تهران) ۲۸۰ هزار تومان.',
       },
       {
+        id: 'delivery',
         q: 'چقدر طول می‌کشد تا سفارشم برسد؟',
-        a: 'تهران: ۲۴ ساعت با پیک ویژه‌ی لوکسرا. کلان‌شهرها: ۲ روز کاری. سراسر ایران: ۲ تا ۴ روز با پست پیشتاز. تمام محموله‌ها بیمه دارند و کد رهگیری ارسال می‌شود.',
+        a: 'تهران: با اسنپ‌باکس همان روز یا روز بعد، در بازه‌ی زمانی که خودتان انتخاب می‌کنید. سایر شهرها: تیپاکس ۲ تا ۳ روز کاری و پست پیشتاز ۳ تا ۵ روز کاری. برای ارسال‌های تیپاکس و پست کد رهگیری فرستاده می‌شود.',
       },
       {
         q: 'آیا به شهرستان‌ها هم ارسال می‌کنید؟',
-        a: 'بله. به تمام نقاط ایران که پست پیشتاز پوشش می‌دهد ارسال می‌کنیم.',
+        a: 'بله. با تیپاکس یا پست پیشتاز به همه‌ی شهرهای ایران ارسال می‌کنیم.',
       },
       {
         q: 'بسته‌بندی چگونه است؟',
-        a: 'هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای بسته‌بندی می‌شود. بسته‌بندی هدیه‌ای استاندارد است و نیازی به درخواست اضافی ندارد.',
+        a: 'هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای ارسال می‌شود. برای هدیه، در مرحله‌ی ارسال «بسته‌بندی هدیه» را انتخاب کنید: جعبه‌ی مخمل و کارت دست‌نویس با متن شما (۱۵ هزار تومان).',
       },
     ],
   },
@@ -76,6 +81,7 @@ const SECTIONS: FaqSection[] = [
     title: 'بازگشت و تعویض',
     items: [
       {
+        id: 'returns',
         q: 'آیا می‌توانم محصول را برگردانم؟',
         a: 'بله. تا ۴ روز پس از دریافت، اگر قطعه سالم باشد، پلاک داشته باشد و در بسته‌بندی اصلی باشد، می‌توانید آن را برگردانید. پس از ۴ روز امکان پذیرش مرجوعی وجود ندارد.',
       },
@@ -91,20 +97,30 @@ const SECTIONS: FaqSection[] = [
   },
 ]
 
-const AccordionItem = memo<{ q: string; a: string }>(({ q, a }) => {
+const AccordionItem = memo<{ q: string; a: string; id?: string }>(({ q, a, id }) => {
   const [open, setOpen] = useState(false)
+  // A deep link (/faq#delivery) opens its answer, on load and when the hash changes.
+  useEffect(() => {
+    if (!id) return
+    const sync = () => {
+      if (window.location.hash !== `#${id}`) return
+      setOpen(true)
+      // The browser's own jump ran before the page settled; land on the answer again.
+      requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start' }))
+    }
+    sync()
+    window.addEventListener('hashchange', sync)
+    return () => window.removeEventListener('hashchange', sync)
+  }, [id])
   return (
-    <div className="border-b border-rule">
+    <div id={id} className="border-b border-rule scroll-mt-28">
       <button
         className={`w-full flex items-center justify-between gap-4 py-[18px] font-body text-[15px] text-right transition-colors ${open ? 'text-plum' : 'text-ink hover:text-plum'}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
         <span>{q}</span>
-        <span
-          className="shrink-0 font-mono text-[18px] text-muted w-5 text-center"
-          aria-hidden="true"
-        >
+        <span className="shrink-0 text-[18px] text-muted w-5 text-center" aria-hidden="true">
           {open ? '−' : '+'}
         </span>
       </button>
@@ -143,18 +159,12 @@ const FaqPage: FC = () => {
   })
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* Hero */}
-      <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          FAQ
-        </span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          سوالات
-          <em className="font-heading not-italic text-plum font-normal"> متداول</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-          پاسخ اکثر سوال‌ها اینجاست. اگر پیدا نکردید با ما تماس بگیرید.
-        </p>
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-10 border-b border-rule">
+        <PageHeader
+          crumbs={[{ label: 'پرسش‌های متداول' }]}
+          title="پرسش‌های متداول"
+          description="پاسخ اکثر سوال‌ها اینجاست. اگر پیدا نکردید با ما تماس بگیرید."
+        />
       </div>
 
       {/* FAQ body */}
@@ -166,7 +176,7 @@ const FaqPage: FC = () => {
             </h2>
             <div className="flex flex-col">
               {sec.items.map((item) => (
-                <AccordionItem key={item.q} q={item.q} a={item.a} />
+                <AccordionItem key={item.q} q={item.q} a={item.a} id={item.id} />
               ))}
             </div>
           </section>

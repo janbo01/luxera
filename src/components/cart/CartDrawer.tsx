@@ -1,4 +1,4 @@
-import { useEffect, useRef, type FC } from 'react'
+import { useEffect, useRef, useState, type FC } from 'react'
 
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
@@ -8,14 +8,22 @@ import { useBodyLock } from '../../hooks/useBodyLock'
 import { useCart } from '../../hooks/useCart'
 import QuantityStepper from '../shared/QuantityStepper'
 import CartUpsell from './CartUpsell'
-import { calcSimpleShipping, FREE_SHIPPING_THRESHOLD } from '../../data/shipping'
+import { FREE_SHIPPING_THRESHOLD, MIN_SHIPPING_COST } from '../../data/shipping'
+import { useCartStore } from '../../store/cartStore'
+import type { CartItem } from '../../types'
 import { imgUrl } from '../../utils/cdnImage'
 
 const CartDrawer: FC = () => {
   const { items, isOpen, subtotal, totalQty, increment, decrement, remove, closeCart } = useCart()
 
-  const shipping = calcSimpleShipping(subtotal)
-  const total = subtotal + shipping
+  // The method (and so the price) is chosen at checkout; here only "free" is certain.
+  const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD
+  const restore = useCartStore((s) => s.restore)
+  const [removed, setRemoved] = useState<{ item: CartItem; index: number } | null>(null)
+  const removeLine = (item: CartItem) => {
+    setRemoved({ item, index: items.findIndex((x) => x.id === item.id) })
+    remove(item.id)
+  }
   const remainingForFree = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
   const freeShipPct = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100))
 
@@ -215,7 +223,6 @@ const CartDrawer: FC = () => {
                   <div className="text-[13.5px] font-medium text-ink mb-1 leading-[1.5]">
                     {item.fa}
                   </div>
-                  <span className="font-display italic text-[12px] text-muted">{item.en}</span>
                   <div className="text-[13px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
                   <QuantityStepper
                     value={item.qty}
@@ -227,14 +234,34 @@ const CartDrawer: FC = () => {
                 <div className="text-end text-[13px] [font-feature-settings:'tnum'] flex flex-col items-end gap-2">
                   <span>{formatToman(item.price * item.qty)}</span>
                   <button
-                    className="text-[13px] text-muted min-h-10 px-2 -me-2 underline-offset-4 transition-colors duration-200 hover:text-sale hover:underline"
-                    onClick={() => remove(item.id)}
+                    type="button"
+                    className="w-11 h-11 -me-2.5 grid place-items-center rounded-full text-muted transition-colors duration-200 hover:text-sale hover:bg-bg-2"
+                    onClick={() => removeLine(item)}
+                    aria-label={`حذف ${item.fa} از سبد`}
                   >
-                    حذف
+                    <Icon name="trash" size={17} />
                   </button>
                 </div>
               </div>
             ))
+          )}
+          {removed && !items.some((x) => x.id === removed.item.id) && (
+            <div
+              className="flex items-center justify-between gap-3 py-3 border-b border-rule text-[13px] text-ink-2"
+              role="status"
+            >
+              <span className="min-w-0 truncate">«{removed.item.fa}» از سبد حذف شد.</span>
+              <button
+                type="button"
+                className="shrink-0 min-h-11 px-3 rounded-full font-medium text-ink hover:bg-bg-2"
+                onClick={() => {
+                  restore(removed.item, removed.index)
+                  setRemoved(null)
+                }}
+              >
+                بازگرداندن
+              </button>
+            </div>
           )}
           {items.length > 0 && remainingForFree > 0 && (
             <CartUpsell
@@ -255,11 +282,17 @@ const CartDrawer: FC = () => {
               </div>
               <div className="flex justify-between text-muted">
                 <span>ارسال</span>
-                <span>{shipping === 0 ? 'رایگان' : formatToman(shipping)}</span>
+                <span>
+                  {freeShipping ? (
+                    <span className="text-ok">رایگان</span>
+                  ) : (
+                    `از ${formatToman(MIN_SHIPPING_COST)} · در مرحله‌ی بعد`
+                  )}
+                </span>
               </div>
               <div className="flex justify-between text-ink pt-3 mt-1.5 border-t border-rule text-base font-medium [font-feature-settings:'tnum']">
-                <span>قابل پرداخت</span>
-                <span>{formatToman(total)}</span>
+                <span>{freeShipping ? 'قابل پرداخت' : 'جمع کالاها'}</span>
+                <span>{formatToman(subtotal)}</span>
               </div>
             </div>
             <a
@@ -267,7 +300,7 @@ const CartDrawer: FC = () => {
               className="block w-full text-center bg-plum text-bg py-4 text-sm font-medium border border-plum rounded-full transition-colors duration-200 hover:bg-plum-dark hover:border-plum-dark"
               onClick={closeCart}
             >
-              تکمیل سفارش — {formatToman(total)}
+              ادامه و ثبت سفارش
             </a>
             <button
               className="block text-center w-full mt-2 min-h-11 text-[13px] text-muted underline underline-offset-4 transition-colors duration-200 hover:text-ink"

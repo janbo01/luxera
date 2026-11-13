@@ -109,10 +109,10 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           <Icon name="close" size={16} />
         </button>
 
-        <div className="font-display italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
+        <div className="font-wordmark italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
           Luxera
         </div>
-        <div className="font-mono text-[12px] text-muted uppercase mb-6">Fine Jewelry</div>
+        <div className="text-[13px] text-muted mb-6">لوکسرا</div>
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />
 
         {message && (

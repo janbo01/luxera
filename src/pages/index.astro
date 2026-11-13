@@ -34,7 +34,12 @@ const homeJsonLd = JSON.stringify([
     url: 'https://luxera.ir',
     logo: 'https://luxera.ir/favicon.svg',
     description: 'فروشگاه اینترنتی جواهرات فانتزی دست‌ساز — گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل.',
-    contactPoint: { '@type': 'ContactPoint', contactType: 'customer service', availableLanguage: 'Persian' },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+989128494308',
+      contactType: 'customer service',
+      availableLanguage: 'Persian',
+    },
     sameAs: ['https://instagram.com/luxera.ir'],
   },
 ])
@@ -47,7 +52,6 @@ const homeJsonLd = JSON.stringify([
   lcpPreload={lcpPreload}
   jsonLd={homeJsonLd}
 >
-  <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
   <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
   <HomePage client:load banners={banners} />
   <Feature />

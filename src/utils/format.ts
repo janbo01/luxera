@@ -1,8 +1,27 @@
 const FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
 
+/** Persian (۰–۹) and Arabic-Indic (٠–٩) digits → ASCII, so either keyboard works. */
+export function toLatinDigits(raw: string): string {
+  return raw
+    .replace(/[۰-۹]/g, (c) => String(c.charCodeAt(0) - 0x06f0))
+    .replace(/[٠-٩]/g, (c) => String(c.charCodeAt(0) - 0x0660))
+}
+
+/** Search text as the catalogue spells it: Arabic ي/ك become Persian ی/ک, tatweel and
+ *  doubled spaces go. A keyboard set to Arabic still finds «گردنبند». */
+export function normalizeQuery(raw: string): string {
+  return raw
+    .replace(/ي/g, 'ی')
+    .replace(/ى/g, 'ی')
+    .replace(/ك/g, 'ک')
+    .replace(/ـ/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 /** Strip non-digits, remove leading +98 or 0, clamp to 10 chars (Iranian mobile format). */
 export function normalizePhoneInput(raw: string): string {
-  const d = raw.replace(/\D/g, '')
+  const d = toLatinDigits(raw).replace(/\D/g, '')
   let local = d
   if (local.startsWith('98') && local.length >= 12) local = local.slice(2)
   else if (local.startsWith('0')) local = local.slice(1)

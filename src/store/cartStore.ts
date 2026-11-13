@@ -12,6 +12,8 @@ interface CartState {
   increment: (id: string) => void
   decrement: (id: string) => void
   remove: (id: string) => void
+  /** Puts a removed line back where it was (undo). */
+  restore: (item: CartItem, index: number) => void
   clearCart: () => void
   openCart: () => void
   closeCart: () => void
@@ -59,6 +61,14 @@ export const useCartStore = create<CartState>()(
         })),
 
       remove: (id) => set((state) => ({ items: state.items.filter((x) => x.id !== id) })),
+
+      restore: (item, index) =>
+        set((state) => {
+          if (state.items.some((x) => x.id === item.id)) return state
+          const items = [...state.items]
+          items.splice(Math.min(index, items.length), 0, item)
+          return { items }
+        }),
 
       clearCart: () => set({ items: [] }),
       openCart: () => set({ isOpen: true }),

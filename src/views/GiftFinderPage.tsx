@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FC } from 'react'
 import { usePageMeta } from '../hooks/usePageMeta'
-import Breadcrumb from '../components/shared/Breadcrumb'
+import PageHeader from '../components/shared/PageHeader'
 import ProductCard from '../components/product/ProductCard'
 import Icon from '../components/icons/Icon'
 import { useCartStore } from '../store/cartStore'
@@ -167,18 +167,13 @@ const GiftFinderPage: FC = () => {
 
   return (
     <>
-      <Breadcrumb items={[{ label: 'خانه', to: '/' }, { label: 'راهنمای هدیه' }]} />
+      <PageHeader
+        as="h2"
+        crumbs={[{ label: 'راهنمای هدیه' }]}
+        title="هدیه‌ی مناسب را پیدا کنید"
+        description="هر سه پرسش اختیاری است. هر چه بیشتر پاسخ بدهید، پیشنهادها دقیق‌تر می‌شود."
+      />
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,96px)]">
-        <header className="py-[clamp(32px,5vw,64px)] max-w-[60ch]">
-          <span className="kicker mb-3">راهنمای هدیه</span>
-          <h1 className="font-heading font-bold text-[clamp(32px,4.4vw,60px)] leading-[1.1] m-0 mb-4">
-            هدیه‌ی مناسب را پیدا کنید
-          </h1>
-          <p className="m-0 text-muted text-[15px] leading-[1.9]">
-            هر سه پرسش اختیاری است. هر چه بیشتر پاسخ بدهید، پیشنهادها دقیق‌تر می‌شود.
-          </p>
-        </header>
-
         <div className="grid gap-8 pb-10 border-b border-rule">
           <Group
             step={1}
@@ -203,7 +198,20 @@ const GiftFinderPage: FC = () => {
           />
         </div>
 
-        <section className="pt-10" aria-live="polite">
+        {/* Phones: the results sit below three questions, so offer a jump to them. */}
+        {touched && !loading && (
+          <div className="md:hidden sticky bottom-[calc(64px+env(safe-area-inset-bottom))] z-20 flex justify-center pointer-events-none -mt-4 mb-4">
+            <a
+              href="#gift-results"
+              className="pointer-events-auto inline-flex items-center gap-2 min-h-12 px-6 rounded-full bg-ink text-bg text-[14px] font-medium shadow-[var(--shadow-lift)]"
+            >
+              نمایش {toFa(results.length)} پیشنهاد
+              <Icon name="chevron-down" size={14} />
+            </a>
+          </div>
+        )}
+
+        <section id="gift-results" className="pt-10 scroll-mt-24" aria-live="polite">
           <div className="flex items-end justify-between gap-4 flex-wrap mb-8">
             <div className="min-w-0">
               <h2 className="font-heading font-bold text-[24px] m-0">

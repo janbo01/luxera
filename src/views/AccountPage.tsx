@@ -144,12 +144,12 @@ const AccountPage: FC = () => {
                 <span className="font-body text-[13px] text-copper-dark inline-flex items-center gap-2.5 before:content-[''] before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
                   حسابِ کاربری
                 </span>
-                <h1 className="mt-1 font-heading text-[clamp(24px,3vw,36px)] font-bold m-0 leading-[1.1] tracking-[-0.01em]">
+                <h2 className="mt-1 font-heading text-[clamp(24px,3vw,36px)] font-bold m-0 leading-[1.1] tracking-[-0.01em]">
                   خوش آمدید،{' '}
-                  <em className="font-display italic font-normal text-copper">
+                  <em className="not-italic font-bold text-copper-dark">
                     {profile?.name?.split(' ')[0]}
                   </em>
-                </h1>
+                </h2>
                 <div className="flex items-center gap-2.5 mt-1.5 text-[13px] text-muted flex-wrap">
                   {memberSince && (
                     <>
@@ -282,11 +282,7 @@ const GUEST_PERKS = [
 
 function GuestAccount() {
   const openLogin = useUIStore((s) => s.openLogin)
-
-  // Open the sign-in dialog straight away — that's why the visitor came here.
-  useEffect(() => {
-    openLogin()
-  }, [openLogin])
+  // The dialog opens on tap, not on arrival, so the page can first say what an account is for.
 
   return (
     <section className="max-w-[560px] mx-auto px-[clamp(20px,4vw,56px)] py-16 max-md:py-10 text-center animate-rise">

@@ -1,5 +1,6 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import type { FC } from 'react'
+import PageHeader from '../../components/shared/PageHeader'
 
 const SECTION = 'mb-11 pb-11 border-b border-rule last:border-b-0 last:mb-0'
 const H2 = 'font-body font-normal text-[18px] text-ink m-0 mb-3.5'
@@ -13,17 +14,12 @@ const TermsPage: FC = () => {
   })
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* Hero */}
-      <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          Terms
-        </span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          شرایط و<em className="font-heading not-italic text-plum font-normal"> ضوابط</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-          آخرین به‌روزرسانی: اردیبهشت ۱۴۰۵
-        </p>
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-10 border-b border-rule">
+        <PageHeader
+          crumbs={[{ label: 'شرایط استفاده' }]}
+          title="شرایط و ضوابط"
+          meta="آخرین به‌روزرسانی: اردیبهشت ۱۴۰۵"
+        />
       </div>
 
       <div className="max-w-[760px] mb-16">

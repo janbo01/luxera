@@ -19,8 +19,14 @@ const BottomNav: FC = () => {
   const openSearch = useSearchStore((s) => s.open)
   const openLogin = useUIStore((s) => s.openLogin)
 
-  // Checkout has its own flow; product pages swap this bar for the sticky buy bar (InfoPanel).
-  if (pathname === '/checkout' || pathname.startsWith('/product/')) return null
+  // Checkout has its own flow; product pages swap this bar for the sticky buy bar (InfoPanel)
+  // and listings for the filter/sort bar, so a phone never shows two bars stacked.
+  if (
+    pathname === '/checkout' ||
+    pathname.startsWith('/product/') ||
+    pathname.startsWith('/category/')
+  )
+    return null
 
   const homeActive = pathname === '/'
   const searchActive = pathname === '/search'
@@ -60,7 +66,7 @@ const BottomNav: FC = () => {
         <span className="relative flex items-center justify-center">
           <Icon name="bag" size={22} />
           {cartCount > 0 && (
-            <span className="absolute -top-[5px] -end-2 bg-copper text-white text-[11px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
+            <span className="absolute -top-[5px] -end-2 bg-copper text-white text-[12px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
               {cartCount > 9 ? '۹+' : toFa(cartCount)}
             </span>
           )}
@@ -77,7 +83,7 @@ const BottomNav: FC = () => {
         <span className="relative flex items-center justify-center">
           <Icon name={wishActive ? 'heart-filled' : 'heart'} size={22} />
           {wishCount > 0 && (
-            <span className="absolute -top-[5px] -end-2 bg-plum text-bg text-[11px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
+            <span className="absolute -top-[5px] -end-2 bg-plum text-bg text-[12px] font-mono min-w-[18px] h-[18px] rounded-lg flex items-center justify-center px-[3px]">
               {wishCount > 9 ? '۹+' : toFa(wishCount)}
             </span>
           )}

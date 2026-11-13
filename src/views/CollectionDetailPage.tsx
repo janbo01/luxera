@@ -68,6 +68,13 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
     }
   }, [collection, slug, products])
 
+  const [sort, setSort] = useState<'default' | 'price-asc' | 'price-desc'>('default')
+  const sortedProducts = useMemo(() => {
+    if (sort === 'default') return products
+    const dir = sort === 'price-asc' ? 1 : -1
+    return [...products].sort((a, b) => (a.price - b.price) * dir)
+  }, [products, sort])
+
   usePageMeta({
     title: collection?.name_fa ?? 'مجموعه',
     canonical: slug ? `/collections/${slug}` : undefined,
@@ -128,13 +135,14 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
 
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)]">
         <PageIntro
+          as="h2"
           kicker="کالکشن"
           title={col.name_fa}
           description={col.description}
           meta={<span>{toFa(products.length)} محصول در این کالکشن</span>}
           aside={
             col.cover_image_url || products.some((p) => p.imageUrl) ? (
-              <div className="hidden md:flex gap-2 w-[min(38vw,420px)]" aria-hidden>
+              <div className="flex gap-2 w-full md:w-[min(38vw,420px)]" aria-hidden>
                 {col.cover_image_url ? (
                   <img
                     {...imgSet(col.cover_image_url, {
@@ -175,9 +183,35 @@ const CollectionDetailPage: FC<CollectionDetailPageProps> = ({ slug, initialData
       <section className="pt-8 md:pt-12 pb-[clamp(56px,7vw,96px)] px-[var(--pad)] max-w-[var(--maxw)] mx-auto">
         <h2 className="sr-only">محصولاتِ این کالکشن</h2>
 
+        {products.length > 1 && (
+          <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="ترتیب محصولات">
+            {(
+              [
+                ['default', 'پیشنهاد لوکسرا'],
+                ['price-asc', 'ارزان‌ترین'],
+                ['price-desc', 'گران‌ترین'],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={sort === key}
+                onClick={() => setSort(key)}
+                className={`min-h-11 px-4 rounded-full text-[13.5px] border transition-colors ${
+                  sort === key
+                    ? 'bg-ink text-bg border-ink'
+                    : 'bg-surface text-ink-2 border-rule hover:border-ink'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+
         {products.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-[clamp(12px,1.5vw,22px)] gap-y-[clamp(28px,3vw,44px)]">
-            {products.map((p, i) => (
+            {sortedProducts.map((p, i) => (
               <div
                 key={p.id}
                 className="animate-rise"

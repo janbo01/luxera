@@ -308,7 +308,7 @@ const AddressesPane: FC = () => {
               >
                 <div className="flex items-center justify-between gap-2.5">
                   <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-[5px] rounded-full font-mono text-[12px] uppercase font-medium [&_svg]:w-[11px] [&_svg]:h-[11px] ${
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-[5px] rounded-full text-[12px] font-medium [&_svg]:w-[11px] [&_svg]:h-[11px] ${
                       addr.isDefault ? 'bg-ink text-bg' : 'bg-bg-2 text-ink-2'
                     }`}
                   >

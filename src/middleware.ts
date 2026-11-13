@@ -1,4 +1,11 @@
 import { defineMiddleware } from 'astro:middleware'
+import { cspHash } from './lib/ssr'
+import { READER_JS } from './lib/hydrateReader'
+
+// HydrateReader's inline script. Its hash is added here because Astro sends the CSP
+// header before layout/component frontmatter runs, so Astro.csp.insertScriptHash() from
+// there never reached the header and the browser blocked the reader on every page.
+const READER_HASH = `'${cspHash(READER_JS)}'`
 
 // Astro's auto-hashed style-src (astro.config.mjs `security.csp`) always includes hashes
 // for the inlined Tailwind bundle + astro-island runtime CSS, and once ANY hash is present
@@ -13,7 +20,9 @@ export const onRequest = defineMiddleware(async (_context, next) => {
   if (csp) {
     response.headers.set(
       'content-security-policy',
-      csp.replace(/style-src[^;]*/, "style-src 'self' 'unsafe-inline'"),
+      csp
+        .replace(/style-src[^;]*/, "style-src 'self' 'unsafe-inline'")
+        .replace(/script-src([^;]*)/, (m) => (m.includes(READER_HASH) ? m : `${m} ${READER_HASH}`)),
     )
   }
   return response

@@ -63,7 +63,7 @@ export const PILL_COLORS: Record<string, string> = {
   cancel: 'bg-sale/[.10] text-sale',
 }
 export const PILL_BASE =
-  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[12px] uppercase font-medium whitespace-nowrap before:content-[""] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current before:shrink-0'
+  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-medium whitespace-nowrap before:content-[""] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current before:shrink-0'
 
 export const IC_MD =
   'w-[38px] h-[38px] rounded-sm bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[18px] [&_svg]:h-[18px]'

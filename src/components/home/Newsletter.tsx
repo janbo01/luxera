@@ -14,7 +14,7 @@ const Newsletter: FC = () => (
         <span className="text-[13px] font-medium text-bg/70 inline-flex items-center gap-2.5 before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
           خبرنامه‌ی لوکسرا
         </span>
-        <h2 className="font-heading font-bold text-[clamp(30px,3vw,44px)] mt-3.5 mb-0 leading-[1.15] [&_em]:font-display [&_em]:italic [&_em]:text-dust-rose [&_em]:font-normal">
+        <h2 className="font-heading font-bold text-[clamp(30px,3vw,44px)] mt-3.5 mb-0 leading-[1.15] [&_em]:not-italic [&_em]:text-dust-rose [&_em]:font-normal">
           اولین کسی باشید که <em>می‌داند</em>.
         </h2>
         <p className="mt-3.5 text-sm text-bg/75 max-w-[42ch] leading-[1.7] m-0">

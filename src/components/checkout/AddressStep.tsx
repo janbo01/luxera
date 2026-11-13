@@ -153,6 +153,7 @@ const AddressStep: FC<AddressStepProps> = ({
             <input
               id="addr-label"
               name="label"
+              autoComplete="off"
               className={`${inputCls} pr-[42px]`}
               value={addr.label}
               onChange={onAddrChange}
@@ -173,10 +174,11 @@ const AddressStep: FC<AddressStepProps> = ({
             <input
               id="addr-name"
               name="name"
+              autoComplete="name"
               className={`${inputCls} pr-[42px]`}
               value={addr.name}
               onChange={onAddrChange}
-              placeholder="مثلاً سارا محمدی"
+              placeholder="نام گیرنده‌ی سفارش"
             />
           </div>
         </div>
@@ -194,18 +196,19 @@ const AddressStep: FC<AddressStepProps> = ({
               name="phone"
               type="tel"
               inputMode="numeric"
+              autoComplete="tel-national"
               dir="ltr"
-              placeholder="912 345 6789"
+              placeholder="۹۱۲۰۰۰۰۰۰۰"
               value={toLocalPhone(addr.phone)}
               onChange={handlePhoneChange}
               maxLength={10}
-              className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] font-mono placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
+              className="flex-1 min-w-0 border-none outline-none bg-transparent px-[14px] py-3 text-[14px] text-ink [direction:ltr] [font-variant-numeric:tabular-nums] placeholder:text-muted placeholder:font-body placeholder:tracking-normal"
             />
           </div>
           {/^9\d{9}$/.test(addr.phone) && (
-            <span className="flex items-center gap-1.5 text-[12px] text-ok font-mono -mt-0.5 [&_svg]:w-3 [&_svg]:h-3">
+            <span className="flex items-center gap-1.5 text-[12px] text-ok -mt-0.5 [&_svg]:w-3 [&_svg]:h-3">
               <Icon name="check" size={12} strokeWidth={2} />
-              با ایرانسل تأیید شد
+              شماره‌ی موبایل معتبر است
             </span>
           )}
         </div>
@@ -217,6 +220,7 @@ const AddressStep: FC<AddressStepProps> = ({
           </label>
           <select
             id="addr-province"
+            autoComplete="address-level1"
             name="province"
             className={selectCls}
             style={{ backgroundImage: SELECT_BG }}
@@ -239,6 +243,7 @@ const AddressStep: FC<AddressStepProps> = ({
           </label>
           <select
             id="addr-city"
+            autoComplete="address-level2"
             name="city"
             className={selectCls}
             style={{ backgroundImage: SELECT_BG }}
@@ -263,6 +268,7 @@ const AddressStep: FC<AddressStepProps> = ({
           <textarea
             id="addr-street"
             name="street"
+            autoComplete="street-address"
             className={textareaCls}
             value={addr.street}
             onChange={onAddrChange}
@@ -286,7 +292,9 @@ const AddressStep: FC<AddressStepProps> = ({
               className={`${inputCls} pr-[42px]`}
               value={addr.postal}
               onChange={onAddrChange}
-              placeholder="۱۴۳۴۹۸۷۶۵۴"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              placeholder="بدون خط تیره"
               maxLength={10}
               dir="ltr"
             />

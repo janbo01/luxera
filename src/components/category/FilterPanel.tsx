@@ -154,7 +154,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
       >
         {/* Drag handle — mobile only */}
         <button
-          className="hidden max-[1100px]:flex justify-center py-2 cursor-pointer w-full"
+          className="hidden max-[1100px]:flex items-center justify-center min-h-11 cursor-pointer w-full"
           onClick={onClose}
           aria-label="بستن فیلترها"
         >
@@ -215,7 +215,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
                     }
                   }}
                   aria-pressed={on}
-                  className={`min-h-[36px] px-3 rounded-full text-[12.5px] border transition-colors duration-150 cursor-pointer ${on ? 'bg-ink text-bg border-ink' : 'bg-bg border-rule text-ink-2 hover:border-ink'}`}
+                  className={`min-h-11 px-3.5 rounded-full text-[13px] border transition-colors duration-150 cursor-pointer ${on ? 'bg-ink text-bg border-ink' : 'bg-bg border-rule text-ink-2 hover:border-ink'}`}
                 >
                   {p.label}
                 </button>

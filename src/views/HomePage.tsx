@@ -10,41 +10,14 @@ import CategoryTabs from '../components/home/CategoryTabs'
 import GiftBanner from '../components/home/GiftBanner'
 import RecentlyViewed from '../components/product/RecentlyViewed'
 
-const HOME_JSON_LD = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      name: 'لوکسرا',
-      url: 'https://luxera.ir',
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: 'https://luxera.ir/search?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
-      },
-    },
-    {
-      '@type': 'Organization',
-      name: 'لوکسرا',
-      url: 'https://luxera.ir',
-      description: 'فروشگاه تخصصی جواهرات فانتزی ایران',
-      contactPoint: {
-        '@type': 'ContactPoint',
-        telephone: '+989128494308',
-        contactType: 'customer service',
-        availableLanguage: 'Persian',
-      },
-    },
-  ],
-}
-
+// Structured data for the home page is rendered once, on the server, in pages/index.astro.
 const HomePage: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
-  usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز', jsonLd: HOME_JSON_LD })
+  usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز' })
   return (
     <>
       <Hero banners={banners} />
       <TrustStrip />
-      <CategoriesSection />
+      {/* Products first: the newest pieces sit right under the hero, then the categories. */}
       <ProductCarousel
         sectionId="new"
         band
@@ -56,6 +29,7 @@ const HomePage: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
         }
         link="/category/new"
       />
+      <CategoriesSection />
       {/* Returning visitors pick up where they left off, right after what's new. */}
       <RecentlyViewed min={3} />
       <CollectionSpotlight />

@@ -71,7 +71,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
             </span>
             {/* Logo */}
             <span
-              className={`w-[42px] h-[42px] rounded-sm grid place-items-center font-display italic text-[18px] font-medium shrink-0 ${PAY_LOGO_STYLE[p.logoClass] ?? 'bg-bg-2 text-ink-2'}`}
+              className={`w-[42px] h-[42px] rounded-sm grid place-items-center text-[18px] font-semibold shrink-0 ${PAY_LOGO_STYLE[p.logoClass] ?? 'bg-bg-2 text-ink-2'}`}
             >
               {p.logoChar}
             </span>
@@ -79,9 +79,6 @@ const PaymentStep: FC<PaymentStepProps> = ({
             <span className="flex-1 flex flex-col gap-0.5 min-w-0">
               <span className="font-heading text-[15px] font-semibold flex items-center gap-2.5">
                 {p.name}
-                <span className="font-display italic text-[12px] text-muted font-normal">
-                  {p.en}
-                </span>
               </span>
               <span className="text-[13px] text-muted">{p.sub}</span>
             </span>

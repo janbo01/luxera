@@ -2,9 +2,8 @@ import { type FC } from 'react'
 import Icon from '../icons/Icon'
 import { Calendar } from 'lucide-react'
 import { formatToman, toFa } from '../../utils/format'
-import { GIFT_WRAP_PRICE } from '../../data/checkout'
-import type { ShippingOption } from '../../data/shipping'
-import type { ShippingId } from '../../data/shipping'
+import { GIFT_MESSAGE_MAX, GIFT_WRAP_PRICE } from '../../data/checkout'
+import { shippingPrice, type ShippingId, type ShippingOption } from '../../data/shipping'
 import type { ApiDeliverySlot } from '../../api/order'
 
 const DAY_LABELS = ['امروز', 'فردا', 'پس‌فردا']
@@ -30,11 +29,15 @@ interface ShippingStepProps {
   snappDayIdx: number
   snappTimeIdx: number
   giftWrap: boolean
+  giftMessage: string
+  /** Item subtotal, so prices show as free above the threshold. */
+  subtotal: number
   deliveryOptions: ApiDeliverySlot[]
   onSelectShipping: (id: ShippingId) => void
   onSnappDayChange: (i: number) => void
   onSnappTimeChange: (i: number) => void
   onGiftWrapToggle: () => void
+  onGiftMessageChange: (text: string) => void
   shippingValid: boolean
   onBack: () => void
   onNext: () => void
@@ -46,11 +49,14 @@ const ShippingStep: FC<ShippingStepProps> = ({
   snappDayIdx,
   snappTimeIdx,
   giftWrap,
+  giftMessage,
+  subtotal,
   deliveryOptions,
   onSelectShipping,
   onSnappDayChange,
   onSnappTimeChange,
   onGiftWrapToggle,
+  onGiftMessageChange,
   shippingValid,
   onBack,
   onNext,
@@ -97,9 +103,6 @@ const ShippingStep: FC<ShippingStepProps> = ({
               <span className="flex flex-col gap-1 min-w-0">
                 <span className="font-heading text-[16px] font-semibold leading-[1.2] flex items-center gap-2.5 flex-wrap">
                   {opt.name}
-                  <span className="font-display italic text-[13px] text-muted font-normal tracking-[.02em]">
-                    {opt.nameEn}
-                  </span>
                   {opt.id === 'snapp_box' && (
                     <span className="px-2 py-0.5 bg-copper/12 text-copper rounded-xs text-[13px] font-medium ">
                       پرطرفدار
@@ -108,7 +111,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                 </span>
                 <span className="text-[13px] text-muted leading-[1.55] flex items-center gap-2 flex-wrap">
                   {opt.desc}
-                  <span className="inline-flex items-center gap-[5px] px-[9px] py-[3px] bg-surface-2 border border-rule rounded-full text-[12px] text-ink-2 font-mono [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:text-ink-2">
+                  <span className="inline-flex items-center gap-[5px] px-[9px] py-[3px] bg-surface-2 border border-rule rounded-full text-[12px] text-ink-2 [&_svg]:w-[11px] [&_svg]:h-[11px] [&_svg]:text-ink-2">
                     {opt.id === 'snapp_box' ? (
                       <Icon name="clock" size={12} strokeWidth={1.8} />
                     ) : (
@@ -121,7 +124,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
 
               {/* Logo (hidden on ≤1100px) */}
               <span
-                className={`w-[50px] h-[50px] rounded-sm grid place-items-center font-display italic text-[20px] shrink-0 font-medium max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}
+                className={`w-[50px] h-[50px] rounded-sm grid place-items-center text-[20px] shrink-0 font-semibold max-[1100px]:hidden ${LOGO_STYLE[logoKey] ?? 'bg-bg-2 text-ink-2'}`}
               >
                 {opt.id === 'snapp_box' ? 'S' : opt.id === 'tipax' ? 'T' : 'P'}
               </span>
@@ -129,17 +132,19 @@ const ShippingStep: FC<ShippingStepProps> = ({
               {/* Price */}
               <span className="flex flex-col items-start gap-0.5 text-left">
                 <span className="font-heading text-[17px] font-bold leading-none">
-                  {opt.price === 0 ? (
+                  {shippingPrice(opt.id, subtotal) === 0 ? (
                     <span className="text-ok">رایگان</span>
                   ) : (
-                    formatToman(opt.price).replace(' تومان', '')
-                  )}
-                  {opt.price > 0 && (
-                    <small className="text-[13px] font-normal text-muted mr-1">تومان</small>
+                    <>
+                      {formatToman(opt.price).replace(' تومان', '')}
+                      <small className="text-[13px] font-normal text-muted mr-1">تومان</small>
+                    </>
                   )}
                 </span>
-                {opt.id === 'snapp_box' && (
-                  <span className="text-[12px] line-through text-muted font-mono">۳۲۰٬۰۰۰</span>
+                {shippingPrice(opt.id, subtotal) === 0 && opt.price > 0 && (
+                  <span className="text-[12px] line-through text-muted">
+                    {formatToman(opt.price)}
+                  </span>
                 )}
               </span>
             </div>
@@ -210,44 +215,67 @@ const ShippingStep: FC<ShippingStepProps> = ({
       })}
     </div>
 
-    {/* Gift wrap toggle */}
+    {/* Gift wrap: a real checkbox so it works from the keyboard and screen readers. */}
     <div
-      className={`mt-[18px] px-[18px] py-4 border rounded-sm flex items-center gap-3.5 cursor-pointer transition-[border-color,background] ${
+      className={`mt-[18px] border rounded-sm transition-[border-color,background] ${
         giftWrap
           ? 'border-copper border-solid bg-copper/5'
           : 'border-rule border-dashed bg-bg hover:border-ink-2'
       }`}
-      onClick={onGiftWrapToggle}
     >
-      <span
-        className={`w-[38px] h-[38px] rounded-full grid place-items-center shrink-0 transition-colors [&_svg]:w-[18px] [&_svg]:h-[18px] [&_svg]:stroke-[1.6] ${
-          giftWrap ? 'bg-copper text-white' : 'bg-surface-2 text-copper'
-        }`}
-      >
-        <Icon name="gift" size={18} strokeWidth={1.8} />
-      </span>
-      <span className="flex-1 flex flex-col gap-0.5">
-        <h3 className="font-heading text-[14px] font-semibold m-0 flex items-center gap-2">
-          بسته‌بندیِ هدیه
-          <span className="font-display italic text-[12px] text-muted font-normal">
-            Gift Wrapping
+      <label className="px-[18px] py-4 flex items-center gap-3.5 cursor-pointer">
+        <input
+          type="checkbox"
+          className="sr-only peer"
+          checked={giftWrap}
+          onChange={onGiftWrapToggle}
+        />
+        <span
+          aria-hidden="true"
+          className={`w-[38px] h-[38px] rounded-full grid place-items-center shrink-0 transition-colors ${
+            giftWrap ? 'bg-copper text-white' : 'bg-surface-2 text-copper'
+          }`}
+        >
+          <Icon name="gift" size={18} strokeWidth={1.8} />
+        </span>
+        <span className="flex-1 flex flex-col gap-0.5">
+          <span className="font-heading text-[14px] font-semibold">بسته‌بندیِ هدیه</span>
+          <span className="text-[13px] text-muted">جعبه‌ی مخمل و کارتِ دست‌نویس با متن شما</span>
+        </span>
+        <span className="font-heading text-[14px] font-semibold whitespace-nowrap">
+          {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰
+          <small className="text-[13px] font-normal text-muted mr-[3px]">تومان</small>
+        </span>
+        <span
+          aria-hidden="true"
+          className={`w-[22px] h-[22px] rounded-xs border-[1.5px] grid place-items-center transition-all peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-ink ${
+            giftWrap
+              ? 'bg-copper border-copper text-white'
+              : 'bg-surface border-rule text-transparent'
+          }`}
+        >
+          <Icon name="check" size={12} strokeWidth={2.5} />
+        </span>
+      </label>
+      {giftWrap && (
+        <div className="px-[18px] pb-4 flex flex-col gap-1.5">
+          <label htmlFor="gift-message" className="text-[13px] text-ink-2">
+            متن کارت <span className="text-muted">(اختیاری)</span>
+          </label>
+          <textarea
+            id="gift-message"
+            rows={3}
+            maxLength={GIFT_MESSAGE_MAX}
+            value={giftMessage}
+            onChange={(e) => onGiftMessageChange(e.target.value)}
+            placeholder="مثلاً: تولدت مبارک، با عشق"
+            className="w-full resize-none bg-surface border border-rule rounded-sm px-3.5 py-2.5 text-[14px] text-ink outline-none focus:border-ink"
+          />
+          <span className="text-[12px] text-muted self-end [font-variant-numeric:tabular-nums]">
+            {toFa(giftMessage.length)} / {toFa(GIFT_MESSAGE_MAX)}
           </span>
-        </h3>
-        <p className="m-0 text-[13px] text-muted">کارتِ دست‌نویس + جعبه‌ی مخمل — مناسب برای هدیه</p>
-      </span>
-      <span className="font-heading text-[14px] font-semibold">
-        {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰
-        <small className="text-[13px] font-normal text-muted mr-[3px]">تومان</small>
-      </span>
-      <span
-        className={`w-[22px] h-[22px] rounded-xs border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${
-          giftWrap
-            ? 'bg-copper border-copper text-white [&_svg]:opacity-100'
-            : 'bg-white border-rule text-white [&_svg]:opacity-0'
-        }`}
-      >
-        <Icon name="check" size={16} strokeWidth={2.5} />
-      </span>
+        </div>
+      )}
     </div>
 
     {/* Actions */}

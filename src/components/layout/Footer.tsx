@@ -38,10 +38,10 @@ const STATIC_COLS = [
   {
     title: 'پشتیبانی',
     links: [
-      { label: 'پیگیری سفارش', to: '/account' },
+      { label: 'پیگیری سفارش', to: '/account#orders' },
       { label: 'ارسال و تحویل', to: '/shipping' },
-      { label: 'بازگشت کالا', to: '/shipping' },
-      { label: 'راهنمای سایز', to: '/faq' },
+      { label: 'بازگشت کالا', to: '/shipping#returns' },
+      { label: 'راهنمای سایز', to: '/faq#size' },
       { label: 'پرسش‌های متداول', to: '/faq' },
     ],
   },
@@ -115,7 +115,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
       <div className="grid grid-cols-[1.6fr_repeat(3,1fr)] max-lg:grid-cols-2 max-md:grid-cols-2 gap-12 max-md:gap-8 pb-12 border-b border-rule max-w-[1480px] mx-auto">
         {/* Brand column */}
         <div className="flex flex-col gap-[18px] max-w-[34ch] max-md:col-span-2">
-          <span className="font-display italic text-[42px] text-ink leading-none font-normal">
+          <span className="font-wordmark italic text-[42px] text-ink leading-none font-normal">
             Luxera
           </span>
           <p className="text-ink-2 text-[14.5px] leading-[1.9] m-0">
@@ -184,9 +184,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
 
       <div className="pt-6 flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-[13px] text-muted max-w-[1480px] mx-auto">
         <span>© {jalaliYear()} لوکسرا — تمامی حقوق محفوظ است.</span>
-        <span className="font-display italic text-[14px] tracking-[0.04em]">
-          Luxera Jewelry · Tehran
-        </span>
+        <span>لوکسرا · تهران</span>
       </div>
     </footer>
   )

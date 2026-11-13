@@ -12,7 +12,7 @@ import { useSettingsStore } from '../../store/settingsStore'
 import { useBodyLock } from '../../hooks/useBodyLock'
 import { useHydrated } from '../../hooks/useHydrated'
 import { usePathname } from '../../hooks/usePathname'
-import { NAV_LINKS, isCategoryLink, type NavLink } from '../../data/navigation'
+import { HELP_LINKS, NAV_LINKS, isCategoryLink, type NavLink } from '../../data/navigation'
 import { CATEGORIES } from '../../data/categories'
 import { Illustration } from '../../illustrations'
 
@@ -33,7 +33,11 @@ function AnnouncementBar() {
     return () => window.clearInterval(t)
   }, [])
   return (
-    <div className="bg-plum-2 text-[var(--color-petal)] text-[13px]" role="status" aria-live="off">
+    <div
+      className="focus-hide bg-plum-2 text-[var(--color-petal)] text-[13px]"
+      role="status"
+      aria-live="off"
+    >
       <div className="relative flex items-center justify-center h-8 md:h-9 px-4 max-w-[1480px] mx-auto md:px-[var(--pad)]">
         {supportPhone ? (
           <span className="absolute start-4 md:start-[var(--pad)] max-md:hidden">
@@ -93,6 +97,17 @@ function isActive(pathname: string, to: string): boolean {
 
 const MEGA_CATS = CATEGORIES.filter((c) => !['new'].includes(c.id))
 const DESKTOP_LINKS = NAV_LINKS.filter((l) => !isCategoryLink(l))
+
+/** Mobile menu: shop, then categories, then help — each under its own label. */
+const MENU_GROUPS = [
+  {
+    label: 'خرید',
+    links: DESKTOP_LINKS.filter((l) => l.to === '/category/new' || l.to === '/collections'),
+  },
+  { label: 'دسته‌بندی‌ها', links: NAV_LINKS.filter(isCategoryLink) },
+  { label: 'بیشتر', links: DESKTOP_LINKS.filter((l) => l.to === '/gift' || l.to === '/blog') },
+  { label: 'راهنما', links: HELP_LINKS },
+]
 
 /** Desktop "all categories" panel. Opens on click or hover; Escape and outside clicks close it. */
 function MegaMenu({
@@ -216,6 +231,7 @@ const ICON_BTN =
 
 const Header: FC = () => {
   const hydrated = useHydrated()
+  const supportPhone = useSettingsStore((s) => s.support_phone || s.support_landline)
   const cartCount = useCartStore(selectTotalQty)
   const openCart = useCartStore((s) => s.openCart)
   const wishCount = useWishlistStore(selectWishlistCount)
@@ -297,18 +313,16 @@ const Header: FC = () => {
               className={`w-auto transition-[height] duration-300 ease-[var(--ease-lux)] ${scrolled ? 'h-[32px]' : 'h-[38px]'}`}
             />
             <div className="flex flex-col leading-none gap-[3px]">
-              <span className="font-display italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">
+              <span className="font-wordmark italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">
                 Luxera
               </span>
-              <span className="font-mono text-[9px] tracking-[0.3em] text-muted uppercase">
-                Fine Jewelry
-              </span>
+              <span className="text-[12px] text-muted">لوکسرا</span>
             </div>
           </a>
 
           {/* Desktop nav — centered, RTL for Persian text */}
           <nav
-            className="flex-1 flex justify-center max-[1100px]:hidden gap-[22px] items-center text-[14.5px] font-normal min-w-0"
+            className="focus-hide flex-1 flex justify-center max-[1100px]:hidden gap-[22px] items-center text-[14.5px] font-normal min-w-0"
             dir="rtl"
             aria-label="دسته‌بندی‌ها"
           >
@@ -327,58 +341,74 @@ const Header: FC = () => {
 
           {/* Actions — right */}
           <div className="flex items-center gap-1 shrink-0">
-            {/* Search bar — desktop */}
-            <button
-              className="flex items-center gap-2 h-11 ps-4 pe-2.5 me-1 bg-bg-2 rounded-full cursor-pointer text-sm text-ink-2 min-w-[210px] border border-rule font-[inherit] transition-colors duration-200 hover:bg-plate max-[720px]:hidden [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0"
-              onClick={openSearch}
-              aria-label="جستجو"
+            {/* Checkout only: reassurance instead of navigation. */}
+            <span
+              className="focus-only items-center gap-2 h-11 px-3 text-[13px] text-ink-2"
               dir="rtl"
             >
-              <Icon name="search" size={16} strokeWidth={1.6} />
-              <span>جستجو در فروشگاه…</span>
-              <kbd
-                className="ms-auto font-mono text-[12px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2"
-                dir="ltr"
-              >
-                {shortcutHint}
-              </kbd>
-            </button>
-
-            {/* Account — hidden on mobile (in BottomNav) */}
-            <button
-              className={`${ICON_BTN} max-[720px]:hidden`}
-              onClick={handleAccountClick}
-              aria-label={hydrated && isLoggedIn ? 'حساب من' : 'ورود'}
-            >
-              <Icon name="user" size={18} strokeWidth={1.6} />
-            </button>
-
-            {/* Wishlist — hidden on mobile (in BottomNav) */}
+              <Icon name="lock" size={15} />
+              پرداخت امن
+            </span>
             <a
-              href="/wishlist"
-              className={`${ICON_BTN} max-[720px]:hidden`}
-              aria-label="علاقه‌مندی‌ها"
+              href="/"
+              className="focus-only items-center gap-1.5 h-11 px-3 rounded-full text-[13px] text-ink-2 hover:bg-bg-2"
+              dir="rtl"
             >
-              <Icon name="heart" size={18} strokeWidth={1.6} />
-              {hydrated && wishCount > 0 && (
-                <span className="absolute top-1.5 end-1.5 min-w-[18px] h-[18px] px-1 bg-copper text-white rounded-full text-[11px] font-semibold grid place-items-center font-mono">
-                  {toFa(wishCount)}
-                </span>
-              )}
+              بازگشت به فروشگاه
             </a>
+            <div className="focus-hide contents">
+              {/* Search bar — desktop */}
+              <button
+                className="flex items-center gap-2 h-11 ps-4 pe-2.5 me-1 bg-bg-2 rounded-full cursor-pointer text-sm text-ink-2 min-w-[210px] border border-rule font-[inherit] transition-colors duration-200 hover:bg-plate max-[720px]:hidden [&>svg]:w-3.5 [&>svg]:h-3.5 [&>svg]:shrink-0"
+                onClick={openSearch}
+                aria-label="جستجو"
+                dir="rtl"
+              >
+                <Icon name="search" size={16} strokeWidth={1.6} />
+                <span>جستجو در فروشگاه…</span>
+                <kbd
+                  className="ms-auto font-mono text-[12px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2"
+                  dir="ltr"
+                >
+                  {shortcutHint}
+                </kbd>
+              </button>
 
-            <button className={ICON_BTN} onClick={openCart} aria-label="سبد خرید">
-              <Icon name="bag" size={18} strokeWidth={1.6} />
-              {hydrated && cartCount > 0 && (
-                <span className="absolute top-1.5 end-1.5 min-w-[18px] h-[18px] px-1 bg-copper text-white rounded-full text-[11px] font-semibold grid place-items-center font-mono">
-                  {toFa(cartCount)}
-                </span>
-              )}
-            </button>
+              {/* Account — hidden on mobile (in BottomNav) */}
+              <button
+                className={`${ICON_BTN} max-[720px]:hidden`}
+                onClick={handleAccountClick}
+                aria-label={hydrated && isLoggedIn ? 'حساب من' : 'ورود'}
+              >
+                <Icon name="user" size={18} strokeWidth={1.6} />
+              </button>
 
+              {/* Wishlist — hidden on mobile (in BottomNav) */}
+              <a
+                href="/wishlist"
+                className={`${ICON_BTN} max-[720px]:hidden`}
+                aria-label="علاقه‌مندی‌ها"
+              >
+                <Icon name="heart" size={18} strokeWidth={1.6} />
+                {hydrated && wishCount > 0 && (
+                  <span className="absolute top-1.5 end-1.5 min-w-[18px] h-[18px] px-1 bg-copper text-white rounded-full text-[12px] font-semibold grid place-items-center font-mono">
+                    {toFa(wishCount)}
+                  </span>
+                )}
+              </a>
+
+              <button className={ICON_BTN} onClick={openCart} aria-label="سبد خرید">
+                <Icon name="bag" size={18} strokeWidth={1.6} />
+                {hydrated && cartCount > 0 && (
+                  <span className="absolute top-1.5 end-1.5 min-w-[18px] h-[18px] px-1 bg-copper text-white rounded-full text-[12px] font-semibold grid place-items-center font-mono">
+                    {toFa(cartCount)}
+                  </span>
+                )}
+              </button>
+            </div>
             {/* Hamburger — mobile only, right side */}
             <button
-              className="flex min-[1100px]:hidden items-center justify-center w-[48px] h-[48px] text-ink -me-1"
+              className="focus-hide flex min-[1100px]:hidden items-center justify-center w-[48px] h-[48px] text-ink -me-1"
               onClick={() => setMenuOpen(true)}
               aria-label="منو"
               aria-expanded={menuOpen}
@@ -412,7 +442,7 @@ const Header: FC = () => {
         >
           <a href="/" className="flex items-center gap-2" onClick={closeMenu}>
             <img src="/logo-crystal.svg" alt="" width={300} height={210} className="h-8 w-auto" />
-            <span className="font-display italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
+            <span className="font-wordmark italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
           </a>
           <button
             className="flex items-center justify-center w-11 h-11 -me-2 rounded-full text-ink-2 transition-colors duration-200 hover:bg-bg-2 hover:text-ink"
@@ -423,39 +453,60 @@ const Header: FC = () => {
           </button>
         </div>
 
-        <nav className="flex-1 flex flex-col overflow-y-auto">
-          {NAV_LINKS.map((link, i) => (
-            <Fragment key={link.to}>
-              {isCategoryLink(link) && !isCategoryLink(NAV_LINKS[i - 1] ?? link) && (
-                <span className="label-fa px-6 pt-5 pb-2">دسته‌بندی‌ها</span>
-              )}
-              <NavLinkItem
-                {...link}
-                onClick={closeMenu}
-                mobile
-                active={isActive(activePath, link.to)}
-              />
+        <nav className="flex-1 flex flex-col overflow-y-auto" aria-label="منوی اصلی">
+          {/* Search and account first: the two things people open a menu for. */}
+          <div className="grid grid-cols-2 gap-2 px-6 py-4 border-b border-rule">
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 min-h-12 rounded-full bg-bg-2 border border-rule text-[14px] text-ink"
+              onClick={() => {
+                closeMenu()
+                openSearch()
+              }}
+            >
+              <Icon name="search" size={16} />
+              جستجو
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center gap-2 min-h-12 rounded-full bg-bg-2 border border-rule text-[14px] text-ink"
+              onClick={() => {
+                closeMenu()
+                handleAccountClick()
+              }}
+            >
+              <Icon name="user" size={16} />
+              {hydrated && isLoggedIn ? 'حساب من' : 'ورود'}
+            </button>
+          </div>
+
+          {MENU_GROUPS.map((group) => (
+            <Fragment key={group.label}>
+              <span className="label-fa px-6 pt-5 pb-2">{group.label}</span>
+              {group.links.map((link) => (
+                <NavLinkItem
+                  key={link.to}
+                  {...link}
+                  onClick={closeMenu}
+                  mobile
+                  active={isActive(activePath, link.to)}
+                />
+              ))}
             </Fragment>
           ))}
         </nav>
 
-        <div className="flex items-center justify-between gap-4 px-6 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] border-t border-rule text-[13px] text-ink-2">
+        {supportPhone ? (
           <a
-            href="/contact"
-            className="inline-flex items-center gap-2 min-h-11 transition-colors duration-200 hover:text-plum"
+            href={`tel:${supportPhone.replace(/[^\d+]/g, '')}`}
+            className="flex items-center gap-2 px-6 py-3 pb-[calc(12px+env(safe-area-inset-bottom))] min-h-12 border-t border-rule text-[13px] text-ink-2 hover:text-plum"
             onClick={closeMenu}
           >
             <Icon name="phone" size={15} />
-            <span>پشتیبانی</span>
+            <span>پشتیبانی: </span>
+            <span dir="ltr">{supportPhone}</span>
           </a>
-          <a
-            href="/faq"
-            className="inline-flex items-center min-h-11 transition-colors duration-200 hover:text-plum"
-            onClick={closeMenu}
-          >
-            پرسش‌های متداول
-          </a>
-        </div>
+        ) : null}
       </div>
     </>
   )

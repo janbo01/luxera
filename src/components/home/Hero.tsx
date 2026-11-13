@@ -82,7 +82,10 @@ const Hero: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
             <span className="text-[13px] text-copper-dark">{jalaliSeason()}</span>
           </span>
 
-          <h1 className="font-heading font-bold text-[clamp(28px,4.2vw,56px)] leading-[1.08] tracking-[-0.01em] m-0 mb-4 md:mb-6 text-ink animate-rise [animation-delay:160ms]">
+          {/* The page's only H1. On phones the banner already carries the headline, so this one
+              is kept for screen readers and search engines but not shown twice. */}
+          <h1 className="max-md:sr-only font-heading font-bold text-[clamp(28px,4.2vw,56px)] leading-[1.08] tracking-[-0.01em] m-0 mb-4 md:mb-6 text-ink animate-rise [animation-delay:160ms]">
+            <span className="sr-only">فروشگاه جواهرات فانتزی لوکسرا: </span>
             استایلِ امروز،
             <br />
             <span className="text-copper-dark relative inline-block after:absolute after:-inset-x-1 after:bottom-[0.16em] after:h-[0.3em] after:bg-copper/[0.16] after:-z-10 after:rounded-sm">

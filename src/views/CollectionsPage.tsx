@@ -56,6 +56,7 @@ const CollectionsPage: FC<CollectionsPageProps> = ({ initialData }) => {
 
       <div className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-[clamp(56px,7vw,96px)]">
         <PageIntro
+          as="h2"
           kicker="کالکشن‌ها"
           title={
             <>
@@ -181,10 +182,10 @@ const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
           </div>
         ) : (
           <span
-            className="absolute inset-0 grid place-items-center font-display italic font-light leading-none select-none opacity-20 text-[clamp(96px,12vw,160px)]"
+            className="absolute inset-0 grid place-items-center font-heading font-bold leading-none select-none opacity-20 text-[clamp(96px,12vw,160px)]"
             aria-hidden
           >
-            {(col.name_en ?? col.name_fa).charAt(0)}
+            {col.name_fa.charAt(0)}
           </span>
         )}
 
@@ -197,11 +198,6 @@ const CollectionCard: FC<CollectionCardProps> = ({ col, index }) => {
 
       <div className="flex items-start justify-between gap-3 pt-4">
         <div className="min-w-0">
-          {col.name_en && (
-            <div className="font-display italic text-[13px] text-copper-dark leading-none mb-1.5">
-              {col.name_en}
-            </div>
-          )}
           <h3 className="font-heading text-[19px] md:text-[21px] font-bold leading-snug m-0 text-ink transition-colors duration-200 group-hover:text-plum">
             {col.name_fa}
           </h3>

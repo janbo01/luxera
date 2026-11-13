@@ -1,12 +1,10 @@
 import type { PaymentGateway } from '../types'
 
+/** Same price and limit as the order service (backend/order/internal/service/delivery.go). */
 export const GIFT_WRAP_PRICE = 15_000
+export const GIFT_MESSAGE_MAX = 200
 
-export const STEP_LABELS = [
-  { lbl: 'Step 01', name: 'آدرس تحویل' },
-  { lbl: 'Step 02', name: 'روش ارسال' },
-  { lbl: 'Step 03', name: 'پرداخت' },
-]
+export const STEP_LABELS = [{ name: 'آدرس تحویل' }, { name: 'روش ارسال' }, { name: 'پرداخت' }]
 
 export interface PaymentOption {
   id: PaymentGateway

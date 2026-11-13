@@ -1,23 +1,19 @@
 import { usePageMeta } from '../hooks/usePageMeta'
-import { useEffect, type FC } from 'react'
+import { useEffect, useState, type FC } from 'react'
 import { batchProducts } from '../api/product'
 import { StockNotifyForm } from '../components/product/StockNotifyForm'
 import { useWishlistStore } from '../store/wishlistStore'
 import { useCartStore } from '../store/cartStore'
-import { Illustration } from '../illustrations'
 import { toFa } from '../utils/format'
 import Icon from '../components/icons/Icon'
 import { BTN_CLS, BTN_GHOST_CLS } from '../components/ui/Button'
-import Badge from '../components/shared/Badge'
-import PriceDisplay from '../components/shared/PriceDisplay'
-import ProductMeta from '../components/shared/ProductMeta'
-import { imgSet } from '../utils/cdnImage'
+import ProductCard from '../components/product/ProductCard'
+import PageHeader from '../components/shared/PageHeader'
 
 const WishlistPage: FC = () => {
   usePageMeta({ title: 'علاقه‌مندی‌ها' })
-  const { items, remove, clear, refreshLive } = useWishlistStore()
+  const { items, clear, refreshLive } = useWishlistStore()
   const addItem = useCartStore((s) => s.addItem)
-  const openCart = useCartStore((s) => s.openCart)
 
   // Fetch today's prices once so a drop since saving can be shown on the card.
   useEffect(() => {
@@ -34,26 +30,22 @@ const WishlistPage: FC = () => {
       .catch(() => {})
   }, [refreshLive])
 
-  const handleMoveToCart = (product: (typeof items)[number]) => {
-    addItem(product)
-    remove(product.id)
-    openCart()
-  }
+  const [confirmClear, setConfirmClear] = useState(false)
 
   return (
     <div className="px-[clamp(20px,4vw,56px)] pb-[88px] max-w-[1480px] mx-auto">
-      {/* Hero */}
-      <div className="py-[72px] pb-[52px] border-b border-rule mb-10 max-[760px]:py-12 max-[760px]:pb-9">
-        <span className="font-body text-[13px] text-muted mb-3.5 block">لیست آرزوها</span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] my-3 text-ink [&_em]:font-heading [&_em]:not-italic [&_em]:text-plum [&_em]:font-normal">
-          علاقه‌مندی‌های
-          <em> شما</em>
-        </h1>
-        {items.length > 0 && (
-          <p className="text-muted text-sm m-0">
-            {toFa(items.length)} قطعه ذخیره شده — وقتی آماده شدید به سبد اضافه کنید
-          </p>
-        )}
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-8 border-b border-rule">
+        <PageHeader
+          as="h2"
+          crumbs={[{ label: 'علاقه‌مندی‌ها' }]}
+          title="علاقه‌مندی‌های شما"
+          description={
+            items.length > 0
+              ? 'قطعه‌هایی که ذخیره کرده‌اید. اگر قیمتی پایین آمده باشد، روی کارت نشان داده می‌شود.'
+              : undefined
+          }
+          meta={items.length > 0 ? <span>{toFa(items.length)} قطعه</span> : undefined}
+        />
       </div>
 
       {items.length === 0 ? (
@@ -75,121 +67,65 @@ const WishlistPage: FC = () => {
         </div>
       ) : (
         <>
-          {/* Toolbar */}
-          <div className="flex items-center justify-between text-[13px] text-muted pb-7 border-b border-rule mb-9 ">
-            <span>{toFa(items.length)} قطعه</span>
-            <button
-              className="inline-flex items-center gap-2 pb-0.5 border-b border-ink bg-transparent text-ink text-[13px] tracking-[0.04em] transition-colors duration-200 cursor-pointer hover:text-plum hover:border-plum"
-              onClick={clear}
-            >
-              پاک‌کردن همه
-            </button>
-          </div>
-
-          {/* Grid */}
-          <div className="grid grid-cols-4 max-[1100px]:grid-cols-3 max-[760px]:grid-cols-2 gap-5 max-[760px]:gap-x-3 max-[760px]:gap-y-5">
-            {items.map((product) => (
-              <div
-                key={product.id}
-                className="group flex flex-col bg-surface border border-rule transition-[box-shadow,border-color] duration-300 hover:border-plum hover:[box-shadow:0_8px_32px_rgba(74,34,64,0.08)]"
-              >
-                <a
-                  href={`/product/${product.slug ?? product.id}`}
-                  className="relative bg-plate aspect-[4/5] flex items-center justify-center overflow-hidden no-underline"
-                >
-                  <Badge
-                    label={
-                      product.savedPrice != null && product.price < product.savedPrice
-                        ? 'کاهش قیمت'
-                        : product.badge
-                    }
-                    kind={
-                      product.savedPrice != null && product.price < product.savedPrice
-                        ? 'sale'
-                        : product.badgeKind
-                    }
-                  />
-                  <button
-                    className="absolute top-2.5 left-2.5 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-muted opacity-0 scale-[0.8] transition-[opacity,transform,color,background] duration-[250ms] z-[4] backdrop-blur-sm group-hover:opacity-100 group-hover:scale-100 hover:text-sale hover:bg-[#fff5f5]"
-                    aria-label="حذف از علاقه‌مندی"
-                    onClick={(e) => {
-                      e.preventDefault()
-                      remove(product.id)
-                    }}
-                  >
-                    <Icon name="close" size={12} />
-                  </button>
-                  <div className="w-[72%] h-auto flex items-center justify-center transition-transform duration-[600ms] text-ink group-hover:scale-[1.04]">
-                    {product.imageUrl ? (
-                      <img
-                        {...imgSet(product.imageUrl, {
-                          widths: [320, 480, 640],
-                          sizes: '(max-width: 760px) 40vw, (max-width: 1100px) 25vw, 260px',
-                        })}
-                        alt={product.fa}
-                        width={480}
-                        height={480}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Illustration name={product.illus} />
-                    )}
-                  </div>
-                </a>
-
-                <div className="flex flex-col flex-1 p-4 gap-3">
-                  <div className="flex-1">
-                    <a
-                      href={`/product/${product.slug ?? product.id}`}
-                      className="no-underline text-inherit"
-                    >
-                      <div className="text-sm font-normal text-ink mb-0.5">{product.fa}</div>
-                      <span className="font-display italic text-[12px] text-muted block mb-2">
-                        {product.en}
-                      </span>
-                    </a>
-                    <ProductMeta
-                      items={product.meta}
-                      className="font-mono text-[12px] text-muted flex flex-wrap gap-2"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2 border-t border-rule pt-3">
-                    <PriceDisplay
-                      price={product.price}
-                      oldPrice={
-                        product.savedPrice != null && product.price < product.savedPrice
-                          ? product.savedPrice
-                          : product.oldPrice
-                      }
-                      className="text-[13px] text-ink flex flex-col gap-0.5"
-                      oldClassName="text-muted line-through text-[13px]"
-                    />
-                    {product.stockCount === 0 ? (
-                      <span className="text-[12.5px] text-muted">ناموجود</span>
-                    ) : (
-                      <button
-                        className="inline-flex items-center gap-1.5 py-2.5 px-4 bg-ink text-bg text-xs tracking-[0.04em] whitespace-nowrap transition-[background,color] duration-[250ms] shrink-0 hover:bg-plum"
-                        onClick={() => handleMoveToCart(product)}
-                      >
-                        <Icon name="bag" size={13} />
-                        افزودن به سبد
-                      </button>
-                    )}
-                  </div>
+          {/* The same card as every other grid; a price drop since saving shows as a sale. */}
+          <div className="products grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-[clamp(12px,1.5vw,22px)] gap-y-[clamp(28px,3vw,44px)]">
+            {items.map((product) => {
+              const dropped = product.savedPrice != null && product.price < product.savedPrice
+              const shown = dropped
+                ? {
+                    ...product,
+                    oldPrice: product.savedPrice!,
+                    badge: 'کاهش قیمت',
+                    badgeKind: 'sale' as const,
+                  }
+                : product
+              return (
+                <div key={product.id} className="flex flex-col gap-3">
+                  <ProductCard product={shown} onAdd={addItem} />
                   {/* Sold out: the wishlist is where intent is highest, so offer the restock alert here */}
                   {product.stockCount === 0 && <StockNotifyForm productId={product.id} />}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
-          <div className="mt-14 flex justify-center">
+          <div className="mt-14 pt-6 border-t border-rule flex flex-wrap items-center justify-between gap-4">
             <a href="/category/new" className={BTN_GHOST_CLS}>
               ادامه‌ی خرید
             </a>
+            {confirmClear ? (
+              <span
+                className="inline-flex items-center gap-2 text-[13.5px] text-ink-2"
+                role="group"
+              >
+                همه‌ی {toFa(items.length)} قطعه حذف شود؟
+                <button
+                  type="button"
+                  className="min-h-11 px-4 rounded-full bg-ink text-bg"
+                  onClick={() => {
+                    clear()
+                    setConfirmClear(false)
+                  }}
+                >
+                  بله، حذف کن
+                </button>
+                <button
+                  type="button"
+                  className="min-h-11 px-4 rounded-full border border-rule"
+                  onClick={() => setConfirmClear(false)}
+                >
+                  انصراف
+                </button>
+              </span>
+            ) : (
+              <button
+                type="button"
+                className="min-h-11 px-2 text-[13.5px] text-muted underline underline-offset-4 hover:text-ink"
+                onClick={() => setConfirmClear(true)}
+              >
+                پاک‌کردن همه
+              </button>
+            )}
           </div>
         </>
       )}

@@ -52,9 +52,9 @@ const CategoryHero: FC<CategoryHeroProps> = ({ category, catId, catProductCounts
       </nav>
 
       <header className="mt-4 md:mt-6">
-        <h1 className="font-heading font-bold text-[clamp(28px,3.4vw,44px)] leading-[1.15] m-0 text-ink">
+        <h2 className="font-heading font-bold text-[clamp(28px,3.4vw,44px)] leading-[1.15] m-0 text-ink">
           {category.fa}
-        </h1>
+        </h2>
         {description && (
           <div className="mt-1.5 flex items-start gap-2 max-w-[72ch]">
             <p

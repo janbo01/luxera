@@ -1,6 +1,7 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import type { FC } from 'react'
 import { BTN_CLS, BTN_GHOST_CLS } from '../../components/ui/Button'
+import PageHeader from '../../components/shared/PageHeader'
 
 const VALUES = [
   {
@@ -50,19 +51,12 @@ const AboutPage: FC = () => {
   })
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* Hero */}
-      <div className="py-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          About
-        </span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          درباره‌ی
-          <em className="font-heading not-italic text-plum font-normal"> لوکسرا</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-          لوکسرا یک فروشگاه تخصصی جواهرات فانتزی است — نه کارخانه، نه طراح، فقط یک منتخب دقیق از
-          بهترین برندهای جواهرات فانتزی بازار.
-        </p>
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-10 border-b border-rule">
+        <PageHeader
+          crumbs={[{ label: 'درباره‌ی ما' }]}
+          title="درباره‌ی لوکسرا"
+          description="لوکسرا یک فروشگاه تخصصی جواهرات فانتزی است — نه کارخانه، نه طراح، فقط یک منتخب دقیق از بهترین برندهای جواهرات فانتزی بازار."
+        />
       </div>
 
       {/* Split */}

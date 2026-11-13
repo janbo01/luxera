@@ -2,6 +2,14 @@ import { usePageMeta } from '../../hooks/usePageMeta'
 import { useState, type FC, type SyntheticEvent } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
 import { useSettingsStore } from '../../store/settingsStore'
+import { sendContactMessage } from '../../api/store'
+import { HttpError } from '../../api/client'
+import PageHeader from '../../components/shared/PageHeader'
+import { toLatinDigits } from '../../utils/format'
+
+/** Used when the admin has not set a support number in store settings. */
+const FALLBACK_PHONE = '+989128494308'
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const SUBJECTS = [
   'سوال درباره‌ی محصول',
@@ -42,6 +50,8 @@ const ContactPage: FC = () => {
   const instagramUrl = useSettingsStore((s) => s.instagram_url)
   const whatsappRaw = useSettingsStore((s) => s.whatsapp_number)
   const baleLink = useSettingsStore((s) => s.bale_link)
+  const supportPhone = useSettingsStore((s) => s.support_phone) || FALLBACK_PHONE
+  const telHref = `tel:${toLatinDigits(supportPhone).replace(/[^\d+]/g, '')}`
 
   const whatsappUrl = whatsappRaw ? `https://wa.me/${whatsappRaw.replace(/\D/g, '')}` : ''
 
@@ -54,13 +64,41 @@ const ContactPage: FC = () => {
   const [form, setForm] = useState({ name: '', phone: '', subject: SUBJECTS[0], message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
+    const contact = toLatinDigits(form.phone.trim())
+    const isEmail = EMAIL_RE.test(contact)
+    const digits = contact.replace(/\D/g, '')
+    if (!form.name.trim() || !form.message.trim()) {
+      setError('نام و متن پیام را بنویسید.')
+      return
+    }
+    if (!isEmail && digits.length < 10) {
+      setError('یک شماره‌ی تلفن یا ایمیل معتبر بنویسید تا بتوانیم پاسخ بدهیم.')
+      return
+    }
+    setError('')
     setSubmitting(true)
-    await new Promise((r) => setTimeout(r, 900))
-    setSubmitting(false)
-    setSubmitted(true)
+    try {
+      await sendContactMessage({
+        name: form.name.trim(),
+        phone: isEmail ? undefined : digits,
+        email: isEmail ? contact : undefined,
+        subject: form.subject,
+        message: form.message.trim(),
+      })
+      setSubmitted(true)
+    } catch (err) {
+      setError(
+        err instanceof HttpError && err.status === 429
+          ? 'پیام‌های زیادی فرستاده‌اید. کمی بعد دوباره امتحان کنید یا تماس بگیرید.'
+          : 'پیام ارسال نشد. دوباره امتحان کنید یا با شماره‌ی بالا تماس بگیرید.',
+      )
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const set =
@@ -70,19 +108,29 @@ const ContactPage: FC = () => {
 
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* Hero */}
-      <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          Contact
-        </span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          تماس با
-          <em className="font-heading not-italic text-plum font-normal"> لوکسرا</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-          سوال دارید؟ می‌توانید از طریق فرم زیر یا واتس‌اپ با ما در ارتباط باشید.
-        </p>
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-6 border-b border-rule">
+        <PageHeader
+          crumbs={[{ label: 'تماس با ما' }]}
+          title="تماس با لوکسرا"
+          description="سوال دارید؟ تماس بگیرید یا فرم زیر را بفرستید؛ تیم لوکسرا پاسخ می‌دهد."
+        />
       </div>
+
+      <nav aria-label="پرسش‌های پرتکرار" className="flex flex-wrap gap-2 mb-12">
+        {[
+          ['/faq#delivery', 'زمان ارسال'],
+          ['/shipping#returns', 'بازگشت کالا'],
+          ['/faq#size', 'راهنمای سایز'],
+        ].map(([to, label]) => (
+          <a
+            key={to}
+            href={to}
+            className="inline-flex items-center min-h-11 px-4 rounded-full border border-rule bg-surface text-[14px] text-ink-2 hover:border-ink hover:text-ink"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
 
       <div className="grid grid-cols-[1fr_1.4fr] gap-16 items-start mb-20 max-[900px]:grid-cols-1 max-[900px]:gap-12">
         {/* Info column */}
@@ -90,19 +138,19 @@ const ContactPage: FC = () => {
           <div className="py-6 border-b border-rule first:pt-0">
             <p className="text-[13px] text-muted m-0 mb-2.5">تلفن و پیام</p>
             <a
-              href="tel:+989128494308"
+              href={telHref}
               dir="ltr"
-              className="inline-flex items-center min-h-11 font-mono text-[16px] font-medium text-ink transition-colors hover:text-plum"
+              className="inline-flex items-center min-h-11 text-[16px] font-medium text-ink transition-colors hover:text-plum [font-variant-numeric:tabular-nums]"
             >
-              +98 912 849 4308
+              {supportPhone}
             </a>
             <p className="text-[15px] leading-[1.85] text-ink-2 m-0 mt-1">
               پشتیبانی واتس‌اپ: ۱۰ تا ۲۲ روزانه
             </p>
           </div>
-          <div className="py-6 border-b border-rule">
-            <p className="text-[13px] text-muted m-0 mb-2.5">شبکه‌های اجتماعی</p>
-            {socialLinks.length > 0 && (
+          {socialLinks.length > 0 && (
+            <div className="py-6 border-b border-rule">
+              <p className="text-[13px] text-muted m-0 mb-2.5">شبکه‌های اجتماعی</p>
               <div className="flex gap-2.5 flex-wrap mt-2">
                 {socialLinks.map((s) => (
                   <a
@@ -117,8 +165,8 @@ const ContactPage: FC = () => {
                   </a>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </aside>
 
         {/* Form column */}
@@ -132,7 +180,9 @@ const ContactPage: FC = () => {
                 ✓
               </div>
               <h2 className="font-heading font-bold text-[21px] m-0 text-ink">پیام شما ارسال شد</h2>
-              <p className="text-sm text-muted m-0">تیم لوکسرا حداکثر ظرف ۲۴ ساعت پاسخ می‌دهد.</p>
+              <p className="text-sm text-muted m-0">
+                پیام به دست تیم لوکسرا رسید. با همان تلفن یا ایمیلی که نوشتید پاسخ می‌دهیم.
+              </p>
               <button
                 className={BTN_CLS}
                 onClick={() => {
@@ -157,7 +207,7 @@ const ContactPage: FC = () => {
                     type="text"
                     value={form.name}
                     onChange={set('name')}
-                    placeholder="مثلاً: نگار رضایی"
+                    autoComplete="name"
                     required
                     className={INPUT}
                   />
@@ -171,7 +221,8 @@ const ContactPage: FC = () => {
                     type="text"
                     value={form.phone}
                     onChange={set('phone')}
-                    placeholder="۰۹۱۲ ۱۲۳ ۴۵۶۷"
+                    placeholder="برای پاسخ‌دادن به شما"
+                    autoComplete="tel"
                     required
                     className={INPUT}
                   />
@@ -206,11 +257,17 @@ const ContactPage: FC = () => {
                   onChange={set('message')}
                   placeholder="جزئیات سوال یا درخواست خود را بنویسید..."
                   rows={6}
+                  maxLength={3000}
                   required
                   className={INPUT}
                 />
               </div>
 
+              {error && (
+                <p role="alert" className="m-0 text-[14px] text-sale">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
                 className={`${BTN_CLS} self-start max-[640px]:w-full max-[640px]:justify-center`}

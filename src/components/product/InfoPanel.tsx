@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FC } from 'react'
+import { DELIVERY_PROMISE } from '../../data/shipping'
 import Icon from '../icons/Icon'
 import QuantityStepper from '../shared/QuantityStepper'
 import Stars from './Stars'
@@ -29,7 +30,7 @@ const PERKS = [
   {
     icon: 'truck',
     heading: 'ارسال رایگان بالای ۲.۵ میلیون',
-    body: 'تهران: ۴–۶ ساعت · سراسر ایران: ۲–۵ روز کاری',
+    body: DELIVERY_PROMISE.short,
   },
   { icon: 'refresh', heading: 'بازگشتِ ۴ روزه', body: 'تا ۴ روز پس از دریافت، با بسته‌بندی اصلی' },
 ]

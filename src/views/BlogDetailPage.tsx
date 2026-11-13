@@ -163,7 +163,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
     return (
       <div className="max-w-[780px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px] pt-20 text-center">
         <p
-          className="font-display font-bold leading-none mb-6 select-none"
+          className="font-heading font-bold leading-none mb-6 select-none"
           style={{
             fontSize: 'clamp(80px, 14vw, 140px)',
             color: 'var(--color-plum)',
@@ -173,9 +173,9 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
         >
           404
         </p>
-        <h1 className="font-heading font-bold text-[clamp(22px,3vw,32px)] text-ink mb-4">
+        <h2 className="font-heading font-bold text-[clamp(22px,3vw,32px)] text-ink mb-4">
           مقاله یافت نشد
-        </h1>
+        </h2>
         <p className="text-ink-2 mb-10 text-[15px] leading-[1.8]">
           مقاله‌ای با این آدرس منتشر نشده یا حذف شده است.
         </p>
@@ -239,9 +239,9 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
               </>
             )}
           </div>
-          <h1 className="font-heading font-bold text-[clamp(28px,4.5vw,52px)] leading-[1.18] text-ink mb-5">
+          <h2 className="font-heading font-bold text-[clamp(28px,4.5vw,52px)] leading-[1.18] text-ink mb-5">
             {post.title}
-          </h1>
+          </h2>
           {post.excerpt && (
             <p className="text-[17px] leading-[1.95] text-ink-2 max-w-[58ch]">{post.excerpt}</p>
           )}

@@ -69,6 +69,9 @@ export interface ApiCheckoutInput {
   delivery_date?: string
   delivery_slot?: string
   notes?: string
+  gift_wrap?: boolean
+  /** Text for the handwritten card; only kept when gift_wrap is true. */
+  gift_message?: string
   items?: ApiCheckoutItem[]
   loyalty_points_to_use?: number
 }

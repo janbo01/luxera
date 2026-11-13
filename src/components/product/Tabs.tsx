@@ -1,5 +1,6 @@
 import { useState, Fragment, type FC } from 'react'
 import Icon from '../icons/Icon'
+import { SHIPPING } from '../../data/shipping'
 import { PRODUCT_DETAIL } from '../../data/productDetail'
 import type { ProductDetail } from '../../types'
 
@@ -27,12 +28,13 @@ const Tabs: FC<TabsProps> = ({ product }) => {
   ]
 
   return (
-    <section id="details" className="pt-[72px] px-[var(--pad)] mb-0 scroll-mt-24">
-      <nav className="flex items-center border-b border-rule overflow-x-auto">
+    <section id="details" className="pt-8 md:pt-[72px] px-[var(--pad)] mb-0 scroll-mt-24">
+      {/* Four short tabs share the width on phones, so none is cut off. */}
+      <nav className="grid grid-cols-4 md:flex md:items-center border-b border-rule">
         {TAB_LABELS.map(({ id, label }) => (
           <button
             key={id}
-            className={`px-[22px] py-[18px] font-body text-[14px] font-medium border-b-2 -mb-px transition-colors duration-200 relative whitespace-nowrap flex-shrink-0 ${activeTab === id ? 'border-b-ink text-ink' : 'border-b-transparent text-muted hover:text-ink-2'}`}
+            className={`px-1 md:px-[22px] py-4 md:py-[18px] font-body text-[13.5px] md:text-[14px] font-medium border-b-2 -mb-px transition-colors duration-200 relative whitespace-nowrap text-center ${activeTab === id ? 'border-b-ink text-ink' : 'border-b-transparent text-muted hover:text-ink-2'}`}
             onClick={() => setActiveTab(id)}
           >
             {label}
@@ -48,9 +50,6 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           <div>
             <h2 className="font-heading text-[24px] font-bold m-0 mb-4 leading-[1.2] flex items-center gap-2.5">
               درباره‌ی این قطعه
-              <span className="font-display italic font-normal text-copper-dark text-[16px]">
-                — The Story
-              </span>
             </h2>
             {p.description.split('\n\n').map((para, i) => (
               <p key={i} className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[68ch]">
@@ -90,9 +89,6 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           <div>
             <h2 className="font-heading text-[24px] font-bold m-0 mb-4 leading-[1.2] flex items-center gap-2.5">
               مشخصاتِ فنی
-              <span className="font-display italic font-normal text-copper-dark text-[16px]">
-                — Specifications
-              </span>
             </h2>
             <div className="grid [grid-template-columns:auto_1fr] border-t border-rule text-[14px]">
               {specs.map(([k, v], i) => (
@@ -147,9 +143,6 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           <div>
             <h2 className="font-heading text-[24px] font-bold m-0 mb-4 leading-[1.2] flex items-center gap-2.5">
               نگهداری
-              <span className="font-display italic font-normal text-copper-dark text-[16px]">
-                — Care guide
-              </span>
             </h2>
             <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">
               برای حفظ درخشش قطعه، چند نکته‌ی ساده را رعایت کنید: قطعه را پیش از حمام، شنا یا ورزش
@@ -194,9 +187,6 @@ const Tabs: FC<TabsProps> = ({ product }) => {
           <div>
             <h2 className="font-heading text-[24px] font-bold m-0 mb-4 leading-[1.2] flex items-center gap-2.5">
               ارسال و بازگشت
-              <span className="font-display italic font-normal text-copper-dark text-[16px]">
-                — Shipping &amp; returns
-              </span>
             </h2>
             <p className="m-0 mb-3.5 text-[15px] leading-[1.95] text-ink-2 max-w-[55ch]">
               سفارش‌های تهران در ۴ تا ۶ ساعت با اسنپ‌باکس به‌دستِ شما می‌رسد. شهرستان‌ها از طریقِ
@@ -216,24 +206,18 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               روش‌های ارسال
             </h3>
             <ul className="flex flex-col gap-3 list-none p-0 m-0">
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
-                <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
-                  <Icon name="check" size={11} strokeWidth={2.4} />
-                </span>
-                اسنپ‌باکس · تهران · ۴–۶ ساعت
-              </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
-                <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
-                  <Icon name="check" size={11} strokeWidth={2.4} />
-                </span>
-                تیپاکس · سراسر ایران · ۲۴–۴۸ ساعت
-              </li>
-              <li className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]">
-                <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
-                  <Icon name="check" size={11} strokeWidth={2.4} />
-                </span>
-                پستِ پیشتاز · کلِ کشور · ۴۸–۷۲ ساعت
-              </li>
+              {SHIPPING.map((o) => (
+                <li
+                  key={o.id}
+                  className="flex items-start gap-3 px-4 py-3.5 bg-surface border border-rule rounded-sm text-[14px] leading-[1.55]"
+                >
+                  <span className="w-[22px] h-[22px] rounded-full bg-bg-2 grid place-items-center text-copper flex-shrink-0 mt-0.5">
+                    <Icon name="check" size={11} strokeWidth={2.4} />
+                  </span>
+                  {o.name} · {o.teheranOnly ? 'فقط تهران' : 'سراسر ایران'} ·{' '}
+                  {o.teheranOnly ? 'همان روز یا روز بعد' : o.etaLabel}
+                </li>
+              ))}
             </ul>
           </div>
         </div>

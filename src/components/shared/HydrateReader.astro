@@ -22,19 +22,11 @@
 // `type="module"`, and those get de-duplicated by content, so a second identical
 // instance elsewhere on the page would silently no-op). Its hash is registered
 // manually via cspHash() — safe because this content is a fixed string.
-import { cspHash } from '../../lib/ssr'
 
-const READER_JS = `function __hydrate() {
-  document.querySelectorAll('script[type="application/json"][data-hydrate]').forEach((el) => {
-    try {
-      window[el.dataset.hydrate] = JSON.parse(el.textContent || 'null')
-    } catch {}
-  })
-}
-__hydrate()
-document.addEventListener('astro:page-load', __hydrate)`
+import { READER_JS } from '../../lib/hydrateReader'
 
-Astro.csp?.insertScriptHash(cspHash(READER_JS))
+// Its CSP hash is added in src/middleware.ts: a component's frontmatter runs after
+// Astro has sent the CSP header, so a hash registered here never reached it.
 ---
 
 <script is:inline set:html={READER_JS} />

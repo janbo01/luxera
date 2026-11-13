@@ -20,10 +20,13 @@
   /* Fonts */
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
   --font-body: 'Yekan Bakh', 'Tahoma', sans-serif;
-  /* Cormorant is Latin-only (see unicode-range below); Persian glyphs inside a
-     display-set element fall through to Yekan Bakh instead of a system serif. */
-  --font-display: 'Cormorant Garamond', 'Yekan Bakh', 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', 'Yekan Bakh', ui-monospace, monospace;
+  /* Two families carry the whole store: Morabba for headings, Yekan Bakh for text.
+     Cormorant is kept for the Latin "Luxera" wordmark only (font-wordmark).
+     font-display / font-mono are aliases, so older classes render in the Persian
+     families; font-mono keeps tabular figures for prices and counters. */
+  --font-wordmark: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-display: 'Morabba', 'Tahoma', sans-serif;
+  --font-mono: 'Yekan Bakh', 'Tahoma', sans-serif;
 
   /* Border radius */
   --radius-xs: 4px;
@@ -118,21 +121,6 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
-}
-
-/* ── JetBrains Mono (Monospace labels) ──────────────────────── */
-@font-face {
-  font-family: 'JetBrains Mono';
-  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: optional;
-  /* U+0020 (space) is deliberately excluded: Persian words inside font-mono elements
-     (dates, counts, labels) fall back to Yekan Bakh, but their spaces were coming from
-     the monospace face — a full-em gap that made «۲ روز کاری» read as «۲  روز  کاری». */
-  unicode-range:
-    U+0000-001F, U+0021-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
-    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ── Cormorant Garamond (Latin Display) ─────────────────────── */
@@ -888,7 +876,7 @@ html[data-vt='product'] [data-vt-chrome] {
 
 .prose-blog blockquote::before {
   content: '\201C';
-  font-family: var(--font-display);
+  font-family: var(--font-wordmark);
   font-size: 4.5em;
   line-height: 1;
   color: var(--color-plum);
@@ -985,4 +973,22 @@ html[data-vt='product'] [data-vt-chrome] {
 .coll-banner--copper {
   background: linear-gradient(160deg, var(--color-copper) 0%, var(--color-copper-dark) 100%);
   color: var(--color-bg);
+}
+
+/* ── Checkout focus mode ─────────────────────────────────── */
+/* BaseLayout sets data-focus on <html> for checkout. The server already renders
+   the right header, and ClientRouter swaps the attribute on navigation. */
+html[data-focus] .focus-hide {
+  display: none !important;
+}
+.focus-only {
+  display: none !important;
+}
+html[data-focus] .focus-only {
+  display: inline-flex !important;
+}
+
+/* Prices, counters and codes line up in columns (font-mono now uses Yekan Bakh). */
+.font-mono {
+  font-variant-numeric: tabular-nums;
 }

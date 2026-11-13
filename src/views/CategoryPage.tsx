@@ -318,6 +318,16 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     return soldOutLast([...filtered].sort((a, b) => pct(b) - pct(a)))
   }, [filtered, sort])
 
+  // "Most discount" is sorted on the client, so it needs every product, not just the
+  // first server page: keep pulling pages while that sort is on (the catalogue is small).
+  useEffect(() => {
+    if (sort !== 'discount' || loading || nextCursor === '') return
+    const colors = colorKey ? colorKey.split(',') : undefined
+    // fetchProducts sets state after its request resolves, not synchronously.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchProducts(resolvedCatId ?? undefined, apiSort, colors, nextCursor)
+  }, [sort, loading, nextCursor, fetchProducts, resolvedCatId, apiSort, colorKey])
+
   // `page` counts how many PER_PAGE batches are revealed, so "show more" never leaves the page.
   const shown = Math.min(sorted.length, page * PER_PAGE)
   const paginated = sorted.slice(0, shown)
@@ -508,7 +518,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
                   role="radio"
                   aria-checked={sort === opt.key}
                   onClick={() => handleSort(opt.key)}
-                  className={`min-h-[36px] px-3.5 rounded-full text-[13px] transition-colors duration-150 cursor-pointer ${sort === opt.key ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-bg-2'}`}
+                  className={`min-h-11 px-3.5 rounded-full text-[13px] transition-colors duration-150 cursor-pointer ${sort === opt.key ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-bg-2'}`}
                 >
                   {opt.label}
                 </button>
@@ -651,7 +661,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
 
       {/* ── Mobile sticky action bar ─────────────────────────────── */}
       <div
-        className={`hidden max-[1100px]:flex fixed bottom-0 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom,0px))] inset-x-0 z-[110] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-4 py-2.5 gap-2 transition-transform duration-300 ${filterOpen ? 'translate-y-full pointer-events-none' : ''}`}
+        className={`hidden max-[1100px]:flex fixed bottom-0 inset-x-0 z-[110] bg-bg/95 backdrop-blur-[10px] border-t border-rule px-4 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom,0px))] gap-2 transition-transform duration-300 ${filterOpen ? 'translate-y-full pointer-events-none' : ''}`}
       >
         {/* Filter button */}
         <button

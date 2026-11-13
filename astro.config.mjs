@@ -42,9 +42,9 @@ export default defineConfig({
     // 'self' + auto-generated hashes for every script/style Astro compiles at build time.
     // Two things aren't build-time-known and register their own hash at render time via
     // Astro.csp.insertScriptHash/insertStyleHash (see cspHash() in src/lib/ssr.ts):
-    // the theme <style> tag (per-request, from store settings) and HydrateReader.astro's
-    // script (marked is:inline for reasons documented there, which opts it out of
-    // Astro's own hash tracking). Hydration *data* itself (product/category/etc.) is
+    // the theme <style> tag (per-request, from store settings). HydrateReader.astro's
+    // is:inline script gets its hash from src/middleware.ts instead, because Astro sends
+    // this header before component frontmatter runs. Hydration *data* itself (product/category/etc.) is
     // never an executable script — see jsonIsland() in ssr.ts — so it needs no hash and
     // survives Astro ClientRouter's client-side page swaps.
     // style-src's hashes are stripped back out in src/middleware.ts (see there for why).

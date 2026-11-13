@@ -16,6 +16,8 @@ interface Props {
   jsonLd?: string
   lcpPreload?: string
   noIndex?: boolean
+  /** Checkout: hide the store navigation so the page has one job. */
+  focus?: boolean
 }
 
 const {
@@ -27,6 +29,7 @@ const {
   jsonLd,
   lcpPreload,
   noIndex = false,
+  focus = false,
 } = Astro.props
 
 const [theme, socialSettings, settingsScript] = await Promise.all([
@@ -50,7 +53,7 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
 ---
 
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-focus={focus ? '' : undefined}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

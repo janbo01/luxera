@@ -12,8 +12,18 @@ export const NAV_LINKS: NavLink[] = [
   { to: '/category/rings', label: 'انگشتر' },
   { to: '/category/earrings', label: 'گوشواره' },
   { to: '/category/sets', label: 'ست' },
+  { to: '/category/bridal', label: 'عروس' },
+  { to: '/category/mens', label: 'مردانه' },
   { to: '/gift', label: 'راهنمای هدیه' },
-  { to: '/about', label: 'درباره ما' },
+  { to: '/blog', label: 'مجله' },
+]
+
+/** Second group in the mobile menu: help pages that otherwise live only in the footer. */
+export const HELP_LINKS: NavLink[] = [
+  { to: '/shipping', label: 'ارسال و بازگشت' },
+  { to: '/faq', label: 'پرسش‌های متداول' },
+  { to: '/about', label: 'درباره‌ی لوکسرا' },
+  { to: '/contact', label: 'تماس با ما' },
 ]
 
 /** Category pages that live inside the mega-menu on desktop (everything but "new"). */

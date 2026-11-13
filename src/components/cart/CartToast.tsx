@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FC } from 'react'
 import Icon from '../icons/Icon'
 import { useCartStore } from '../../store/cartStore'
+import { usePathname } from '../../hooks/usePathname'
 
 const VISIBLE_MS = 3600
 
@@ -11,6 +12,10 @@ const VISIBLE_MS = 3600
  */
 const CartToast: FC = () => {
   const isCartOpen = useCartStore((s) => s.isOpen)
+  const pathname = usePathname()
+  // Sit above whichever bar owns the bottom of a phone screen: the buy bar on product
+  // pages, the filter/sort bar on listings, the bottom nav everywhere else.
+  const ownBar = pathname.startsWith('/product/') || pathname.startsWith('/category/')
   const openCart = useCartStore((s) => s.openCart)
   const [shown, setShown] = useState<{ name: string; at: number } | null>(null)
   const timer = useRef<number | undefined>(undefined)
@@ -35,7 +40,11 @@ const CartToast: FC = () => {
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-0 z-[150] flex justify-center px-4 pointer-events-none bottom-6 max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom)+12px)]"
+      className={`fixed inset-x-0 z-[150] flex justify-center px-4 pointer-events-none bottom-6 ${
+        ownBar
+          ? 'max-[1100px]:bottom-[calc(80px+env(safe-area-inset-bottom))]'
+          : 'max-[720px]:bottom-[calc(56px+env(safe-area-inset-bottom)+12px)]'
+      }`}
     >
       {visible && (
         <div

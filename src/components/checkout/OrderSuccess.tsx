@@ -21,7 +21,7 @@ interface OrderSuccessProps {
 
 const ROW =
   'flex justify-between items-center px-5 py-[13px] border-b border-rule text-[13px] last:border-b-0'
-const ROW_LABEL = 'font-mono text-[12px] uppercase text-muted'
+const ROW_LABEL = 'text-[12px] text-muted'
 
 const OrderSuccess: FC<OrderSuccessProps> = ({
   orderNum,
@@ -65,8 +65,8 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
         سفارش شما ثبت شد
       </h2>
       <p className="text-muted text-sm leading-[1.85] max-w-[38ch] mx-auto mb-7 animate-rise [animation-delay:80ms]">
-        <em className="font-heading not-italic text-plum">Thank you</em> — سپاسگزاریم از خرید شما از
-        لوکسرا. پس از تأیید پرداخت، جزئیات ارسال از طریق پیامک برایتان ارسال می‌شود.
+        سپاسگزاریم که از لوکسرا خرید کردید. پس از تأیید پرداخت، جزئیات ارسال از طریق پیامک برایتان
+        ارسال می‌شود.
       </p>
 
       <div className="w-full border border-rule bg-surface my-7 animate-rise [animation-delay:160ms]">

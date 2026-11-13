@@ -13,6 +13,8 @@ interface OrderSummaryProps {
   step: CheckoutStep
   subtotal: number
   selectedShipping: ShippingOption | undefined
+  /** Price after the free-shipping threshold (0 when free). */
+  shippingCost: number
   snappDate: string
   snappTime: string
   giftWrap: boolean
@@ -52,6 +54,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
   step,
   subtotal,
   selectedShipping,
+  shippingCost,
   snappDate,
   snappTime,
   giftWrap,
@@ -104,7 +107,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
           {items.map((item) => (
             <div key={item.id} className="grid grid-cols-[50px_1fr_auto] gap-3 items-center">
               <div className="w-[50px] h-[50px] rounded-sm bg-bg-2 grid place-items-center text-ink-2 relative shrink-0 [&_svg]:w-[30px] [&_svg]:h-[30px] [&_svg]:stroke-[1]">
-                <span className="absolute -top-1.5 -left-1.5 min-w-5 h-5 rounded-sm bg-ink text-bg font-mono text-[11px] font-semibold grid place-items-center px-[5px] border-2 border-surface">
+                <span className="absolute -top-1.5 -left-1.5 min-w-5 h-5 rounded-sm bg-ink text-bg font-mono text-[12px] font-semibold grid place-items-center px-[5px] border-2 border-surface">
                   {toFa(item.qty)}
                 </span>
                 <Illustration name={item.illus} />
@@ -136,7 +139,11 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               <span>هزینه‌ی ارسال</span>
               <span className="font-body text-ink">
                 {selectedShipping ? (
-                  formatToman(selectedShipping.price)
+                  shippingCost > 0 ? (
+                    formatToman(shippingCost)
+                  ) : (
+                    <span className="text-ok">رایگان</span>
+                  )
                 ) : (
                   <span className="italic text-muted">انتخاب نشده</span>
                 )}

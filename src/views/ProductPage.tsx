@@ -1,6 +1,7 @@
 import { usePageMeta } from '../hooks/usePageMeta'
 import { useState, useEffect, useCallback, useMemo, useRef, type FC } from 'react'
 import Breadcrumb from '../components/shared/Breadcrumb'
+import { CATEGORIES } from '../data/categories'
 import Gallery from '../components/product/Gallery'
 import InfoPanel from '../components/product/InfoPanel'
 import Tabs from '../components/product/Tabs'
@@ -180,13 +181,13 @@ const ProductPage: FC<ProductPageProps> = ({ id, initialData }) => {
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'خانه', item: 'https://luxera.ir' },
-            ...(product.cat && product.catId
+            ...(product.cat && CATEGORIES.some((c) => c.fa === product.cat)
               ? [
                   {
                     '@type': 'ListItem',
                     position: 2,
                     name: product.cat,
-                    item: `https://luxera.ir/category/${product.catId}`,
+                    item: `https://luxera.ir/category/${CATEGORIES.find((c) => c.fa === product.cat)!.id}`,
                   },
                 ]
               : []),
@@ -257,12 +258,17 @@ const ProductPage: FC<ProductPageProps> = ({ id, initialData }) => {
     )
   }
 
+  const catSlug = CATEGORIES.find((c) => c.fa === product.cat)?.id
+
   return (
     <>
       <Breadcrumb
         items={[
           { label: 'خانه', to: '/' },
-          { label: product.cat || 'محصولات', to: product.cat ? `/category/${product.catId}` : '/' },
+          // Category routes use local slugs (/category/rings), not API ids.
+          catSlug
+            ? { label: product.cat, to: `/category/${catSlug}` }
+            : { label: 'تازه‌ترین‌ها', to: '/category/new' },
           { label: product.fa },
         ]}
       />

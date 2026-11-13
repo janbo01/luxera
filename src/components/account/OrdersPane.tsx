@@ -227,7 +227,7 @@ const OrdersPane: FC = () => {
                             className="grid grid-cols-[54px_1fr_auto] gap-3.5 items-center p-3 px-3.5 bg-surface border border-rule rounded-sm"
                           >
                             <div className="w-[54px] h-[54px] rounded-sm bg-bg-2 grid place-items-center text-ink-2 relative shrink-0">
-                              <span className="absolute -top-1.5 -left-1.5 min-w-5 h-5 rounded-sm bg-ink text-bg font-mono text-[11px] grid place-items-center px-[5px] border-2 border-surface">
+                              <span className="absolute -top-1.5 -left-1.5 min-w-5 h-5 rounded-sm bg-ink text-bg font-mono text-[12px] grid place-items-center px-[5px] border-2 border-surface">
                                 {toFa(item.qty)}
                               </span>
                               <svg

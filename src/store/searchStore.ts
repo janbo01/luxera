@@ -10,6 +10,7 @@ import {
 } from '../utils/constants'
 import type { Product, Category } from '../types'
 import { listProducts, adaptProduct } from '../api/product'
+import { normalizeQuery } from '../utils/format'
 
 export interface SearchResult {
   products: Product[]
@@ -52,7 +53,9 @@ export const useSearchStore = create<SearchState>()(
           }
 
           const categories = CATEGORIES.filter(
-            (c) => c.fa.includes(trimmed) || c.en.toLowerCase().includes(trimmed.toLowerCase()),
+            (c) =>
+              c.fa.includes(normalizeQuery(trimmed)) ||
+              c.en.toLowerCase().includes(trimmed.toLowerCase()),
           ).slice(0, SEARCH_MAX_CATEGORIES)
 
           set({ results: { products: get().results.products, categories } })
@@ -60,7 +63,10 @@ export const useSearchStore = create<SearchState>()(
           if (searchTimer) clearTimeout(searchTimer)
           searchTimer = setTimeout(async () => {
             try {
-              const { items } = await listProducts({ q: trimmed, limit: SEARCH_MAX_PRODUCTS })
+              const { items } = await listProducts({
+                q: normalizeQuery(trimmed),
+                limit: SEARCH_MAX_PRODUCTS,
+              })
               set((state) => ({
                 results: {
                   ...state.results,

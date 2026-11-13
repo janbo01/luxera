@@ -73,7 +73,7 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
     listComments(productId, { limit: 20 })
       .then((res) => {
         setReviews(res.items.map((c, i) => apiCommentToReview(c, i)))
-        setTotal(res.total)
+        setTotal(res.total ?? res.items?.length ?? 0)
       })
       .catch(() => {
         setReviews([])
@@ -113,15 +113,9 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
           {/* Summary column */}
           <div className="sticky top-24 max-md:relative max-md:top-0">
             <div className="flex flex-col gap-1.5 mb-6">
-              <span className="font-mono text-[12px] uppercase text-copper-dark">
-                Customer reviews
-              </span>
-              <h2 className="font-heading font-bold text-[clamp(32px,3.5vw,48px)] leading-[1.1] m-0 text-ink">
-                تجربه‌ی <em className="font-body italic font-normal text-copper-dark">مشتریان</em>
+              <h2 className="font-heading font-bold text-[clamp(28px,3.5vw,40px)] leading-[1.15] m-0 text-ink">
+                نظر خریداران
               </h2>
-              <span className="font-display italic text-[14px] text-muted">
-                What our clients say.
-              </span>
             </div>
 
             <div className="flex items-baseline gap-3.5 my-[18px] mb-2">

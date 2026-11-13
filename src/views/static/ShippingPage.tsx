@@ -1,27 +1,17 @@
 import { usePageMeta } from '../../hooks/usePageMeta'
 import type { FC } from 'react'
 import { BTN_CLS, BTN_GHOST_CLS } from '../../components/ui/Button'
+import { FREE_SHIPPING_THRESHOLD, SHIPPING } from '../../data/shipping'
+import { formatToman } from '../../utils/format'
+import PageHeader from '../../components/shared/PageHeader'
 
-const TIMELINE = [
-  {
-    zone: 'تهران',
-    method: 'پیک ویژه‌ی لوکسرا',
-    time: '۲۴ ساعت',
-    note: 'ارسال در همان روز برای سفارش‌های قبل از ۱۴:۰۰',
-  },
-  {
-    zone: 'کلان‌شهرها',
-    method: 'پست پیشتاز',
-    time: '۲ روز کاری',
-    note: 'اصفهان، شیراز، مشهد، تبریز، اهواز',
-  },
-  {
-    zone: 'سراسر ایران',
-    method: 'پست پیشتاز',
-    time: '۲ تا ۴ روز',
-    note: 'تمام شهرهای تحت پوشش پست',
-  },
-]
+// Built from the same options checkout sells, so the two can't drift apart.
+const TIMELINE = SHIPPING.map((o) => ({
+  zone: o.teheranOnly ? 'تهران' : 'سراسر ایران',
+  method: o.name,
+  time: o.teheranOnly ? 'همان روز یا روز بعد' : o.etaLabel,
+  note: `${formatToman(o.price)} · رایگان برای سفارش‌های بالای ${formatToman(FREE_SHIPPING_THRESHOLD)}`,
+}))
 
 const RETURN_STEPS = [
   {
@@ -50,37 +40,47 @@ const ShippingPage: FC = () => {
   usePageMeta({
     title: 'ارسال و تحویل',
     description:
-      'جزئیات ارسال لوکسرا — تحویل یک‌روزه در تهران، ۲ تا ۴ روز کاری در سراسر ایران، همه سفارش‌ها بیمه‌دار.',
+      'جزئیات ارسال لوکسرا — اسنپ‌باکس در تهران همان روز یا روز بعد، تیپاکس و پست پیشتاز ۲ تا ۵ روز کاری در سایر شهرها.',
   })
   return (
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
-      {/* Hero */}
-      <div className="pt-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
-          Shipping & returns
-        </span>
-        <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
-          ارسال و<em className="font-heading not-italic text-plum font-normal"> بازگشت</em>
-        </h1>
-        <p className="max-w-[52ch] text-ink-2 text-[15px] leading-[1.85] m-0">
-          ارسال رایگان بالای ۲.۵ میلیون تومان. بازگشت تا ۴ روز پس از دریافت.
-        </p>
+      <div className="-mx-[clamp(20px,4vw,56px)] mb-10 border-b border-rule">
+        <PageHeader
+          crumbs={[{ label: 'ارسال و بازگشت' }]}
+          title="ارسال و بازگشت کالا"
+          description={`ارسال رایگان برای سفارش‌های بالای ${formatToman(FREE_SHIPPING_THRESHOLD)}. بازگشت تا ۴ روز پس از دریافت.`}
+        />
       </div>
 
       <div className="mb-16">
         {/* Delivery */}
-        <section className="mb-14">
+        <section id="delivery" className="mb-14 scroll-mt-28">
           <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             زمان‌بندی تحویل
           </h2>
           <p className="text-ink-2 text-sm m-0 mb-6">
-            تمام سفارش‌ها بیمه دارند و با کد رهگیری ارسال می‌شوند.
+            روش ارسال را در مرحله‌ی دوم خرید انتخاب می‌کنید. برای تیپاکس و پست کد رهگیری فرستاده
+            می‌شود.
           </p>
-          <div className="overflow-x-auto my-5">
-            <table className="w-full border-collapse font-body text-sm min-w-[560px]">
+          {/* Phones: one card per method; wide screens: a table. */}
+          <ul className="md:hidden m-0 p-0 list-none flex flex-col gap-3">
+            {TIMELINE.map((row) => (
+              <li key={row.method} className="border border-rule rounded-sm bg-surface px-4 py-3.5">
+                <div className="flex items-baseline justify-between gap-3">
+                  <strong className="text-ink text-[15px]">{row.method}</strong>
+                  <span className="text-plum text-[14px] font-medium">{row.time}</span>
+                </div>
+                <p className="m-0 mt-1 text-[13px] text-muted">
+                  {row.zone} · {row.note}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <div className="max-md:hidden my-5">
+            <table className="w-full border-collapse font-body text-sm">
               <thead>
                 <tr>
-                  {['منطقه', 'روش ارسال', 'زمان تحویل', 'توضیحات'].map((h) => (
+                  {['منطقه', 'روش ارسال', 'زمان تحویل', 'هزینه'].map((h) => (
                     <th
                       key={h}
                       className="py-3 px-4 text-right font-medium text-[13px] text-ink-2 bg-plate border-b border-rule"
@@ -92,7 +92,7 @@ const ShippingPage: FC = () => {
               </thead>
               <tbody>
                 {TIMELINE.map((row) => (
-                  <tr key={row.zone}>
+                  <tr key={row.method}>
                     <td className="py-3.5 px-4 border-b border-rule align-middle text-ink-2">
                       <strong>{row.zone}</strong>
                     </td>
@@ -111,8 +111,8 @@ const ShippingPage: FC = () => {
             </table>
           </div>
           <div className="bg-plate px-5 py-4 text-sm text-ink-2 mt-5">
-            <strong className="text-ink">هزینه‌ی ارسال:</strong> رایگان برای سفارش‌های بالای ۲٫۵
-            میلیون تومان. سایر سفارش‌ها مشمول هزینه‌ی ارسال جداگانه هستند.
+            <strong className="text-ink">هزینه‌ی ارسال:</strong> رایگان برای سفارش‌های بالای{' '}
+            {formatToman(FREE_SHIPPING_THRESHOLD)}، با هر روشی که انتخاب کنید.
           </div>
         </section>
 
@@ -122,13 +122,14 @@ const ShippingPage: FC = () => {
             بسته‌بندی
           </h2>
           <p className="text-ink-2 text-sm leading-[1.8]">
-            هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای آماده می‌شود. بسته‌بندی هدیه‌ای استاندارد
-            است و نیازی به درخواست اضافی ندارد — چه برای خودتان، چه برای هدیه دادن.
+            هر قطعه در جعبه‌ی مخصوص لوکسرا با کیف پارچه‌ای ارسال می‌شود. اگر سفارش هدیه است، در
+            مرحله‌ی ارسال «بسته‌بندی هدیه» را انتخاب کنید: جعبه‌ی مخمل و کارت دست‌نویس با متنی که
+            خودتان می‌نویسید.
           </p>
         </section>
 
         {/* Returns */}
-        <section className="mb-14">
+        <section id="returns" className="mb-14 scroll-mt-28">
           <h2 className="font-heading font-bold text-[24px] m-0 mb-4 text-ink pb-3.5 border-b border-rule">
             سیاست بازگشت
           </h2>
@@ -139,7 +140,7 @@ const ShippingPage: FC = () => {
           <div className="flex flex-col mt-6">
             {RETURN_STEPS.map((s) => (
               <div key={s.n} className="grid grid-cols-[48px_1fr] gap-5 py-6 border-b border-rule">
-                <span className="w-9 h-9 bg-plum text-bg font-mono text-[12px] flex items-center justify-center shrink-0">
+                <span className="w-9 h-9 bg-plum text-bg text-[13px] flex items-center justify-center shrink-0">
                   {s.n}
                 </span>
                 <div>

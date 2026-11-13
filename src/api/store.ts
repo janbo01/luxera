@@ -55,3 +55,16 @@ export async function listBanners(): Promise<ApiBanner[]> {
   const res = await apiFetch<ApiBanner[]>(`${BASE}/store/banners`)
   return Array.isArray(res) ? res : []
 }
+
+export interface ContactMessageInput {
+  name: string
+  phone?: string
+  email?: string
+  subject?: string
+  message: string
+}
+
+/** Sends the contact form to the store service; admins read it under Messages → Contact form. */
+export function sendContactMessage(input: ContactMessageInput): Promise<unknown> {
+  return apiFetch(`${BASE}/store/contact`, { method: 'POST', body: JSON.stringify(input) })
+}

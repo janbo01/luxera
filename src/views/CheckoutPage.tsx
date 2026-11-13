@@ -3,8 +3,10 @@ import { useState, useEffect, type FC, type ChangeEvent } from 'react'
 import { BTN_CLS } from '../components/ui/Button'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
-import { formatToman, toFa } from '../utils/format'
-import { SHIPPING, type ShippingId } from '../data/shipping'
+import { useUIStore } from '../store/uiStore'
+import { HttpError } from '../api/client'
+import { formatToman, toFa, toLatinDigits } from '../utils/format'
+import { SHIPPING, shippingPrice, type ShippingId } from '../data/shipping'
 import {
   STEP_LABELS,
   DEFAULT_ADDRESS_FORM,
@@ -38,6 +40,8 @@ const CheckoutPage: FC = () => {
   const addresses = useAuthStore((s) => s.addresses)
   const fetchAddresses = useAuthStore((s) => s.fetchAddresses)
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  const profile = useAuthStore((s) => s.profile)
+  const openLogin = useUIStore((s) => s.openLogin)
 
   const [step, setStep] = useState<CheckoutStep>(0)
   const [paying, setPaying] = useState(false)
@@ -94,6 +98,17 @@ const CheckoutPage: FC = () => {
     })
   }, [addresses, selectedAdr])
 
+  // A new customer has no saved address: start the form from the sign-in profile.
+  useEffect(() => {
+    if (!profile || addresses.length > 0) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAddr((a) => ({
+      ...a,
+      name: a.name || profile.name || '',
+      phone: a.phone || profile.phone || '',
+    }))
+  }, [profile, addresses.length])
+
   const [shipping, setShipping] = useState<ShippingId | null>('snapp_box')
   const [snappDayIdx, setSnappDayIdx] = useState(0)
   const [snappTimeIdx, setSnappTimeIdx] = useState(0)
@@ -107,13 +122,14 @@ const CheckoutPage: FC = () => {
   const [appliedCode, setAppliedCode] = useState('')
   const [appliedCoupon, setAppliedCoupon] = useState<ApiCoupon | null>(null)
   const [giftWrap, setGiftWrap] = useState(false)
+  const [giftMessage, setGiftMessage] = useState('')
 
   const isTehran = addr.city.trim() === 'تهران' || addr.province === 'تهران'
   const availableShipping = SHIPPING.filter((o) => !o.teheranOnly || isTehran)
   const selectedShipping = SHIPPING.find((o) => o.id === shipping)
 
   const subtotal = items.reduce((s, it) => s + it.price * it.qty, 0)
-  const shippingCost = selectedShipping?.price ?? 0
+  const shippingCost = shippingPrice(shipping, subtotal)
   const loyaltyDiscount = loyaltyPointsToUse * loyaltyPointValue
   const total =
     subtotal + shippingCost + (giftWrap ? GIFT_WRAP_PRICE : 0) - couponDiscount - loyaltyDiscount
@@ -124,7 +140,7 @@ const CheckoutPage: FC = () => {
     addr.province !== '' &&
     addr.city.trim() !== '' &&
     addr.street.trim() !== '' &&
-    addr.postal.trim() !== ''
+    /^\d{10}$/.test(toLatinDigits(addr.postal))
   const shippingValid = shipping !== null
 
   const snappDate = DAY_LABELS[snappDayIdx] ?? ''
@@ -155,7 +171,11 @@ const CheckoutPage: FC = () => {
   const handleAddrChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
-    const { name, value } = e.target
+    const { name } = e.target
+    const value =
+      name === 'postal'
+        ? toLatinDigits(e.target.value).replace(/\D/g, '').slice(0, 10)
+        : e.target.value
     setSelectedAdr(null)
     setAddr((prev) => {
       const next = { ...prev, [name]: value }
@@ -240,6 +260,8 @@ const CheckoutPage: FC = () => {
         }),
         coupon_code: appliedCode || undefined,
         notes: orderNotes || undefined,
+        gift_wrap: giftWrap || undefined,
+        gift_message: giftWrap && giftMessage.trim() ? giftMessage.trim() : undefined,
         items: items.map((item) => ({ product_id: item.id, quantity: item.qty })),
         loyalty_points_to_use: loyaltyPointsToUse > 0 ? loyaltyPointsToUse : undefined,
       })
@@ -248,6 +270,12 @@ const CheckoutPage: FC = () => {
       clearCart()
       window.location.href = payment.redirect_url
     } catch (err) {
+      if (err instanceof HttpError && err.status === 401) {
+        // The session ended while paying: sign in again; the form keeps its values.
+        openLogin('برای ثبت سفارش دوباره وارد شوید.')
+        setPayError('نشست شما به پایان رسید. پس از ورود، دوباره «پرداخت» را بزنید.')
+        return
+      }
       setPayError(err instanceof Error ? err.message : 'خطا در پردازش پرداخت')
     } finally {
       setPaying(false)
@@ -271,24 +299,48 @@ const CheckoutPage: FC = () => {
     <div className="pb-20">
       <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
         <div className="flex justify-between items-end gap-8 flex-wrap pt-9 pb-2">
-          <div>
-            <span className="font-display italic text-[13px] text-copper tracking-[.04em]">
-              Checkout
-            </span>
-            <h1 className="font-heading text-[clamp(28px,3vw,40px)] font-bold m-0 leading-[1.1] tracking-[-0.01em] mt-1.5">
-              تکمیلِ <em className="font-display italic font-normal text-copper">سفارش</em>
-            </h1>
-          </div>
-          <div className="flex items-center gap-3 text-[12.5px] text-muted [font-feature-settings:'tnum']">
-            <span>{toFa(items.length)} کالا</span>
+          <h1 className="font-heading text-[clamp(26px,3vw,36px)] font-bold m-0 leading-[1.15]">
+            تکمیلِ سفارش
+          </h1>
+          <div className="flex items-center gap-3 text-[13px] text-muted max-[1100px]:hidden [font-variant-numeric:tabular-nums]">
+            <span>{toFa(items.reduce((n, it) => n + it.qty, 0))} کالا</span>
             <span className="w-[5px] h-[5px] rounded-full bg-copper inline-block" />
-            <span>{formatToman(subtotal)}</span>
+            <span>{formatToman(total)}</span>
           </div>
         </div>
 
+        {/* Phones: the summary sits below the form, so keep the basket one tap away. */}
+        <details className="min-[1100px]:hidden mt-4 rounded-[var(--radius)] border border-rule bg-surface">
+          <summary className="flex items-center justify-between gap-3 min-h-12 px-4 cursor-pointer list-none text-[14px]">
+            <span className="flex items-center gap-2 text-ink">
+              <Icon name="bag" size={16} />
+              {toFa(items.reduce((n, it) => n + it.qty, 0))} کالا
+            </span>
+            <span className="flex items-center gap-2 font-medium text-ink [font-variant-numeric:tabular-nums]">
+              {formatToman(total)}
+              <Icon name="chevron-down" size={14} className="text-muted" />
+            </span>
+          </summary>
+          <ul className="m-0 p-0 list-none border-t border-rule">
+            {items.map((it) => (
+              <li
+                key={it.id}
+                className="flex items-center justify-between gap-3 px-4 py-2.5 text-[13.5px]"
+              >
+                <span className="text-ink min-w-0 truncate">
+                  {it.fa} <span className="text-muted">× {toFa(it.qty)}</span>
+                </span>
+                <span className="text-ink-2 shrink-0 [font-variant-numeric:tabular-nums]">
+                  {formatToman(it.price * it.qty)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
+
         <div className="my-7">
           <div className="grid grid-cols-3 bg-surface rounded-[var(--radius)] border border-rule p-2 max-[640px]:p-1 max-[640px]:gap-1">
-            {STEP_LABELS.map(({ lbl, name }, i) => {
+            {STEP_LABELS.map(({ name }, i) => {
               const isActive = i === step
               const isDone = i < step
               return (
@@ -305,7 +357,7 @@ const CheckoutPage: FC = () => {
                   style={{ cursor: isDone ? 'pointer' : isActive ? 'default' : 'not-allowed' }}
                 >
                   <span
-                    className={`w-9 h-9 max-[640px]:w-8 max-[640px]:h-8 rounded-full border-[1.5px] grid place-items-center font-mono text-sm font-semibold shrink-0 transition-all ${
+                    className={`w-9 h-9 max-[640px]:w-8 max-[640px]:h-8 rounded-full border-[1.5px] grid place-items-center text-sm font-semibold shrink-0 transition-all ${
                       isActive
                         ? 'bg-copper text-white border-copper'
                         : isDone
@@ -316,13 +368,6 @@ const CheckoutPage: FC = () => {
                     {isDone ? <Icon name="check" size={16} strokeWidth={2.5} /> : toFa(i + 1)}
                   </span>
                   <span className="flex flex-col gap-0.5 min-w-0">
-                    <span
-                      className={`font-mono text-[12px] uppercase transition-colors max-[640px]:hidden ${
-                        isActive ? 'text-bg/60' : isDone ? 'text-ok' : 'text-muted'
-                      }`}
-                    >
-                      {lbl}
-                    </span>
                     <span
                       className={`font-heading text-[15px] max-[640px]:text-[13.5px] font-semibold leading-[1.2] transition-colors ${
                         isActive ? 'text-bg' : 'text-ink'
@@ -349,7 +394,26 @@ const CheckoutPage: FC = () => {
 
         <div className="grid grid-cols-[1fr_380px] max-[1100px]:grid-cols-1 gap-6 items-start">
           <div className="min-w-0">
-            {step === 0 && (
+            {step === 0 && !isLoggedIn && (
+              <section className="bg-surface border border-rule rounded-[var(--radius)] p-6 flex flex-col gap-4 items-start">
+                <span className="w-11 h-11 rounded-full bg-bg-2 grid place-items-center text-copper-dark">
+                  <Icon name="user" size={20} />
+                </span>
+                <h2 className="font-heading text-[20px] font-bold m-0">ورود با شماره‌ی موبایل</h2>
+                <p className="m-0 text-[14.5px] text-ink-2 leading-[1.9] max-w-[52ch]">
+                  برای ثبت سفارش و پیگیری آن، با شماره‌ی موبایل وارد شوید. یک کد تأیید پیامک می‌شود
+                  و سبد خرید شما همین‌جا می‌ماند.
+                </p>
+                <button
+                  type="button"
+                  className={`${BTN_CLS} max-sm:w-full max-sm:justify-center`}
+                  onClick={() => openLogin('برای ادامه‌ی خرید وارد شوید.')}
+                >
+                  دریافت کد تأیید
+                </button>
+              </section>
+            )}
+            {step === 0 && isLoggedIn && (
               <AddressStep
                 addr={addr}
                 savedAddresses={addresses}
@@ -373,11 +437,14 @@ const CheckoutPage: FC = () => {
                 snappDayIdx={snappDayIdx}
                 snappTimeIdx={snappTimeIdx}
                 giftWrap={giftWrap}
+                giftMessage={giftMessage}
+                subtotal={subtotal}
                 deliveryOptions={deliveryOptions}
                 onSelectShipping={setShipping}
                 onSnappDayChange={setSnappDayIdx}
                 onSnappTimeChange={setSnappTimeIdx}
                 onGiftWrapToggle={() => setGiftWrap((v) => !v)}
+                onGiftMessageChange={setGiftMessage}
                 shippingValid={shippingValid}
                 onBack={() => goStep(0)}
                 onNext={() => shippingValid && goStep(2)}
@@ -402,6 +469,7 @@ const CheckoutPage: FC = () => {
             step={step}
             subtotal={subtotal}
             selectedShipping={selectedShipping}
+            shippingCost={shippingCost}
             snappDate={snappDate}
             snappTime={snappTime}
             giftWrap={giftWrap}

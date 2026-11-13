@@ -83,9 +83,7 @@ const WishlistPane: FC = () => {
                     </button>
                   </div>
                   <div className="p-3.5 px-4">
-                    <span className="font-mono text-[12px] uppercase text-muted">
-                      {product.cat}
-                    </span>
+                    <span className="text-[12px] text-muted">{product.cat}</span>
                     <h3 className="font-heading text-sm font-semibold leading-[1.3] mt-1">
                       {product.fa}
                     </h3>

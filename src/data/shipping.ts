@@ -45,8 +45,22 @@ export const SHIPPING: ShippingOption[] = [
   },
 ]
 
-export const FLAT_SHIPPING_COST = 180_000
+/** Cheapest method, for "shipping from …" before a method is chosen. */
+export const MIN_SHIPPING_COST = Math.min(...SHIPPING.map((o) => o.price))
 
-export function calcSimpleShipping(subtotal: number): number {
-  return subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD ? FLAT_SHIPPING_COST : 0
+/** What a method costs for this item subtotal. Mirrors the order service
+ *  (backend/order/internal/service/delivery.go), which charges the same. */
+export function shippingPrice(id: ShippingId | null | undefined, subtotal: number): number {
+  if (!id || subtotal >= FREE_SHIPPING_THRESHOLD) return 0
+  return SHIPPING.find((o) => o.id === id)?.price ?? 0
 }
+
+/**
+ * The one set of delivery promises every page repeats (product trust row, product
+ * Shipping tab, Shipping page, FAQ, home). It describes what checkout sells.
+ */
+export const DELIVERY_PROMISE = {
+  tehran: 'تهران: اسنپ‌باکس، همان روز یا روز بعد در بازه‌ی دلخواه',
+  iran: 'سایر شهرها: تیپاکس ۲ تا ۳ روز کاری، پست پیشتاز ۳ تا ۵ روز کاری',
+  short: 'تهران: همان روز یا روز بعد · سایر شهرها: ۲ تا ۵ روز کاری',
+} as const

@@ -45,7 +45,7 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
         )}
       </div>
       <div className="p-5 flex flex-col gap-2 flex-1">
-        {date && <span className="font-mono text-[12px] text-muted uppercase">{date}</span>}
+        {date && <span className="text-[12px] text-muted">{date}</span>}
         <h3 className="font-heading font-bold text-[clamp(14px,1.6vw,17px)] leading-[1.35] text-ink group-hover:text-plum transition-colors duration-200 flex-1 line-clamp-2">
           {post.title}
         </h3>
