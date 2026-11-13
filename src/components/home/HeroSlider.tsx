@@ -2,7 +2,6 @@ import { useState, useEffect, useLayoutEffect, useCallback, useMemo, useRef, typ
 import Icon from '../icons/Icon'
 import { Illustration } from '../../illustrations'
 import { formatPaddedIndex } from '../../utils/format'
-import { useHydrated } from '../../hooks/useHydrated'
 import { imgSet, HERO_LCP } from '../../utils/cdnImage'
 import type { HeroTone } from '../../types'
 import { listBanners, type ApiBanner } from '../../api/store'
@@ -68,27 +67,32 @@ declare global {
   }
 }
 
-// Always FALLBACK_SLIDES for the initial render so SSR (which has no window) and the
-// client's first render produce identical markup. Reading window.__BANNERS_INITIAL__
-// here would diverge from SSR and crash hydration (React #418). The injected banners
-// are applied after mount in an effect (see below).
-function getInitialSlides(): Slide[] {
-  return FALLBACK_SLIDES
+// Banners arrive as a prop from the page's server render, so SSR and the client's first
+// render produce identical markup (no React #418) and the real photo is in the first
+// paint. Illustrations are only a fallback when the banner API had nothing.
+function getInitialSlides(banners?: ApiBanner[]): Slide[] {
+  return banners?.length ? banners.map(bannerToSlide) : FALLBACK_SLIDES
 }
 
-export function getFirstSlideInfo(): SlideInfo {
-  const slides = getInitialSlides()
+export function getFirstSlideInfo(banners?: ApiBanner[]): SlideInfo {
+  const slides = getInitialSlides(banners)
   const first = slides[0]
   return {
     name: first?.caption ?? '',
+    href: first?.linkUrl,
     price: first?.price,
     oldPrice: first?.oldPrice,
   }
 }
 
-const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) => {
-  const hydrated = useHydrated()
-  // Banners fetched on the client when none were injected at SSR time.
+interface HeroSliderProps {
+  onSlide?: (info: SlideInfo) => void
+  /** Banners from the server render. When absent, they are fetched after mount. */
+  banners?: ApiBanner[]
+}
+
+const HeroSlider: FC<HeroSliderProps> = ({ onSlide, banners }) => {
+  // Banners fetched on the client when the server render had none.
   const [fetchedSlides, setFetchedSlides] = useState<Slide[] | null>(null)
   const [idx, setIdx] = useState(0)
   const onSlideRef = useRef(onSlide)
@@ -96,25 +100,17 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
     onSlideRef.current = onSlide
   })
 
-  // First render (SSR + pre-hydration client) uses FALLBACK_SLIDES so the markup matches
-  // and hydration doesn't crash (React #418). After mount we swap in the SSR-injected
-  // banners (window.__BANNERS_INITIAL__), or the client-fetched ones as a fallback.
-  const slides = useMemo<Slide[]>(() => {
-    if (fetchedSlides) return fetchedSlides
-    if (hydrated && typeof window !== 'undefined' && window.__BANNERS_INITIAL__?.length) {
-      return window.__BANNERS_INITIAL__.map(bannerToSlide)
-    }
-    return FALLBACK_SLIDES
-  }, [hydrated, fetchedSlides])
+  const initialSlides = useMemo(() => getInitialSlides(banners), [banners])
+  const slides = fetchedSlides ?? initialSlides
 
   useEffect(() => {
-    if (window.__BANNERS_INITIAL__?.length) return
+    if (banners?.length) return
     listBanners()
-      .then((banners) => {
-        if (banners.length > 0) setFetchedSlides(banners.map(bannerToSlide))
+      .then((list) => {
+        if (list.length > 0) setFetchedSlides(list.map(bannerToSlide))
       })
       .catch(() => {})
-  }, [])
+  }, [banners])
 
   const total = slides.length
 

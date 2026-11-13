@@ -5,7 +5,7 @@ import Feature from '../components/home/Feature'
 import BlogCarousel from '../components/home/BlogCarousel'
 import { fetchHomeData, fetchHomeListsData, fetchFooterData, buildFooterScript } from '../lib/ssr'
 
-const [{ lcpPreload, initialScript }, homeLists, footerData] = await Promise.all([
+const [{ lcpPreload, initialScript, banners }, homeLists, footerData] = await Promise.all([
   fetchHomeData(),
   fetchHomeListsData(),
   fetchFooterData(),
@@ -49,7 +49,7 @@ const homeJsonLd = JSON.stringify([
 >
   <h1 class="sr-only">فروشگاه جواهرات فانتزی لوکسرا</h1>
   <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
-  <HomePage client:load />
+  <HomePage client:load banners={banners} />
   <Feature />
   <BlogCarousel client:visible />
 </BaseLayout>

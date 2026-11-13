@@ -1,3 +1,4 @@
+import { readIsland } from '../../utils/island'
 import type { ApiProduct, ApiCategory } from '../../api/product'
 import type { ApiBlogPost } from '../../api/blog'
 
@@ -14,6 +15,5 @@ declare global {
 }
 
 export function readHomeInitial(): HomeInitialData | undefined {
-  if (typeof window === 'undefined') return undefined
-  return window.__HOME_INITIAL__ ?? undefined
+  return readIsland<HomeInitialData>('__HOME_INITIAL__')
 }

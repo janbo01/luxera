@@ -7,6 +7,7 @@ import { deriveThemeCSS } from '../utils/themeTokens'
 import { CATEGORIES } from '../data/categories'
 import { imgSet, HERO_LCP } from '../utils/cdnImage'
 import { isApiSoldOut, RAIL_FETCH, RAIL_SIZE } from '../utils/stock'
+import type { ApiBanner } from '../api/store'
 import type { CspHash } from 'astro'
 
 const SITE_URL = 'https://luxera.ir'
@@ -264,11 +265,19 @@ export function buildFooterScript(footerData: FooterData): string {
 
 // ── Page-specific data fetchers ───────────────────────────────────────────────
 
-let _homeCache: { lcpPreload: string; initialScript: string } | null = null
+interface HomeData {
+  lcpPreload: string
+  initialScript: string
+  /** Passed to the hero as props so its first paint already has the real banner. */
+  banners: ApiBanner[]
+}
+const HOME_DATA_EMPTY: HomeData = { lcpPreload: '', initialScript: '', banners: [] }
+
+let _homeCache: HomeData | null = null
 let _homeExpiry = 0
 let _homeRefreshInflight: Promise<void> | null = null
 
-function buildHomeData(banners: unknown[]): { lcpPreload: string; initialScript: string } {
+function buildHomeData(banners: unknown[]): HomeData {
   const first = banners[0] as { image_url?: string; product?: { image_url?: string } } | undefined
   const firstImg = first?.image_url || first?.product?.image_url
 
@@ -287,11 +296,15 @@ function buildHomeData(banners: unknown[]): { lcpPreload: string; initialScript:
       : `<link rel="preload" as="image" href="${src}" fetchpriority="high">`
   }
 
-  return { initialScript: jsonIsland('__BANNERS_INITIAL__', banners), lcpPreload }
+  return {
+    initialScript: jsonIsland('__BANNERS_INITIAL__', banners),
+    lcpPreload,
+    banners: banners as ApiBanner[],
+  }
 }
 
-export async function fetchHomeData() {
-  if (!storeApiBase) return { lcpPreload: '', initialScript: '' }
+export async function fetchHomeData(): Promise<HomeData> {
+  if (!storeApiBase) return HOME_DATA_EMPTY
 
   const now = Date.now()
   if (_homeCache && now < _homeExpiry) return _homeCache
@@ -321,13 +334,13 @@ export async function fetchHomeData() {
 
   try {
     const r = await fetch(`${storeApiBase}/store/banners`, { signal: AbortSignal.timeout(5000) })
-    if (!r.ok) return { lcpPreload: '', initialScript: '' }
+    if (!r.ok) return HOME_DATA_EMPTY
     const data = unwrap(await r.json())
     _homeCache = buildHomeData(Array.isArray(data) ? data : [])
     _homeExpiry = Date.now() + 5 * 60 * 1000
     return _homeCache
   } catch {
-    return { lcpPreload: '', initialScript: '' }
+    return HOME_DATA_EMPTY
   }
 }
 

@@ -1,4 +1,5 @@
 import { useState, memo, type FC } from 'react'
+import type { ApiBanner } from '../../api/store'
 
 import HeroSlider, { type SlideInfo, getFirstSlideInfo } from './HeroSlider'
 import Icon from '../icons/Icon'
@@ -10,11 +11,10 @@ function fmtPrice(raw?: string): string {
   return raw && !isNaN(n) ? formatNumber(n) : (raw ?? '')
 }
 
-const Hero: FC = () => {
-  // Pre-populate the overlay with the first slide's info so the initial
-  // client render agrees with window.__BANNERS_INITIAL__ — avoids a
-  // repaint-driven layout shift when the name appears after useLayoutEffect.
-  const [slide, setSlide] = useState<SlideInfo>(() => getFirstSlideInfo())
+const Hero: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
+  // Pre-populate the overlay with the first slide's info so SSR already shows the
+  // banner's name and price — no repaint when useLayoutEffect reports the slide.
+  const [slide, setSlide] = useState<SlideInfo>(() => getFirstSlideInfo(banners))
 
   return (
     <section className="pt-4 md:pt-7">
@@ -24,7 +24,7 @@ const Hero: FC = () => {
           {/* No z-index on this wrapper: it must not form a stacking context, or the
               scrim below (z-3) would paint over the slider's arrows and counter (z-10). */}
           <div className="absolute inset-0">
-            <HeroSlider onSlide={setSlide} />
+            <HeroSlider onSlide={setSlide} banners={banners} />
           </div>
 
           {/* Overlay meta at bottom */}

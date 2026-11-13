@@ -1,4 +1,5 @@
 import { type FC } from 'react'
+import type { ApiBanner } from '../api/store'
 import { usePageMeta } from '../hooks/usePageMeta'
 import Hero from '../components/home/Hero'
 import CategoriesSection from '../components/home/CategoriesSection'
@@ -37,11 +38,11 @@ const HOME_JSON_LD = {
   ],
 }
 
-const HomePage: FC = () => {
+const HomePage: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
   usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز', jsonLd: HOME_JSON_LD })
   return (
     <>
-      <Hero />
+      <Hero banners={banners} />
       <TrustStrip />
       <CategoriesSection />
       <ProductCarousel
