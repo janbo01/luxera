@@ -114,7 +114,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
                   </small>
                 )}
               </div>
-              <div className="text-[12px] text-muted font-body leading-[1.4]">{k.label}</div>
+              <div className="text-[13px] text-muted font-body leading-[1.4]">{k.label}</div>
             </div>
           </div>
         ))}
@@ -131,7 +131,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
               سفارش‌های اخیر
             </h2>
             <button
-              className="text-[12px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]"
+              className="text-[13px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]"
               onClick={() => setTab('orders')}
             >
               همه‌ی سفارش‌ها →
@@ -179,7 +179,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
                 </span>
                 <span className="font-heading text-sm font-bold whitespace-nowrap">
                   {formatToman(order.total)}
-                  <small className="text-[12px] font-normal text-muted mr-[3px]">ت</small>
+                  <small className="text-[13px] font-normal text-muted mr-[3px]">ت</small>
                 </span>
               </div>
             ))}
@@ -240,7 +240,7 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
                   <div className="font-heading text-[13px] font-semibold leading-[1.2]">
                     {item.title}
                   </div>
-                  <div className="text-[12px] text-muted mt-0.5 leading-[1.3]">{item.desc}</div>
+                  <div className="text-[13px] text-muted mt-0.5 leading-[1.3]">{item.desc}</div>
                 </div>
                 <span className="text-muted [&_svg]:w-3.5 [&_svg]:h-3.5">
                   <IcoArrowLeft />

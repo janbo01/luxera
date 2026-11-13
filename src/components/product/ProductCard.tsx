@@ -9,6 +9,7 @@ import Icon from '../icons/Icon'
 import Badge from '../shared/Badge'
 import Stars from './Stars'
 import { hexToSwatch } from '../../utils/colorSwatch'
+import { isSoldOut } from '../../utils/stock'
 import type { Product } from '../../types'
 
 interface ProductCardProps {
@@ -74,9 +75,12 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
     ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100)
     : 0
 
-  const soldOut = product.stockCount === 0
-  const lowStock = product.stockCount != null && product.stockCount > 0 && product.stockCount <= 5
-  const swatches = product.colors?.slice(0, 4) ?? []
+  // No low-stock line on cards: most of the catalogue holds 1–2 units, so a
+  // "only N left" warning landed on nearly every card and stopped meaning anything.
+  // The product page still states the exact stock.
+  const soldOut = isSoldOut(product)
+  // A lone swatch is not a choice, so colours only show when there are two or more.
+  const swatches = (product.colors?.length ?? 0) > 1 ? product.colors!.slice(0, 4) : []
   const moreColors = (product.colors?.length ?? 0) - swatches.length
 
   const href = `/product/${product.slug ?? product.id}`
@@ -118,7 +122,9 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         </button>
 
         {/* Product image(s) */}
-        <div className="absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04]">
+        <div
+          className={`absolute inset-0 flex items-center justify-center text-ink-2 [&>svg]:w-[60%] [&>svg]:h-auto transition-transform duration-700 ease-[var(--ease-lux)] group-hover:scale-[1.04] ${soldOut ? 'opacity-60' : ''}`}
+        >
           {product.imageUrl ? (
             <>
               <img
@@ -169,7 +175,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
           </button>
         )}
         {soldOut && (
-          <span className="absolute bottom-2.5 start-2.5 z-[3] pointer-events-none rounded-full bg-surface/90 px-3 py-1 text-[12px] text-ink-2 backdrop-blur-[8px]">
+          <span className="absolute bottom-2.5 start-2.5 z-[3] pointer-events-none rounded-full bg-surface/90 px-3 py-1 text-[13px] text-ink-2 backdrop-blur-[8px]">
             ناموجود
           </span>
         )}
@@ -192,7 +198,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
         {(product.rating != null || swatches.length > 0) && (
           <div className="flex items-center justify-between gap-2 min-h-5">
             {product.rating != null ? (
-              <span className="inline-flex items-center gap-1.5 text-[12px] text-muted">
+              <span className="inline-flex items-center gap-1.5 text-[13px] text-muted">
                 <span className="text-copper">
                   <Stars value={product.rating} size={12} />
                 </span>
@@ -220,7 +226,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
                   />
                 ))}
                 {moreColors > 0 && (
-                  <span className="text-[11px] text-muted ms-0.5">+{formatNumber(moreColors)}</span>
+                  <span className="text-[12px] text-muted ms-0.5">+{formatNumber(moreColors)}</span>
                 )}
               </span>
             )}
@@ -243,11 +249,6 @@ const ProductCard: FC<ProductCardProps> = ({ product, onAdd, priority = false })
             </span>
           )}
         </div>
-        {lowStock && (
-          <span className="text-[12px] font-medium text-copper-dark" role="status">
-            تنها {formatNumber(product.stockCount!)} عدد باقی مانده
-          </span>
-        )}
       </div>
     </article>
   )

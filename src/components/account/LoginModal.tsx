@@ -116,7 +116,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />
 
         {message && (
-          <p className="text-[12px] text-sale bg-sale/[.08] border border-sale/25 rounded-lg px-3 py-2 -mt-2 mb-4 text-center leading-[1.7]">
+          <p className="text-[13px] text-sale bg-sale/[.08] border border-sale/25 rounded-lg px-3 py-2 -mt-2 mb-4 text-center leading-[1.7]">
             {message}
           </p>
         )}
@@ -213,7 +213,7 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           </div>
         )}
 
-        <p className="text-[12px] text-muted mt-6 leading-[1.8]">
+        <p className="text-[13px] text-muted mt-6 leading-[1.8]">
           با ورود،{' '}
           <a href="/terms" onClick={onClose} className="text-plum underline underline-offset-4">
             قوانین و مقررات لوکسرا

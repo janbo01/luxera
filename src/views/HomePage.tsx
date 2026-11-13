@@ -55,10 +55,11 @@ const HomePage: FC = () => {
         }
         link="/category/new"
       />
+      {/* Returning visitors pick up where they left off, right after what's new. */}
+      <RecentlyViewed min={3} />
       <CollectionSpotlight />
       <CategoryTabs />
       <GiftBanner />
-      <RecentlyViewed min={3} />
     </>
   )
 }

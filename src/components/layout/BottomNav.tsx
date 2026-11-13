@@ -33,7 +33,7 @@ const BottomNav: FC = () => {
   }
 
   const tab = (active: boolean) =>
-    `flex-1 flex flex-col items-center justify-center gap-[3px] font-body text-[12px] transition-colors duration-150 text-decoration-none cursor-pointer [-webkit-tap-highlight-color:transparent] active:scale-[0.88] ${active ? 'text-plum' : 'text-muted'}`
+    `flex-1 flex flex-col items-center justify-center gap-[3px] font-body text-[13px] transition-colors duration-150 text-decoration-none cursor-pointer [-webkit-tap-highlight-color:transparent] active:scale-[0.88] ${active ? 'text-plum' : 'text-muted'}`
 
   return (
     <nav

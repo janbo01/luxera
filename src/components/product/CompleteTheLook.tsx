@@ -62,7 +62,7 @@ const CompleteTheLook: FC<CompleteTheLookProps> = ({ categoryId, excludeId }) =>
       aria-label="ست کردن با این قطعه"
     >
       <SectionHeader
-        kicker="استایل را کامل کنید"
+        size="sm"
         title={
           <>
             با این قطعه <em>ست کنید</em>

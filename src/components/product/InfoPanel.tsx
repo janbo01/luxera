@@ -92,35 +92,32 @@ const InfoPanel: FC<InfoPanelProps> = ({
 
   return (
     <aside className="flex flex-col px-1.5 pt-2">
-      {/* Category + SKU */}
-      <div className="flex items-center justify-between gap-3.5 mb-[18px]">
-        <span className="text-[12.5px] text-copper-dark inline-flex items-center gap-2 before:block before:w-[18px] before:h-px before:bg-current before:opacity-60">
+      {/* Category. The SKU and Latin name live in the specs tab: nothing to decide here. */}
+      <div className="flex items-center gap-3.5 mb-[18px]">
+        <span className="text-[13px] text-copper-dark inline-flex items-center gap-2 before:block before:w-[18px] before:h-px before:bg-current before:opacity-60">
           {p.cat || 'جواهرات'}
-        </span>
-        <span className="font-mono text-[12px] text-muted tracking-[0.16em]">
-          LUX-{p.id.slice(0, 6).toUpperCase()}
         </span>
       </div>
 
       {/* Product name */}
       <h1 className="font-heading font-bold leading-[1.3] text-[clamp(26px,2.7vw,40px)] m-0 text-ink text-balance">
         {p.fa}
-        {p.en && p.en !== p.fa && (
-          <span
-            className="block text-end font-display italic font-normal text-[18px] leading-[1.3] text-copper-dark mt-2 tracking-[0.02em]"
-            dir="ltr"
-            lang="en"
-          >
-            {p.en}
-          </span>
-        )}
       </h1>
 
       {/* Short description */}
+      {/* A two-line summary; the full text is in the description tab, so it isn't shown twice. */}
       {p.shortDescription && (
-        <p className="mt-3.5 text-[14.5px] leading-[1.9] text-ink-2 font-body max-w-[52ch]">
-          {p.shortDescription}
-        </p>
+        <div className="mt-3.5 max-w-[52ch]">
+          <p className="m-0 text-[14.5px] leading-[1.9] text-ink-2 font-body line-clamp-2">
+            {p.shortDescription}
+          </p>
+          <a
+            href="#details"
+            className="inline-flex items-center min-h-[44px] text-[13px] text-muted underline underline-offset-4 hover:text-ink transition-colors duration-200"
+          >
+            توضیحات کامل
+          </a>
+        </div>
       )}
 
       {/* Rating */}
@@ -186,8 +183,23 @@ const InfoPanel: FC<InfoPanelProps> = ({
         )}
       </div>
 
+      {/* One colour is not a choice: state it as a line of text instead of a picker. */}
+      {colorOptions.length === 1 && (
+        <p className="mt-[22px] m-0 text-[13px] text-ink flex items-center gap-2">
+          <b className="font-heading font-semibold">رنگ:</b>
+          {colorOptions[0].hex && (
+            <span
+              className="w-3.5 h-3.5 rounded-full ring-1 ring-inset ring-ink/20"
+              style={{ background: hexToSwatch(colorOptions[0].hex) }}
+              aria-hidden="true"
+            />
+          )}
+          <span className="text-copper-dark font-body text-[14px]">{colorOptions[0].fa}</span>
+        </p>
+      )}
+
       {/* Color selector */}
-      {colorOptions.length > 0 && (
+      {colorOptions.length > 1 && (
         <div className="mt-[26px]">
           <div className="flex items-center justify-between mb-2.5">
             <span className="text-[13px] text-ink font-medium flex items-center gap-2">
@@ -251,7 +263,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
 
       {/* Low stock indicator */}
       {effectiveStock > 0 && effectiveStock <= 5 && !outOfStock && (
-        <p className="mt-3.5 text-[12px] text-sale flex items-center gap-2 m-0" role="status">
+        <p className="mt-3.5 text-[13px] text-sale flex items-center gap-2 m-0" role="status">
           <span
             className="w-[7px] h-[7px] rounded-full bg-sale flex-shrink-0 animate-[pdp-pulse_1.6s_infinite]"
             aria-hidden="true"
@@ -299,7 +311,7 @@ const InfoPanel: FC<InfoPanelProps> = ({
               <span className="font-heading text-[13.5px] font-semibold leading-[1.3] text-ink">
                 {heading}
               </span>
-              <span className="text-[12px] text-muted leading-[1.5]">{body}</span>
+              <span className="text-[13px] text-muted leading-[1.5]">{body}</span>
             </div>
           </div>
         ))}
@@ -324,14 +336,14 @@ const InfoPanel: FC<InfoPanelProps> = ({
           inert={!ctaOffscreen}
         >
           <div className="min-w-0 flex-1">
-            <div className="text-[12px] text-muted truncate">
+            <div className="text-[13px] text-muted truncate">
               {[p.fa, selectedColor?.fa, hasRealSizes ? selectedSize?.label : null]
                 .filter(Boolean)
                 .join(' · ')}
             </div>
             <div className="font-heading font-bold text-[17px] text-ink leading-tight whitespace-nowrap">
               {formatNumber(p.price * qty)}
-              <small className="font-body font-normal text-[12px] text-muted ms-1">تومان</small>
+              <small className="font-body font-normal text-[13px] text-muted ms-1">تومان</small>
             </div>
           </div>
           <button

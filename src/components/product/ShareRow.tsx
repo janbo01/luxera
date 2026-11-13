@@ -71,7 +71,7 @@ export function ShareRow({ productName }: ShareRowProps) {
   return (
     <>
       <div className="mt-[22px] flex items-center gap-2.5 pt-[18px] border-t border-rule">
-        <span className="text-[12px] text-muted me-auto">اشتراک‌گذاری</span>
+        <span className="text-[13px] text-muted me-auto">اشتراک‌گذاری</span>
         {canShare && (
           <button className={SHARE_BTN} onClick={handleNativeShare} aria-label="اشتراک‌گذاری">
             <Icon name="share" size={13} />

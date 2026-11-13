@@ -10,12 +10,19 @@ export function useCarousel(itemCount: number) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(false)
+  // Visible share of the track and how far it has scrolled (0–1), for a touch progress line.
+  // Rounded so a scroll only re-renders when the line would visibly move.
+  const [ratio, setRatio] = useState(1)
+  const [progress, setProgress] = useState(0)
 
   const syncArrows = useCallback(() => {
     const el = trackRef.current
     if (!el) return
     setCanPrev(el.scrollLeft < -2)
     setCanNext(el.scrollLeft > -(el.scrollWidth - el.clientWidth - 2))
+    const range = el.scrollWidth - el.clientWidth
+    setRatio(Math.round((el.clientWidth / Math.max(1, el.scrollWidth)) * 100) / 100)
+    setProgress(range > 0 ? Math.round((Math.abs(el.scrollLeft) / range) * 100) / 100 : 0)
   }, [])
 
   useEffect(() => {
@@ -43,5 +50,5 @@ export function useCarousel(itemCount: number) {
     el.scrollBy({ left: dir === 'prev' ? step : -step, behavior: 'smooth' })
   }, [])
 
-  return { trackRef, canPrev, canNext, scroll }
+  return { trackRef, canPrev, canNext, scroll, ratio, progress }
 }

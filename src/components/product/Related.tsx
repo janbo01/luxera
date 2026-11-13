@@ -36,7 +36,7 @@ const Related: FC<RelatedProps> = ({ categoryId, excludeId }) => {
   return (
     <section className="page-section">
       <SectionHeader
-        kicker="شاید بپسندید"
+        size="sm"
         title={
           <>
             محصولات <em>مشابه</em>

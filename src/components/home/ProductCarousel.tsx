@@ -10,10 +10,11 @@ import { useHydrated } from '../../hooks/useHydrated'
 import ViewAllLink from '../shared/ViewAllLink'
 import { CATEGORIES } from '../../data/categories'
 import { readHomeInitial } from './homeInitial'
+import { isSoldOut, RAIL_FETCH, RAIL_SIZE } from '../../utils/stock'
 import type { Product } from '../../types'
 
 interface ProductCarouselProps {
-  kicker: string
+  kicker?: string
   title: ReactNode
   link: string
   sectionId: string
@@ -22,6 +23,8 @@ interface ProductCarouselProps {
   band?: boolean
   /** Rendered between the section header and the product row (e.g. category tabs). */
   subHeader?: ReactNode
+  /** Header weight; see SectionHeader. */
+  headerSize?: 'lg' | 'sm'
 }
 
 // ~2.2 cards visible on phones (the peek signals the row scrolls), ~4.5 on desktop.
@@ -57,6 +60,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   catSlug,
   band = false,
   subHeader,
+  headerSize = 'lg',
 }) => {
   const addItem = useCartStore((s) => s.addItem)
   const hydrated = useHydrated()
@@ -68,15 +72,21 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   // render identical to SSR (no window there), avoiding a hydration mismatch (React #418).
   const injected = hydrated ? readHomeInitial()?.carousels?.[sectionId] : undefined
 
+  // Rails only merchandise what can be bought. The filter also covers a server payload
+  // cached before it carried stock_count (those rows have no count and pass through).
   const products = useMemo<Product[]>(() => {
     if (fetchedProducts) return fetchedProducts
-    if (injected?.length) return injected.map((p) => adaptProduct(p as ApiProduct))
+    if (injected?.length)
+      return injected
+        .map((p) => adaptProduct(p as ApiProduct))
+        .filter((p) => !isSoldOut(p))
+        .slice(0, RAIL_SIZE)
     return []
   }, [fetchedProducts, injected])
 
   const loading = !hydrated || (!injected?.length && fetching)
 
-  const { trackRef, canPrev, canNext, scroll } = useCarousel(products.length)
+  const { trackRef, canPrev, canNext, scroll, ratio, progress } = useCarousel(products.length)
 
   useEffect(() => {
     if (readHomeInitial()?.carousels?.[sectionId]?.length) return
@@ -84,8 +94,14 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
     const load = async () => {
       try {
         const categoryId = catSlug ? await resolveCategoryId(catSlug) : undefined
-        const { items } = await listProducts({ categoryId, limit: 10 })
-        if (!cancelled) setFetchedProducts(items.map((p) => adaptProduct(p)))
+        const { items } = await listProducts({ categoryId, limit: RAIL_FETCH })
+        if (!cancelled)
+          setFetchedProducts(
+            items
+              .map((p) => adaptProduct(p))
+              .filter((p) => !isSoldOut(p))
+              .slice(0, RAIL_SIZE),
+          )
       } catch {
         if (!cancelled) setFetchedProducts([])
       } finally {
@@ -107,6 +123,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
     >
       <div className="page-section">
         <SectionHeader
+          size={headerSize}
           kicker={kicker}
           title={title}
           aside={
@@ -143,6 +160,21 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
                     <ProductCard product={product} onAdd={addItem} priority={i < 2} />
                   </div>
                 ))}
+          </div>
+        )}
+        {/* Touch screens have no arrows: a thin line shows how much of the rail is left. */}
+        {!loading && !showEmpty && ratio < 1 && (
+          <div
+            className="md:hidden mt-3 h-0.5 rounded-full bg-rule overflow-hidden"
+            aria-hidden="true"
+          >
+            <div
+              className="h-full rounded-full bg-ink-2 transition-[margin] duration-150"
+              style={{
+                width: `${ratio * 100}%`,
+                marginInlineStart: `${progress * (1 - ratio) * 100}%`,
+              }}
+            />
           </div>
         )}
       </div>

@@ -44,7 +44,7 @@ const WishlistPage: FC = () => {
     <div className="px-[clamp(20px,4vw,56px)] pb-[88px] max-w-[1480px] mx-auto">
       {/* Hero */}
       <div className="py-[72px] pb-[52px] border-b border-rule mb-10 max-[760px]:py-12 max-[760px]:pb-9">
-        <span className="font-body text-[12px] text-muted mb-3.5 block">لیست آرزوها</span>
+        <span className="font-body text-[13px] text-muted mb-3.5 block">لیست آرزوها</span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] my-3 text-ink [&_em]:font-heading [&_em]:not-italic [&_em]:text-plum [&_em]:font-normal">
           علاقه‌مندی‌های
           <em> شما</em>
@@ -165,7 +165,7 @@ const WishlistPage: FC = () => {
                           : product.oldPrice
                       }
                       className="text-[13px] text-ink flex flex-col gap-0.5"
-                      oldClassName="text-muted line-through text-[12px]"
+                      oldClassName="text-muted line-through text-[13px]"
                     />
                     {product.stockCount === 0 ? (
                       <span className="text-[12.5px] text-muted">ناموجود</span>

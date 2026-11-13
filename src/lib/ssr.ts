@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { deriveThemeCSS } from '../utils/themeTokens'
 import { CATEGORIES } from '../data/categories'
 import { imgSet, HERO_LCP } from '../utils/cdnImage'
+import { isApiSoldOut, RAIL_FETCH, RAIL_SIZE } from '../utils/stock'
 import type { CspHash } from 'astro'
 
 const SITE_URL = 'https://luxera.ir'
@@ -347,6 +348,10 @@ interface SlimProduct {
   is_sale: boolean
   category_id: string
   image_url?: string
+  stock_count?: number
+  rating?: number
+  review_count?: number
+  colors?: { id: string; name: string; hex_code?: string }[]
 }
 
 function slimProduct(p: Record<string, unknown>): SlimProduct {
@@ -362,6 +367,12 @@ function slimProduct(p: Record<string, unknown>): SlimProduct {
     is_sale: !!p.is_sale,
     category_id: p.category_id as string,
     image_url: p.image_url as string | undefined,
+    // Cards need these to show swatches and ratings; without stock_count the rail
+    // can't drop sold-out items.
+    stock_count: p.stock_count as number | undefined,
+    rating: p.rating as number | undefined,
+    review_count: p.review_count as number | undefined,
+    colors: p.colors as SlimProduct['colors'],
   }
 }
 
@@ -380,14 +391,20 @@ async function loadHomeLists(): Promise<string> {
   const carouselFetches = productApiBase
     ? HOME_CAROUSEL_SLUGS.filter((slug) => slug === 'new' || slugToId.has(slug)).map(
         async (slug) => {
-          const qs = new URLSearchParams({ limit: '10' })
+          // Over-fetch, then keep the first RAIL_SIZE in-stock items: a rail of sold-out
+          // products sells nothing (the API has no in-stock filter).
+          const qs = new URLSearchParams({ limit: String(RAIL_FETCH) })
           if (slug !== 'new') qs.set('category_id', slugToId.get(slug)!)
           const r = await fetch(`${productApiBase}/products?${qs}`, {
             signal: AbortSignal.timeout(5000),
           })
           if (!r.ok) return [slug, [] as SlimProduct[]] as const
           const data = unwrap(await r.json()) as { items?: Array<Record<string, unknown>> }
-          return [slug, (data.items ?? []).map(slimProduct)] as const
+          const items = (data.items ?? [])
+            .map(slimProduct)
+            .filter((p) => !isApiSoldOut(p))
+            .slice(0, RAIL_SIZE)
+          return [slug, items] as const
         },
       )
     : []

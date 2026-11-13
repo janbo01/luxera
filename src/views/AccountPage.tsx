@@ -153,7 +153,7 @@ const AccountPage: FC = () => {
                 <div className="flex items-center gap-2.5 mt-1.5 text-[13px] text-muted flex-wrap">
                   {memberSince && (
                     <>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full text-[12px] font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full text-[13px] font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
                         <IcoStar />
                         عضو
                       </span>

@@ -182,7 +182,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
         ))}
       </div>
 
-      <div className="pt-6 flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-[12px] text-muted max-w-[1480px] mx-auto">
+      <div className="pt-6 flex justify-between items-center flex-wrap gap-x-4 gap-y-2 text-[13px] text-muted max-w-[1480px] mx-auto">
         <span>© {jalaliYear()} لوکسرا — تمامی حقوق محفوظ است.</span>
         <span className="font-display italic text-[14px] tracking-[0.04em]">
           Luxera Jewelry · Tehran

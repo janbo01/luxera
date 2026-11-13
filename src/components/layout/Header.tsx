@@ -33,7 +33,7 @@ function AnnouncementBar() {
     return () => window.clearInterval(t)
   }, [])
   return (
-    <div className="bg-plum-2 text-[var(--color-petal)] text-[12px]" role="status" aria-live="off">
+    <div className="bg-plum-2 text-[var(--color-petal)] text-[13px]" role="status" aria-live="off">
       <div className="relative flex items-center justify-center h-8 md:h-9 px-4 max-w-[1480px] mx-auto md:px-[var(--pad)]">
         {supportPhone ? (
           <span className="absolute start-4 md:start-[var(--pad)] max-md:hidden">

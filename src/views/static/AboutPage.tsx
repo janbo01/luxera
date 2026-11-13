@@ -52,7 +52,7 @@ const AboutPage: FC = () => {
     <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] pb-[100px]">
       {/* Hero */}
       <div className="py-[72px] pb-14 border-b border-rule mb-16 max-[640px]:pt-12 max-[640px]:pb-10 max-[640px]:mb-10">
-        <span className="font-body text-[12px] tracking-[.2em] text-muted uppercase mb-3.5 block">
+        <span className="font-body text-[13px] tracking-[.2em] text-muted uppercase mb-3.5 block">
           About
         </span>
         <h1 className="font-heading font-bold text-[clamp(40px,5vw,72px)] leading-[1.05] mt-3 mb-5 text-ink">
@@ -115,10 +115,10 @@ const AboutPage: FC = () => {
 
       {/* Values */}
       <div className="mb-16 pt-14 border-t border-rule">
-        <span className="font-body text-[12px] text-muted mb-9 block">ارزش‌های ما</span>
+        <span className="font-body text-[13px] text-muted mb-9 block">ارزش‌های ما</span>
         {VALUES.map((v) => (
           <div key={v.num} className="grid grid-cols-[56px_1fr] gap-6 py-7 border-b border-rule">
-            <span className="font-body text-[12px] text-muted tracking-[.12em] pt-1">{v.num}</span>
+            <span className="font-body text-[13px] text-muted tracking-[.12em] pt-1">{v.num}</span>
             <div>
               <h3 className="font-body font-medium text-[17px] m-0 mb-2 text-ink">{v.title}</h3>
               <p className="text-sm leading-[1.85] text-ink-2 m-0">{v.body}</p>

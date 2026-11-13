@@ -5,25 +5,6 @@ import Icon from '../icons/Icon'
 import { BTN_CLS } from '../ui/Button'
 import { formatNumber, jalaliSeason } from '../../utils/format'
 
-const TICKER_ITEMS = [
-  'جواهرات فانتزی',
-  'بی‌آلرژی',
-  'روکش ماندگار',
-  'برندهای معتبر',
-  'ارسال سریع',
-  'گارانتی اصالت',
-  'طراحی‌های روز',
-]
-
-const TICKER_ROW = TICKER_ITEMS.map((item) => (
-  <span key={item} className="inline-flex items-center gap-2.5">
-    <i className="text-copper text-[12px] not-italic" aria-hidden="true">
-      ✦
-    </i>
-    {item}
-  </span>
-))
-
 function fmtPrice(raw?: string): string {
   const n = Number(raw)
   return raw && !isNaN(n) ? formatNumber(n) : (raw ?? '')
@@ -37,7 +18,7 @@ const Hero: FC = () => {
 
   return (
     <section className="pt-4 md:pt-7">
-      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-4 items-stretch min-h-[500px] max-md:min-h-0">
+      <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-8 items-stretch min-h-[420px] max-md:min-h-0">
         {/* ── Dark stage (left) ── */}
         <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-[4/3]">
           {/* No z-index on this wrapper: it must not form a stacking context, or the
@@ -66,7 +47,7 @@ const Hero: FC = () => {
             {slide.price ? (
               <div className="flex flex-col items-end gap-1 shrink-0 [font-feature-settings:'tnum']">
                 {slide.oldPrice ? (
-                  <span className="text-[12px] line-through text-white/65 leading-none">
+                  <span className="text-[13px] line-through text-white/65 leading-none">
                     {fmtPrice(slide.oldPrice)}
                   </span>
                 ) : null}
@@ -81,15 +62,16 @@ const Hero: FC = () => {
           </div>
         </div>
 
-        {/* ── Cream copy panel (right) ── */}
-        <div className="relative overflow-hidden rounded-[var(--radius)] bg-surface ring-1 ring-inset ring-rule px-[clamp(24px,3.4vw,52px)] py-[clamp(28px,3.4vw,52px)] flex flex-col justify-center isolate">
+        {/* ── Copy (right) — open on the page background, not a second card. On phones it
+            shrinks to the headline and CTA so the first products arrive sooner. ── */}
+        <div className="relative flex flex-col justify-center isolate py-[clamp(4px,2.4vw,40px)] md:pe-[clamp(0px,1.5vw,24px)]">
           {/* Soft brand-tinted glow in the corner — derived from theme tokens */}
           <div
             aria-hidden="true"
-            className="absolute -top-1/3 -start-1/4 w-[80%] aspect-square rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-copper)_12%,transparent),transparent)] -z-10 pointer-events-none"
+            className="absolute -top-1/4 -start-1/4 w-[80%] aspect-square rounded-full max-md:hidden bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-copper)_12%,transparent),transparent)] -z-10 pointer-events-none"
           />
 
-          <span className="inline-flex items-center gap-2 mb-4 md:mb-6 animate-rise [animation-delay:80ms]">
+          <span className="inline-flex items-center gap-2 mb-4 md:mb-6 animate-rise [animation-delay:80ms] max-md:hidden">
             <span className="w-5 h-px bg-copper-dark opacity-70" />
             <span className="text-[13px] font-medium text-copper-dark">تازه‌ها</span>
             <span className="text-copper-dark/50" aria-hidden="true">
@@ -98,7 +80,7 @@ const Hero: FC = () => {
             <span className="text-[13px] text-copper-dark">{jalaliSeason()}</span>
           </span>
 
-          <h1 className="font-heading font-bold text-[clamp(32px,4.2vw,60px)] leading-[1.08] tracking-[-0.01em] m-0 mb-4 md:mb-6 text-ink animate-rise [animation-delay:160ms]">
+          <h1 className="font-heading font-bold text-[clamp(28px,4.2vw,56px)] leading-[1.08] tracking-[-0.01em] m-0 mb-4 md:mb-6 text-ink animate-rise [animation-delay:160ms]">
             استایلِ امروز،
             <br />
             <span className="text-copper-dark relative inline-block after:absolute after:-inset-x-1 after:bottom-[0.16em] after:h-[0.3em] after:bg-copper/[0.16] after:-z-10 after:rounded-sm">
@@ -107,7 +89,7 @@ const Hero: FC = () => {
             .
           </h1>
 
-          <p className="text-ink-2 text-[15px] md:text-[16px] leading-[1.9] max-w-[40ch] m-0 mb-7 md:mb-9 animate-rise [animation-delay:260ms]">
+          <p className="text-ink-2 text-[15px] md:text-[16px] leading-[1.9] max-w-[40ch] m-0 mb-7 md:mb-9 animate-rise [animation-delay:260ms] max-md:hidden">
             جواهرات فانتزی و اکسسوری مد از بهترین برندها — گردنبند، دستبند، انگشتر و گوشواره برای هر
             سبک و هر مناسبت. کیفیت خوب، بدون پرداخت هزینه‌ی گزاف.
           </p>
@@ -123,19 +105,6 @@ const Hero: FC = () => {
               بیشتر بدانید
               <span className="sr-only"> درباره‌ی لوکسرا</span>
             </a>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Ticker ── */}
-      <div className="max-w-[1480px] mx-auto px-[var(--pad)] mt-3 md:mt-4 border-t border-b border-rule py-3.5 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        {/* No letter-spacing here: tracking breaks the joins of Persian script. */}
-        <div className="flex w-max text-[12.5px] text-ink-2 animate-ticker hover:[animation-play-state:paused]">
-          {/* Two identical halves, each padded by one gap, so the 50% keyframe
-            shift loops seamlessly; the copy is hidden from screen readers. */}
-          <div className="flex gap-12 pe-12">{TICKER_ROW}</div>
-          <div className="flex gap-12 pe-12" aria-hidden="true">
-            {TICKER_ROW}
           </div>
         </div>
       </div>

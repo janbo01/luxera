@@ -64,7 +64,7 @@ const AddressStep: FC<AddressStepProps> = ({
           </span>
           آدرسِ تحویل
         </h2>
-        <span className="flex items-center gap-1.5 text-[12px] text-muted [&_svg]:w-3 [&_svg]:h-3 [&_svg]:text-ok">
+        <span className="flex items-center gap-1.5 text-[13px] text-muted [&_svg]:w-3 [&_svg]:h-3 [&_svg]:text-ok">
           <Icon name="shield" size={14} strokeWidth={1.8} />
           اطلاعات شما محرمانه می‌ماند
         </span>
@@ -107,14 +107,14 @@ const AddressStep: FC<AddressStepProps> = ({
               >
                 <Icon name="check" size={16} strokeWidth={2.5} />
               </span>
-              <span className="text-[12px] text-copper">
+              <span className="text-[13px] text-copper">
                 {adr.label}
                 {adr.isDefault ? ' · پیش‌فرض' : ''}
               </span>
               <span className="font-heading text-[14px] font-semibold">
                 {adr.fullName} · {adr.phone}
               </span>
-              <span className="text-[12px] text-ink-2 leading-[1.5] line-clamp-2">
+              <span className="text-[13px] text-ink-2 leading-[1.5] line-clamp-2">
                 {adr.city}، {adr.street}
               </span>
             </label>
@@ -135,7 +135,7 @@ const AddressStep: FC<AddressStepProps> = ({
       </div>
 
       {/* Divider */}
-      <div className="flex items-center gap-3.5 my-[22px] text-[12px] text-muted before:content-[''] before:flex-1 before:h-px before:bg-rule after:content-[''] after:flex-1 after:h-px after:bg-rule">
+      <div className="flex items-center gap-3.5 my-[22px] text-[13px] text-muted before:content-[''] before:flex-1 before:h-px before:bg-rule after:content-[''] after:flex-1 after:h-px after:bg-rule">
         یا اطلاعات جدید را وارد کنید
       </div>
 
@@ -313,7 +313,7 @@ const AddressStep: FC<AddressStepProps> = ({
 
       {/* Actions */}
       <div className="flex justify-between items-center gap-3.5 mt-7 pt-6 border-t border-rule max-[640px]:flex-col-reverse max-[640px]:items-stretch">
-        <label className="flex items-center gap-2.5 text-[12px] text-muted cursor-pointer select-none group">
+        <label className="flex items-center gap-2.5 text-[13px] text-muted cursor-pointer select-none group">
           <span
             className={`w-[18px] h-[18px] rounded-xs border flex-shrink-0 grid place-items-center transition-all duration-150 [&_svg]:w-[10px] [&_svg]:h-[10px] ${saveDefault ? 'bg-ink border-ink text-bg' : 'bg-bg border-rule group-hover:border-ink-2'}`}
           >

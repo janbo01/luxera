@@ -178,13 +178,13 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
             <caption className="sr-only">جدول اندازه‌های گردنبند</caption>
             <thead>
               <tr>
-                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[13px] text-muted border-b border-rule">
                   طول
                 </th>
-                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[13px] text-muted border-b border-rule">
                   سبک
                 </th>
-                <th className="py-3.5 px-3 text-end font-normal text-[12px] text-muted border-b border-rule">
+                <th className="py-3.5 px-3 text-end font-normal text-[13px] text-muted border-b border-rule">
                   مناسب برای
                 </th>
               </tr>
@@ -214,7 +214,7 @@ const SizeGuideModal: FC<SizeGuideModalProps> = ({ open, onClose }) => {
           </table>
         </div>
 
-        <p className="text-[12px] text-muted px-6 py-6 m-0 border-t border-rule mt-2">
+        <p className="text-[13px] text-muted px-6 py-6 m-0 border-t border-rule mt-2">
           نکته: اندازه‌گیری با متر نواری از وسط گردن در جلو انجام دهید.
         </p>
       </div>

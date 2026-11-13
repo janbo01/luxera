@@ -2,9 +2,10 @@ import { useState, type FC } from 'react'
 import { formatNumber, toFa } from '../../utils/format'
 import Icon from '../icons/Icon'
 import type { ApiColor } from '../../api/product'
-import { hexToSwatch } from '../../utils/colorSwatch'
+import { hexToSwatch, colorFamily, COLOR_FAMILIES } from '../../utils/colorSwatch'
 
 export const MAX_PRICE = 3_000_000
+const COLOR_PREVIEW = 10
 
 interface FilterPanelProps {
   isOpen: boolean
@@ -61,7 +62,7 @@ const Section: FC<SectionProps> = ({ id, title, meta, open, onToggle, children }
     >
       <span className="font-heading text-[14px] font-semibold text-ink">
         {title}
-        {meta && <span className="font-body font-normal text-[12px] text-muted ms-2">{meta}</span>}
+        {meta && <span className="font-body font-normal text-[13px] text-muted ms-2">{meta}</span>}
       </span>
       <Icon
         name="chevron-down"
@@ -96,6 +97,18 @@ const FilterPanel: FC<FilterPanelProps> = ({
     () => new Set(['price', 'material', 'color', 'stock']),
   )
 
+  // Colours: grouped into named families, the first COLOR_PREVIEW shown until expanded.
+  const [allColors, setAllColors] = useState(false)
+  const familyOf = new Map(availableColors.map((c) => [c.id, colorFamily(c.name, c.hex_code)]))
+  const orderedColors = COLOR_FAMILIES.flatMap((f) =>
+    availableColors.filter((c) => familyOf.get(c.id) === f.id),
+  )
+  const previewIds = new Set(orderedColors.slice(0, COLOR_PREVIEW).map((c) => c.id))
+  const visibleColors = allColors
+    ? orderedColors
+    : orderedColors.filter((c) => previewIds.has(c.id) || selectedColorIds.includes(c.id))
+  const hiddenColorCount = orderedColors.length - visibleColors.length
+
   const toggleSection = (s: string) =>
     setOpenSections((prev) => {
       const next = new Set(prev)
@@ -124,9 +137,9 @@ const FilterPanel: FC<FilterPanelProps> = ({
       <aside
         aria-label="فیلترها"
         className={[
-          // Desktop: sticky card
+          // Desktop: sticky open column on the page background (controls, not an object)
           'sticky top-24 self-start max-h-[calc(100vh-110px)] overflow-y-auto scrollbar-none',
-          'bg-surface ring-1 ring-inset ring-rule rounded-[var(--radius-lg)] px-5 pt-4 pb-5',
+          'pe-1 pt-1 pb-5 max-[1100px]:bg-surface',
           // Mobile: fixed bottom-sheet
           'max-[1100px]:fixed max-[1100px]:bottom-0 max-[1100px]:inset-x-0 max-[1100px]:top-auto',
           // Above the bottom nav (z-100) and the page's sticky filter bar (z-110)
@@ -221,7 +234,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
                 className={inputCls}
               />
             </label>
-            <span className="text-muted text-[12px]" aria-hidden>
+            <span className="text-muted text-[13px]" aria-hidden>
               تا
             </span>
             <label className="flex-1 min-w-0">
@@ -264,7 +277,7 @@ const FilterPanel: FC<FilterPanelProps> = ({
                       className="w-[18px] h-[18px] accent-[var(--color-ink)] cursor-pointer"
                     />
                     <span className="flex-1">{m}</span>
-                    <span className="text-[12px] text-muted">{toFa(materialCounts[m] ?? 0)}</span>
+                    <span className="text-[13px] text-muted">{toFa(materialCounts[m] ?? 0)}</span>
                   </label>
                 )
               })}
@@ -281,31 +294,47 @@ const FilterPanel: FC<FilterPanelProps> = ({
             open={openSections.has('color')}
             onToggle={toggleSection}
           >
-            <div className="flex flex-wrap gap-1">
-              {availableColors.map(({ id, name, hex_code }) => {
-                const active = selectedColorIds.includes(id)
+            <div className="flex flex-col gap-3">
+              {COLOR_FAMILIES.map((fam) => {
+                const list = visibleColors.filter((c) => familyOf.get(c.id) === fam.id)
+                if (!list.length) return null
                 return (
-                  <button
-                    key={id}
-                    className="w-10 h-10 grid place-items-center rounded-full cursor-pointer group/sw"
-                    title={name}
-                    onClick={() => onToggleColor(id)}
-                    aria-label={name}
-                    aria-pressed={active}
-                  >
-                    <span
-                      className={`w-7 h-7 rounded-full ring-1 ring-inset ring-ink/10 grid place-items-center transition-all duration-200 group-hover/sw:scale-110 ${active ? 'outline-2 outline-offset-2 outline-ink [outline-style:solid]' : ''}`}
-                      style={{ background: hexToSwatch(hex_code) }}
-                    >
-                      {active && (
-                        <span className="w-4 h-4 rounded-full bg-surface/90 grid place-items-center text-ink">
-                          <Icon name="check" size={10} strokeWidth={3} />
-                        </span>
-                      )}
-                    </span>
-                  </button>
+                  <div key={fam.id} role="group" aria-label={fam.label}>
+                    <span className="block text-[13px] text-muted mb-1.5">{fam.label}</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {list.map(({ id, name, hex_code }) => {
+                        const active = selectedColorIds.includes(id)
+                        return (
+                          <button
+                            key={id}
+                            type="button"
+                            className={`inline-flex items-center gap-2 min-h-[40px] ps-2 pe-3 rounded-full text-[13px] border cursor-pointer transition-colors duration-200 ${active ? 'bg-ink text-bg border-ink' : 'bg-bg border-rule text-ink-2 hover:border-ink'}`}
+                            onClick={() => onToggleColor(id)}
+                            aria-pressed={active}
+                          >
+                            <span
+                              className="w-5 h-5 rounded-full ring-1 ring-inset ring-ink/15 shrink-0"
+                              style={{ background: hexToSwatch(hex_code) }}
+                              aria-hidden="true"
+                            />
+                            {name}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
                 )
               })}
+              {(hiddenColorCount > 0 || allColors) && orderedColors.length > COLOR_PREVIEW && (
+                <button
+                  type="button"
+                  className="self-start min-h-[40px] text-[13px] text-plum underline underline-offset-4 cursor-pointer hover:text-ink"
+                  aria-expanded={allColors}
+                  onClick={() => setAllColors((v) => !v)}
+                >
+                  {allColors ? 'رنگ‌های کمتر' : `${toFa(hiddenColorCount)} رنگ دیگر`}
+                </button>
+              )}
             </div>
           </Section>
         )}

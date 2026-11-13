@@ -117,7 +117,7 @@ const OrdersPane: FC = () => {
           {chips.map((c) => (
             <button
               key={c.key}
-              className={`px-[13px] py-[7px] rounded-full text-[12px] border transition-all cursor-pointer inline-flex items-center gap-1.5 font-body ${
+              className={`px-[13px] py-[7px] rounded-full text-[13px] border transition-all cursor-pointer inline-flex items-center gap-1.5 font-body ${
                 filter === c.key
                   ? 'bg-ink text-bg border-ink'
                   : 'bg-bg text-ink-2 border-rule hover:border-ink'
@@ -200,7 +200,7 @@ const OrdersPane: FC = () => {
                 </span>
                 <span className="font-heading text-[16px] font-bold max-[1100px]:hidden">
                   {formatToman(order.total)}
-                  <small className="text-[12px] font-normal text-muted mr-[3px]">تومان</small>
+                  <small className="text-[13px] font-normal text-muted mr-[3px]">تومان</small>
                 </span>
                 <span
                   className={`w-9 h-9 rounded-full grid place-items-center transition-[transform,background,color] shrink-0 [&_svg]:w-3.5 [&_svg]:h-3.5 ${
@@ -250,7 +250,7 @@ const OrdersPane: FC = () => {
                             </div>
                             <span className="font-heading text-[13px] font-semibold whitespace-nowrap">
                               {formatToman(item.price)}
-                              <small className="text-[12px] font-normal text-muted mr-0.5">ت</small>
+                              <small className="text-[13px] font-normal text-muted mr-0.5">ت</small>
                             </span>
                           </div>
                         ))}
@@ -338,7 +338,7 @@ const OrdersPane: FC = () => {
                       </div>
                       {order.trackingCode && (
                         <div className="mt-2.5 px-3.5 py-[11px] bg-surface border border-rule rounded-sm flex items-center gap-2.5">
-                          <span className="text-[12px] text-muted ">رهگیری</span>
+                          <span className="text-[13px] text-muted ">رهگیری</span>
                           <span
                             className="font-mono text-[13px] font-semibold flex-1"
                             dir="ltr"

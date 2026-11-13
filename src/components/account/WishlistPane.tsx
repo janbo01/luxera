@@ -76,7 +76,7 @@ const WishlistPane: FC = () => {
                       <IcoHeartFill />
                     </button>
                     <button
-                      className="absolute bottom-2.5 left-2.5 right-2.5 bg-ink/95 text-bg py-2 rounded-lg text-[12px] font-medium flex justify-center gap-1.5 items-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 cursor-pointer font-body [&_svg]:w-3 [&_svg]:h-3"
+                      className="absolute bottom-2.5 left-2.5 right-2.5 bg-ink/95 text-bg py-2 rounded-lg text-[13px] font-medium flex justify-center gap-1.5 items-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 cursor-pointer font-body [&_svg]:w-3 [&_svg]:h-3"
                       onClick={() => addToCart(product)}
                     >
                       <IcoBag /> افزودن به سبد
@@ -92,7 +92,7 @@ const WishlistPane: FC = () => {
                     <div className="flex justify-between items-center mt-2">
                       <span className="font-heading text-sm font-bold">
                         {formatToman(product.price)}
-                        <small className="text-[12px] text-muted font-normal mr-[3px]">ت</small>
+                        <small className="text-[13px] text-muted font-normal mr-[3px]">ت</small>
                       </span>
                       <span
                         className={`font-mono text-[12px] inline-flex items-center gap-1 ${product.oldPrice ? 'text-sale' : 'text-ok'} before:content-[''] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current`}

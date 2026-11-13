@@ -220,18 +220,18 @@ const Reviews: FC<ReviewsProps> = ({ productId, rating, reviewCount }) => {
           {/* Reviews list column */}
           <div>
             <div className="flex items-center gap-2.5 flex-wrap mb-[22px]">
-              <span className="text-[12px] text-muted me-1.5">فیلتر</span>
+              <span className="text-[13px] text-muted me-1.5">فیلتر</span>
               {FILTERS.map((f) => (
                 <button
                   key={f}
-                  className={`inline-flex items-center min-h-[48px] px-4 rounded-full text-[12px] border font-body transition-all duration-150 ${f === activeFilter ? 'bg-ink text-bg border-ink' : 'border-rule text-ink-2 hover:border-ink-2'}`}
+                  className={`inline-flex items-center min-h-[48px] px-4 rounded-full text-[13px] border font-body transition-all duration-150 ${f === activeFilter ? 'bg-ink text-bg border-ink' : 'border-rule text-ink-2 hover:border-ink-2'}`}
                   onClick={() => setActiveFilter(f)}
                 >
                   {f}
                 </button>
               ))}
               <span className="flex-1" />
-              <span className="inline-flex items-center gap-2 px-3.5 py-2 border border-rule rounded-full text-[12px] bg-bg font-body">
+              <span className="inline-flex items-center gap-2 px-3.5 py-2 border border-rule rounded-full text-[13px] bg-bg font-body">
                 مرتب: تازه‌ترین ▾
               </span>
             </div>

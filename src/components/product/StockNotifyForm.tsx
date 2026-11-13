@@ -96,10 +96,10 @@ export function StockNotifyForm({ productId }: StockNotifyFormProps) {
           {submitting ? '...' : 'ثبت'}
         </button>
       </div>
-      {error && <p className="text-[12px] text-sale m-0">{error}</p>}
+      {error && <p className="text-[13px] text-sale m-0">{error}</p>}
       <button
         type="button"
-        className="text-[12px] text-muted self-start hover:text-ink transition-colors duration-200"
+        className="text-[13px] text-muted self-start hover:text-ink transition-colors duration-200"
         onClick={() => {
           setIsOpen(false)
           setError('')

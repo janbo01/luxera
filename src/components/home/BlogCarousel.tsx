@@ -50,9 +50,9 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
           {post.title}
         </h3>
         {post.excerpt ? (
-          <p className="text-[12px] leading-[1.8] text-ink-2 line-clamp-2">{post.excerpt}</p>
+          <p className="text-[13px] leading-[1.8] text-ink-2 line-clamp-2">{post.excerpt}</p>
         ) : null}
-        <span className="mt-2 inline-flex items-center gap-1.5 text-[12px] text-plum font-medium">
+        <span className="mt-2 inline-flex items-center gap-1.5 text-[13px] text-plum font-medium">
           ادامه مطلب
           <span
             aria-hidden="true"
@@ -116,7 +116,7 @@ const BlogCarousel: FC = () => {
       id="blog"
     >
       <SectionHeader
-        kicker="مجله‌ی لوکسرا"
+        size="sm"
         title={
           <>
             آخرین <em>مقالات</em>

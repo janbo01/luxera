@@ -111,7 +111,7 @@ const ProfilePane: FC = () => {
           )}
           <div className="flex-1">
             <h3 className="font-heading text-sm font-semibold m-0">عکسِ پروفایل</h3>
-            <p className="m-0 mt-0.5 text-[12px] text-muted">
+            <p className="m-0 mt-0.5 text-[13px] text-muted">
               JPG یا PNG · حداکثر ۲ مگابایت · ۴۰۰×۴۰۰ پیکسل
             </p>
           </div>
@@ -259,7 +259,7 @@ const ProfilePane: FC = () => {
           </div>
         </div>
         <div className="px-7 py-[18px] bg-surface-2 border-t border-rule flex justify-between items-center gap-3">
-          <span className="text-[12px] text-muted">
+          <span className="text-[13px] text-muted">
             آخرین تغییر:{' '}
             {profile?.updatedAt ? new Date(profile.updatedAt).toLocaleDateString('fa-IR') : '—'}
           </span>
@@ -323,7 +323,7 @@ const ProfilePane: FC = () => {
               </span>
               <div className="flex-1">
                 <h3 className="font-heading text-[13px] font-semibold m-0">{title}</h3>
-                <p className="m-0 mt-0.5 text-[12px] text-muted">{desc}</p>
+                <p className="m-0 mt-0.5 text-[13px] text-muted">{desc}</p>
               </div>
               {/* Toggle switch using peer */}
               <label className="relative w-9 h-5 shrink-0 cursor-pointer mt-0.5">

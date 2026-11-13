@@ -49,7 +49,7 @@ const SecurityPane: FC = () => {
               </span>
               <div className="flex-1">
                 <h3 className="font-heading text-[13px] font-semibold m-0">{title}</h3>
-                <p className="m-0 mt-0.5 text-[12px] text-muted">{desc}</p>
+                <p className="m-0 mt-0.5 text-[13px] text-muted">{desc}</p>
               </div>
               <label className="relative w-9 h-5 shrink-0 cursor-pointer mt-0.5">
                 <input
@@ -64,7 +64,7 @@ const SecurityPane: FC = () => {
           ))}
         </div>
         <div className="px-7 py-[18px] bg-surface-2 border-t border-rule flex justify-between items-center gap-3">
-          <span className="text-[12px] text-muted">آخرین ورود: امروز · ۱۰:۴۵</span>
+          <span className="text-[13px] text-muted">آخرین ورود: امروز · ۱۰:۴۵</span>
           <button className={`${BTN_MUTE} ${BTN_SM}`}>تغییرِ رمزِ ورود</button>
         </div>
       </div>

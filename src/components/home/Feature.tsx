@@ -31,7 +31,7 @@ const Feature: FC = () => (
                 <h3 className="font-heading text-[14px] font-semibold leading-[1.3] m-0 mb-1 text-ink">
                   {p.title}
                 </h3>
-                <p className="text-[12px] text-muted m-0 leading-[1.5]">{p.desc}</p>
+                <p className="text-[13px] text-muted m-0 leading-[1.5]">{p.desc}</p>
               </div>
             </div>
           ))}

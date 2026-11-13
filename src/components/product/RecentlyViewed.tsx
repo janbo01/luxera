@@ -1,35 +1,64 @@
-import { memo, type FC } from 'react'
+import { memo, useEffect, useState, type FC } from 'react'
 
 import SectionHeader from '../shared/SectionHeader'
 import ProductCard from './ProductCard'
 import { useCartStore } from '../../store/cartStore'
 import { useRecentStore } from '../../store/recentStore'
 import { useHydrated } from '../../hooks/useHydrated'
+import { batchProducts } from '../../api/product'
 
 interface RecentlyViewedProps {
   /** Hide the product currently being viewed. */
   excludeId?: string
-  /** Fewer than this many items and the strip stays hidden. */
+  /** Fewer than this many in-stock items and the strip stays hidden. */
   min?: number
 }
 
 const CARD_W = 'clamp(150px,42vw,230px)'
+const MAX_SHOWN = 6
 
-/** Last products the shopper opened. Stored on-device, so it needs no account. */
+/**
+ * Last products the shopper opened. Stored on-device, so it needs no account.
+ * Only items still in stock are shown: the stored stock count is a snapshot from the
+ * visit, so it is refreshed from the API before deciding what to show.
+ */
 const RecentlyViewed: FC<RecentlyViewedProps> = ({ excludeId, min = 2 }) => {
   const hydrated = useHydrated()
   const addItem = useCartStore((s) => s.addItem)
   const items = useRecentStore((s) => s.items)
+  // id → current stock; undefined until the refresh answers (or if it fails).
+  const [liveStock, setLiveStock] = useState<Record<string, number | undefined>>()
+
+  const idKey = items.map((p) => p.id).join(',')
+  useEffect(() => {
+    if (!hydrated || !idKey) return
+    let cancelled = false
+    batchProducts(idKey.split(','))
+      .then((rows) => {
+        if (!cancelled) setLiveStock(Object.fromEntries(rows.map((r) => [r.id, r.stock_count])))
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [hydrated, idKey])
 
   // The server never knows what this visitor viewed, so render nothing until hydrated.
   if (!hydrated) return null
-  const list = items.filter((p) => p.id !== excludeId).slice(0, 6)
+  const list = items
+    .filter((p) => p.id !== excludeId)
+    .map((p) => {
+      const live = liveStock?.[p.id]
+      return live === undefined ? p : { ...p, stockCount: live }
+    })
+    .filter((p) => p.stockCount !== 0)
+    .slice(0, MAX_SHOWN)
   if (list.length < min) return null
 
   return (
     <section className="page-section page-section--compact cv-auto" aria-label="بازدیدهای اخیر">
       <SectionHeader
-        kicker="بازدیدهای اخیر"
+        size="sm"
         title={
           <>
             بازدیدهای <em>اخیر</em>

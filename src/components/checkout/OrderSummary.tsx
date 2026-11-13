@@ -119,7 +119,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </div>
               <div className="font-heading text-[13px] font-semibold text-left">
                 {formatToman(item.price * item.qty).replace(' تومان', '')}
-                <small className="text-[12px] font-normal text-muted mr-0.5">ت</small>
+                <small className="text-[13px] font-normal text-muted mr-0.5">ت</small>
               </div>
             </div>
           ))}
@@ -165,12 +165,12 @@ const OrderSummary: FC<OrderSummaryProps> = ({
 
         {/* ETA chip */}
         {step >= 1 && selectedShipping && (
-          <div className="mt-3 px-3.5 py-3 bg-bg border border-rule rounded-sm flex items-center gap-3 text-[12px]">
+          <div className="mt-3 px-3.5 py-3 bg-bg border border-rule rounded-sm flex items-center gap-3 text-[13px]">
             <span className="w-8 h-8 rounded-sm bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">
               <Icon name="clock" size={14} strokeWidth={1.7} />
             </span>
             <div className="flex flex-col gap-[1px] flex-1">
-              <span className="text-[12px] text-muted">تخمینِ تحویل</span>
+              <span className="text-[13px] text-muted">تخمینِ تحویل</span>
               <span className="font-heading text-[13px] font-semibold">
                 {selectedShipping.id === 'snapp_box'
                   ? `${snappDate} · ${snappTime}`
@@ -178,7 +178,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </span>
             </div>
             <button
-              className="text-[12px] text-copper font-body cursor-pointer hover:underline hover:underline-offset-[3px]"
+              className="text-[13px] text-copper font-body cursor-pointer hover:underline hover:underline-offset-[3px]"
               onClick={() => onGoStep(1)}
             >
               تغییر
@@ -188,23 +188,23 @@ const OrderSummary: FC<OrderSummaryProps> = ({
 
         {/* Address chip */}
         {step >= 1 && addrCity && (
-          <div className="mt-2.5 p-3.5 bg-bg border border-rule rounded-sm flex gap-3 items-start text-[12px] text-ink-2 leading-[1.6]">
+          <div className="mt-2.5 p-3.5 bg-bg border border-rule rounded-sm flex gap-3 items-start text-[13px] text-ink-2 leading-[1.6]">
             <span className="w-[30px] h-[30px] rounded-full bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-3.5 [&_svg]:h-3.5">
               <Icon name="location" size={14} strokeWidth={1.8} />
             </span>
             <div className="flex-1 flex flex-col gap-[1px]">
-              <span className="text-[12px] text-muted ">آدرسِ تحویل</span>
+              <span className="text-[13px] text-muted ">آدرسِ تحویل</span>
               {addrName && (
                 <span className="text-ink-2">
                   <strong className="font-heading font-semibold text-ink">{addrName}</strong>
                 </span>
               )}
-              <span className="text-[12px] text-muted">
+              <span className="text-[13px] text-muted">
                 {addrProvince}، {addrCity}
                 {addrStreet ? `، ${addrStreet.slice(0, 40)}` : ''}
               </span>
               <button
-                className="text-[12px] text-copper self-start mt-0.5 cursor-pointer hover:underline"
+                className="text-[13px] text-copper self-start mt-0.5 cursor-pointer hover:underline"
                 onClick={() => onGoStep(0)}
               >
                 ویرایش
@@ -218,7 +218,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
           <span className="font-heading text-[15px] font-semibold">قابلِ پرداخت</span>
           <span className="font-heading text-[22px] font-bold text-ink">
             {formatToman(total).replace(' تومان', '')}
-            <small className="font-body text-[12px] font-normal text-muted mr-1.5">تومان</small>
+            <small className="font-body text-[13px] font-normal text-muted mr-1.5">تومان</small>
           </span>
         </div>
 
@@ -251,14 +251,14 @@ const OrderSummary: FC<OrderSummaryProps> = ({
                 />
                 <button
                   type="button"
-                  className="shrink-0 px-3.5 py-[11px] bg-bg-2 text-ink-2 text-[12px] rounded-sm border border-rule cursor-pointer hover:bg-bg hover:text-ink transition-colors whitespace-nowrap"
+                  className="shrink-0 px-3.5 py-[11px] bg-bg-2 text-ink-2 text-[13px] rounded-sm border border-rule cursor-pointer hover:bg-bg hover:text-ink transition-colors whitespace-nowrap"
                   onClick={() => onLoyaltyPointsChange(loyaltyBalance)}
                 >
                   همه
                 </button>
               </div>
               {loyaltyPointsToUse > 0 && (
-                <p className="text-[12px] text-ok mt-1.5 font-body">
+                <p className="text-[13px] text-ok mt-1.5 font-body">
                   معادلِ {formatToman(loyaltyDiscount)} تخفیف
                 </p>
               )}
@@ -291,7 +291,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
               </button>
             </div>
           ) : (
-            <div className="mt-2.5 px-3 py-[9px] bg-ok/10 border border-ok/25 rounded-sm flex items-center gap-2 text-[12px] text-ok">
+            <div className="mt-2.5 px-3 py-[9px] bg-ok/10 border border-ok/25 rounded-sm flex items-center gap-2 text-[13px] text-ok">
               <Icon name="check" size={14} strokeWidth={2} />
               کدِ <span className="font-mono font-semibold">{appliedCode}</span> اعمال شد —{' '}
               {appliedCoupon?.discount_type === 'percentage'
@@ -314,7 +314,7 @@ const OrderSummary: FC<OrderSummaryProps> = ({
         </div>
 
         {/* Perks */}
-        <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[12px] text-muted">
+        <div className="mt-3.5 pt-3.5 border-t border-dashed border-rule flex flex-col gap-2 text-[13px] text-muted">
           {PERKS.map((text) => (
             <span
               key={text}

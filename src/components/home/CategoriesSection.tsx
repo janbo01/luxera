@@ -56,7 +56,9 @@ const CategoriesSection: FC = () => {
         aside={<ViewAllLink href="/collections">مشاهده‌ی همه</ViewAllLink>}
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3.5">
+      {/* Phones: one swipeable row of portrait tiles (a bento there cost ~800px of scroll).
+          Desktop keeps the 4-column bento with the featured tile spanning 2×2. */}
+      <div className="flex gap-2.5 overflow-x-auto scrollbar-none snap-x snap-mandatory -mx-[var(--pad)] px-[var(--pad)] scroll-px-[var(--pad)] md:grid md:grid-cols-4 md:gap-3.5 md:overflow-visible md:m-0 md:p-0">
         {VISIBLE_CATS.map((cat, index) => {
           const apiCat = apiByName.get(cat.fa)
           const imgSrc = apiCat?.image_url
@@ -67,7 +69,7 @@ const CategoriesSection: FC = () => {
             <a
               key={cat.id}
               href={`/category/${cat.id}`}
-              className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} ${isFeatured ? 'col-span-2 aspect-[16/10] md:row-span-2 md:aspect-auto' : 'aspect-square'}`}
+              className={`group relative rounded-[var(--radius)] overflow-hidden flex flex-col justify-end isolate card-lift cursor-pointer focus-visible:outline-2 focus-visible:outline-plum focus-visible:outline-offset-2 ${bg} max-md:w-[38vw] max-md:max-w-[170px] max-md:shrink-0 max-md:snap-start max-md:aspect-[3/4] ${isFeatured ? 'md:col-span-2 md:row-span-2' : 'md:aspect-square'}`}
             >
               {imgSrc ? (
                 <img
@@ -78,8 +80,8 @@ const CategoriesSection: FC = () => {
                     // container, square), full width at 16:10 on mobile; small tiles are
                     // square quarters (desktop) or halves (mobile). Capped by --maxw 1480.
                     sizes: isFeatured
-                      ? '(max-width: 767px) calc(100vw - 40px), (max-width: 1480px) 46vw, 680px'
-                      : '(max-width: 767px) calc(50vw - 26px), (max-width: 1480px) 23vw, 336px',
+                      ? '(max-width: 767px) 38vw, (max-width: 1480px) 46vw, 680px'
+                      : '(max-width: 767px) 38vw, (max-width: 1480px) 23vw, 336px',
                   })}
                   alt={cat.fa}
                   loading="lazy"
@@ -92,16 +94,16 @@ const CategoriesSection: FC = () => {
 
               {/* Label pill — frosted surface, so pale photos stay clean (no dark scrim) */}
               <div
-                className={`relative z-[2] flex items-end justify-between gap-2 ${isFeatured ? 'p-3.5 md:p-5' : 'p-2.5 md:p-3.5'}`}
+                className={`relative z-[2] flex items-end justify-between gap-2 ${isFeatured ? 'p-2.5 md:p-5' : 'p-2.5 md:p-3.5'}`}
               >
                 <span
-                  className={`inline-flex items-center min-w-0 rounded-full bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] font-heading font-semibold leading-[1.3] ${isFeatured ? 'px-5 pt-[calc(8px+0.22em)] pb-[calc(8px-0.22em)] text-[18px] md:text-[22px]' : 'px-3.5 pt-[calc(6px+0.22em)] pb-[calc(6px-0.22em)] text-[15px] md:text-[17px]'}`}
+                  className={`inline-flex items-center min-w-0 rounded-full bg-surface/90 backdrop-blur-[8px] text-ink shadow-[var(--shadow-soft)] font-heading font-semibold leading-[1.3] px-3.5 pt-[calc(6px+0.22em)] pb-[calc(6px-0.22em)] text-[15px] ${isFeatured ? 'md:px-5 md:pt-[calc(8px+0.22em)] md:pb-[calc(8px-0.22em)] md:text-[22px]' : 'md:text-[17px]'}`}
                 >
                   {cat.fa}
                 </span>
 
                 {/* Arrow */}
-                <span className="flex-shrink-0 w-9 h-9 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-all duration-300 group-hover:bg-ink group-hover:text-bg group-hover:-translate-x-0.5">
+                <span className="max-md:hidden flex-shrink-0 w-9 h-9 rounded-full bg-surface/90 backdrop-blur-[8px] shadow-[var(--shadow-soft)] grid place-items-center text-ink transition-all duration-300 group-hover:bg-ink group-hover:text-bg group-hover:-translate-x-0.5">
                   <Icon name="arrow-left" size={13} />
                 </span>
               </div>

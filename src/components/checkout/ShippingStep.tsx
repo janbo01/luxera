@@ -64,7 +64,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
         </span>
         روشِ ارسال
       </h2>
-      <span className="text-[12px] text-muted">تحویل تا ۱۸ اردیبهشت برای سفارشِ امروز</span>
+      <span className="text-[13px] text-muted">تحویل تا ۱۸ اردیبهشت برای سفارشِ امروز</span>
     </div>
 
     {/* Shipping options */}
@@ -101,7 +101,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     {opt.nameEn}
                   </span>
                   {opt.id === 'snapp_box' && (
-                    <span className="px-2 py-0.5 bg-copper/12 text-copper rounded-xs text-[12px] font-medium ">
+                    <span className="px-2 py-0.5 bg-copper/12 text-copper rounded-xs text-[13px] font-medium ">
                       پرطرفدار
                     </span>
                   )}
@@ -135,7 +135,7 @@ const ShippingStep: FC<ShippingStepProps> = ({
                     formatToman(opt.price).replace(' تومان', '')
                   )}
                   {opt.price > 0 && (
-                    <small className="text-[12px] font-normal text-muted mr-1">تومان</small>
+                    <small className="text-[13px] font-normal text-muted mr-1">تومان</small>
                   )}
                 </span>
                 {opt.id === 'snapp_box' && (
@@ -233,11 +233,11 @@ const ShippingStep: FC<ShippingStepProps> = ({
             Gift Wrapping
           </span>
         </h3>
-        <p className="m-0 text-[12px] text-muted">کارتِ دست‌نویس + جعبه‌ی مخمل — مناسب برای هدیه</p>
+        <p className="m-0 text-[13px] text-muted">کارتِ دست‌نویس + جعبه‌ی مخمل — مناسب برای هدیه</p>
       </span>
       <span className="font-heading text-[14px] font-semibold">
         {toFa(GIFT_WRAP_PRICE / 1000)}٬۰۰۰
-        <small className="text-[12px] font-normal text-muted mr-[3px]">تومان</small>
+        <small className="text-[13px] font-normal text-muted mr-[3px]">تومان</small>
       </span>
       <span
         className={`w-[22px] h-[22px] rounded-xs border-[1.5px] grid place-items-center transition-all [&_svg]:w-3 [&_svg]:h-3 [&_svg]:stroke-[2.5] ${

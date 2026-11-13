@@ -2,10 +2,10 @@ import { useState, type FC } from 'react'
 import ProductCarousel from './ProductCarousel'
 
 const TABS = [
-  { id: 'necklaces', label: 'گردنبند', kicker: 'گردنبندهای منتخب' },
-  { id: 'rings', label: 'انگشتر', kicker: 'انگشترهای منتخب' },
-  { id: 'earrings', label: 'گوشواره', kicker: 'گوشواره‌های منتخب' },
-  { id: 'bracelets', label: 'دستبند', kicker: 'دستبندهای منتخب' },
+  { id: 'necklaces', label: 'گردنبند' },
+  { id: 'rings', label: 'انگشتر' },
+  { id: 'earrings', label: 'گوشواره' },
+  { id: 'bracelets', label: 'دستبند' },
 ] as const
 
 /**
@@ -20,7 +20,7 @@ const CategoryTabs: FC = () => {
     <ProductCarousel
       key={tab.id}
       sectionId={tab.id}
-      kicker={tab.kicker}
+      headerSize="sm"
       title={
         <>
           کلکسیون <em>{tab.label}</em>
@@ -32,7 +32,7 @@ const CategoryTabs: FC = () => {
         <div
           role="tablist"
           aria-label="دسته‌بندی محصولات"
-          className="flex gap-2 overflow-x-auto scrollbar-none mb-6 -mt-3"
+          className="flex gap-2 overflow-x-auto scrollbar-none mb-5 -mt-1"
         >
           {TABS.map((t) => (
             <button

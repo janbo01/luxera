@@ -216,7 +216,7 @@ const CartDrawer: FC = () => {
                     {item.fa}
                   </div>
                   <span className="font-display italic text-[12px] text-muted">{item.en}</span>
-                  <div className="text-[12px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
+                  <div className="text-[13px] text-muted mt-1.5">{item.meta.join(' · ')}</div>
                   <QuantityStepper
                     value={item.qty}
                     onDecrement={() => decrement(item.id)}

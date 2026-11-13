@@ -9,6 +9,7 @@ import PullToRefresh from '../components/shared/PullToRefresh'
 import CategoryHero from '../components/category/CategoryHero'
 import FilterPanel, { MAX_PRICE } from '../components/category/FilterPanel'
 import { toFa, formatNumber } from '../utils/format'
+import { isSoldOut, soldOutLast } from '../utils/stock'
 import {
   listProducts,
   listCategories,
@@ -300,14 +301,21 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
   const deferredPriceMax = useDeferredValue(priceMax)
 
   const filtered = useMemo(
-    () => allProducts.filter((p) => p.price >= deferredPriceMin && p.price <= deferredPriceMax),
-    [allProducts, deferredPriceMin, deferredPriceMax],
+    () =>
+      allProducts.filter(
+        (p) =>
+          p.price >= deferredPriceMin &&
+          p.price <= deferredPriceMax &&
+          !(inStockOnly && isSoldOut(p)),
+      ),
+    [allProducts, deferredPriceMin, deferredPriceMax, inStockOnly],
   )
 
+  // Whatever the sort, sold-out products go to the end of the loaded list.
   const sorted = useMemo(() => {
-    if (sort !== 'discount') return filtered
+    if (sort !== 'discount') return soldOutLast(filtered)
     const pct = (p: Product) => (p.oldPrice && p.oldPrice > p.price ? 1 - p.price / p.oldPrice : 0)
-    return [...filtered].sort((a, b) => pct(b) - pct(a))
+    return soldOutLast([...filtered].sort((a, b) => pct(b) - pct(a)))
   }, [filtered, sort])
 
   // `page` counts how many PER_PAGE batches are revealed, so "show more" never leaves the page.
@@ -405,15 +413,6 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     await fetchProducts(match?.id, apiSort, activeColors)
   }, [id, apiSort, activeColors, fetchProducts])
 
-  const heroPreviews = useMemo(
-    () =>
-      allProducts
-        .map((p) => p.imageUrl)
-        .filter((u): u is string => !!u)
-        .slice(0, 3),
-    [allProducts],
-  )
-
   // Coming back from a product (browser back) restores how far the shopper had scrolled.
   const restoreKey = `lx-cat:${id}`
   const restoredRef = useRef(false)
@@ -474,13 +473,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
-        <CategoryHero
-          category={category}
-          catId={id!}
-          productCount={allProducts.length}
-          catProductCounts={CAT_PRODUCT_COUNTS}
-          previews={heroPreviews}
-        />
+        <CategoryHero category={category} catId={id!} catProductCounts={CAT_PRODUCT_COUNTS} />
       </div>
 
       <section className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
@@ -680,7 +673,7 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
             onClick={() => setSortOpen((o) => !o)}
             className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] bg-surface border border-rule rounded-full text-[13.5px] font-body cursor-pointer transition-[border-color] duration-150 hover:border-ink active:border-ink"
           >
-            <span className="text-muted text-[12px]">ترتیب:</span>
+            <span className="text-muted text-[13px]">ترتیب:</span>
             <span>{currentSortLabel}</span>
             <Icon
               name="chevron-down"

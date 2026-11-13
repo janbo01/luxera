@@ -43,7 +43,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
         </span>
         درگاهِ پرداخت
       </h2>
-      <span className="flex items-center gap-1.5 text-[12px] text-muted [&_svg]:w-3 [&_svg]:h-3 [&_svg]:text-ok">
+      <span className="flex items-center gap-1.5 text-[13px] text-muted [&_svg]:w-3 [&_svg]:h-3 [&_svg]:text-ok">
         <Icon name="shield" size={14} strokeWidth={1.8} />
         تمامِ تراکنش‌ها از طریقِ درگاهِ امن انجام می‌شود
       </span>
@@ -83,7 +83,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
                   {p.en}
                 </span>
               </span>
-              <span className="text-[12px] text-muted">{p.sub}</span>
+              <span className="text-[13px] text-muted">{p.sub}</span>
             </span>
           </div>
         )
@@ -114,7 +114,7 @@ const PaymentStep: FC<PaymentStepProps> = ({
           sub: 'بدونِ پرسش، بدونِ هزینه',
         },
       ].map(({ icon, title, sub }) => (
-        <div key={title} className="flex items-start gap-2.5 text-[12px] text-ink-2 leading-[1.5]">
+        <div key={title} className="flex items-start gap-2.5 text-[13px] text-ink-2 leading-[1.5]">
           <span className="w-8 h-8 rounded-full bg-surface-2 grid place-items-center text-copper shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">
             {icon}
           </span>

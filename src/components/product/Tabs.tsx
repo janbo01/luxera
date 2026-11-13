@@ -19,9 +19,15 @@ const TAB_LABELS: { id: TabId; label: string }[] = [
 const Tabs: FC<TabsProps> = ({ product }) => {
   const [activeTab, setActiveTab] = useState<TabId>('desc')
   const p = product ?? PRODUCT_DETAIL
+  // Reference data moved here from the top of the info panel.
+  const specs: string[][] = [
+    ...p.specs,
+    ['کد محصول', `LUX-${p.id.slice(0, 6).toUpperCase()}`],
+    ...(p.en && p.en !== p.fa ? [['نام لاتین', p.en]] : []),
+  ]
 
   return (
-    <section className="pt-[72px] px-[var(--pad)] mb-0">
+    <section id="details" className="pt-[72px] px-[var(--pad)] mb-0 scroll-mt-24">
       <nav className="flex items-center border-b border-rule overflow-x-auto">
         {TAB_LABELS.map(({ id, label }) => (
           <button
@@ -89,9 +95,9 @@ const Tabs: FC<TabsProps> = ({ product }) => {
               </span>
             </h2>
             <div className="grid [grid-template-columns:auto_1fr] border-t border-rule text-[14px]">
-              {p.specs.map(([k, v], i) => (
+              {specs.map(([k, v], i) => (
                 <Fragment key={i}>
-                  <span className="py-3.5 border-b border-rule text-muted font-body text-[12px] tracking-[0.06em] pe-6">
+                  <span className="py-3.5 border-b border-rule text-muted font-body text-[13px] tracking-[0.06em] pe-6">
                     {k}
                   </span>
                   <span

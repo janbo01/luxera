@@ -126,7 +126,7 @@ const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <p className="m-0 text-[12px] text-muted font-medium">اطلاعاتِ گیرنده</p>
+            <p className="m-0 text-[13px] text-muted font-medium">اطلاعاتِ گیرنده</p>
             <div className="grid grid-cols-2 gap-[18px]">
               <div className={F_FIELD}>
                 <label className={F_LABEL}>
@@ -155,7 +155,7 @@ const AddressModal: FC<AddressModalProps> = ({ initial, onClose }) => {
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <p className="m-0 text-[12px] text-muted font-medium">آدرس</p>
+            <p className="m-0 text-[13px] text-muted font-medium">آدرس</p>
             <div className="grid grid-cols-2 gap-[18px]">
               <div className={F_FIELD}>
                 <label className={F_LABEL}>
@@ -315,7 +315,7 @@ const AddressesPane: FC = () => {
                     {addrIcon(addr.label)} {addr.label}
                   </span>
                   {addr.isDefault && (
-                    <span className="inline-flex items-center gap-[5px] px-2.5 py-1 bg-copper/[.12] text-copper rounded-full text-[12px] [&_svg]:w-2.5 [&_svg]:h-2.5">
+                    <span className="inline-flex items-center gap-[5px] px-2.5 py-1 bg-copper/[.12] text-copper rounded-full text-[13px] [&_svg]:w-2.5 [&_svg]:h-2.5">
                       <IcoStar /> پیش‌فرض
                     </span>
                   )}
@@ -330,7 +330,7 @@ const AddressesPane: FC = () => {
                   <div className="text-[13px] text-ink-2 leading-[1.7]">
                     {addr.province}، {addr.city}، {addr.street}
                   </div>
-                  <div className="flex gap-2.5 flex-wrap text-[12px] text-muted pt-1.5 border-t border-dashed border-rule">
+                  <div className="flex gap-2.5 flex-wrap text-[13px] text-muted pt-1.5 border-t border-dashed border-rule">
                     <span
                       className="inline-flex items-center gap-1.5 font-mono [&_svg]:w-[11px] [&_svg]:h-[11px]"
                       dir="ltr"
@@ -349,12 +349,12 @@ const AddressesPane: FC = () => {
                 </div>
                 <div className="flex justify-between items-center gap-2.5 pt-3 border-t border-rule">
                   {addr.isDefault ? (
-                    <button className="text-[12px] text-copper bg-transparent border-0 p-[7px_0] cursor-default opacity-45 font-body">
+                    <button className="text-[13px] text-copper bg-transparent border-0 p-[7px_0] cursor-default opacity-45 font-body">
                       آدرسِ پیش‌فرض
                     </button>
                   ) : (
                     <button
-                      className="text-[12px] text-copper bg-transparent border-0 p-[7px_0] cursor-pointer font-body hover:underline hover:underline-offset-[3px]"
+                      className="text-[13px] text-copper bg-transparent border-0 p-[7px_0] cursor-pointer font-body hover:underline hover:underline-offset-[3px]"
                       onClick={() => setDefaultAddress(addr.id)}
                     >
                       تنظیم به‌عنوانِ پیش‌فرض
@@ -362,14 +362,14 @@ const AddressesPane: FC = () => {
                   )}
                   <div className="flex gap-1.5">
                     <button
-                      className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[12px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-ink hover:text-bg hover:border-ink [&_svg]:w-3 [&_svg]:h-3"
+                      className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[13px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-ink hover:text-bg hover:border-ink [&_svg]:w-3 [&_svg]:h-3"
                       onClick={() => setModal({ open: true, address: addr })}
                     >
                       <IcoEdit />
                       ویرایش
                     </button>
                     <button
-                      className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[12px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-sale hover:text-white hover:border-sale [&_svg]:w-3 [&_svg]:h-3"
+                      className="inline-flex items-center gap-1.5 px-3 py-[7px] rounded-lg text-[13px] bg-bg text-ink-2 border border-rule transition-all cursor-pointer font-body hover:bg-sale hover:text-white hover:border-sale [&_svg]:w-3 [&_svg]:h-3"
                       onClick={() => removeAddress(addr.id)}
                     >
                       <IcoTrash />
@@ -386,7 +386,7 @@ const AddressesPane: FC = () => {
                 <IcoPlus />
               </span>
               <span className="font-heading text-sm font-semibold">افزودنِ آدرسِ جدید</span>
-              <span className="text-[12px] text-muted">می‌توانید تا ۵ آدرس داشته باشید</span>
+              <span className="text-[13px] text-muted">می‌توانید تا ۵ آدرس داشته باشید</span>
             </button>
           </div>
         </div>

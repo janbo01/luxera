@@ -34,13 +34,15 @@ const Story: FC = () => (
       </div>
 
       {/* Columns — inset to the page gutter so they line up with every other section */}
-      <div className="grid grid-cols-3 max-md:grid-cols-1 mt-8 md:mt-10 rounded-[var(--radius)] ring-1 ring-inset ring-bg/10 overflow-hidden">
+      <div className="grid grid-cols-3 max-md:grid-cols-1 mt-8 md:mt-10">
         {STORY_COLS.map(({ num, latinNum, title, heading, body }, i) => (
           <div
             key={num}
             data-story-num={latinNum}
             className={[
-              'story-card relative overflow-hidden isolate py-11 px-9 max-lg:px-7 max-md:py-8 max-md:px-6',
+              'story-card relative overflow-hidden isolate py-10 md:px-8 max-md:py-8',
+              i === 0 ? 'md:ps-0' : '',
+              i === STORY_COLS.length - 1 ? 'md:pe-0' : '',
               i < STORY_COLS.length - 1
                 ? 'border-e border-bg/10 max-md:border-e-0 max-md:border-b'
                 : '',
@@ -51,7 +53,7 @@ const Story: FC = () => (
 
             {/* Label row */}
             <div className="flex items-center gap-2.5 mb-4">
-              <span className="text-[12px] text-gold [font-feature-settings:'tnum']">{num}</span>
+              <span className="text-[13px] text-gold [font-feature-settings:'tnum']">{num}</span>
               <span className="text-bg/30 select-none" aria-hidden="true">
                 ·
               </span>

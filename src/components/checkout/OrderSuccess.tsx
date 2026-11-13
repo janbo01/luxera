@@ -94,7 +94,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
       </div>
 
       <div className="w-full border border-rule bg-surface mb-8 text-right animate-rise [animation-delay:260ms]">
-        <div className="px-5 py-[10px] text-[12px] text-muted border-b border-rule">
+        <div className="px-5 py-[10px] text-[13px] text-muted border-b border-rule">
           محصولات سفارش
         </div>
         {confirmedItems.map((item) => (
@@ -106,10 +106,10 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
               <Illustration name={item.illus} />
             </div>
             <div>
-              <div className="text-[12px] font-normal text-ink leading-[1.4]">{item.fa}</div>
+              <div className="text-[13px] font-normal text-ink leading-[1.4]">{item.fa}</div>
               <div className="font-mono text-[12px] text-muted mt-[3px]">{toFa(item.qty)} عدد</div>
             </div>
-            <div className="text-[12px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+            <div className="text-[13px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
               {formatToman(item.price * item.qty)}
             </div>
           </div>
@@ -120,7 +120,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
               <Icon name="spark" size={18} />
             </div>
             <div>
-              <div className="text-[12px] font-normal text-ink leading-[1.4]">بسته‌بندی هدیه</div>
+              <div className="text-[13px] font-normal text-ink leading-[1.4]">بسته‌بندی هدیه</div>
               {giftNote && (
                 <div className="font-mono text-[12px] text-muted mt-[3px] italic text-ink-2">
                   «{giftNote.slice(0, 60)}
@@ -128,7 +128,7 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
                 </div>
               )}
             </div>
-            <div className="text-[12px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
+            <div className="text-[13px] text-ink whitespace-nowrap [font-feature-settings:'tnum']">
               {formatToman(giftWrapPrice)}
             </div>
           </div>

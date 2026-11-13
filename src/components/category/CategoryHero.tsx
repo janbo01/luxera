@@ -1,11 +1,9 @@
-import { type FC } from 'react'
+import { useState, type FC } from 'react'
 
 import { CATEGORIES } from '../../data/categories'
 import { toFa } from '../../utils/format'
 import type { Category } from '../../types'
 import Icon from '../icons/Icon'
-import PageIntro from '../shared/PageIntro'
-import { imgSet } from '../../utils/cdnImage'
 
 const CAT_DESC: Record<string, string> = {
   necklaces:
@@ -19,103 +17,88 @@ const CAT_DESC: Record<string, string> = {
   mens: 'اکسسوری مردانه با طراحی مدرن — انگشتر، دستبند و گردنبند مردانه.',
 }
 
-const TRUST = [
-  { icon: 'shield', label: 'بی‌آلرژی و بدون نیکل' },
-  { icon: 'check', label: '۴ روز ضمانت بازگشت' },
-  { icon: 'clock', label: 'ارسال یک‌روزه تهران' },
-]
-
 const MAIN_CATS = CATEGORIES.filter((c) => !['new', 'bridal', 'mens'].includes(c.id))
 
 interface CategoryHeroProps {
   category: Category
   catId: string
-  productCount: number
   catProductCounts: Record<string, number>
-  /** Image URLs of the category's first products, shown as a mosaic beside the title. */
-  previews?: string[]
 }
 
-const CategoryHero: FC<CategoryHeroProps> = ({
-  category,
-  catId,
-  productCount,
-  catProductCounts,
-  previews = [],
-}) => (
-  <>
-    {/* Breadcrumb */}
-    <nav aria-label="مسیر صفحه" className="flex items-center gap-2 text-[12.5px] text-muted pt-5">
-      <a href="/" className="hover:text-plum transition-colors">
-        خانه
-      </a>
-      <Icon name="chevron-left" size={11} className="opacity-50" />
-      <a href="/collections" className="hover:text-plum transition-colors">
-        فروشگاه
-      </a>
-      <Icon name="chevron-left" size={11} className="opacity-50" />
-      <span className="text-ink" aria-current="page">
-        {category.fa}
-      </span>
-    </nav>
+/**
+ * Compact category header: the title and a one-line description that expands (the live
+ * product count sits in the toolbar below), so the first products sit high on a phone. Trust points are left to the
+ * site-wide band, and product thumbnails are gone (they repeated the grid right below).
+ */
+const CategoryHero: FC<CategoryHeroProps> = ({ category, catId, catProductCounts }) => {
+  const [expanded, setExpanded] = useState(false)
+  const description = CAT_DESC[catId] ?? ''
 
-    {/* Editorial header — shared with collections/blog; compact so the grid starts above the fold */}
-    <PageIntro
-      kicker="دسته‌بندی"
-      title={category.fa}
-      description={CAT_DESC[catId] ?? ''}
-      meta={
-        <>
-          {productCount > 0 && (
-            <span className="text-ink-2 font-medium">{toFa(productCount)} محصول</span>
-          )}
-          {TRUST.map((t) => (
-            <span key={t.label} className="inline-flex items-center gap-1.5">
-              <Icon name={t.icon} size={13} strokeWidth={1.8} className="text-plum" />
-              {t.label}
-            </span>
-          ))}
-        </>
-      }
-      aside={
-        previews.length >= 3 ? (
-          <div className="hidden md:flex gap-2 w-[min(34vw,380px)]" aria-hidden>
-            {previews.slice(0, 3).map((src, i) => (
-              <img
-                key={src}
-                {...imgSet(src, { widths: [240, 480], ratio: 3 / 4, sizes: '130px' })}
-                alt=""
-                decoding="async"
-                className={`flex-1 min-w-0 aspect-[3/4] object-cover rounded-[var(--radius)] ring-1 ring-rule bg-bg-2 ${i === 1 ? 'translate-y-4' : ''}`}
-              />
-            ))}
+  return (
+    <>
+      {/* Breadcrumb */}
+      <nav aria-label="مسیر صفحه" className="flex items-center gap-2 text-[13px] text-muted pt-5">
+        <a href="/" className="hover:text-plum transition-colors">
+          خانه
+        </a>
+        <Icon name="chevron-left" size={11} className="opacity-50" />
+        <a href="/collections" className="hover:text-plum transition-colors">
+          فروشگاه
+        </a>
+        <Icon name="chevron-left" size={11} className="opacity-50" />
+        <span className="text-ink" aria-current="page">
+          {category.fa}
+        </span>
+      </nav>
+
+      <header className="mt-4 md:mt-6">
+        <h1 className="font-heading font-bold text-[clamp(28px,3.4vw,44px)] leading-[1.15] m-0 text-ink">
+          {category.fa}
+        </h1>
+        {description && (
+          <div className="mt-1.5 flex items-start gap-2 max-w-[72ch]">
+            <p
+              id="cat-desc"
+              className={`m-0 text-[14px] leading-[1.9] text-ink-2 ${expanded ? '' : 'line-clamp-1 md:line-clamp-none'}`}
+            >
+              {description}
+            </p>
+            <button
+              type="button"
+              className="shrink-0 min-h-[30px] text-[13px] text-muted underline underline-offset-4 cursor-pointer hover:text-ink md:hidden"
+              aria-expanded={expanded}
+              aria-controls="cat-desc"
+              onClick={() => setExpanded((v) => !v)}
+            >
+              {expanded ? 'کمتر' : 'بیشتر'}
+            </button>
           </div>
-        ) : undefined
-      }
-    />
+        )}
+      </header>
 
-    {/* Category nav — horizontally scrollable on mobile */}
-    <nav
-      aria-label="دسته‌بندی‌ها"
-      className="mt-4 md:mt-5 flex gap-2 items-center pb-1 overflow-x-auto flex-nowrap scrollbar-none [margin-inline:calc(-1*var(--pad))] [padding-inline:var(--pad)] md:m-0 md:p-0 md:flex-wrap"
-    >
-      {MAIN_CATS.map((cat) => {
-        const active = cat.id === catId
-        const count = catProductCounts[cat.id] ?? 0
-        return (
-          <a
-            key={cat.id}
-            href={`/category/${cat.id}`}
-            aria-current={active ? 'page' : undefined}
-            className={`inline-flex items-center gap-2 min-h-[40px] px-4 rounded-full text-[13px] border transition-all duration-200 shrink-0 ${active ? 'bg-ink text-bg border-ink' : 'border-rule bg-surface hover:border-ink'}`}
-          >
-            {cat.fa}
-            {count > 0 && <span className="font-mono text-[12px] opacity-60">{toFa(count)}</span>}
-          </a>
-        )
-      })}
-    </nav>
-  </>
-)
+      {/* Category nav — horizontally scrollable on mobile */}
+      <nav
+        aria-label="دسته‌بندی‌ها"
+        className="mt-4 md:mt-5 flex gap-2 items-center pb-1 overflow-x-auto flex-nowrap scrollbar-none [margin-inline:calc(-1*var(--pad))] [padding-inline:var(--pad)] md:m-0 md:p-0 md:flex-wrap"
+      >
+        {MAIN_CATS.map((cat) => {
+          const active = cat.id === catId
+          const count = catProductCounts[cat.id] ?? 0
+          return (
+            <a
+              key={cat.id}
+              href={`/category/${cat.id}`}
+              aria-current={active ? 'page' : undefined}
+              className={`inline-flex items-center gap-2 min-h-[40px] px-4 rounded-full text-[13px] border transition-all duration-200 shrink-0 ${active ? 'bg-ink text-bg border-ink' : 'border-rule bg-surface hover:border-ink'}`}
+            >
+              {cat.fa}
+              {count > 0 && <span className="font-mono text-[12px] opacity-60">{toFa(count)}</span>}
+            </a>
+          )
+        })}
+      </nav>
+    </>
+  )
+}
 
 export default CategoryHero
