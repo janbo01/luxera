@@ -24,8 +24,6 @@ export interface SlideInfo {
   href?: string
   price?: string
   oldPrice?: string
-  /** Number of slides; the arrows (and the space reserved for them) only exist above 1. */
-  total: number
 }
 
 const TONES: HeroTone[] = ['plum', 'sand', 'copper']
@@ -85,7 +83,6 @@ export function getFirstSlideInfo(): SlideInfo {
     name: first?.caption ?? '',
     price: first?.price,
     oldPrice: first?.oldPrice,
-    total: slides.length,
   }
 }
 
@@ -136,7 +133,6 @@ const HeroSlider: FC<{ onSlide?: (info: SlideInfo) => void }> = ({ onSlide }) =>
         href: s.linkUrl,
         price: s.price,
         oldPrice: s.oldPrice,
-        total: slides.length,
       })
   }, [idx, slides])
 

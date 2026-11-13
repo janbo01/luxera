@@ -653,10 +653,12 @@
 }
 
 /* arrow buttons: bottom-left, stacked */
+/* Top corner, opposite the counter: at the bottom they forced the caption to leave room
+   for them, and the server renders placeholder slides, so the caption jumped on load. */
 .hero-slider__arrows {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  top: 16px;
+  right: 16px;
   display: flex;
   gap: 8px;
   z-index: 10;
