@@ -383,7 +383,7 @@ const CheckoutPage: FC = () => {
                   )}
                   {isActive && (
                     <span className="mr-auto text-bg opacity-60 transition-opacity max-[640px]:hidden">
-                      <Icon name="arrow-right" size={14} strokeWidth={1.8} />
+                      <Icon name="arrow-left" size={14} strokeWidth={1.8} />
                     </span>
                   )}
                 </button>

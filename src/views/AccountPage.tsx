@@ -10,19 +10,12 @@ import { User, MapPin, Heart, Truck } from 'lucide-react'
 import {
   type Tab,
   AVA_MD,
-  AVA_SM,
-  BTN_MUTE,
-  BTN_PRIMARY,
-  BTN_SM,
   IcoBag,
-  IcoClock,
   IcoGrid,
   IcoHeart,
   IcoLock,
   IcoLogout,
   IcoPin,
-  IcoSearch,
-  IcoStar,
   IcoUser,
   firstLetter,
 } from '../components/account/shared'
@@ -91,6 +84,7 @@ const AccountPage: FC = () => {
   const fetchAddresses = useAuthStore((s) => s.fetchAddresses)
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
 
+  const firstName = profile?.name?.trim().split(/\s+/)[0]
   const createdAt = profile?.createdAt
   const memberSince = useMemo(() => {
     if (!createdAt) return null
@@ -125,61 +119,33 @@ const AccountPage: FC = () => {
   return (
     <div className="min-h-[60vh] animate-rise">
       {/* Intro band */}
-      <section className="py-9 pb-7">
-        <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
-          <div className="flex justify-between items-end gap-8 flex-wrap max-[640px]:flex-col max-[640px]:items-start">
-            <div className="flex items-center gap-[18px]">
-              <div className={AVA_MD}>
-                {profile?.avatarUrl ? (
-                  <img
-                    src={profile.avatarUrl}
-                    alt="avatar"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  firstLetter(profile?.name)
-                )}
-              </div>
-              <div>
-                <span className="font-body text-[13px] text-copper-dark inline-flex items-center gap-2.5 before:content-[''] before:block before:w-[22px] before:h-px before:bg-current before:opacity-60">
-                  حسابِ کاربری
-                </span>
-                <h2 className="mt-1 font-heading text-[clamp(24px,3vw,36px)] font-bold m-0 leading-[1.1] tracking-[-0.01em]">
-                  خوش آمدید،{' '}
-                  <em className="not-italic font-bold text-copper-dark">
-                    {profile?.name?.split(' ')[0]}
-                  </em>
-                </h2>
-                <div className="flex items-center gap-2.5 mt-1.5 text-[13px] text-muted flex-wrap">
-                  {memberSince && (
-                    <>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-[3px] bg-copper/[.12] text-copper rounded-full text-[13px] font-medium [&_svg]:w-[11px] [&_svg]:h-[11px]">
-                        <IcoStar />
-                        عضو
-                      </span>
-                      <span className="text-rule">·</span>
-                      <span>عضو از {memberSince}</span>
-                      <span className="text-rule">·</span>
-                    </>
-                  )}
-                  <span>{toFa(orders.length)} سفارش</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-2 flex-wrap items-center">
-              <button
-                className={`${BTN_MUTE} ${BTN_SM} [&_svg]:w-3.5 [&_svg]:h-3.5`}
-                onClick={() => setTab('orders')}
-              >
-                <IcoClock /> تاریخچه‌ی سفارش‌ها
-              </button>
-              <button
-                className={`${BTN_PRIMARY} ${BTN_SM} [&_svg]:w-3.5 [&_svg]:h-3.5`}
-                onClick={() => setTab('overview')}
-              >
-                <IcoSearch /> پیش‌خوان
-              </button>
-            </div>
+      <section className="pt-8 pb-6 md:pt-10 md:pb-8">
+        <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)] flex items-center gap-4 md:gap-5">
+          <div className={AVA_MD}>
+            {profile?.avatarUrl ? (
+              <img src={profile.avatarUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              firstLetter(profile?.name)
+            )}
+          </div>
+          <div className="min-w-0">
+            <h2 className="font-heading text-[clamp(24px,3vw,34px)] font-bold m-0 leading-[1.35] text-ink">
+              خوش آمدید
+              {firstName && (
+                <>
+                  ، <span className="text-copper-dark">{firstName}</span>
+                </>
+              )}
+            </h2>
+            <p className="m-0 mt-1 text-[13.5px] text-muted flex items-center gap-2 flex-wrap [font-variant-numeric:tabular-nums]">
+              {memberSince && (
+                <>
+                  <span>عضو از {memberSince}</span>
+                  <span aria-hidden="true">·</span>
+                </>
+              )}
+              <span>{toFa(orders.length)} سفارش</span>
+            </p>
           </div>
         </div>
       </section>
@@ -189,37 +155,16 @@ const AccountPage: FC = () => {
         <div className="max-w-[1480px] mx-auto px-[clamp(20px,4vw,56px)]">
           <div className="grid grid-cols-[260px_1fr] gap-6 items-start max-[1100px]:grid-cols-1">
             {/* Sidebar */}
-            <aside className="sticky top-24 bg-surface rounded-[var(--radius)] border border-rule overflow-hidden max-[1100px]:static">
-              <div className="py-[18px] px-5 pb-4 border-b border-rule flex items-center gap-3">
-                <span className={AVA_SM}>
-                  {profile?.avatarUrl ? (
-                    <img
-                      src={profile.avatarUrl}
-                      alt="avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    firstLetter(profile?.name)
-                  )}
-                </span>
-                <div className="flex flex-col min-w-0">
-                  <span className="font-heading text-sm font-semibold leading-[1.2] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {profile?.name}
-                  </span>
-                  <span
-                    className="font-mono text-[12px] text-muted"
-                    dir="ltr"
-                    style={{ textAlign: 'right' }}
-                  >
-                    {toFa(profile?.phone ?? '')}
-                  </span>
-                </div>
-              </div>
-              <nav className="p-2 max-[1100px]:flex max-[1100px]:flex-wrap">
+            <aside className="sticky top-24 bg-surface rounded-[var(--radius)] border border-rule overflow-hidden max-[1100px]:static max-[1100px]:-mx-[clamp(20px,4vw,56px)] max-[1100px]:rounded-none max-[1100px]:border-x-0">
+              <nav
+                aria-label="بخش‌های حساب"
+                className="p-2 max-[1100px]:flex max-[1100px]:gap-1 max-[1100px]:overflow-x-auto max-[1100px]:[scrollbar-width:none] max-[1100px]:px-[clamp(12px,4vw,48px)]"
+              >
                 {NAV_ITEMS.map(({ id, icon, label, countKey }) => (
                   <button
                     key={id}
-                    className={`flex items-center gap-3 px-[13px] py-[11px] rounded-sm text-sm transition-[background,color] cursor-pointer w-full text-right font-body max-[1100px]:w-auto max-[1100px]:flex-none ${
+                    aria-current={tab === id ? 'page' : undefined}
+                    className={`flex items-center gap-3 px-[13px] py-[11px] rounded-sm text-sm transition-[background,color] cursor-pointer w-full text-start font-body max-[1100px]:w-auto max-[1100px]:flex-none max-[1100px]:whitespace-nowrap max-[1100px]:py-2 max-[1100px]:gap-2 ${
                       tab === id ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-bg-2 hover:text-ink'
                     }`}
                     onClick={() => setTab(id as Tab)}
@@ -243,9 +188,9 @@ const AccountPage: FC = () => {
                     )}
                   </button>
                 ))}
-                <hr className="h-px bg-rule border-0 my-2 max-[1100px]:w-full" />
+                <hr className="h-px bg-rule border-0 my-2 max-[1100px]:hidden" />
                 <button
-                  className="flex items-center gap-3 px-[13px] py-[11px] rounded-sm text-sm text-sale transition-[background,color] cursor-pointer w-full text-right font-body max-[1100px]:w-auto max-[1100px]:flex-none hover:bg-bg-2"
+                  className="flex items-center gap-3 px-[13px] py-[11px] rounded-sm text-sm text-sale transition-[background,color] cursor-pointer w-full text-start font-body max-[1100px]:w-auto max-[1100px]:flex-none max-[1100px]:whitespace-nowrap max-[1100px]:py-2 max-[1100px]:gap-2 hover:bg-bg-2"
                   onClick={() => logout()}
                 >
                   <span className="w-8 h-8 rounded-lg bg-sale/[.08] grid place-items-center text-sale shrink-0 [&_svg]:w-[15px] [&_svg]:h-[15px]">

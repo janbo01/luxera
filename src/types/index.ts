@@ -110,6 +110,8 @@ export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | '
 
 export interface Order {
   id: string
+  /** Customer-facing number; older orders may not have one. */
+  number?: number
   date: string
   status: OrderStatus
   items: OrderItem[]

@@ -12,7 +12,7 @@ import {
   Truck,
   Check,
   ChevronDown,
-  ArrowRight,
+  ArrowLeft,
   Search,
   Clock,
   Plus,
@@ -30,6 +30,7 @@ import {
   Info,
 } from 'lucide-react'
 import { IconWhatsApp } from '../icons/BrandIcons'
+import { toFa } from '../../utils/format'
 
 export type Tab = 'overview' | 'profile' | 'orders' | 'addresses' | 'wishlist' | 'security'
 
@@ -73,11 +74,11 @@ export const IC_SECT =
   'w-8 h-8 rounded-full bg-bg-2 grid place-items-center text-copper shrink-0 [&_svg]:w-4 [&_svg]:h-4'
 
 export const AVA_SM =
-  'w-[38px] h-[38px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-sm shrink-0 overflow-hidden'
+  'w-[38px] h-[38px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-body font-bold text-sm shrink-0 overflow-hidden'
 export const AVA_MD =
-  'w-16 h-16 rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-2xl shrink-0 shadow-[0_0_0_4px_var(--color-bg),0_0_0_5px_var(--color-rule)] overflow-hidden'
+  'w-16 h-16 rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-body font-bold text-2xl shrink-0 shadow-[0_0_0_4px_var(--color-bg),0_0_0_5px_var(--color-rule)] overflow-hidden'
 export const AVA_LG =
-  'w-[72px] h-[72px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-heading font-bold text-[28px] shrink-0'
+  'w-[72px] h-[72px] rounded-full bg-gradient-to-br from-plum to-copper grid place-items-center text-white font-body font-bold text-[28px] shrink-0'
 
 export const INPUT_CLS =
   'bg-bg border border-rule rounded-sm px-4 py-3 text-[15px] text-ink outline-none w-full transition-[border-color] focus:border-ink placeholder:text-muted placeholder:font-light disabled:opacity-50 disabled:cursor-not-allowed'
@@ -98,6 +99,12 @@ export const BTN_PRIMARY =
 export const BTN_MUTE =
   'inline-flex items-center gap-2.5 px-[22px] py-[13px] rounded-full bg-bg-2 text-ink-2 font-medium text-sm border border-rule cursor-pointer transition-all hover:bg-bg hover:text-ink hover:border-ink font-body whitespace-nowrap'
 export const BTN_SM = 'px-3.5 py-2 text-xs'
+
+/** "۱۰۴۸" when the order has a number, otherwise the first 8 characters of its id.
+ *  Callers write it as «سفارش ۱۰۴۸»; a leading "#" flips sides in RTL text. */
+export function orderLabel(order: { id: string; number?: number }) {
+  return order.number ? toFa(order.number) : order.id.slice(0, 8)
+}
 
 export function firstLetter(name?: string | null) {
   return name?.trim()?.[0] ?? '؟'
@@ -156,7 +163,7 @@ export const IcoStar = () => <Star size={18} strokeWidth={0} fill="currentColor"
 export const IcoTruck = () => <Truck size={18} strokeWidth={SW} />
 export const IcoCheck = () => <Check size={18} strokeWidth={SW} />
 export const IcoChevDown = () => <ChevronDown size={18} strokeWidth={SW} />
-export const IcoArrowLeft = () => <ArrowRight size={18} strokeWidth={SW} />
+export const IcoArrowLeft = () => <ArrowLeft size={18} strokeWidth={SW} />
 export const IcoSearch = () => <Search size={18} strokeWidth={SW} />
 export const IcoClock = () => <Clock size={18} strokeWidth={SW} />
 export const IcoPlus = () => <Plus size={18} strokeWidth={SW} />

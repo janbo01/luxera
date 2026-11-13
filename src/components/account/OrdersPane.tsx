@@ -24,6 +24,7 @@ import {
   STATUS_PILL,
   TIMELINE_STEPS,
   illusSvg,
+  orderLabel,
 } from './shared'
 
 function reorderItems(order: Order, addItem: (p: import('../../types').Product) => void) {
@@ -184,12 +185,8 @@ const OrdersPane: FC = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-0.5 min-w-0">
-                  <span
-                    className="font-mono text-[13px] font-semibold"
-                    dir="ltr"
-                    style={{ textAlign: 'right' }}
-                  >
-                    {order.id}
+                  <span className="text-[14px] font-semibold text-ink [font-variant-numeric:tabular-nums]">
+                    سفارش {orderLabel(order)}
                   </span>
                   <span className="text-[12px] text-muted font-mono">
                     {order.date} · {toFa(order.items.length)} قلم
@@ -250,7 +247,6 @@ const OrdersPane: FC = () => {
                             </div>
                             <span className="font-heading text-[13px] font-semibold whitespace-nowrap">
                               {formatToman(item.price)}
-                              <small className="text-[13px] font-normal text-muted mr-0.5">ت</small>
                             </span>
                           </div>
                         ))}

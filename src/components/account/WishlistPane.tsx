@@ -90,7 +90,6 @@ const WishlistPane: FC = () => {
                     <div className="flex justify-between items-center mt-2">
                       <span className="font-heading text-sm font-bold">
                         {formatToman(product.price)}
-                        <small className="text-[13px] text-muted font-normal mr-[3px]">ت</small>
                       </span>
                       <span
                         className={`font-mono text-[12px] inline-flex items-center gap-1 ${product.oldPrice ? 'text-sale' : 'text-ok'} before:content-[''] before:w-[5px] before:h-[5px] before:rounded-full before:bg-current`}

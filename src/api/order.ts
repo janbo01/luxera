@@ -34,6 +34,8 @@ export type ApiOrderStatus =
 
 export interface ApiOrder {
   id: string
+  /** Short sequential number shown to customers (#1048). */
+  order_number?: number
   status: ApiOrderStatus
   tracking_code?: string
   subtotal: string
@@ -169,6 +171,7 @@ const ORDER_STATUS_MAP: Record<string, OrderStatus> = {
 export function adaptOrder(o: ApiOrder): Order {
   return {
     id: o.id,
+    number: o.order_number,
     date: new Date(o.created_at).toLocaleDateString('fa-IR'),
     status: ORDER_STATUS_MAP[o.status] ?? 'pending',
     items: o.items.map((it) => ({
