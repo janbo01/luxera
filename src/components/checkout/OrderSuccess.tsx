@@ -144,7 +144,9 @@ const OrderSuccess: FC<OrderSuccessProps> = ({
         </a>
         <a href="/" className={`${BTN_CLS} max-[860px]:w-full max-[860px]:justify-center`}>
           ادامه خرید
-          <span className="arr">←</span>
+          <span className="arr">
+            <Icon name="arrow-left" size={16} />
+          </span>
         </a>
       </div>
     </div>

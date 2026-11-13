@@ -62,7 +62,9 @@ const WishlistPage: FC = () => {
           </p>
           <a href="/category/new" className={BTN_CLS}>
             مشاهده جدیدترین‌ها
-            <span className="arr">←</span>
+            <span className="arr">
+              <Icon name="arrow-left" size={16} />
+            </span>
           </a>
         </div>
       ) : (

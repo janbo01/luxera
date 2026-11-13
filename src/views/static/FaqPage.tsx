@@ -2,6 +2,7 @@ import { usePageMeta } from '../../hooks/usePageMeta'
 import { useEffect, useState, memo, type FC } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
 import PageHeader from '../../components/shared/PageHeader'
+import Icon from '../../components/icons/Icon'
 
 interface FaqItem {
   q: string
@@ -192,7 +193,10 @@ const FaqPage: FC = () => {
           تیم پشتیبانی ما در واتس‌اپ و تلگرام پاسخگوست.
         </p>
         <a href="/contact" className={BTN_CLS}>
-          تماس با ما <span className="arr">←</span>
+          تماس با ما{' '}
+          <span className="arr">
+            <Icon name="arrow-left" size={16} />
+          </span>
         </a>
       </div>
     </div>

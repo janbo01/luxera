@@ -4,6 +4,7 @@ import { BTN_CLS, BTN_GHOST_CLS } from '../../components/ui/Button'
 import { FREE_SHIPPING_THRESHOLD, SHIPPING } from '../../data/shipping'
 import { formatToman } from '../../utils/format'
 import PageHeader from '../../components/shared/PageHeader'
+import Icon from '../../components/icons/Icon'
 
 // Built from the same options checkout sells, so the two can't drift apart.
 const TIMELINE = SHIPPING.map((o) => ({
@@ -204,7 +205,10 @@ const ShippingPage: FC = () => {
         <p className="text-muted text-sm m-0 mb-7">تیم پشتیبانی لوکسرا پاسخگوست.</p>
         <div className="flex gap-3 justify-center flex-wrap">
           <a href="/contact" className={BTN_CLS}>
-            تماس با ما <span className="arr">←</span>
+            تماس با ما{' '}
+            <span className="arr">
+              <Icon name="arrow-left" size={16} />
+            </span>
           </a>
           <a href="/faq" className={BTN_GHOST_CLS}>
             سوالات متداول

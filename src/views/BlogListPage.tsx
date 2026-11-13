@@ -4,6 +4,7 @@ import type { ServerInitialData } from '../context/initialData'
 import { getBlogPosts, type ApiBlogPost, type ApiBlogPostList } from '../api/blog'
 import PageIntro from '../components/shared/PageIntro'
 import { imgSet } from '../utils/cdnImage'
+import Icon from '../components/icons/Icon'
 
 declare global {
   interface Window {
@@ -64,7 +65,7 @@ const FeaturedPostCard = memo(function FeaturedPostCard({ post }: { post: ApiBlo
             aria-hidden="true"
             className="transition-transform duration-300 group-hover:-translate-x-1.5"
           >
-            ←
+            <Icon name="arrow-left" size={14} strokeWidth={1.8} />
           </span>
           <span className="block h-px bg-current opacity-40 transition-all duration-500 w-5 group-hover:w-10" />
         </span>
@@ -144,7 +145,7 @@ const PostCard = memo(function PostCard({ post, index }: { post: ApiBlogPost; in
             aria-hidden="true"
             className="transition-transform duration-300 group-hover:-translate-x-1"
           >
-            ←
+            <Icon name="arrow-left" size={14} strokeWidth={1.8} />
           </span>
         </span>
       </div>

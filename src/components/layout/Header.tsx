@@ -367,7 +367,7 @@ const Header: FC = () => {
                 <Icon name="search" size={16} strokeWidth={1.6} />
                 <span>جستجو در فروشگاه…</span>
                 <kbd
-                  className="ms-auto font-mono text-[12px] bg-bg px-1.5 py-0.5 rounded border border-rule text-ink-2"
+                  className="ms-auto inline-flex items-center h-6 px-2 rounded-full border border-rule bg-bg text-[12px] leading-none text-ink-2 [font-family:ui-sans-serif,system-ui,sans-serif]"
                   dir="ltr"
                 >
                   {shortcutHint}

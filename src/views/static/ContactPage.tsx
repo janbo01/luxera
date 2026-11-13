@@ -6,6 +6,7 @@ import { sendContactMessage } from '../../api/store'
 import { HttpError } from '../../api/client'
 import PageHeader from '../../components/shared/PageHeader'
 import { toLatinDigits } from '../../utils/format'
+import Icon from '../../components/icons/Icon'
 
 /** Used when the admin has not set a support number in store settings. */
 const FALLBACK_PHONE = '+989128494308'
@@ -274,7 +275,11 @@ const ContactPage: FC = () => {
                 disabled={submitting}
               >
                 {submitting ? 'در حال ارسال...' : 'ارسال پیام'}
-                {!submitting && <span className="arr">←</span>}
+                {!submitting && (
+                  <span className="arr">
+                    <Icon name="arrow-left" size={16} />
+                  </span>
+                )}
               </button>
             </form>
           )}

@@ -91,9 +91,17 @@
 }
 
 /* ── Yekan Bakh (Persian Body) ─────────────────────────────── */
+/* The font's own metrics (ascent 0.90 / descent 0.60) centre the line box 0.15em
+   above the baseline, but Persian letters and digits centre at about 0.24em, so all
+   text sat ~1px high in pills, buttons and fields (Latin ~3px). These overrides keep
+   the same 1.5em box and move its centre onto the glyphs. Browsers without support
+   (Safari) keep the old metrics. */
 @font-face {
   font-family: 'Yekan Bakh';
   src: url('/fonts/yekanbakh-Light.woff2') format('woff2');
+  ascent-override: 99%;
+  descent-override: 51%;
+  line-gap-override: 5%;
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -102,6 +110,9 @@
 @font-face {
   font-family: 'Yekan Bakh';
   src: url('/fonts/yekanbakh-Regular.woff2') format('woff2');
+  ascent-override: 99%;
+  descent-override: 51%;
+  line-gap-override: 5%;
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -110,6 +121,9 @@
 @font-face {
   font-family: 'Yekan Bakh';
   src: url('/fonts/yekanbakh-Medium.woff2') format('woff2');
+  ascent-override: 99%;
+  descent-override: 51%;
+  line-gap-override: 5%;
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -118,6 +132,9 @@
 @font-face {
   font-family: 'Yekan Bakh';
   src: url('/fonts/yekanbakh-Bold.woff2') format('woff2');
+  ascent-override: 99%;
+  descent-override: 51%;
+  line-gap-override: 5%;
   font-weight: 700;
   font-style: normal;
   font-display: swap;

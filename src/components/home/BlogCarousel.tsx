@@ -8,6 +8,7 @@ import { useHydrated } from '../../hooks/useHydrated'
 import ViewAllLink from '../shared/ViewAllLink'
 import { readHomeInitial } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
+import Icon from '../icons/Icon'
 
 const VISIBLE = 3
 
@@ -58,7 +59,7 @@ const BlogCard = memo(function BlogCard({ post }: { post: ApiBlogPost }) {
             aria-hidden="true"
             className="transition-transform duration-300 group-hover:-translate-x-1"
           >
-            ←
+            <Icon name="arrow-left" size={14} strokeWidth={1.8} />
           </span>
         </span>
       </div>

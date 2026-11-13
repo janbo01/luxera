@@ -183,7 +183,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = ({ slug, initialData }) => {
           href="/blog"
           className="inline-flex items-center gap-2.5 text-sm text-plum border-b border-plum/25 hover:border-plum transition-colors pb-0.5"
         >
-          <span aria-hidden="true">→</span>
+          <Icon name="arrow-right" size={14} strokeWidth={1.8} />
           بازگشت به بلاگ
         </a>
       </div>

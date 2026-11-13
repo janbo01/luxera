@@ -2,6 +2,7 @@ import { usePageMeta } from '../../hooks/usePageMeta'
 import type { FC } from 'react'
 import { BTN_CLS, BTN_GHOST_CLS } from '../../components/ui/Button'
 import PageHeader from '../../components/shared/PageHeader'
+import Icon from '../../components/icons/Icon'
 
 const VALUES = [
   {
@@ -79,7 +80,9 @@ const AboutPage: FC = () => {
           </p>
           <a href="/category/new" className={`${BTN_CLS} mt-2`}>
             مشاهده‌ی محصولات
-            <span className="arr">←</span>
+            <span className="arr">
+              <Icon name="arrow-left" size={16} />
+            </span>
           </a>
         </div>
         <div className="sticky top-[120px] max-[900px]:static">
@@ -146,7 +149,10 @@ const AboutPage: FC = () => {
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <a href="/contact" className={BTN_CLS}>
-            تماس با ما <span className="arr">←</span>
+            تماس با ما{' '}
+            <span className="arr">
+              <Icon name="arrow-left" size={16} />
+            </span>
           </a>
           <a href="/faq" className={BTN_GHOST_CLS}>
             سوالات متداول

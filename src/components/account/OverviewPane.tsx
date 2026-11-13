@@ -2,6 +2,7 @@ import { type FC, useState, useEffect, useMemo } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { useWishlistStore } from '../../store/wishlistStore'
 import { formatToman, toFa } from '../../utils/format'
+import Icon from '../icons/Icon'
 import {
   CARD,
   CARD_H,
@@ -131,10 +132,11 @@ const OverviewPane: FC<PaneProps> = ({ setTab }) => {
               سفارش‌های اخیر
             </h2>
             <button
-              className="text-[13px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]"
+              className="inline-flex items-center gap-1.5 min-h-11 text-[13px] text-copper font-body bg-transparent border-0 cursor-pointer hover:underline hover:underline-offset-[3px]"
               onClick={() => setTab('orders')}
             >
-              همه‌ی سفارش‌ها →
+              همه‌ی سفارش‌ها
+              <Icon name="arrow-left" size={14} strokeWidth={1.8} />
             </button>
           </div>
           <div className="flex flex-col">
