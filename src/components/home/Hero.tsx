@@ -19,8 +19,10 @@ const Hero: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
   return (
     <section className="pt-4 md:pt-7">
       <div className="max-w-[1480px] mx-auto px-[var(--pad)] grid grid-cols-[1.2fr_0.8fr] max-md:grid-cols-1 gap-3 md:gap-8 items-stretch min-h-[420px] max-md:min-h-0">
-        {/* ── Dark stage (left) ── */}
-        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:aspect-[4/3]">
+        {/* ── Dark stage (left). On phones its height is explicit (4:3 of the content
+            width): every child is absolutely positioned, and iOS Safari collapsed the
+            stretched grid item to 0px when the height came from aspect-ratio alone. ── */}
+        <div className="relative overflow-hidden rounded-[var(--radius)] bg-[radial-gradient(120%_80%_at_80%_20%,var(--color-plum-dark)_0%,var(--color-plum)_50%,var(--color-plum-2)_100%)] text-bg isolate before:absolute before:inset-x-[-20%] before:bottom-[-40%] before:h-[60%] before:bg-[radial-gradient(50%_60%_at_50%_50%,color-mix(in_srgb,var(--color-copper)_25%,transparent),transparent_70%)] before:blur-[20px] before:-z-0 before:pointer-events-none min-h-[340px] max-md:min-h-0 max-md:self-start max-md:h-[calc((100vw-2*var(--pad))*0.75)]">
           {/* No z-index on this wrapper: it must not form a stacking context, or the
               scrim below (z-3) would paint over the slider's arrows and counter (z-10). */}
           <div className="absolute inset-0">
