@@ -1,0 +1,688 @@
+<title>Luxera UX Audit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column; a sticky section bar; findings as filterable rows grouped per page. */
+:root {
+  --bg: #f4f6f6;
+  --surface: #ffffff;
+  --surface-2: #eaeeee;
+  --fg: #16201f;
+  --fg-2: #4a5655;
+  --rule: #d5dcdb;
+  --accent: #1f5f55;
+  --accent-soft: #dcebe7;
+  --crit: #b42318; --crit-bg: #fde8e6;
+  --high: #a64607; --high-bg: #fdeedd;
+  --med: #1d5aa0;  --med-bg: #e3edf9;
+  --low: #56606a;  --low-bg: #e9ecef;
+  --ok: #1f6b3a;
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-fa: "IBM Plex Sans Arabic", "IBM Plex Sans", Tahoma, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111615; --surface: #182020; --surface-2: #1f2928; --fg: #e5ecea; --fg-2: #a3b1ae; --rule: #2c3836;
+    --accent: #79c7b6; --accent-soft: #1c3531;
+    --crit: #ff8a7d; --crit-bg: #3a1a17; --high: #f5ad6b; --high-bg: #3a2614; --med: #8ab8f0; --med-bg: #172a40; --low: #aab3bb; --low-bg: #262d33; --ok: #7fd09a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111615; --surface: #182020; --surface-2: #1f2928; --fg: #e5ecea; --fg-2: #a3b1ae; --rule: #2c3836;
+  --accent: #79c7b6; --accent-soft: #1c3531;
+  --crit: #ff8a7d; --crit-bg: #3a1a17; --high: #f5ad6b; --high-bg: #3a2614; --med: #8ab8f0; --med-bg: #172a40; --low: #aab3bb; --low-bg: #262d33; --ok: #7fd09a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 400 16px/1.6 var(--font-sans); margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+[lang="fa"] { font-family: var(--font-fa); }
+code, .ref { font-family: var(--font-mono); font-size: 0.82em; }
+.ref { color: var(--fg-2); word-break: break-all; }
+a { color: var(--accent); }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; margin: 0; }
+h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+.muted { color: var(--fg-2); }
+.eyebrow { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-2); font-weight: 500; }
+
+/* Header */
+.top { padding-block: 48px 28px; display: grid; gap: 18px; }
+.top h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; }
+.lede { max-width: 66ch; color: var(--fg-2); font-size: 1.05rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.stat { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 10px 14px; display: grid; gap: 2px; min-width: 120px; }
+.stat b { font-size: 1.5rem; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat span { font-size: 0.82rem; color: var(--fg-2); }
+.stat.crit b { color: var(--crit); } .stat.high b { color: var(--high); } .stat.med b { color: var(--med); } .stat.low b { color: var(--low); }
+
+/* Section nav */
+.secnav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+.secnav .wrap { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: none; }
+.secnav a { white-space: nowrap; text-decoration: none; color: var(--fg-2); font-size: 0.9rem; padding: 6px 12px; border-radius: 999px; }
+.secnav a:hover, .secnav a:focus-visible { background: var(--surface-2); color: var(--fg); }
+
+section { padding-block: 48px 8px; display: grid; gap: 20px; scroll-margin-top: 56px; }
+.sec-head { display: grid; gap: 8px; }
+.sec-head p { max-width: 70ch; color: var(--fg-2); }
+
+/* Priority list */
+.priority { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: p; }
+.priority li { counter-increment: p; display: grid; grid-template-columns: 40px 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 16px; }
+.priority li::before { content: counter(p); font: 600 1.1rem var(--font-mono); color: var(--accent); background: var(--accent-soft); border-radius: 8px; width: 40px; height: 40px; display: grid; place-items: center; }
+.priority .body { display: grid; gap: 6px; min-width: 0; }
+.priority .why { color: var(--fg-2); font-size: 0.95rem; }
+
+/* Pills */
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill.crit { color: var(--crit); background: var(--crit-bg); }
+.pill.high { color: var(--high); background: var(--high-bg); }
+.pill.med { color: var(--med); background: var(--med-bg); }
+.pill.low { color: var(--low); background: var(--low-bg); }
+.tag { font-size: 0.74rem; color: var(--fg-2); border: 1px solid var(--rule); border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+
+/* Patterns */
+.patterns { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.pattern { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.pattern .head { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+.pattern ul { margin: 0; padding-inline-start: 18px; color: var(--fg-2); font-size: 0.93rem; display: grid; gap: 4px; }
+.do { border-top: 1px dashed var(--rule); padding-top: 10px; font-size: 0.93rem; }
+.do b { color: var(--accent); font-weight: 600; }
+
+/* Delivery table */
+.tbl { overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; color: var(--fg-2); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--surface-2); }
+tr:last-child td { border-bottom: 0; }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filters button { font: 500 0.88rem var(--font-sans); color: var(--fg-2); background: var(--surface); border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; cursor: pointer; min-height: 36px; }
+.filters button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.filters button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Page cards */
+.pages { display: grid; gap: 10px; }
+details.page { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); }
+details.page > summary { list-style: none; cursor: pointer; padding: 16px 18px; display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; }
+details.page > summary::-webkit-details-marker { display: none; }
+.ptitle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
+.ptitle h3 { font-size: 1.1rem; }
+.ptitle .route { font: 0.82rem var(--font-mono); color: var(--fg-2); }
+.pcounts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.chev { width: 10px; height: 10px; border-right: 2px solid var(--fg-2); border-bottom: 2px solid var(--fg-2); transform: rotate(45deg); transition: transform .2s; margin-inline-start: 6px; }
+details[open] .chev { transform: rotate(225deg); }
+.pbody { padding: 0 18px 18px; display: grid; gap: 16px; border-top: 1px solid var(--rule); padding-top: 16px; }
+.seen { font-size: 0.85rem; color: var(--fg-2); }
+.works { display: flex; flex-wrap: wrap; gap: 6px; }
+.works span { font-size: 0.85rem; color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); border-radius: 6px; padding: 3px 9px; }
+.findings { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.finding { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.finding:first-child { border-top: 0; padding-top: 0; }
+.finding .txt { display: grid; gap: 4px; min-width: 0; }
+.finding .fix { font-size: 0.92rem; color: var(--fg-2); }
+.finding .fix b { color: var(--fg); font-weight: 600; }
+.idea { background: var(--accent-soft); border-radius: 8px; padding: 10px 14px; font-size: 0.93rem; }
+.idea b { color: var(--accent); }
+.empty-filter { color: var(--fg-2); font-size: 0.9rem; }
+
+/* Features */
+.feat-group { display: grid; gap: 12px; }
+.feat-group > h3 { display: flex; gap: 10px; align-items: baseline; }
+.feats { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+.feat { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.feat .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.feat p { font-size: 0.93rem; color: var(--fg-2); }
+.feat .dep { font-size: 0.85rem; color: var(--high); }
+
+/* Roadmap */
+.road { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.phase { border-top: 3px solid var(--accent); background: var(--surface); border-radius: 0 0 var(--r) var(--r); padding: 16px; display: grid; gap: 8px; align-content: start; }
+.phase ol { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; font-size: 0.93rem; }
+
+.note { font-size: 0.88rem; color: var(--fg-2); border-left: 3px solid var(--rule); padding: 4px 0 4px 14px; display: grid; gap: 6px; }
+footer { padding-block: 40px 56px; }
+
+@media (max-width: 560px) {
+  .finding { grid-template-columns: 1fr; gap: 6px; }
+  details.page > summary { grid-template-columns: 1fr auto; }
+  .pcounts { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) { .chev { transition: none; } }
+</style>
+
+<header class="wrap top">
+  <div class="eyebrow">Luxera storefront · UI/UX audit · 13 November 2026</div>
+  <h1>Luxera UX Audit</h1>
+  <p class="lede">Every customer-facing route in <code>luxera/</code> was checked at phone width (375px) and desktop width (1440px), together with the header, mobile menu, bottom nav, search overlay, cart drawer and login modal. Each page was compared against its source code. Most of the store works well. The problems that cost money sit in checkout and on the contact page. The polish work is mostly about making pages consistent with each other.</p>
+  <div class="stats" id="stats">
+    <div class="stat"><b>21</b><span>routes + 5 overlays</span></div>
+    <div class="stat crit"><b data-count="crit">0</b><span>critical</span></div>
+    <div class="stat high"><b data-count="high">0</b><span>high</span></div>
+    <div class="stat med"><b data-count="med">0</b><span>medium</span></div>
+    <div class="stat low"><b data-count="low">0</b><span>low</span></div>
+  </div>
+</header>
+
+<nav class="secnav" aria-label="Sections">
+  <div class="wrap">
+    <a href="#status">Status</a>
+    <a href="#first">Fix first</a>
+    <a href="#patterns">Site-wide patterns</a>
+    <a href="#pages">Page by page</a>
+    <a href="#features">Feature ideas</a>
+    <a href="#order">Suggested order</a>
+    <a href="#method">Method</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="status">
+  <div class="sec-head">
+    <div class="eyebrow">Update · 13 November 2026</div>
+    <h2>Status: fixed in code</h2>
+    <p>Every finding below has been worked through in the storefront, the order and store services, and the admin panel. Nothing is committed or deployed yet. The two database migrations still need to run on production.</p>
+  </div>
+  <div class="note">
+    <p><b>Found while fixing, now fixed too:</b> the order service never charged shipping, so the amount sent to the payment gateway left out the 120k–280k shipping shown at checkout. Snapp Box showed a made-up "was ۳۲۰٬۰۰۰" price. The address form said "verified with Irancell" for any 10-digit number. Phone fields dropped Persian digits. The product breadcrumb linked to <code>/category/&lt;uuid&gt;</code>, which is not a route. And a CSP gap blocked the script that hands server-rendered page data to the client, so pages re-fetched data they already had.</p>
+    <p><b>Corrections to this audit:</b> the signed-out account page was not blank; it has a guest view, which the login modal covered on arrival (the modal no longer opens by itself). Each product card exposes only one add-to-cart button to screen readers, because the two are split by media query. The gift finder already had shareable result links.</p>
+  </div>
+</section>
+
+<section id="first">
+  <div class="sec-head">
+    <div class="eyebrow">Priority order</div>
+    <h2>Fix these first</h2>
+    <p>These five issues either lose orders or break a promise to the customer. The first three are a few hours of work each.</p>
+  </div>
+  <ol class="priority">
+    <li><div class="body">
+      <h3>Gift wrapping is shown and charged in the summary but never reaches the order</h3>
+      <p class="why">The shipping step offers <span lang="fa" dir="rtl">بسته‌بندیِ هدیه</span> for 15,000 toman with "a handwritten card", and the order summary adds it to the total. <code>handlePay</code> never sends it, so the backend prices the order without it and nobody packing the parcel knows a gift was wanted. There is also no field for the card message.</p>
+      <span class="ref">views/CheckoutPage.tsx:234 · components/checkout/ShippingStep.tsx:216 · components/checkout/OrderSummary.tsx:158</span>
+    </div></li>
+    <li><div class="body">
+      <h3>The contact form shows "sent" but sends nothing</h3>
+      <p class="why"><code>handleSubmit</code> waits 900 ms and then shows the success state. Every message typed into it is lost, and the customer believes the team will reply within 24 hours.</p>
+      <span class="ref">views/static/ContactPage.tsx:58</span>
+    </div></li>
+    <li><div class="body">
+      <h3>Guests complete all three checkout steps, then fail at Pay</h3>
+      <p class="why">Nothing asks a signed-out visitor to log in. They fill the address, choose shipping and press Pay. <code>createAddress</code> then returns a 401, and the client shows the raw error text with no login prompt. Ask for the phone number and OTP first, inside checkout, and keep the form state through it.</p>
+      <span class="ref">views/CheckoutPage.tsx:212 · api/client.ts:47</span>
+    </div></li>
+    <li><div class="body">
+      <h3>Delivery promises disagree across six places</h3>
+      <p class="why">A Tehran customer is told 4–6 hours, 24 hours and "one-day" depending on the page, and the methods named on the shipping page are not the ones checkout offers. The full comparison is in the table under Site-wide patterns.</p>
+      <span class="ref">data/shipping.ts is the right single source</span>
+    </div></li>
+    <li><div class="body">
+      <h3>"Fine Jewelry" under the logo contradicts what the store sells</h3>
+      <p class="why">The header and login modal say <i>Fine Jewelry</i>. Every description says <span lang="fa" dir="rtl">جواهرات فانتزی</span> (fashion jewelry). Iranian shoppers are wary of gold claims, so the tagline undercuts the honest positioning that the About page argues for. It also renders at 9px.</p>
+      <span class="ref">components/layout/Header.tsx:304 · components/account/LoginModal.tsx:115</span>
+    </div></li>
+  </ol>
+</section>
+
+<section id="patterns">
+  <div class="sec-head">
+    <div class="eyebrow">Consistency</div>
+    <h2>Site-wide patterns</h2>
+    <p>Most of the "make it cleaner and more organized" work comes from here. Each pattern repeats across many pages, so fixing it once in a shared component tidies the whole store. None of these depend on the active theme, and all of them use the existing <code>--lx-*</code> tokens.</p>
+  </div>
+
+  <div class="patterns">
+    <article class="pattern">
+      <div class="head"><h3>Four different page-header styles</h3><span class="pill med">Medium</span></div>
+      <ul>
+        <li>A boxed card (<code>PageIntro</code>) on Collections, a collection, and Blog. It fills about 40% of the first phone screen.</li>
+        <li>An English uppercase kicker on About, Contact, FAQ, Shipping, Privacy and Terms.</li>
+        <li>An italic English kicker on Checkout.</li>
+        <li>A Persian kicker with a rule on Wishlist and Gift. Breadcrumbs appear on some of these pages and not others.</li>
+      </ul>
+      <p class="do"><b>Do:</b> one <code>PageHeader</code> with a breadcrumb, an H1, an optional one-line intro and an optional meta line (count, date), all unboxed. Use it on every non-home page.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>English decorative labels in a Persian store</h3><span class="pill med">Medium</span></div>
+      <ul>
+        <li>About, Contact, FAQ, Shipping &amp; returns, Privacy, Terms, Checkout</li>
+        <li>Customer reviews, What our clients say, The Story, Thank you, Gift Wrapping, Fine Jewelry</li>
+      </ul>
+      <p class="do"><b>Do:</b> drop them, or write them in Persian. Keep Latin only for the "Luxera" wordmark.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>Four type families</h3><span class="pill med">Medium</span></div>
+      <ul>
+        <li>Morabba for headings, Yekan Bakh for body text</li>
+        <li>Cormorant Garamond italic, used 24 times</li>
+        <li>JetBrains Mono, used 74 times (counters, labels, prices)</li>
+      </ul>
+      <p class="do"><b>Do:</b> use Morabba and Yekan Bakh only, with tabular Persian digits for prices and counters. This is the biggest single change for a calmer, more modern feel, and it removes two font downloads.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>Too much fixed chrome at the bottom of phone screens</h3><span class="pill med">Medium</span></div>
+      <ul>
+        <li>On a category page, the Filter/Sort bar sits on top of the bottom nav. That is about 120px of fixed UI on an 812px screen.</li>
+        <li>The add-to-cart toast lands on top of the Filter/Sort bar.</li>
+      </ul>
+      <p class="do"><b>Do:</b> hide the bottom nav while a listing's tool bar or the product page's buy bar is showing, or merge them into one bar. Anchor toasts above whatever bar is visible.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>Three product-card variants</h3><span class="pill low">Low</span></div>
+      <ul>
+        <li><code>ProductCard</code> on listings, search and carousels</li>
+        <li>A separate card on the Wishlist page with a different image ratio, price layout and button</li>
+      </ul>
+      <p class="do"><b>Do:</b> make Wishlist render <code>ProductCard</code> with a "saved price" slot.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>Small type and mixed digit systems</h3><span class="pill low">Low</span></div>
+      <ul>
+        <li>9px "FINE JEWELRY", and 11px text in six places</li>
+        <li>Phone placeholders use Latin digits (<code>912 345 6789</code>) while the rest of the page uses Persian digits</li>
+        <li>Price-chip filters are 36px tall, and a few links are under 44px</li>
+      </ul>
+      <p class="do"><b>Do:</b> set 12px as the minimum size, use Persian digits everywhere the shopper reads, and make tap targets at least 44px.</p>
+    </article>
+
+    <article class="pattern">
+      <div class="head"><h3>Two H1s and duplicated structured data</h3><span class="pill low">Low</span></div>
+      <ul>
+        <li>Home, category and product pages each have an <code>sr-only</code> SEO H1 as well as the visible H1</li>
+        <li>The home page JSON-LD is declared in both <code>index.astro</code> and <code>HomePage.tsx</code>, with different descriptions and phone fields</li>
+      </ul>
+      <p class="do"><b>Do:</b> keep one H1 (the visible one, carrying the SEO wording) and one JSON-LD block, rendered on the server.</p>
+    </article>
+  </div>
+
+  <div class="sec-head" style="margin-top:12px">
+    <h3>Delivery promises today</h3>
+    <p>The same customer can read all of these before paying. Pick one set of promises, keep it in <code>data/shipping.ts</code>, and render every line from there.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Where</th><th>Tehran</th><th>Rest of Iran</th><th>Source</th></tr></thead>
+      <tbody>
+        <tr><td>Product page, trust rows</td><td>4–6 hours</td><td>2–5 business days</td><td class="ref">product/InfoPanel.tsx:32</td></tr>
+        <tr><td>Product page, Shipping tab</td><td>Snapp Box, 4–6 hours</td><td>—</td><td class="ref">product/Tabs.tsx:223</td></tr>
+        <tr><td>Shipping page and FAQ</td><td>24 hours, "Luxera courier"</td><td>Large cities 2 days, elsewhere 2–4 days</td><td class="ref">static/ShippingPage.tsx:8 · FaqPage.tsx:46</td></tr>
+        <tr><td>Home "Story", meta descriptions, blog</td><td>24 hours / "one-day"</td><td>—</td><td class="ref">home/Story.tsx:16 · BaseLayout.astro:23</td></tr>
+        <tr><td>Checkout (what is actually sold)</td><td>Snapp Box at a time you choose, 280k</td><td>Tipax 2–3 days, 180k · Post 3–5 days, 120k</td><td class="ref">data/shipping.ts</td></tr>
+        <tr><td>Cart drawer</td><td colspan="2">A flat 180,000 shipping fee, which changes once a method is chosen at checkout</td><td class="ref">FLAT_SHIPPING_COST</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="pages">
+  <div class="sec-head">
+    <div class="eyebrow">Audit</div>
+    <h2>Page by page</h2>
+    <p>Open a page to see what already works, what to fix and one idea to make it better. The filter shows only findings at that severity, and the counts at the top follow it.</p>
+  </div>
+  <div class="filters" role="group" aria-label="Filter by severity">
+    <button type="button" data-f="all" aria-pressed="true">All</button>
+    <button type="button" data-f="crit" aria-pressed="false">Critical</button>
+    <button type="button" data-f="high" aria-pressed="false">High</button>
+    <button type="button" data-f="med" aria-pressed="false">Medium</button>
+    <button type="button" data-f="low" aria-pressed="false">Low</button>
+    <button type="button" id="toggle-all" style="margin-inline-start:auto">Expand all</button>
+  </div>
+
+  <div class="pages" id="page-list">
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Site shell</h3><span class="route">header · mobile menu · bottom nav · footer</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone and desktop · <span class="ref">layout/Header.tsx, BottomNav.tsx, Footer.tsx</span></p>
+        <div class="works"><span>Compact sticky header with hysteresis</span><span>48px icon buttons</span><span>Bottom nav with live badges</span><span>Mega menu closes on Escape and outside click</span><span>Rotating announcement bar respects reduced motion</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="high"><span class="pill high">High</span><div class="txt"><p>"Fine Jewelry" tagline (9px, mono) contradicts the fashion-jewelry positioning. The Persian name <span lang="fa" dir="rtl">لوکسرا</span> never appears in the header.</p><p class="fix"><b>Fix:</b> remove the tagline, or use a short Persian one. Consider a Persian wordmark beside the Latin one.</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The mobile menu files "Gift guide" and "About" under the <span lang="fa" dir="rtl">دسته‌بندی‌ها</span> label. It has no Blog, account or search entry, and the Bridal and Men's categories in <code>data/categories.ts</code> appear in no menu.</p><p class="fix"><b>Fix:</b> split the menu into three groups (Shop, Discover, Help). Put a search field and the sign-in state at the top, and give categories small thumbnails.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>Footer links promise pages that do not exist: <span lang="fa" dir="rtl">راهنمای سایز</span> opens the FAQ, <span lang="fa" dir="rtl">بازگشت کالا</span> opens Shipping, and <span lang="fa" dir="rtl">پیگیری سفارش</span> opens /account, which needs a login.</p><p class="fix"><b>Fix:</b> link to anchors (<code>/faq#size</code>, <code>/shipping#returns</code>) and add a guest order-tracking page.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> on desktop the header carries a logo, seven links, a mega menu, a 210px search pill and four icons. Removing "About" from the main nav (it is in the footer) gives the search field room to grow, and search is how people shop a 100-item catalogue.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Home</h3><span class="route">/</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone and desktop · <span class="ref">views/HomePage.tsx, pages/index.astro</span></p>
+        <div class="works"><span>Trust strip right after the hero</span><span>Recently viewed for returning visitors</span><span>Category tabs carousel</span><span>Gift finder banner</span><span>Blog carousel loads on visibility</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>On phones the hero has two competing headlines: the banner title over the image (<span lang="fa" dir="rtl">درخشش پاییزی</span>) and the page headline below it (<span lang="fa" dir="rtl">استایلِ امروز، قیمتِ واقعی</span>), each with its own call to action.</p><p class="fix"><b>Fix:</b> on phones, let the banner carry the message and its CTA. Move the brand line into the trust strip or drop it.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The page is about 7,300px tall on a phone, with nine sections before the footer. Products first appear in the second screen.</p><p class="fix"><b>Fix:</b> move "Newest" directly under the hero, merge Category tabs into the categories block, and put the Story section on the About page.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>Two H1s (an sr-only one and the hero's), and two JSON-LD blocks that disagree.</p><p class="fix"><b>Fix:</b> see the Site-wide patterns section.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> because most pieces exist in one or two units, add a dated "This week's drop" rail as the main home section. Unique stock then reads as freshness, without scarcity badges.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Category listing</h3><span class="route">/category/[id]</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone and desktop · <span class="ref">views/CategoryPage.tsx, category/FilterPanel.tsx</span></p>
+        <div class="works"><span>Sibling-category chips</span><span>Product count up front</span><span>Desktop filter sidebar</span><span>Filter sheet with price chips</span><span>SEO text collapsed behind "more"</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>Sorting by discount reorders only the products already loaded on the client, so once a listing pages, the order is wrong.</p><p class="fix"><b>Fix:</b> add a server-side <code>sort=discount</code> parameter, or hide that option until there is one.</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The Filter/Sort bar and the bottom nav stack up, and the cart toast covers the bar.</p><p class="fix"><b>Fix:</b> see the Site-wide patterns section.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The price chips in the filter sheet are 36px tall, and the "close filters" control is a 20px-tall full-width row.</p><p class="fix"><b>Fix:</b> make them at least 44px. Add a sticky "Show N products" button at the bottom of the sheet.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> show active filters as removable chips above the grid, and add a "Material: gold-tone / silver-tone" filter. That is the first question shoppers ask about fashion jewelry.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Product</h3><span class="route">/product/[id]</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone and desktop · <span class="ref">views/ProductPage.tsx, product/InfoPanel.tsx, Tabs.tsx, Reviews.tsx</span></p>
+        <div class="works"><span>Gallery with zoom and counter</span><span>Sticky buy bar on phones</span><span>Trust rows near the price</span><span>Back-in-stock form</span><span>Complete the look, Related, Recently viewed</span><span>Share row</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="high"><span class="pill high">High</span><div class="txt"><p>The trust row says Tehran delivery takes 4–6 hours, and the Shipping tab names Snapp Box. Other pages say something else.</p><p class="fix"><b>Fix:</b> render both lines from <code>data/shipping.ts</code>.</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>English labels: "The Story", "Customer reviews", "What our clients say".</p><p class="fix"><b>Fix:</b> use Persian section titles only.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The review summary prints <code>بر اساسِ undefined نظر</code> when the comments response has no <code>total</code>. The rating and count in the header come from the list API, while the list below can be empty.</p><p class="fix"><b>Fix:</b> use <code>res.total ?? res.items.length</code> at <span class="ref">Reviews.tsx:76</span>, and take the count from one source.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>On a phone the tab row cuts off the fourth tab (<span lang="fa" dir="rtl">ارسال</span>) with nothing to show it scrolls. There is also about 120px of empty space above the tabs.</p><p class="fix"><b>Fix:</b> on phones, use an accordion for the four sections.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The breadcrumb reads Home › Products › name, so it never links back to the product's category.</p><p class="fix"><b>Fix:</b> Home › category › name.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> add a line under the price showing how many loyalty points this piece earns, and how far it is from free shipping. Both figures already exist in settings and in the cart.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Collections and a collection</h3><span class="route">/collections · /collections/[slug]</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone and desktop · <span class="ref">views/CollectionsPage.tsx, CollectionDetailPage.tsx</span></p>
+        <div class="works"><span>Clear cover, name and count</span><span>Breadcrumbs</span><span>Uses ProductCard</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The boxed intro card takes up about 40% of the first phone screen, and the cover photo comes after it.</p><p class="fix"><b>Fix:</b> on a collection page, lead with the cover image and overlay the title on it.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>A collection page has no sort option and no category filter.</p><p class="fix"><b>Fix:</b> reuse the category page's tool bar.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> collections are a natural fit for gift occasions such as Yalda, Valentine's and Mother's Day. Let the admin attach an occasion and a date window so the right one is promoted automatically.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Search</h3><span class="route">overlay · /search?q=</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">search/SearchOverlay.tsx, views/SearchResultsPage.tsx, store/searchStore.ts</span></p>
+        <div class="works"><span>Matches highlighted</span><span>Products and categories grouped</span><span>Recent searches remembered</span><span>"See all results" link</span><span>⌘K / Ctrl K shortcut</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The results page has no search field, sort or filter. Changing the query means opening the overlay again.</p><p class="fix"><b>Fix:</b> put a prefilled search field in the page header, and reuse the listing tool bar.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The client does not normalise queries (Arabic <code>ي/ك</code> to Persian <code>ی/ک</code>, half-spaces, Latin and Persian digits). Check whether the backend does.</p><p class="fix"><b>Fix:</b> normalise in <code>searchStore</code> before the request.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> when the overlay is empty, show popular searches and the five categories as tappable chips, not just recent searches.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Cart drawer</h3><span class="route">overlay</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">cart/CartDrawer.tsx, CartUpsell.tsx, CartToast.tsx</span></p>
+        <div class="works"><span>Free-shipping progress bar</span><span>One-tap upsell that unlocks free shipping</span><span>Clear subtotal, shipping and total</span><span>Toast with "view cart"</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The drawer charges a flat 180,000 for shipping, but checkout prices are 120k, 180k or 280k. The total changes between the drawer and checkout.</p><p class="fix"><b>Fix:</b> show "from 120,000" or "calculated at checkout", or carry the last chosen method over.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p><span lang="fa" dir="rtl">حذف</span> is a small text link next to the stepper.</p><p class="fix"><b>Fix:</b> use an icon button with a 44px target, and offer undo in a toast.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> add a gift toggle in the drawer that carries through to checkout. Once the gift-wrap bug is fixed, this is the cheapest upsell in the store.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Checkout</h3><span class="route">/checkout</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone up to the address step. Payment checked in code only, because the test API is read-only. · <span class="ref">views/CheckoutPage.tsx, checkout/*</span></p>
+        <div class="works"><span>Three clear steps</span><span>Saved addresses</span><span>Coupon states</span><span>Loyalty points</span><span>Snapp Box day and time slots</span><span>Order notes with a counter</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="crit"><span class="pill crit">Critical</span><div class="txt"><p>Gift wrap is added to the summary total but never sent with the order, and there is no field for the card message.</p><p class="fix"><b>Fix:</b> add <code>gift_wrap</code> and <code>gift_message</code> to the checkout payload and the order, and show them in the admin order view.</p></div></li>
+          <li class="finding" data-sev="high"><span class="pill high">High</span><div class="txt"><p>A guest fills every step and only fails at Pay, with a raw API error.</p><p class="fix"><b>Fix:</b> make step 0 an inline phone and OTP check, reusing <code>LoginModal</code>'s logic in place. Keep the address state across it.</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The address form has no <code>autocomplete</code> attributes. The postal code has no <code>inputmode="numeric"</code>. Placeholders look like real values (<code>۱۴۳۴۹۸۷۶۵۴</code>) and mix digit systems.</p><p class="fix"><b>Fix:</b> add <code>name</code>, <code>tel-national</code>, <code>postal-code</code> and <code>street-address</code>, and use example hints such as "۱۰ رقم".</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>Checkout keeps the full store header: the announcement bar, nav, wishlist and search.</p><p class="fix"><b>Fix:</b> use a slim checkout header with the logo, a "secure payment" note, the support phone and a back-to-cart link.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>On a phone the order summary shrinks to one line at the top, so the items are not visible while filling the form.</p><p class="fix"><b>Fix:</b> add an expandable "۱ کالا · ۱٬۸۹۰٬۰۰۰ تومان" bar that shows the thumbnails.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> pre-fill name and phone from the OTP sign-in, and auto-select the city from the province when it is the only one.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Account</h3><span class="route">/account</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Signed-out view rendered. Signed-in panes checked in code only. · <span class="ref">views/AccountPage.tsx, account/*</span></p>
+        <div class="works"><span>OTP login with one-time-code autofill</span><span>Six clear panes</span><span>Overview with points balance</span><span>Saved addresses</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>Signed out, /account opens the login modal on arrival, which covers the guest page that explains what an account is for. The footer's "order tracking" link lands here.</p><p class="fix"><b>Fix:</b> let the guest page show first and open sign-in on tap. Add a separate "track an order" form later.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> give the Orders pane a status timeline (paid, packed, shipped with tracking code, delivered) and a "reorder" or "review this piece" action on delivered items.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Wishlist</h3><span class="route">/wishlist</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/WishlistPage.tsx</span></p>
+        <div class="works"><span>Price-drop flag (saved price vs today)</span><span>Count and clear-all</span><span>Works signed out</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>Uses its own card rather than <code>ProductCard</code>, so it looks different from every other grid.</p><p class="fix"><b>Fix:</b> use <code>ProductCard</code> with a price-drop slot.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>"Clear all" sits at the top, next to the count.</p><p class="fix"><b>Fix:</b> move it to the end of the list, and confirm in place or offer undo.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> the saved price is already tracked, so send an SMS when a saved piece drops in price or is about to sell out.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Gift finder</h3><span class="route">/gift</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/GiftFinderPage.tsx</span></p>
+        <div class="works"><span>Three optional questions</span><span>Numbered steps (a real sequence)</span><span>Chips easy to tap</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The results appear below all three questions, so a phone user has to scroll to find out whether anything matched.</p><p class="fix"><b>Fix:</b> add a sticky "Show N gifts" button that updates as answers change.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> add "ship to someone else" with a hidden-price packing slip.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Blog and article</h3><span class="route">/blog · /blog/[slug]</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/BlogListPage.tsx, BlogDetailPage.tsx</span></p>
+        <div class="works"><span>Date and reading time</span><span>Breadcrumb on articles</span><span>Large featured image</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The blog is not in the header or the mobile menu. It is reachable only from the footer and the home carousel.</p><p class="fix"><b>Fix:</b> add it to the Discover group of the menu.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The list opens with the same boxed intro card as Collections.</p><p class="fix"><b>Fix:</b> use the shared <code>PageHeader</code>, then a featured post.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> let posts embed product cards ("pieces in this article"). The AI blog generator can tag products when it writes.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Contact</h3><span class="route">/contact</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/static/ContactPage.tsx</span></p>
+        <div class="works"><span>Phone as a tel: link</span><span>WhatsApp hours stated</span><span>Labelled form fields</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="crit"><span class="pill crit">Critical</span><div class="txt"><p>The form fakes a successful send.</p><p class="fix"><b>Fix:</b> post to a store endpoint and list the messages in admin. Until then, hand off to WhatsApp or Bale with the message pre-filled.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The phone number is hard-coded in the page (<span class="ref">ContactPage.tsx:93</span>) and in Home's JSON-LD, while the header reads <code>support_phone</code> from settings.</p><p class="fix"><b>Fix:</b> read it from settings everywhere.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> put the three most-asked questions (delivery, returns, sizing) above the form, with links to the FAQ answers.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Shipping, FAQ, About, Privacy, Terms</h3><span class="route">/shipping · /faq · /about · /privacy · /terms</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/static/*</span></p>
+        <div class="works"><span>FAQ grouped by topic, as an accordion</span><span>About explains the "fair price" stance well</span><span>Long legal text kept readable</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>The delivery table on the Shipping page scrolls sideways on phones, and its last column is cut off.</p><p class="fix"><b>Fix:</b> below 640px, show one card per region.</p></div></li>
+          <li class="finding" data-sev="med"><span class="pill med">Medium</span><div class="txt"><p>All five pages open with an English uppercase kicker (ABOUT, FAQ, SHIPPING &amp; RETURNS…).</p><p class="fix"><b>Fix:</b> use the shared <code>PageHeader</code> with a breadcrumb.</p></div></li>
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>The FAQ has no search and no deep links to individual answers.</p><p class="fix"><b>Fix:</b> give each question an id so the footer, contact page and product tabs can link straight to it.</p></div></li>
+        </ul>
+        <p class="idea"><b>Idea:</b> add a "Help" hub that merges Shipping, Returns, FAQ and Contact under one URL with tabs. That is four footer links reduced to one place.</p>
+      </div>
+    </details>
+
+    <details class="page">
+      <summary><div class="ptitle"><h3>Not found</h3><span class="route">404</span></div><div class="pcounts"></div></summary>
+      <div class="pbody">
+        <p class="seen">Rendered on phone · <span class="ref">views/NotFoundPage.tsx</span></p>
+        <div class="works"><span>Real 404 status</span><span>Two clear exits</span></div>
+        <ul class="findings">
+          <li class="finding" data-sev="low"><span class="pill low">Low</span><div class="txt"><p>Old product links, a common case once a piece sells out, land here with no path to similar items.</p><p class="fix"><b>Fix:</b> add a search field and the category chips. Better still, keep sold product URLs alive (see Feature ideas).</p></div></li>
+        </ul>
+      </div>
+    </details>
+
+  </div>
+  <p class="empty-filter" id="empty-filter" hidden>No findings at this severity.</p>
+</section>
+
+<section id="features">
+  <div class="sec-head">
+    <div class="eyebrow">Brainstorm</div>
+    <h2>Feature ideas</h2>
+    <p>These ideas fit how Luxera actually works: about 100 products, mostly one or two units each, admin-chosen themes, OTP accounts, loyalty points and an AI blog. They avoid scarcity badges and colour pickers, which the current cart cannot support.</p>
+  </div>
+
+  <div class="feat-group">
+    <h3>Quick wins <span class="tag">days</span></h3>
+    <div class="feats">
+      <article class="feat"><h3>Phone-first checkout</h3><div class="meta"><span class="tag">Conversion</span><span class="tag">Frontend</span></div><p>Make the first checkout step a phone number and OTP, then pre-fill name and phone. This fixes the guest failure at Pay and shortens the form.</p></article>
+      <article class="feat"><h3>Points you'll earn</h3><div class="meta"><span class="tag">Loyalty</span><span class="tag">Frontend</span></div><p>Show "earns N points" on the product page and in the cart, using <code>loyalty_earn_percent</code> from settings. The program exists, but shoppers only see it at checkout.</p></article>
+      <article class="feat"><h3>Smarter empty search</h3><div class="meta"><span class="tag">Discovery</span><span class="tag">Frontend</span></div><p>Popular searches, category chips and Persian character normalisation in the overlay.</p></article>
+      <article class="feat"><h3>Help deep links</h3><div class="meta"><span class="tag">Support</span><span class="tag">Frontend</span></div><p>Give every FAQ answer an anchor, and point the footer, product tabs and contact page at the exact answer.</p></article>
+    </div>
+  </div>
+
+  <div class="feat-group">
+    <h3>Medium projects <span class="tag">1–2 weeks</span></h3>
+    <div class="feats">
+      <article class="feat"><h3>Real gifting</h3><div class="meta"><span class="tag">Gifting</span><span class="tag">Order service</span></div><p>Gift wrap and card message saved on the order, "ship to someone else", and a packing slip without prices. Luxera already sells mostly gifts.</p><p class="dep">Needs order fields and an admin view</p></article>
+      <article class="feat"><h3>Weekly drops</h3><div class="meta"><span class="tag">Retention</span><span class="tag">Store + SMS</span></div><p>Group new pieces into dated drops, with a "notify me about the next drop" sign-up by SMS or a Bale/Telegram channel. One-of-a-kind stock becomes a reason to come back.</p></article>
+      <article class="feat"><h3>Sold, see similar</h3><div class="meta"><span class="tag">SEO</span><span class="tag">Discovery</span></div><p>Keep sold product pages live with a clear "sold" state and a similar-items rail, instead of a dead end or a 404. They keep their search ranking.</p></article>
+      <article class="feat"><h3>Guest order tracking</h3><div class="meta"><span class="tag">Support</span><span class="tag">Order service</span></div><p>Look up an order by order number and phone, with a status timeline and the Tipax or Post tracking code. This cuts "where is my order" messages.</p></article>
+      <article class="feat"><h3>Wishlist alerts</h3><div class="meta"><span class="tag">Retention</span><span class="tag">SMS</span></div><p>An SMS when a saved piece drops in price, using the <code>savedPrice</code> the wishlist already stores.</p></article>
+      <article class="feat"><h3>Contact inbox in admin</h3><div class="meta"><span class="tag">Support</span><span class="tag">Store service</span></div><p>Store contact messages, list them in admin with a status, and reply over SMS or WhatsApp.</p></article>
+    </div>
+  </div>
+
+  <div class="feat-group">
+    <h3>Bigger bets <span class="tag">a month or more</span></h3>
+    <div class="feats">
+      <article class="feat"><h3>Colour variants end to end</h3><div class="meta"><span class="tag">Catalogue</span><span class="tag">Cart + orders</span></div><p>Carry <code>color_id</code> through the cart, checkout and orders, then add swatches to cards. Today a colour chosen on the product page is lost, which is why customers type colours into order notes.</p><p class="dep">Backend first: cart lines and order items</p></article>
+      <article class="feat"><h3>Photo reviews after delivery</h3><div class="meta"><span class="tag">Trust</span><span class="tag">Product + SMS</span></div><p>Send an SMS a few days after delivery with a one-tap review link. Reviews with customer photos are the strongest proof for fashion jewelry.</p></article>
+      <article class="feat"><h3>Pay in instalments</h3><div class="meta"><span class="tag">Conversion</span><span class="tag">Payments</span></div><p>Offer a buy-now-pay-later option from an Iranian provider at checkout, for baskets above a threshold.</p><p class="dep">Needs a provider contract</p></article>
+      <article class="feat"><h3>Installable app (PWA)</h3><div class="meta"><span class="tag">Retention</span><span class="tag">Frontend</span></div><p>Add to home screen, an offline shell, and web push for drops and order updates. It pairs well with the bottom nav, which already feels like an app.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="order">
+  <div class="sec-head">
+    <div class="eyebrow">Plan</div>
+    <h2>Suggested order</h2>
+  </div>
+  <div class="road">
+    <div class="phase"><h3>1 · Stop losing orders</h3><ol>
+      <li>Send gift wrap and a card message with the order</li>
+      <li>Make the contact form real, or hand off to WhatsApp</li>
+      <li>Phone-first step in checkout</li>
+      <li>One source for delivery promises</li>
+      <li>Remove "Fine Jewelry"</li>
+    </ol></div>
+    <div class="phase"><h3>2 · One consistent system</h3><ol>
+      <li>Shared <code>PageHeader</code> on every page</li>
+      <li>Two type families, Persian labels only</li>
+      <li>One product card, 12px minimum text, 44px targets</li>
+      <li>Bottom-bar rules on phones</li>
+      <li>Regrouped mobile menu with Blog and search</li>
+    </ol></div>
+    <div class="phase"><h3>3 · Features</h3><ol>
+      <li>Guest order tracking and Help hub</li>
+      <li>Weekly drops and "sold, see similar"</li>
+      <li>Points and price-drop alerts</li>
+      <li>Colour variants end to end</li>
+      <li>Photo reviews</li>
+    </ol></div>
+  </div>
+</section>
+
+<section id="method">
+  <div class="sec-head">
+    <div class="eyebrow">Method</div>
+    <h2>How this was checked</h2>
+  </div>
+  <div class="note">
+    <p>The production API was unreachable, so the store was built as a production bundle and served against a read-only fixture API with placeholder products, categories, collections, posts and banners. Placeholder images and stock states are not reported as findings.</p>
+    <p>Each route was rendered at 375×812 and 1440×900 and checked for overflow, tap-target size, text under 12px, missing labels and heading structure. The automated contrast scan was too noisy on sections using <code>content-visibility</code> to be trusted, so no contrast findings are listed. The theme engine already guarantees 4.5:1.</p>
+    <p>Not exercised live: signed-in account panes, the payment redirect and the order-success return. Those findings come from reading the code. All visual recommendations use the existing theme tokens, so they hold for every theme the admin can choose.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="wrap muted"><p>Luxera UX audit · prepared with Claude Code from the <code>luxera/</code> source and a local production build.</p></footer>
+
+<script>
+(() => {
+  const order = ['crit', 'high', 'med', 'low'];
+  const label = { crit: 'Critical', high: 'High', med: 'Medium', low: 'Low' };
+  const pages = [...document.querySelectorAll('details.page')];
+
+  // Per-page severity pills in each summary, built from the findings it holds.
+  pages.forEach((p) => {
+    const box = p.querySelector('.pcounts');
+    order.forEach((s) => {
+      const n = p.querySelectorAll('.finding[data-sev="' + s + '"]').length;
+      if (n) { const el = document.createElement('span'); el.className = 'pill ' + s; el.textContent = n + ' ' + label[s]; box.appendChild(el); }
+    });
+    const chev = document.createElement('span'); chev.className = 'chev'; chev.setAttribute('aria-hidden', 'true'); box.appendChild(chev);
+  });
+
+  // Totals in the header: page findings plus the site-wide pattern cards.
+  const all = [...document.querySelectorAll('.finding')].map((f) => f.dataset.sev);
+  document.querySelectorAll('[data-count]').forEach((el) => { el.textContent = all.filter((s) => s === el.dataset.count).length; });
+
+  // Severity filter.
+  const btns = [...document.querySelectorAll('.filters button[data-f]')];
+  const empty = document.getElementById('empty-filter');
+  function apply(f) {
+    btns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
+    let any = false;
+    pages.forEach((p) => {
+      let shown = 0;
+      p.querySelectorAll('.finding').forEach((li) => { const on = f === 'all' || li.dataset.sev === f; li.hidden = !on; if (on) shown++; });
+      p.hidden = f !== 'all' && shown === 0;
+      if (f !== 'all' && shown) p.open = true;
+      if (!p.hidden) any = true;
+    });
+    empty.hidden = any;
+    try { localStorage.setItem('lux-audit-filter', f); } catch (e) {}
+  }
+  btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.f)));
+  let saved = 'all';
+  try { saved = localStorage.getItem('lux-audit-filter') || 'all'; } catch (e) {}
+  if (saved !== 'all') apply(saved);
+
+  const toggle = document.getElementById('toggle-all');
+  toggle.addEventListener('click', () => {
+    const open = !pages.every((p) => p.open || p.hidden);
+    pages.forEach((p) => { if (!p.hidden) p.open = open; });
+    toggle.textContent = open ? 'Collapse all' : 'Expand all';
+  });
+})();
+</script>
