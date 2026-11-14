@@ -3,10 +3,9 @@ import { useEffect, useState, useMemo, memo, type FC } from 'react'
 import { CATEGORIES } from '../../data/categories'
 import SectionHeader from '../shared/SectionHeader'
 import { listCategories, type ApiCategory } from '../../api/product'
-import { useHydrated } from '../../hooks/useHydrated'
 import ViewAllLink from '../shared/ViewAllLink'
 import Icon from '../icons/Icon'
-import { readHomeInitial } from './homeInitial'
+import { useHomeLists } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
 
 // Fallback fills (shown only while a category has no image) — all theme tokens,
@@ -22,12 +21,11 @@ const CAT_BG: Record<string, string> = {
 const VISIBLE_CATS = CATEGORIES.filter((c) => !['bridal', 'new', 'mens'].includes(c.id))
 
 const CategoriesSection: FC = () => {
-  const hydrated = useHydrated()
   const [fetchedCats, setFetchedCats] = useState<ApiCategory[] | null>(null)
 
-  // Gated on `hydrated` so the first client render matches SSR (no window there),
-  // avoiding a hydration mismatch (React #418).
-  const injected = hydrated ? readHomeInitial()?.categories : undefined
+  // Server-fetched (props → context), so SSR already renders the tile photos.
+  const injected = useHomeLists()?.categories
+  const hasInjected = !!injected?.length
 
   const apiCats = useMemo<ApiCategory[]>(() => {
     if (fetchedCats) return fetchedCats
@@ -36,11 +34,11 @@ const CategoriesSection: FC = () => {
   }, [fetchedCats, injected])
 
   useEffect(() => {
-    if (readHomeInitial()?.categories?.length) return
+    if (hasInjected) return
     listCategories()
       .then(setFetchedCats)
       .catch(() => {})
-  }, [])
+  }, [hasInjected])
 
   const apiByName = useMemo(() => new Map(apiCats.map((c) => [c.name, c])), [apiCats])
 

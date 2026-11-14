@@ -15,7 +15,10 @@ const WishlistPage: FC = () => {
   const { items, clear, refreshLive } = useWishlistStore()
   const addItem = useCartStore((s) => s.addItem)
 
-  // Fetch today's prices once so a drop since saving can be shown on the card.
+  // Fetch today's prices once so a drop since saving can be shown on the card. The grid
+  // waits for the answer: drawn from the saved snapshot first, a sell-out (restock form)
+  // or price drop (old-price line) arriving a moment later grew cards and moved the page.
+  const [live, setLive] = useState(() => useWishlistStore.getState().items.length === 0)
   useEffect(() => {
     const ids = useWishlistStore.getState().items.map((i) => i.id)
     if (!ids.length) return
@@ -28,6 +31,7 @@ const WishlistPage: FC = () => {
         ),
       )
       .catch(() => {})
+      .finally(() => setLive(true))
   }, [refreshLive])
 
   const [confirmClear, setConfirmClear] = useState(false)
@@ -66,6 +70,19 @@ const WishlistPage: FC = () => {
               <Icon name="arrow-left" size={16} />
             </span>
           </a>
+        </div>
+      ) : !live ? (
+        <div
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-[clamp(12px,1.5vw,22px)] gap-y-[clamp(28px,3vw,44px)]"
+          aria-hidden="true"
+        >
+          {items.map((p) => (
+            <div key={p.id} className="animate-pulse">
+              <div className="aspect-square bg-plate rounded-[var(--radius)]" />
+              <div className="h-4 bg-plate rounded w-4/5 mt-3.5" />
+              <div className="h-5 bg-plate rounded w-2/5 mt-3" />
+            </div>
+          ))}
         </div>
       ) : (
         <>

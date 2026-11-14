@@ -6,10 +6,9 @@ import CarouselArrows from '../shared/CarouselArrows'
 import { useCartStore } from '../../store/cartStore'
 import { listProducts, listCategories, adaptProduct, type ApiProduct } from '../../api/product'
 import { useCarousel } from '../../hooks/useCarousel'
-import { useHydrated } from '../../hooks/useHydrated'
 import ViewAllLink from '../shared/ViewAllLink'
 import { CATEGORIES } from '../../data/categories'
-import { readHomeInitial } from './homeInitial'
+import { useHomeLists } from './homeInitial'
 import { isSoldOut, RAIL_FETCH, RAIL_SIZE } from '../../utils/stock'
 import type { Product } from '../../types'
 
@@ -63,14 +62,13 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
   headerSize = 'lg',
 }) => {
   const addItem = useCartStore((s) => s.addItem)
-  const hydrated = useHydrated()
-  // Client-fetched fallback, used only when SSR didn't inject this carousel's products.
+  // Client-fetched fallback, used only when SSR didn't provide this carousel's products.
   const [fetchedProducts, setFetchedProducts] = useState<Product[] | null>(null)
   const [fetching, setFetching] = useState(true)
 
-  // Reading window.__HOME_INITIAL__ only after `hydrated` flips keeps the first client
-  // render identical to SSR (no window there), avoiding a hydration mismatch (React #418).
-  const injected = hydrated ? readHomeInitial()?.carousels?.[sectionId] : undefined
+  // Server-fetched products (props → context), so SSR already renders the real cards.
+  const injected = useHomeLists()?.carousels?.[sectionId]
+  const hasInjected = !!injected?.length
 
   // Rails only merchandise what can be bought. The filter also covers a server payload
   // cached before it carried stock_count (those rows have no count and pass through).
@@ -84,12 +82,12 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
     return []
   }, [fetchedProducts, injected])
 
-  const loading = !hydrated || (!injected?.length && fetching)
+  const loading = !hasInjected && fetching
 
   const { trackRef, canPrev, canNext, scroll, ratio, progress } = useCarousel(products.length)
 
   useEffect(() => {
-    if (readHomeInitial()?.carousels?.[sectionId]?.length) return
+    if (hasInjected) return
     let cancelled = false
     const load = async () => {
       try {
@@ -112,7 +110,7 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
     return () => {
       cancelled = true
     }
-  }, [sectionId, catSlug])
+  }, [sectionId, catSlug, hasInjected])
 
   const showEmpty = !loading && products.length === 0
 
@@ -162,10 +160,12 @@ const ProductCarousel: FC<ProductCarouselProps> = ({
                 ))}
           </div>
         )}
-        {/* Touch screens have no arrows: a thin line shows how much of the rail is left. */}
-        {!loading && !showEmpty && ratio < 1 && (
+        {/* Touch screens have no arrows: a thin line shows how much of the rail is left.
+            Its row is always there (invisible until the rail is measured as wider than the
+            screen) — appearing after the first measure, it pushed the page below down. */}
+        {!showEmpty && (
           <div
-            className="md:hidden mt-3 h-0.5 rounded-full bg-rule overflow-hidden"
+            className={`md:hidden mt-3 h-0.5 rounded-full bg-rule overflow-hidden ${loading || ratio >= 1 ? 'invisible' : ''}`}
             aria-hidden="true"
           >
             <div

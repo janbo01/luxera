@@ -7,6 +7,7 @@ export interface ServerInitialData {
   collections?: unknown
   categoryProducts?: unknown
   categoryResolvedId?: string | null
+  categoryColors?: unknown
   blogPost?: ApiBlogPost
   blogList?: ApiBlogPostList
 }

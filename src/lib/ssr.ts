@@ -8,6 +8,7 @@ import { CATEGORIES } from '../data/categories'
 import { imgSet, HERO_LCP } from '../utils/cdnImage'
 import { isApiSoldOut, RAIL_FETCH, RAIL_SIZE } from '../utils/stock'
 import type { ApiBanner } from '../api/store'
+import type { HomeInitialData } from '../components/home/homeInitial'
 import type { CspHash } from 'astro'
 
 const SITE_URL = 'https://luxera.ir'
@@ -389,8 +390,8 @@ function slimProduct(p: Record<string, unknown>): SlimProduct {
   }
 }
 
-async function loadHomeLists(): Promise<string> {
-  if (!productApiBase && !storeApiBase) return ''
+async function loadHomeLists(): Promise<HomeInitialData | null> {
+  if (!productApiBase && !storeApiBase) return null
 
   const cats = await fetchCategories()
   const slugToId = new Map<string, string>()
@@ -453,9 +454,30 @@ async function loadHomeLists(): Promise<string> {
         .catch(() => null)
     : Promise.resolve(null)
 
-  const [carouselResults, blog] = await Promise.all([
+  // The collection the home spotlight features: the first with a cover and products.
+  const spotlightFetch: Promise<HomeInitialData['spotlight'] | null> = productApiBase
+    ? fetch(`${productApiBase}/collections`, { signal: AbortSignal.timeout(5000) })
+        .then(async (r) => {
+          if (!r.ok) return null
+          const raw = unwrap(await r.json()) as { items?: Array<Record<string, unknown>> }
+          const c = (raw?.items ?? []).find((c) => c.cover_image_url && Number(c.product_count) > 0)
+          if (!c) return null
+          return {
+            id: c.id as string,
+            slug: c.slug as string,
+            name_fa: c.name_fa as string,
+            description: (c.description as string | undefined) || undefined,
+            cover_image_url: c.cover_image_url as string,
+            product_count: Number(c.product_count),
+          }
+        })
+        .catch(() => null)
+    : Promise.resolve(null)
+
+  const [carouselResults, blog, spotlight] = await Promise.all([
     Promise.allSettled(carouselFetches),
     blogFetch,
+    spotlightFetch,
   ])
 
   const carousels: Record<string, SlimProduct[]> = {}
@@ -470,37 +492,37 @@ async function loadHomeLists(): Promise<string> {
     ? cats.map((c) => ({ id: c.id, name: c.name, image_url: c.image_url }))
     : undefined
 
-  const hasAny = Object.keys(carousels).length > 0 || !!blog || !!categories
-  if (!hasAny) return ''
+  const hasAny = Object.keys(carousels).length > 0 || !!blog || !!categories || !!spotlight
+  if (!hasAny) return null
 
-  const data = {
+  return {
     categories,
     carousels: Object.keys(carousels).length ? carousels : undefined,
-    blog: blog ?? undefined,
+    blog: (blog ?? undefined) as HomeInitialData['blog'],
+    spotlight: spotlight ?? undefined,
   }
-  return jsonIsland('__HOME_INITIAL__', data)
 }
 
-const HOME_INITIAL_NULL = jsonIsland('__HOME_INITIAL__', null)
-
-let _homeListsCache: string | null = null
+// undefined = nothing cached yet.
+let _homeListsCache: HomeInitialData | undefined
 let _homeListsExpiry = 0
 let _homeListsRefreshInflight: Promise<void> | null = null
 
-export async function fetchHomeListsData(): Promise<{ initialScript: string }> {
+/** Lists for the home islands, handed to them as props so SSR renders real content. */
+export async function fetchHomeListsData(): Promise<{ data: HomeInitialData | null }> {
   const now = Date.now()
-  if (_homeListsCache !== null && now < _homeListsExpiry) {
-    return { initialScript: _homeListsCache }
+  if (_homeListsCache !== undefined && now < _homeListsExpiry) {
+    return { data: _homeListsCache }
   }
 
-  // Stale-while-revalidate, same posture as fetchHomeData: serve the cached script
+  // Stale-while-revalidate, same posture as fetchHomeData: serve the cached lists
   // immediately and refresh in the background so a slow API never blocks SSR.
-  if (_homeListsCache !== null) {
+  if (_homeListsCache !== undefined) {
     _homeListsExpiry = now + 5 * 60 * 1000
     if (!_homeListsRefreshInflight) {
       _homeListsRefreshInflight = loadHomeLists()
-        .then((script) => {
-          _homeListsCache = script || HOME_INITIAL_NULL
+        .then((data) => {
+          if (data) _homeListsCache = data
           _homeListsExpiry = Date.now() + 5 * 60 * 1000
         })
         .catch(() => {})
@@ -508,21 +530,20 @@ export async function fetchHomeListsData(): Promise<{ initialScript: string }> {
           _homeListsRefreshInflight = null
         })
     }
-    return { initialScript: _homeListsCache }
+    return { data: _homeListsCache }
   }
 
   try {
-    const script = await loadHomeLists()
-    if (!script) {
-      // Nothing succeeded — signal explicit null and leave uncached so the next
-      // request retries instead of freezing on an empty result.
-      return { initialScript: HOME_INITIAL_NULL }
+    // Nothing succeeded → null, left uncached so the next request retries instead of
+    // freezing on an empty result (the islands then fetch on the client).
+    const data = await loadHomeLists()
+    if (data) {
+      _homeListsCache = data
+      _homeListsExpiry = Date.now() + 5 * 60 * 1000
     }
-    _homeListsCache = script
-    _homeListsExpiry = Date.now() + 5 * 60 * 1000
-    return { initialScript: script }
+    return { data }
   } catch {
-    return { initialScript: HOME_INITIAL_NULL }
+    return { data: null }
   }
 }
 
@@ -675,8 +696,31 @@ export async function fetchBlogListData(page = 1) {
   }
 }
 
+// Colour list for the category filter. Fetched with the page (not after hydration) so
+// the filter panel's colour section is there in the first render — appearing later, it
+// pushed the rest of the sticky sidebar down.
+let _colorsCache: unknown[] = []
+let _colorsExpiry = 0
+
+async function fetchColors(): Promise<unknown[]> {
+  if (_colorsCache.length && Date.now() < _colorsExpiry) return _colorsCache
+  try {
+    const r = await fetch(`${productApiBase}/colors`, { signal: AbortSignal.timeout(5000) })
+    if (!r.ok) return _colorsCache
+    const data = unwrap(await r.json())
+    if (Array.isArray(data)) {
+      _colorsCache = data
+      _colorsExpiry = Date.now() + 15 * 60 * 1000
+    }
+  } catch {
+    /* the client fetches them instead */
+  }
+  return _colorsCache
+}
+
 export async function fetchCategoryData(slug: string) {
   if (!productApiBase) return { initialData: {}, initialScript: '' }
+  const colorsPromise = fetchColors()
   try {
     let apiCategoryId: string | undefined
     if (slug !== 'new') {
@@ -689,7 +733,12 @@ export async function fetchCategoryData(slug: string) {
     const r = await fetch(`${productApiBase}/products?${qs}`)
     if (!r.ok) return { initialData: {}, initialScript: '' }
     const data = unwrap(await r.json()) as { items?: unknown[]; next_cursor?: string }
-    const initialData = { categoryProducts: data, categoryResolvedId: apiCategoryId ?? null }
+    const categoryColors = await colorsPromise
+    const initialData = {
+      categoryProducts: data,
+      categoryResolvedId: apiCategoryId ?? null,
+      ...(categoryColors.length ? { categoryColors } : {}),
+    }
     return { initialData, initialScript: jsonIsland('__CATEGORY_INITIAL__', initialData) }
   } catch {
     return { initialData: {}, initialScript: '' }

@@ -2,6 +2,8 @@ import { createPortal } from 'react-dom'
 import { type FC, Fragment, useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from '../../hooks/useNavigate'
 import Icon from '../icons/Icon'
+import Wordmark from '../shared/Wordmark'
+import LogoMark from '../shared/LogoMark'
 import { toFa } from '../../utils/format'
 import { useCartStore, selectTotalQty } from '../../store/cartStore'
 import { useWishlistStore, selectWishlistCount } from '../../store/wishlistStore'
@@ -289,13 +291,18 @@ const Header: FC = () => {
     <>
       <AnnouncementBar />
 
+      {/* Compact on scroll by transform only: the bar keeps its 78px (64px phone) layout
+          box and slides up 18px (8px) under the top edge, its contents slide back down by
+          half so they stay centred in the 60px (56px) that remains. Animating the height
+          instead moved the page under the sticky bar and the items inside it — both counted
+          as layout shifts. overflow-x-clip (not hidden) so the shifted row isn't scrollable. */}
       <header
         ref={headerRef}
-        className="vt-site-header sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-hidden"
+        className={`vt-site-header sticky top-0 z-50 bg-bg/86 backdrop-saturate-[160%] backdrop-blur-[14px] border-b border-rule overflow-x-clip transition-transform duration-300 ease-[var(--ease-lux)] ${scrolled ? '-translate-y-[18px] max-[720px]:-translate-y-[8px]' : ''}`}
       >
         {/* dir="ltr" keeps logo physically left, actions physically right regardless of page RTL */}
         <div
-          className={`relative flex items-center justify-between px-[var(--pad)] gap-3 max-w-[1480px] mx-auto transition-[height] duration-300 ease-[var(--ease-lux)] ${scrolled ? 'h-[60px] max-[720px]:h-[56px]' : 'h-[78px] max-[720px]:h-[64px]'}`}
+          className={`relative flex items-center justify-between px-[var(--pad)] gap-3 max-w-[1480px] mx-auto h-[78px] max-[720px]:h-[64px] transition-transform duration-300 ease-[var(--ease-lux)] ${scrolled ? 'translate-y-[9px] max-[720px]:translate-y-[4px]' : ''}`}
           dir="ltr"
         >
           {/* Logo — left */}
@@ -305,17 +312,11 @@ const Header: FC = () => {
             onClick={closeMenu}
             aria-label="Luxera"
           >
-            <img
-              src="/logo-crystal.svg"
-              alt=""
-              width={300}
-              height={210}
-              className={`w-auto transition-[height] duration-300 ease-[var(--ease-lux)] ${scrolled ? 'h-[32px]' : 'h-[38px]'}`}
+            <LogoMark
+              className={`h-[38px] w-auto text-gold origin-right transition-transform duration-300 ease-[var(--ease-lux)] ${scrolled ? 'scale-[0.842]' : ''}`}
             />
             <div className="flex flex-col leading-none gap-[3px]">
-              <span className="font-wordmark italic font-medium text-[27px] tracking-[0.02em] leading-none text-ink">
-                Luxera
-              </span>
+              <Wordmark weight={500} tracking={0.02} className="text-[27px] text-ink" />
               <span className="text-[12px] text-muted">لوکسرا</span>
             </div>
           </a>
@@ -366,11 +367,22 @@ const Header: FC = () => {
               >
                 <Icon name="search" size={16} strokeWidth={1.6} />
                 <span>جستجو در فروشگاه…</span>
+                {/* Both labels share one grid cell, so the pill is as wide as the wider one
+                    from the first paint: swapping ⌘K → Ctrl K after hydration (Windows,
+                    Linux) widened the button and nudged the centred nav on every page. */}
                 <kbd
-                  className="ms-auto inline-flex items-center h-6 px-2 rounded-full border border-rule bg-bg text-[12px] leading-none text-ink-2 [font-family:ui-sans-serif,system-ui,sans-serif]"
+                  className="ms-auto inline-grid items-center h-6 px-2 rounded-full border border-rule bg-bg text-[12px] leading-none text-ink-2 [font-family:ui-sans-serif,system-ui,sans-serif]"
                   dir="ltr"
                 >
-                  {shortcutHint}
+                  {(['⌘K', 'Ctrl K'] as const).map((label) => (
+                    <span
+                      key={label}
+                      className={`col-start-1 row-start-1 text-center ${label === shortcutHint ? '' : 'invisible'}`}
+                      aria-hidden={label !== shortcutHint}
+                    >
+                      {label}
+                    </span>
+                  ))}
                 </kbd>
               </button>
 
@@ -440,9 +452,9 @@ const Header: FC = () => {
           className="flex items-center justify-between px-6 pt-[22px] pb-[18px] border-b border-rule"
           dir="ltr"
         >
-          <a href="/" className="flex items-center gap-2" onClick={closeMenu}>
-            <img src="/logo-crystal.svg" alt="" width={300} height={210} className="h-8 w-auto" />
-            <span className="font-wordmark italic text-2xl tracking-[0.14em] text-ink">Luxera</span>
+          <a href="/" className="flex items-center gap-2" onClick={closeMenu} aria-label="Luxera">
+            <LogoMark className="h-8 w-auto text-gold" />
+            <Wordmark tracking={0.14} className="text-2xl text-ink" />
           </a>
           <button
             className="flex items-center justify-center w-11 h-11 -me-2 rounded-full text-ink-2 transition-colors duration-200 hover:bg-bg-2 hover:text-ink"

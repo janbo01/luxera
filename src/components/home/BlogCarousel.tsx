@@ -4,9 +4,8 @@ import { getBlogPosts, type ApiBlogPost } from '../../api/blog'
 import SectionHeader from '../shared/SectionHeader'
 import CarouselArrows from '../shared/CarouselArrows'
 import { useCarousel } from '../../hooks'
-import { useHydrated } from '../../hooks/useHydrated'
 import ViewAllLink from '../shared/ViewAllLink'
-import { readHomeInitial } from './homeInitial'
+import type { HomeInitialData } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
 import Icon from '../icons/Icon'
 
@@ -81,15 +80,18 @@ const SkeletonCard = () => (
 
 const SKELETONS = Array.from({ length: VISIBLE }, (_, i) => <SkeletonCard key={i} />)
 
-const BlogCarousel: FC = () => {
-  const hydrated = useHydrated()
-  // Client-fetched fallback, used only when SSR didn't inject blog posts.
+interface BlogCarouselProps {
+  /** Posts fetched during SSR (index.astro), so the server renders the real cards. */
+  initial?: HomeInitialData['blog']
+}
+
+const BlogCarousel: FC<BlogCarouselProps> = ({ initial }) => {
+  // Client-fetched fallback, used only when SSR didn't provide posts.
   const [fetchedPosts, setFetchedPosts] = useState<ApiBlogPost[] | null>(null)
   const [fetching, setFetching] = useState(true)
 
-  // Gated on `hydrated` so the first client render matches SSR (no window there),
-  // avoiding a hydration mismatch (React #418).
-  const injected = hydrated ? readHomeInitial()?.blog : undefined
+  const injected = initial
+  const hasInjected = !!injected?.posts?.length
 
   const posts = useMemo<ApiBlogPost[]>(() => {
     if (fetchedPosts) return fetchedPosts
@@ -97,16 +99,16 @@ const BlogCarousel: FC = () => {
     return []
   }, [fetchedPosts, injected])
 
-  const loading = !hydrated || (!injected?.posts?.length && fetching)
+  const loading = !hasInjected && fetching
   const { trackRef, canPrev, canNext, scroll } = useCarousel(posts.length)
 
   useEffect(() => {
-    if (readHomeInitial()?.blog?.posts?.length) return
+    if (hasInjected) return
     getBlogPosts(1, 8)
       .then((res) => setFetchedPosts(res.posts))
       .catch(() => {})
       .finally(() => setFetching(false))
-  }, [])
+  }, [hasInjected])
 
   const showSkeletons = loading
   const showEmpty = !loading && posts.length === 0

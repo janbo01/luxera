@@ -40,7 +40,9 @@ const SearchResultsPage: FC<SearchResultsPageProps> = ({ q: qProp }) => {
   const { commit } = useSearchStore()
 
   const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(false)
+  // Start in the loading state when there's a query to run: starting at false painted the
+  // "no results" block for a frame, then the skeleton, then the results — each swap a jump.
+  const [loading, setLoading] = useState(() => normalizeQuery(q).length >= SEARCH_MIN_QUERY_LENGTH)
   const [sort, setSort] = useState<SortKey>('relevance')
   const [draft, setDraft] = useState(q)
 
@@ -117,13 +119,16 @@ const SearchResultsPage: FC<SearchResultsPageProps> = ({ q: qProp }) => {
       />
 
       <section className="max-w-[var(--maxw)] mx-auto px-[var(--pad)] pb-20">
-        {products.length > 1 && !loading && (
+        {/* Shown (disabled) while loading too, so the results don't land under a sort bar
+            that then pushes them down. */}
+        {(loading || products.length > 1) && (
           <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="ترتیب نتایج">
             {SORTS.map((s) => (
               <button
                 key={s.key}
                 type="button"
                 aria-pressed={sort === s.key}
+                disabled={loading}
                 onClick={() => setSort(s.key)}
                 className={`min-h-11 px-4 rounded-full text-[13.5px] border transition-colors ${
                   sort === s.key

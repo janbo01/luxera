@@ -29,6 +29,7 @@ declare global {
     __CATEGORY_INITIAL__?: {
       categoryProducts: { items: ApiProduct[]; next_cursor: string }
       categoryResolvedId: string | null
+      categoryColors?: ApiColor[]
     }
   }
 }
@@ -181,7 +182,13 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
   const [priceMin, setPriceMin] = useState(0)
   const [priceMax, setPriceMax] = useState(MAX_PRICE)
   const [selectedColorIds, setSelectedColorIds] = useState<string[]>([])
-  const [availableColors, setAvailableColors] = useState<ApiColor[]>([])
+  // From SSR when it has them, so the filter's colour section is in the first render.
+  const [availableColors, setAvailableColors] = useState<ApiColor[]>(() => {
+    const fromServer = (initialData?.categoryColors ??
+      (typeof window !== 'undefined' ? window.__CATEGORY_INITIAL__?.categoryColors : undefined)) as
+      ApiColor[] | undefined
+    return Array.isArray(fromServer) ? fromServer : []
+  })
   const [inStockOnly, setInStockOnly] = useState(false)
 
   // null = not yet resolved; undefined = no category filter (show all / "new")
@@ -249,11 +256,13 @@ const CategoryPage: FC<CategoryPageProps> = ({ id, initialData }) => {
     [],
   )
 
+  const haveColors = availableColors.length > 0
   useEffect(() => {
+    if (haveColors) return
     void listColors()
       .then(setAvailableColors)
       .catch(() => {})
-  }, [])
+  }, [haveColors])
 
   // Resolve the API category ID once when the route param changes.
   useEffect(() => {

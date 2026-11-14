@@ -21,7 +21,8 @@
   --font-heading: 'Morabba', 'Tahoma', sans-serif;
   --font-body: 'Yekan Bakh', 'Tahoma', sans-serif;
   /* Two families carry the whole store: Morabba for headings, Yekan Bakh for text.
-     Cormorant is kept for the Latin "Luxera" wordmark only (font-wordmark).
+     The "Luxera" wordmark is SVG outlines (Wordmark.tsx); font-wordmark (upright
+     Cormorant) only draws the blog quote mark.
      font-display / font-mono are aliases, so older classes render in the Persian
      families; font-mono keeps tabular figures for prices and counters. */
   --font-wordmark: 'Cormorant Garamond', 'Times New Roman', serif;
@@ -73,13 +74,22 @@
   --color-ok: var(--lx-ok);
 }
 
+/* ── Font loading: optional, never swap ────────────────────── */
+/* Every face is font-display: optional. With swap, text first painted in Tahoma and
+   re-flowed when Morabba / Yekan Bakh arrived — their widths and metrics differ, so
+   headings, tables and whole page bodies jumped 10–30px (a layout shift on most first
+   visits). optional never swaps: the faces BaseLayout preloads are almost always ready
+   for the first paint (Chrome holds that paint up to ~100ms for preloaded optional
+   fonts), and if one isn't, that page view keeps the fallback and the next full load
+   gets the font from cache. Don't switch back to swap; preload a face instead. */
+
 /* ── Morabba (Persian Heading) ─────────────────────────────── */
 @font-face {
   font-family: 'Morabba';
   src: url('/fonts/Morabba-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -87,7 +97,7 @@
   src: url('/fonts/Morabba-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 /* ── Yekan Bakh (Persian Body) ─────────────────────────────── */
@@ -104,7 +114,7 @@
   line-gap-override: 5%;
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -115,7 +125,7 @@
   line-gap-override: 5%;
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -126,7 +136,7 @@
   line-gap-override: 5%;
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 @font-face {
@@ -137,7 +147,7 @@
   line-gap-override: 5%;
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 
 /* ── Cormorant Garamond (Latin Display) ─────────────────────── */
@@ -147,20 +157,6 @@
   font-weight: 100 900;
   font-style: normal;
   font-display: optional;
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
-    U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: 'Cormorant Garamond';
-  src: url('/fonts/CormorantGaramond-Italic-VariableFont_wght.woff2') format('woff2');
-  font-weight: 100 900;
-  font-style: italic;
-  /* swap, not optional: this cut draws the "Luxera" wordmark in the header and footer.
-     With optional, a cold first visit often rendered the logo in the upright fallback;
-     the header has a fixed height, so the swap cannot shift layout. */
-  font-display: swap;
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074,
     U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
@@ -337,8 +333,7 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    /* Persian faces ship no italic; never fake-slant them. Latin display
-       text still gets Cormorant's real italic cut. */
+    /* Persian faces ship no italic; never fake-slant them. */
     font-synthesis-style: none;
   }
 
@@ -594,6 +589,11 @@
   overflow: clip;
   border-radius: var(--radius);
 }
+/* productMorph.ts runs the glide itself as transform + clip-path (same 560ms curve): the
+   default animates width/height, which Chrome counts as layout shift. */
+html[data-vt-morph]::view-transition-group(product-hero) {
+  animation: none;
+}
 ::view-transition-old(product-hero),
 ::view-transition-new(product-hero) {
   height: 100%;
@@ -601,6 +601,12 @@
   object-fit: cover;
   animation-duration: 260ms;
   animation-timing-function: ease-out;
+}
+
+/* With the morph run as transform + clip (productMorph.ts), the box stays at the gallery's
+   size; contain makes the card's snapshot fill exactly the clipped card window at the start. */
+html[data-vt-morph]::view-transition-old(product-hero) {
+  object-fit: contain;
 }
 
 /* The page: the new one rises in over the old, which holds still underneath. Fading both at

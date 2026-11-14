@@ -9,14 +9,23 @@ import CollectionSpotlight from '../components/home/CollectionSpotlight'
 import CategoryTabs from '../components/home/CategoryTabs'
 import GiftBanner from '../components/home/GiftBanner'
 import RecentlyViewed from '../components/product/RecentlyViewed'
+import { HomeListsContext, type HomeInitialData } from '../components/home/homeInitial'
 
 // Structured data for the home page is rendered once, on the server, in pages/index.astro.
-const HomePage: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
+interface HomePageProps {
+  banners?: ApiBanner[]
+  /** Rails, category tiles and spotlight fetched during SSR (see homeInitial.ts). */
+  lists?: HomeInitialData | null
+}
+
+const HomePage: FC<HomePageProps> = ({ banners, lists }) => {
   usePageMeta({ title: 'فروشگاه جواهرات فانتزی دست‌ساز' })
   return (
-    <>
+    <HomeListsContext.Provider value={lists}>
       <Hero banners={banners} />
       <TrustStrip />
+      {/* First paint waits for this (BaseLayout foldId): hero and trust strip land whole. */}
+      <div id="lx-fold" hidden />
       {/* Products first: the newest pieces sit right under the hero, then the categories. */}
       <ProductCarousel
         sectionId="new"
@@ -35,7 +44,7 @@ const HomePage: FC<{ banners?: ApiBanner[] }> = ({ banners }) => {
       <CollectionSpotlight />
       <CategoryTabs />
       <GiftBanner />
-    </>
+    </HomeListsContext.Provider>
   )
 }
 

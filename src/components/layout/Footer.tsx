@@ -1,6 +1,7 @@
 import { type FC, useMemo } from 'react'
 import { IconInstagram, IconWhatsApp, IconBale, IconIta } from '../icons/BrandIcons'
 import EnamadLogo from '../shared/EnamadLogo'
+import Wordmark from '../shared/Wordmark'
 import { useSettingsStore } from '../../store/settingsStore'
 import { useHydrated } from '../../hooks/useHydrated'
 import { CATEGORIES } from '../../data/categories'
@@ -115,9 +116,7 @@ const Footer: FC<FooterProps> = ({ initialSettings }) => {
       <div className="grid grid-cols-[1.6fr_repeat(3,1fr)] max-lg:grid-cols-2 max-md:grid-cols-2 gap-12 max-md:gap-8 pb-12 border-b border-rule max-w-[1480px] mx-auto">
         {/* Brand column */}
         <div className="flex flex-col gap-[18px] max-w-[34ch] max-md:col-span-2">
-          <span className="font-wordmark italic text-[42px] text-ink leading-none font-normal">
-            Luxera
-          </span>
+          <Wordmark className="self-start text-[42px] text-ink" />
           <p className="text-ink-2 text-[14.5px] leading-[1.9] m-0">
             جواهرات فانتزی و اکسسوری مد با روکش ماندگار و بدون نیکل — با ارسال سریع و ۴ روز ضمانت
             بازگشت.

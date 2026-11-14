@@ -1,5 +1,6 @@
 import { type FC, type ChangeEvent, useState, useRef, useEffect } from 'react'
 import Icon from '../icons/Icon'
+import Wordmark from '../shared/Wordmark'
 import { useAuthStore } from '../../store/authStore'
 import { useWishlistStore } from '../../store/wishlistStore'
 import { useCartStore } from '../../store/cartStore'
@@ -109,8 +110,9 @@ const LoginModal: FC<Props> = ({ onClose, message }) => {
           <Icon name="close" size={16} />
         </button>
 
-        <div className="font-wordmark italic text-[26px] font-medium tracking-[.2em] text-plum mb-1.5">
-          Luxera
+        {/* h-[1lh] keeps the line box the text had, so the mark sits where its glyphs did */}
+        <div className="flex justify-center items-center h-[1lh] text-[26px] text-plum mb-1.5">
+          <Wordmark weight={500} tracking={0.2} />
         </div>
         <div className="text-[13px] text-muted mb-6">لوکسرا</div>
         <div className="w-8 h-px bg-dust-rose mx-auto mb-6" />

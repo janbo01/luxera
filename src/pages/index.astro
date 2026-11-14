@@ -32,7 +32,7 @@ const homeJsonLd = JSON.stringify([
     '@type': 'Organization',
     name: 'لوکسرا',
     url: 'https://luxera.ir',
-    logo: 'https://luxera.ir/favicon.svg',
+    logo: 'https://luxera.ir/icon-512.png',
     description: 'فروشگاه اینترنتی جواهرات فانتزی دست‌ساز — گردنبند، انگشتر، دستبند و گوشواره با روکش ماندگار، بدون نیکل.',
     contactPoint: {
       '@type': 'ContactPoint',
@@ -51,9 +51,10 @@ const homeJsonLd = JSON.stringify([
   canonical="/"
   lcpPreload={lcpPreload}
   jsonLd={homeJsonLd}
+  foldId="lx-fold"
 >
-  <Fragment set:html={initialScript + homeLists.initialScript + footerScript} />
-  <HomePage client:load banners={banners} />
+  <Fragment set:html={initialScript + footerScript} />
+  <HomePage client:load banners={banners} lists={homeLists.data} />
   <Feature />
-  <BlogCarousel client:visible />
+  <BlogCarousel client:visible initial={homeLists.data?.blog} />
 </BaseLayout>

@@ -37,14 +37,19 @@ const RecentlyViewed: FC<RecentlyViewedProps> = ({ excludeId, min = 2 }) => {
       .then((rows) => {
         if (!cancelled) setLiveStock(Object.fromEntries(rows.map((r) => [r.id, r.stock_count])))
       })
-      .catch(() => {})
+      // Failed refresh: fall back to the stored snapshot rather than never showing.
+      .catch(() => {
+        if (!cancelled) setLiveStock({})
+      })
     return () => {
       cancelled = true
     }
   }, [hydrated, idKey])
 
-  // The server never knows what this visitor viewed, so render nothing until hydrated.
-  if (!hydrated) return null
+  // The server never knows what this visitor viewed, so render nothing until hydrated —
+  // and until the stock refresh answers: showing the stored list first and then dropping
+  // sold-out items (or the whole strip, under `min`) moved the page twice.
+  if (!hydrated || (idKey && !liveStock)) return null
   const list = items
     .filter((p) => p.id !== excludeId)
     .map((p) => {

@@ -18,6 +18,9 @@ interface Props {
   noIndex?: boolean
   /** Checkout: hide the store navigation so the page has one job. */
   focus?: boolean
+  /** id of an element the page renders at the end of its first screen; the first paint
+   *  waits for its markup too (see the rel="expect" links below). */
+  foldId?: string
 }
 
 const {
@@ -30,6 +33,7 @@ const {
   lcpPreload,
   noIndex = false,
   focus = false,
+  foldId,
 } = Astro.props
 
 const [theme, socialSettings, settingsScript] = await Promise.all([
@@ -57,8 +61,11 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="mask-icon" href="/icon-mono.svg" color="#1A1412" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="robots" content={noIndex ? 'noindex, follow' : 'index, follow'} />
     <meta name="author" content="لوکسرا" />
     <title>{title}</title>
@@ -72,13 +79,27 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
     <link rel="preconnect" href="https://api.luxera.ir" crossorigin />
     <link rel="dns-prefetch" href="https://api.luxera.ir" />
 
-    <!-- Preload critical Persian fonts to reduce FOUT and font-swap CLS.
-         Regular (400) is the body default and Medium (500) carries buttons, labels
-         and prices — these reflow the most when they swap, so they're preloaded;
-         Morabba-Bold covers headings. URLs must match the @font-face src in index.css exactly. -->
+    <!-- Preload every face the first screen of any page draws (~20 KB each). The faces
+         are font-display: optional (index.css), so a face that isn't ready for the first
+         paint is skipped for that page view rather than swapped in later — the swap was
+         the store's biggest layout shift. Yekan Bakh 400 body, 500 labels/prices,
+         700 (also serves semibold) buttons; Morabba 700 headings, 400 their <em>.
+         Light (300) only styles form fields, so it isn't preloaded.
+         URLs must match the @font-face src in index.css exactly. -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Regular.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Medium.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/yekanbakh-Bold.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Morabba-Bold.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Morabba-Regular.woff2" crossorigin />
+
+    <!-- Hold the first paint until the header's markup is parsed (and, on pages that
+         pass foldId, their first screen). On a slow connection the browser otherwise
+         paints HTML while it is still arriving — the logo, then the buttons, trickle in
+         and each late piece moves what is already on screen. Kept to the top of the page:
+         waiting for all of <main> cost the home page ~3s of first paint on a slow phone.
+         Chrome 124+; other browsers ignore it. Images and fonts are not waited for. -->
+    <link rel="expect" href="#lx-header-end" blocking="render" />
+    {foldId && <link rel="expect" href={`#${foldId}`} blocking="render" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -122,6 +143,7 @@ const canonicalUrl = rawCanonical.replace(/\/+$/, '') || SITE_URL
 
     <!-- Header persists independently so it can update active state via usePathname -->
     <Header client:load transition:persist="header" />
+    <div id="lx-header-end" hidden></div>
 
     <!-- Reserve a viewport of height so client:only views (e.g. ProductPage) don't
          leave <main> empty at first paint — which would place the footer right under

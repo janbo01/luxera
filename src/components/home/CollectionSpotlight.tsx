@@ -1,6 +1,6 @@
 import { useEffect, useState, type FC } from 'react'
 import { listCollections, type ApiCollection } from '../../api/product'
-import { useHydrated } from '../../hooks/useHydrated'
+import { useHomeLists } from './homeInitial'
 import { imgSet } from '../../utils/cdnImage'
 import { toFa } from '../../utils/format'
 import { BTN_CLS } from '../ui/Button'
@@ -8,23 +8,27 @@ import Icon from '../icons/Icon'
 
 /** Editorial split that breaks up the product rows by featuring one collection. */
 const CollectionSpotlight: FC = () => {
-  const hydrated = useHydrated()
-  const [collection, setCollection] = useState<ApiCollection | null>(null)
+  // Server-picked (props → context), so the section is in the SSR HTML. Fetched after
+  // hydration it appeared late and pushed everything below it down.
+  const initial = useHomeLists()?.spotlight
+  const [fetched, setFetched] = useState<ApiCollection | null>(null)
 
   useEffect(() => {
+    if (initial) return
     let cancelled = false
     listCollections()
       .then((items) => {
         if (cancelled) return
-        setCollection(items.find((c) => c.cover_image_url && c.product_count > 0) ?? null)
+        setFetched(items.find((c) => c.cover_image_url && c.product_count > 0) ?? null)
       })
       .catch(() => {})
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [initial])
 
-  if (!hydrated || !collection) return null
+  const collection = initial ?? fetched
+  if (!collection) return null
 
   return (
     <section className="page-section cv-auto" aria-label="کالکشن ویژه">

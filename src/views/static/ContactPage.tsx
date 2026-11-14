@@ -2,6 +2,7 @@ import { usePageMeta } from '../../hooks/usePageMeta'
 import { useState, type FC, type SyntheticEvent } from 'react'
 import { BTN_CLS } from '../../components/ui/Button'
 import { useSettingsStore } from '../../store/settingsStore'
+import type { SocialSettings } from '../../lib/ssr'
 import { sendContactMessage } from '../../api/store'
 import { HttpError } from '../../api/client'
 import PageHeader from '../../components/shared/PageHeader'
@@ -41,17 +42,25 @@ const CONTACT_JSON_LD = {
   },
 }
 
-const ContactPage: FC = () => {
+interface ContactPageProps {
+  /** Store settings from SSR. The settings store only fills on the client, so without
+   *  these the social links and phone appeared after hydration and pushed the page. */
+  initialSettings?: SocialSettings
+}
+
+const ContactPage: FC<ContactPageProps> = ({ initialSettings }) => {
   usePageMeta({
     title: 'تماس با لوکسرا و پشتیبانی فروشگاه',
     description: 'با تیم پشتیبانی لوکسرا از طریق واتس‌اپ، تلگرام یا فرم تماس در ارتباط باشید.',
     jsonLd: CONTACT_JSON_LD,
   })
 
-  const instagramUrl = useSettingsStore((s) => s.instagram_url)
-  const whatsappRaw = useSettingsStore((s) => s.whatsapp_number)
-  const baleLink = useSettingsStore((s) => s.bale_link)
-  const supportPhone = useSettingsStore((s) => s.support_phone) || FALLBACK_PHONE
+  const instagramUrl = useSettingsStore((s) => s.instagram_url) || initialSettings?.instagram_url
+  const whatsappRaw =
+    useSettingsStore((s) => s.whatsapp_number) || initialSettings?.whatsapp_number || ''
+  const baleLink = useSettingsStore((s) => s.bale_link) || initialSettings?.bale_link
+  const supportPhone =
+    useSettingsStore((s) => s.support_phone) || initialSettings?.support_phone || FALLBACK_PHONE
   const telHref = `tel:${toLatinDigits(supportPhone).replace(/[^\d+]/g, '')}`
 
   const whatsappUrl = whatsappRaw ? `https://wa.me/${whatsappRaw.replace(/\D/g, '')}` : ''

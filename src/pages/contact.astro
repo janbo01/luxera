@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ContactPage from '../views/static/ContactPage'
+import { fetchSocialSettings } from '../lib/ssr'
 const BASE_TITLE = 'Luxera · لوکسرا'
+const socialSettings = await fetchSocialSettings()
 
 const contactJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
@@ -41,5 +43,5 @@ const contactJsonLd = JSON.stringify({
     فانتزی نیز می‌توانید با ما در تماس باشید. پیام‌هایی که خارج از ساعات کاری ثبت می‌شوند، در اولین
     فرصت روز کاری بعد بررسی و پاسخ داده خواهند شد. رضایت و اعتماد مشتری مهم‌ترین اولویت لوکسرا است.
   </p>
-  <ContactPage client:load />
+  <ContactPage client:load initialSettings={socialSettings} />
 </BaseLayout>

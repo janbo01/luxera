@@ -32,42 +32,9 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
 
   return (
     <div className="lg:sticky lg:top-[96px] rounded-[var(--radius)] overflow-hidden bg-surface ring-1 ring-inset ring-rule text-ink isolate grid [grid-template-columns:100px_1fr] max-lg:relative max-lg:flex max-lg:flex-col">
-      {/* thumbs first so RTL auto-placement puts them in column 1 (RIGHT) */}
-      <div className="flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:order-last max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-rule">
-        {hasApiImages
-          ? galleryImages.map((img, i) => (
-              <button
-                key={img.id}
-                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
-                onClick={() => selectThumb(i)}
-                aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
-              >
-                <img
-                  src={imgUrl(img.url, 200, 200)}
-                  alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`}
-                  width={100}
-                  height={100}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))
-          : PRODUCT_GALLERY.map((item, i) => (
-              <button
-                key={item.tone}
-                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
-                onClick={() => selectThumb(i)}
-                aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
-              >
-                <Illustration name={item.illus} />
-              </button>
-            ))}
-      </div>
-
       {/* Main image — 1:1 square */}
       <div
-        className="relative z-[1] aspect-square max-sm:aspect-[4/3]"
+        className="relative z-[1] aspect-square max-sm:aspect-[4/3] lg:col-start-2 lg:row-start-1"
         data-vt-hero
         style={{ viewTransitionName: HERO_NAME }}
       >
@@ -140,6 +107,42 @@ const Gallery: FC<GalleryProps> = ({ images, productName = 'محصول' }) => {
           </div>
         </div>
       </div>
+      {/* Thumbs come after the photo in the DOM, as they do on screen on phones: first in
+          the DOM (and moved down with order-last), a slow connection painted them on top
+          until the photo's markup arrived and pushed them 260px down. On desktop they're
+          placed in column 1 (the right, in RTL) explicitly. */}
+      <div className="lg:col-start-1 lg:row-start-1 flex flex-col gap-1.5 overflow-y-auto p-2 scrollbar-none max-lg:flex-row max-lg:overflow-x-auto max-lg:overflow-y-hidden max-lg:py-2 max-lg:px-3 max-lg:border-t max-lg:border-rule">
+        {hasApiImages
+          ? galleryImages.map((img, i) => (
+              <button
+                key={img.id}
+                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 max-lg:w-[58px] max-lg:h-[58px] ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
+                onClick={() => selectThumb(i)}
+                aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
+              >
+                <img
+                  src={imgUrl(img.url, 200, 200)}
+                  alt={`${productName} - تصویر ${formatPaddedIndex(i + 1)}`}
+                  width={100}
+                  height={100}
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))
+          : PRODUCT_GALLERY.map((item, i) => (
+              <button
+                key={item.tone}
+                className={`w-full aspect-square flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-200 flex items-center justify-center [&>svg]:w-[60%] [&>svg]:h-auto max-lg:w-[58px] max-lg:h-[58px] ${TONE_BG[item.tone] ?? ''} ${i === activeIdx ? 'border-ink' : 'border-transparent opacity-70 hover:opacity-100 hover:border-rule'}`}
+                onClick={() => selectThumb(i)}
+                aria-label={`تصویر ${formatPaddedIndex(i + 1)}`}
+              >
+                <Illustration name={item.illus} />
+              </button>
+            ))}
+      </div>
+
       {lightbox && hasApiImages && (
         <GalleryLightbox
           images={galleryImages}
